@@ -44,6 +44,7 @@ const SCHEMA = [
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE (place_id, user_id)
   )`,
+  `ALTER TABLE places ADD COLUMN IF NOT EXISTS owner_verified BOOLEAN NOT NULL DEFAULT false`,
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
 ];
 
@@ -61,9 +62,21 @@ async function init(p: Pool) {
   }
 }
 
+/** Shops whose owner has confirmed them to EcoProof. Upserted on every cold start so edits to the JSON take effect. */
+async function seedOwnerShops(p: Pool) {
+  const shops = (await import("../data/superbee-shops.json")).default as { id: string; name: string; type: string; lat: number; lng: number }[];
+  for (const sh of shops) {
+    await p.query(
+      `INSERT INTO places (id,name,type,lat,lng,demo,owner_verified) VALUES ($1,$2,$3,$4,$5,false,true)
+       ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, lat=EXCLUDED.lat, lng=EXCLUDED.lng, owner_verified=true`,
+      [sh.id, sh.name, sh.type, sh.lat, sh.lng],
+    );
+  }
+}
+
 export async function query<T = RecordRow>(text: string, params: unknown[] = []): Promise<T[]> {
   const p = pool();
-  g._ready ??= init(p);
+  g._ready ??= init(p).then(() => seedOwnerShops(p));
   await g._ready;
   return (await p.query(text, params)).rows as T[];
 }

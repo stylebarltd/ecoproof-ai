@@ -68,6 +68,10 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
         <button onClick={onClose} aria-label="Close" className="text-emerald-300">✕</button>
       </div>
 
+      {place.ownerVerified && (
+        <p className="mt-2 rounded-lg bg-emerald-500/20 px-3 py-1.5 text-xs text-emerald-200 ring-1 ring-emerald-500/50">✅ Verified shop · confirmed by its owner (SuperBee)</p>
+      )}
+
       {done ? (
         <div className="mt-3 space-y-2 rounded-xl bg-emerald-800/60 p-3 text-sm">
           <p className="font-semibold">✅ {done.msg}</p>

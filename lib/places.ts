@@ -3,7 +3,7 @@ import { query } from "./db";
 import { PRACTICE_IDS, needed, type PlaceSummary, type PracticeId } from "./practices";
 export * from "./practices";
 
-type PlaceRow = { id: string; name: string; type: string; lat: number; lng: number; demo: boolean };
+type PlaceRow = { id: string; name: string; type: string; lat: number; lng: number; demo: boolean; owner_verified: boolean };
 
 export async function listPlaces(): Promise<PlaceSummary[]> {
   const [places, pledges, reviews] = await Promise.all([
@@ -22,7 +22,7 @@ export async function listPlaces(): Promise<PlaceSummary[]> {
       return { id, pledged: !!pledge, detail: pledge?.detail ?? null, confirmations, needed: n, verified: !!pledge && confirmations >= n };
     });
     return {
-      id: p.id, name: p.name, type: p.type, lat: p.lat, lng: p.lng, demo: p.demo,
+      id: p.id, name: p.name, type: p.type, lat: p.lat, lng: p.lng, demo: p.demo, ownerVerified: p.owner_verified,
       practices,
       reviews: rv.length,
       avgStars: rv.length ? Math.round((rv.reduce((a, r) => a + r.stars, 0) / rv.length) * 10) / 10 : null,

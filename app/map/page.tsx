@@ -11,6 +11,7 @@ export default function MapPage() {
   const [sel, setSel] = useState<string | null>(null);
   const [filter, setFilter] = useState<PracticeId | null>(null);
   const [onlyVerified, setOnlyVerified] = useState(false);
+  const [bee, setBee] = useState(false);
 
   const load = useCallback(async () => {
     const r = await fetch("/api/places");
@@ -19,6 +20,7 @@ export default function MapPage() {
   useEffect(() => { const init = async () => { await load(); }; init(); }, [load]);
 
   const shown = places.filter((p) => {
+    if (bee && !p.ownerVerified) return false;
     if (filter) { const s = p.practices.find((x) => x.id === filter)!; if (onlyVerified ? !s.verified : !s.pledged) return false; }
     else if (onlyVerified && !p.verifiedCount) return false;
     return true;
@@ -28,13 +30,14 @@ export default function MapPage() {
 
   return (
     <div className="relative -mx-4 -my-6 h-[calc(100dvh-4.5rem)]">
-      <MapView places={shown} selectedId={sel} onSelect={setSel} />
+      <MapView places={shown} selectedId={sel} onSelect={setSel} fit={bee} />
       <div className="absolute inset-x-0 top-0 z-[1000] space-y-2 bg-gradient-to-b from-emerald-950/90 to-transparent p-3 pb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold">🗺️ Plastic-free Chiang Mai</h1>
           <span className="text-[10px] text-emerald-300">{places.length} places</span>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1">
+          <button className={chip(bee)} onClick={() => setBee((v) => !v)}>🐝 SuperBee shops</button>
           <button className={chip(onlyVerified)} onClick={() => setOnlyVerified((v) => !v)}>✅ Verified only</button>
           {PRACTICE_IDS.map((id) => <button key={id} className={chip(filter === id)} onClick={() => setFilter(filter === id ? null : id)}>{PRACTICES[id].icon} {PRACTICES[id].label.replace("Discount if you bring your own cup/container", "BYO discount")}</button>)}
         </div>

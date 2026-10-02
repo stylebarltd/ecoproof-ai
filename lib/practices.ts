@@ -13,7 +13,7 @@ export const needed = (demo: boolean) => (demo ? 1 : 3);
 
 export type PracticeStatus = { id: PracticeId; pledged: boolean; detail: string | null; confirmations: number; needed: number; verified: boolean };
 export type PlaceSummary = {
-  id: string; name: string; type: string; lat: number; lng: number; demo: boolean;
+  id: string; name: string; type: string; lat: number; lng: number; demo: boolean; ownerVerified: boolean;
   practices: PracticeStatus[]; reviews: number; avgStars: number | null; verifiedCount: number; pledgedCount: number;
 };
 
