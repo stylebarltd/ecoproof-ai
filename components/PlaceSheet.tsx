@@ -84,7 +84,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
       </div>
 
       {place.ownerVerified && (
-        <p className="mt-2 rounded-xl bg-sage-200 px-3 py-1.5 text-xs text-sage-900">✅ Verified shop · confirmed by its owner (SuperBee)</p>
+        <p className="mt-2 rounded-xl bg-sage-200 px-3 py-1.5 text-xs text-sage-900">✅ Plastic-free product shop · confirmed by its owner</p>
       )}
 
       {done ? (

@@ -7,11 +7,12 @@ import { PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/practice
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false, loading: () => <div className="h-full w-full bg-sage-200" /> });
 
+const ORDER: PracticeId[] = ["plastic_free_products", ...PRACTICE_IDS.filter((id) => id !== "plastic_free_products")];
 const SHORT: Record<PracticeId, string> = {
   no_styrofoam: "No styrofoam",
   no_plastic_straws: "No straws",
   no_plastic_cups: "No plastic cups",
-  plastic_free_products: "Plastic-free products",
+  plastic_free_products: "Plastic-free product shops",
   byo_discount: "BYO discount",
 };
 
@@ -21,7 +22,6 @@ export default function MapPage() {
   const [sel, setSel] = useState<string | null>(null);
   const [filter, setFilter] = useState<PracticeId | null>(null);
   const [onlyVerified, setOnlyVerified] = useState(false);
-  const [bee, setBee] = useState(false);
   const [focus, setFocus] = useState<PlaceSummary | null>(null);
   const deepLinked = useRef(false);
 
@@ -42,7 +42,6 @@ export default function MapPage() {
   useEffect(() => { const init = async () => { await load(); }; init(); }, [load]);
 
   const shown = places.filter((p) => {
-    if (bee && !p.ownerVerified) return false;
     if (filter) { const s = p.practices.find((x) => x.id === filter)!; if (onlyVerified ? !s.verified : !s.pledged) return false; }
     else if (onlyVerified && !p.verifiedCount && !p.ownerVerified) return false;
     return true;
@@ -59,9 +58,9 @@ export default function MapPage() {
           <p className="text-[13px] text-neutral-600">{places.length} places</p>
         </div>
         <div className="no-scrollbar -mx-5 flex gap-1.5 overflow-x-auto px-5">
-          <button className={chip(bee)} onClick={() => setBee((v) => !v)}>SuperBee shops</button>
+          {ORDER.slice(0, 1).map((id) => <button key={id} className={chip(filter === id)} onClick={() => setFilter(filter === id ? null : id)}>{SHORT[id]}</button>)}
           <button className={chip(onlyVerified)} onClick={() => setOnlyVerified((v) => !v)}>Verified only</button>
-          {PRACTICE_IDS.map((id) => <button key={id} className={chip(filter === id)} onClick={() => setFilter(filter === id ? null : id)}>{SHORT[id]}</button>)}
+          {ORDER.slice(1).map((id) => <button key={id} className={chip(filter === id)} onClick={() => setFilter(filter === id ? null : id)}>{SHORT[id]}</button>)}
         </div>
         <div className="flex gap-3.5 text-xs text-neutral-700">
           <span className="flex items-center gap-1.5">{dot("#8fa073")} verified</span>
@@ -70,7 +69,7 @@ export default function MapPage() {
         </div>
       </div>
       <div className="relative min-h-0 flex-1">
-        <MapView places={shown} selectedId={sel} onSelect={(id) => { setSel(id); setFocus(null); }} fit={bee} focus={focus} />
+        <MapView places={shown} selectedId={sel} onSelect={(id) => { setSel(id); setFocus(null); }} fit={filter === "plastic_free_products"} focus={focus} />
         {loaded && shown.length === 0 && (
           <div className="absolute inset-4 z-[1000] flex flex-col items-center justify-center gap-2 rounded-[28px] bg-neutral-100 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cream text-sage-600"><MapPin size={22} strokeWidth={2.5} /></span>
