@@ -5,6 +5,7 @@ import { query, type RecordRow } from "@/lib/db";
 import { getPassport } from "@/lib/passport";
 import VerifyButton from "@/components/VerifyButton";
 import ShareButtons from "@/components/ShareButtons";
+import AnchorRetry from "@/components/AnchorRetry";
 import { LogoLockup } from "@/components/Logo";
 
 
@@ -45,7 +46,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
           <span className="ml-auto text-xs text-sage-700">Explorer ↗</span>
         </a>
       ) : (
-        <p className="rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">⏳ On-chain anchoring pending</p>
+        <AnchorRetry id={rec.id} />
       )}
       <div className="grid grid-cols-3 gap-2 text-center">
         {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "plastics avoided"], [`${t.pk ?? 0}g`, "packaging cut"]].map(([v, l]) => (

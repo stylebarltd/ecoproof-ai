@@ -58,4 +58,24 @@ export async function claimOnChain(purpose: Purpose, fp: string, memo: string): 
   }
 }
 
+/** Signature of the transaction that created a claim account (the oldest one touching it), or null. */
+export async function findClaimSignature(purpose: Purpose, fp: string): Promise<string | null> {
+  const sigs = await new Connection(RPC, "confirmed").getSignaturesForAddress(claimKeypair(purpose, fp).publicKey, { limit: 10 });
+  return sigs.length ? sigs[sigs.length - 1].signature : null;
+}
+
+/** Retries transient Solana failures (timeouts, expired blockhash, RPC 429s). An already-claimed receipt is never retried. */
+export async function claimWithRetry(purpose: Purpose, fp: string, memo: string, attempts = 3) {
+  let last: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try { return await claimOnChain(purpose, fp, memo); }
+    catch (e) {
+      if (e instanceof AlreadyClaimedError) throw e;
+      last = e;
+      await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw last;
+}
+
 export const claimUrl = (addr: string) => `https://explorer.solana.com/address/${addr}?cluster=${CLUSTER}`;

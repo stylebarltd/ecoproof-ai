@@ -1,22 +1,15 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Camera, Check, Circle, Flame, Loader2, Lock, RefreshCw } from "lucide-react";
+import { Camera, Flame, Loader2, Lock } from "lucide-react";
 import InstallPrompt from "@/components/InstallPrompt";
 import { LogoLockup } from "@/components/Logo";
+import ProofJourney, { type Journey } from "@/components/ProofJourney";
 import { prepareImage } from "@/lib/clientImage";
 import { CREAM } from "@/lib/brand";
 import type { Passport } from "@/lib/passport";
 
-type Result = {
-  id: string; merchant: string; hash: string; signature: string | null; claimAddress: string | null; claimUrl: string | null;
-  items: { name: string; quantity: number; category: string }[];
-  impact: { co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
-};
-
 const short = (sig: string) => `${sig.slice(0, 6)}…${sig.slice(-6)}`;
-const txUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
-const STEPS = ["Scanning your receipt", "Calculating impact", "Anchoring proof on Solana"];
 
 function SolanaMark({ className = "h-4 w-4" }: { className?: string }) {
   return (
@@ -43,15 +36,19 @@ export default function Home() {
   const [userId, setUserId] = useState("");
   const [pass, setPass] = useState<Passport | null>(null);
   const [busy, setBusy] = useState(false);
-  const [res, setRes] = useState<Result | null>(null);
-  const [err, setErr] = useState("");
-  const [step, setStep] = useState(0);
+  const [journey, setJourney] = useState<Journey | null>(null);
   const [lastFile, setLastFile] = useState<File | null>(null);
-  const [errLink, setErrLink] = useState("");
+  const [retrying, setRetrying] = useState(false);
+  const [bump, setBump] = useState<string | null>(null);
+  const lastDemo = useRef<{ kind: string; meta: string } | null>(null);
+  const journeyRef = useRef<HTMLDivElement>(null);
 
-  const load = useCallback(async (id: string) => {
+  const load = useCallback(async (id: string): Promise<Passport | null> => {
     const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}&tz=${new Date().getTimezoneOffset()}`);
-    if (r.ok) setPass(await r.json());
+    if (!r.ok) return null;
+    const data: Passport = await r.json();
+    setPass(data);
+    return data;
   }, []);
 
   useEffect(() => {
@@ -63,28 +60,87 @@ export default function Home() {
     init();
   }, [load]);
 
-  async function onFile(f: File) {
-    setBusy(true); setErr(""); setErrLink(""); setRes(null); setStep(0); setLastFile(f);
-    const timers = [setTimeout(() => setStep(1), 3500), setTimeout(() => setStep(2), 6500)];
+  const patch = (p: Partial<Journey>) => setJourney((j) => ({ ...(j ?? {}), ...p }));
+
+  async function onFile(f: File, demo?: { kind: string; meta: string }) {
+    setBusy(true); setJourney({}); setLastFile(f); setBump(null); lastDemo.current = demo ?? null;
+    setTimeout(() => journeyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+    const before = pass?.totals ?? null;
+    const out: { result: { id: string; impact: NonNullable<Journey["impact"]> } | null; failed: boolean } = { result: null, failed: false };
     try {
       const fd = new FormData();
       fd.append("receipt", await prepareImage(f));
       fd.append("userId", userId);
-      const r = await fetch("/api/receipts", { method: "POST", body: fd });
-      const j = await r.json();
-      if (!r.ok) { setErrLink(j.claimUrl ?? ""); throw new Error(j.error || "Upload failed"); }
-      setRes(j);
-      load(userId);
-    } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
-    timers.forEach(clearTimeout);
+      if (demo) { fd.append("demo", demo.kind); fd.append("demoMeta", demo.meta); }
+      const r = await fetch("/api/receipts", { method: "POST", headers: { "x-stream": "1" }, body: fd });
+      if (!r.ok || !r.body) {
+        const j = await r.json().catch(() => ({}));
+        throw Object.assign(new Error(j.error || "Upload failed"), { claimUrl: j.claimUrl });
+      }
+      // Newline-delimited JSON: one event per real pipeline stage, rendered as it arrives.
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = "";
+      const handle = (e: Record<string, any>) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        switch (e.t) {
+          case "extracted": patch({ extracted: { merchant: e.merchant, receiptNumber: e.receiptNumber, date: e.date, total: e.total, items: e.items, sample: !!e.sample } }); break;
+          case "impact": patch({ impact: e.impact }); break;
+          case "hash": patch({ hash: e.hash }); break;
+          case "anchoring": patch({ anchoring: true }); break;
+          case "anchored": patch({ anchor: { signature: e.signature, claimAddress: e.claimAddress, claimUrl: e.claimUrl } }); break;
+          case "anchor_pending": patch({ anchor: "pending" }); break;
+          case "done": out.result = { id: e.result.id, impact: e.result.impact }; patch({ done: { id: e.result.id } }); break;
+          case "error": out.failed = true; patch({ error: { message: e.error, claimUrl: e.claimUrl } }); break;
+        }
+      };
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let i: number;
+        while ((i = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, i).trim();
+          buf = buf.slice(i + 1);
+          if (line) handle(JSON.parse(line));
+        }
+      }
+      if (!out.result && !out.failed) patch({ error: { message: "That took too long. Check your connection and try again." } });
+    } catch (e) {
+      patch({ error: { message: e instanceof Error ? e.message : "Something went wrong.", claimUrl: (e as { claimUrl?: string }).claimUrl } });
+      out.failed = true;
+    }
+    const result = out.result;
+    if (result) {
+      const fresh = await load(userId);
+      const r2 = (n: number) => Math.round(n * 100) / 100;
+      const d = fresh && before
+        ? { dCo2: r2(fresh.totals.co2Kg - before.co2Kg), dPlastic: fresh.totals.plasticItems - before.plasticItems, dPack: r2(fresh.totals.packagingG - before.packagingG), streak: fresh.streak }
+        : { dCo2: result.impact.co2Kg, dPlastic: result.impact.plasticItems, dPack: result.impact.packagingG, streak: fresh?.streak ?? 0 };
+      patch({ passport: d });
+      setBump(`+${d.dCo2} kg`);
+      setTimeout(() => setBump(null), 9000);
+    }
     setBusy(false);
+  }
+
+  async function retryAnchor() {
+    const id = journey?.done?.id;
+    if (!id) return;
+    setRetrying(true);
+    try {
+      const r = await fetch(`/api/records/${id}/anchor`, { method: "POST" });
+      const j = await r.json();
+      if (r.ok) { patch({ anchor: { signature: j.signature, claimAddress: j.claimAddress, claimUrl: j.claimUrl } }); await load(userId); }
+    } finally { setRetrying(false); }
   }
 
   // Each tap generates a brand-new demo receipt (new number), so it can be claimed once, like a real one.
   async function tryDemo(n: 1 | 2) {
-    const q = n === 1 ? "kind=superbee&name=SuperBee%20Eco%20Shop" : "kind=greenmarket&name=Green%20Market";
-    const blob = await (await fetch(`/api/demo-receipt?${q}`, { cache: "no-store" })).blob();
-    onFile(new File([blob], `demo-${n}.png`, { type: "image/png" }));
+    const kind = n === 1 ? "superbee" : "greenmarket";
+    const name = n === 1 ? "SuperBee Eco Shop" : "Green Market";
+    const res = await fetch(`/api/demo-receipt?kind=${kind}&name=${encodeURIComponent(name)}`, { cache: "no-store" });
+    const meta = res.headers.get("X-Demo-Receipt") ?? "";
+    onFile(new File([await res.blob()], `demo-${n}.png`, { type: "image/png" }), { kind, meta });
   }
 
   const t = pass?.totals;
@@ -108,6 +164,7 @@ export default function Home() {
         <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-terra-100">Your verified impact</span>
         <div className="flex items-baseline gap-2">
           <span className="font-heading text-[42px] leading-none text-cream">{(t?.co2Kg ?? 0).toFixed(1)} kg</span>
+          {bump && <span className="self-center rounded-full bg-cream px-2.5 py-0.5 text-xs font-bold text-terra-700">{bump}</span>}
           <span className="font-heading text-[17px] text-terra-100">CO₂ saved</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
@@ -139,7 +196,7 @@ export default function Home() {
 
       <label className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-terra-500 py-3 font-heading text-[15px] text-cream ${busy ? "opacity-70" : ""}`}>
         {busy ? <Loader2 size={20} strokeWidth={SW} className="animate-spin" /> : <Camera size={20} strokeWidth={SW} />}
-        {busy ? STEPS[step] + "…" : "Scan a receipt"}
+        {busy ? "Scanning your receipt…" : "Scan a receipt"}
         <input type="file" accept="image/*" capture="environment" className="hidden" disabled={busy}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ""; }} />
       </label>
@@ -153,65 +210,17 @@ export default function Home() {
         </button>
       </div>
 
-      {busy && (
-        <ol className="space-y-1.5 rounded-2xl bg-neutral-100 p-3.5 text-sm">
-          {STEPS.map((l, i) => (
-            <li key={l} className={`flex items-center gap-2 ${i <= step ? "text-ink" : "text-neutral-500"}`}>
-              {i < step ? <Check size={16} strokeWidth={SW} className="text-sage-600" /> : i === step ? <Loader2 size={16} strokeWidth={SW} className="animate-spin text-terra-600" /> : <Circle size={16} strokeWidth={SW} />} {l}
-            </li>
-          ))}
-        </ol>
-      )}
-
-      {err && (
-        <div className="rounded-2xl bg-terra-100 p-3.5 text-sm text-terra-800">
-          <p className="flex items-start gap-2"><Lock size={16} strokeWidth={SW} className="mt-0.5 shrink-0" /> {err}</p>
-          {errLink && <a className="mt-1 block text-xs underline" href={errLink} target="_blank" rel="noreferrer">See the on-chain claim ↗</a>}
+      {journey && (
+        <div ref={journeyRef} className="scroll-mt-4">
+          <ProofJourney
+            j={journey}
+            running={busy}
+            retrying={retrying}
+            onRetryAnchor={retryAnchor}
+            onAgain={lastFile ? () => onFile(lastFile, lastDemo.current ?? undefined) : undefined}
+            onViewPassport={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          />
         </div>
-      )}
-
-      {res && (
-        <section className="space-y-3 rounded-[28px] bg-neutral-100 p-4">
-          <h2 className="text-lg">{res.merchant}</h2>
-          {res.impact.sustainableItems === 0 && <p className="text-sm text-terra-700">No sustainable items detected on this receipt.</p>}
-          <ul className="text-sm">
-            {res.items.map((i, k) => (
-              <li key={k} className="flex justify-between gap-3 border-b border-neutral-200 py-1.5">
-                <span>{i.quantity}× {i.name}</span>
-                <span className={i.category === "not_sustainable" ? "text-neutral-400" : "shrink-0 text-sage-700"}>
-                  {i.category === "not_sustainable" ? "—" : "✓ " + i.category.replace(/_/g, " ")}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="text-sm font-semibold text-sage-700">
-            +{res.impact.co2Kg} kg CO₂ · +{res.impact.plasticItems} plastics · +{res.impact.packagingG} g packaging
-          </p>
-          {res.signature ? (
-            <a href={txUrl(res.signature)} target="_blank" rel="noreferrer" className="block rounded-2xl bg-white p-3 ring-1 ring-sage-300">
-              <span className="flex items-center gap-2 font-semibold"><SolanaMark className="h-5 w-5" /> Anchored on Solana <span className="ml-auto text-xs font-normal text-sage-700">view tx ↗</span></span>
-              <span className="mt-1 block break-all font-mono text-[11px] text-neutral-600">tx {short(res.signature)}</span>
-              <span className="block break-all font-mono text-[11px] text-neutral-500">sha256 {res.hash.slice(0, 24)}…</span>
-            </a>
-          ) : (
-            <p className="rounded-2xl bg-terra-100 p-3 text-xs text-terra-800">Saved. On-chain anchoring pending.</p>
-          )}
-          {res.claimAddress && (
-            <a href={res.claimUrl ?? "#"} target="_blank" rel="noreferrer" className="block rounded-2xl bg-white p-3 text-sm ring-1 ring-sage-300">
-              <span className="flex items-center gap-2"><Lock size={16} strokeWidth={SW} className="text-sage-700" /> <b>Receipt claimed on Solana</b></span>
-              <span className="block text-xs text-neutral-600">It can never be counted again ↗</span>
-              <span className="block break-all font-mono text-[11px] text-neutral-500">claim {short(res.claimAddress)}</span>
-            </a>
-          )}
-          {lastFile && (
-            <button onClick={() => onFile(lastFile)} className="flex w-full items-center justify-center gap-1.5 rounded-full border-[1.5px] border-neutral-300 py-2 text-xs font-semibold text-neutral-700">
-              <RefreshCw size={14} strokeWidth={SW} /> Try scanning this same receipt again
-            </button>
-          )}
-          <Link href={`/p/${res.id}`} className="block rounded-full bg-terra-500 py-3 text-center font-heading text-[15px] text-cream">
-            Open share card
-          </Link>
-        </section>
       )}
 
       <section className="pt-1">

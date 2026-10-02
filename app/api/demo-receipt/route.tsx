@@ -1,11 +1,8 @@
 import { ImageResponse } from "next/og";
+import { DEMO_MENUS } from "@/lib/demoMenus";
 
 // Generates a fresh demo receipt (new number, today's date) so the demo can be rehearsed. Not a real receipt.
-const MENUS: Record<string, [number, string, number][]> = {
-  superbee: [[1, "Beeswax Food Wrap Set", 490], [1, "HexaWash Laundry Pouch", 590], [2, "Dentos Toothpaste Tabs", 380], [1, "Reusable Produce Bags", 290]],
-  greenmarket: [[1, "Organic Cotton T-Shirt", 590], [1, "Reusable Cotton Tote Bag", 180], [2, "Bamboo Kitchen Towels", 240], [1, "Stainless Steel Water Bottle", 450], [1, "Reusable Produce Bags", 220], [1, "Organic Cotton Napkins", 290]],
-  cafe: [[1, "Iced Latte", 85], [1, "Oat Flat White", 95], [1, "Banana Bread", 70]],
-};
+const MENUS: Record<string, [number, string, number][]> = Object.fromEntries(Object.entries(DEMO_MENUS).map(([k, v]) => [k, v.map(([q, n, p]) => [q, n, p] as [number, string, number])]));
 
 export async function GET(req: Request) {
   const u = new URL(req.url);
@@ -41,6 +38,14 @@ export async function GET(req: Request) {
         </div>
       </div>
     ),
-    { width: 1080, height: 760 + rows.length * 58, headers: { "Cache-Control": "no-store" } },
+    {
+      width: 1080,
+      height: 760 + rows.length * 58,
+      headers: {
+        "Cache-Control": "no-store",
+        // Metadata the demo UI forwards so the server can still complete the flow if the AI service is unavailable.
+        "X-Demo-Receipt": JSON.stringify({ kind, merchant: name, receiptNumber: no, date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`, total: subtotal + vat }),
+      },
+    },
   );
 }

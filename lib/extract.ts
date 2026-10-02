@@ -46,7 +46,7 @@ type MediaType = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
 
 export async function extractReceipt(base64: string, mediaType: MediaType): Promise<Extraction> {
   if (!process.env.ANTHROPIC_API_KEY) return mockExtraction();
-  const client = new Anthropic();
+  const client = new Anthropic({ maxRetries: 3, timeout: 40_000 });
   const res = await client.messages.create({
     model: "claude-opus-5-5",
     max_tokens: 4000,
@@ -102,7 +102,7 @@ export async function checkReceiptForPlace(base64: string, mediaType: MediaType,
   if (!process.env.ANTHROPIC_API_KEY) {
     return { merchant: placeName, matchesPlace: true, receiptNumber: "MOCK-" + Date.now(), date: new Date().toISOString().slice(0, 10), total: 100 };
   }
-  const client = new Anthropic();
+  const client = new Anthropic({ maxRetries: 3, timeout: 40_000 });
   const res = await client.messages.create({
     model: "claude-opus-5-5",
     max_tokens: 1000,
