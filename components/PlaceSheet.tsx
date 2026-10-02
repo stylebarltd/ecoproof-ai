@@ -129,15 +129,17 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
             <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           </label>
           {place.demo && <button onClick={useDemoReceipt} disabled={loadingDemo} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2 text-xs font-semibold">{loadingDemo ? "Preparing demo receipt…" : "🧾 Use a fresh demo receipt from this shop"}</button>}
+          <div className="sticky bottom-0 -mx-4 -mb-4 space-y-2 bg-neutral-100 px-4 pb-4 pt-2">
           {err && (
             <div className="rounded-xl bg-terra-100 p-2.5 text-terra-800">
               <p>🔒 {err}</p>
               {errLink && <a className="underline" href={errLink} target="_blank" rel="noreferrer">See the on-chain claim ↗</a>}
             </div>
           )}
-          <div className="sticky bottom-0 -mx-4 -mb-4 grid grid-cols-2 gap-2 bg-neutral-100 px-4 pb-4 pt-2">
+            <div className="grid grid-cols-2 gap-2">
             <button onClick={() => setMode("view")} className="rounded-full border-[1.5px] border-neutral-300 py-2.5 font-semibold">Cancel</button>
             <button disabled={busy || loadingDemo} onClick={submitReview} className="rounded-full bg-terra-500 py-2.5 font-bold text-cream disabled:opacity-60">{busy ? "Verifying receipt…" : "Submit review"}</button>
+            </div>
           </div>
         </div>
       ) : (
@@ -147,10 +149,12 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
             <label key={id} className="flex items-center gap-2"><input type="checkbox" checked={picked.includes(id)} onChange={() => toggle(id)} /> {PRACTICES[id].icon} {PRACTICES[id].label}</label>
           ))}
           {picked.includes("byo_discount") && <input className={input} placeholder="e.g. 10 baht off with your own cup" maxLength={80} value={discount} onChange={(e) => setDiscount(e.target.value)} />}
-          {err && <p className="rounded-xl bg-terra-100 p-2.5 text-terra-800">{err}</p>}
-          <div className="sticky bottom-0 -mx-4 -mb-4 grid grid-cols-2 gap-2 bg-neutral-100 px-4 pb-4 pt-2">
-            <button onClick={() => setMode("view")} className="rounded-full border-[1.5px] border-neutral-300 py-2.5 font-semibold">Cancel</button>
-            <button disabled={busy} onClick={submitPledge} className="rounded-full bg-terra-500 py-2.5 font-bold text-cream disabled:opacity-60">{busy ? "Saving…" : "Save pledge"}</button>
+          <div className="sticky bottom-0 -mx-4 -mb-4 space-y-2 bg-neutral-100 px-4 pb-4 pt-2">
+            {err && <p className="rounded-xl bg-terra-100 p-2.5 text-terra-800">{err}</p>}
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => setMode("view")} className="rounded-full border-[1.5px] border-neutral-300 py-2.5 font-semibold">Cancel</button>
+              <button disabled={busy} onClick={submitPledge} className="rounded-full bg-terra-500 py-2.5 font-bold text-cream disabled:opacity-60">{busy ? "Saving…" : "Save pledge"}</button>
+            </div>
           </div>
         </div>
       )}

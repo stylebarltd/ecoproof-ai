@@ -14,7 +14,7 @@ const { chromium } = require("playwright-core");
   await page.check("text=No plastic straws >> input").catch(async()=>{ await page.locator('label:has-text("No plastic straws") input').check(); });
   await page.locator('label:has-text("brought my own cup") input').check();
   await page.click("text=Use a fresh demo receipt");
-  await page.waitForTimeout(800);
+  await page.waitForSelector("text=demo-receipt.png");
   await page.screenshot({ path: "/tmp/claude-1000/-home-pola-Development-EcoProofAi/aa6765ce-3c72-45ca-b613-da7cecdc505d/scratchpad/r2-form.png" });
   console.log("file label:", (await page.innerText("body")).match(/📎[^\n]*|Add your receipt photo/)?.[0]);
   await page.click("text=Submit review");
