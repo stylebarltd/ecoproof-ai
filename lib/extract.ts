@@ -29,7 +29,13 @@ const schema = {
 const PROMPT = `Read this receipt/invoice/product photo. List every purchased line item with its quantity.
 Classify each item into exactly one category. Use "not_sustainable" for ordinary items with no clear
 plastic-avoidance, waste-reduction or low-carbon benefit. Only claim a sustainable category when the
-item name clearly supports it. confidence is 0-1.`;
+item name clearly supports it. confidence is 0-1.
+
+Known products from the SuperBee catalogue:
+- HexaWash (laundry pouch / laundry detergent replacement): plastic-free, one pouch lasts about 300 loads -> "plastic_free_laundry".
+- Dentos toothpaste tabs: plastic-free toothpaste -> "solid_personal_care".
+- Beeswax food wraps -> "beeswax_wrap".
+- Reusable produce bags -> "reusable_bag".`;
 
 type MediaType = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
 

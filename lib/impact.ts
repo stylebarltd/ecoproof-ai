@@ -5,6 +5,7 @@ export const CATEGORIES = [
   "reusable_cup",
   "reusable_straw_cutlery",
   "refill_cleaning",
+  "plastic_free_laundry",
   "solid_personal_care",
   "beeswax_wrap",
   "compostable_packaging",
@@ -24,6 +25,8 @@ export const FACTORS: Record<Category, Factor> = {
   reusable_cup: { co2Kg: 3.0, plasticItems: 200, packagingG: 0, label: "Reusable cup" },
   reusable_straw_cutlery: { co2Kg: 0.5, plasticItems: 100, packagingG: 0, label: "Reusable straw / cutlery" },
   refill_cleaning: { co2Kg: 0.4, plasticItems: 1, packagingG: 60, label: "Refill cleaning product" },
+  // One pouch ≈ 300 loads, replacing ~7 plastic detergent jugs (~90 g HDPE each) and the water shipped inside them.
+  plastic_free_laundry: { co2Kg: 3.0, plasticItems: 7, packagingG: 600, label: "Plastic-free laundry (300 loads)" },
   solid_personal_care: { co2Kg: 0.3, plasticItems: 1, packagingG: 40, label: "Solid personal care" },
   beeswax_wrap: { co2Kg: 0.6, plasticItems: 50, packagingG: 0, label: "Beeswax wrap" },
   compostable_packaging: { co2Kg: 0.15, plasticItems: 1, packagingG: 25, label: "Compostable packaging" },
