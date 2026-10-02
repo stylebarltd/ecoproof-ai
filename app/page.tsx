@@ -117,6 +117,8 @@ export default function Home() {
         ? { dCo2: r2(fresh.totals.co2Kg - before.co2Kg), dPlastic: fresh.totals.plasticItems - before.plasticItems, dPack: r2(fresh.totals.packagingG - before.packagingG), streak: fresh.streak }
         : { dCo2: result.impact.co2Kg, dPlastic: result.impact.plasticItems, dPack: result.impact.packagingG, streak: fresh?.streak ?? 0 };
       patch({ passport: d });
+      // Bring the finished proof (Solana transaction + "Passport updated") into view.
+      setTimeout(() => document.getElementById("journey")?.scrollIntoView({ behavior: "smooth", block: "end" }), 250);
       setBump(`+${d.dCo2} kg`);
       setTimeout(() => setBump(null), 9000);
     }
@@ -211,7 +213,7 @@ export default function Home() {
       </div>
 
       {journey && (
-        <div ref={journeyRef} className="scroll-mt-4">
+        <div ref={journeyRef} id="journey" className="scroll-mt-4 scroll-mb-28">
           <ProofJourney
             j={journey}
             running={busy}
