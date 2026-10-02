@@ -18,6 +18,18 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">🌱 EcoProof Passport</h1>
+      {proof ? (
+        <a href={proof} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-black/40 p-3 ring-1 ring-[#14F195]/60">
+          <span className="text-2xl">⛓️</span>
+          <span className="min-w-0 text-sm">
+            <b>Anchored on Solana</b> <span className="text-emerald-300">· devnet</span>
+            <span className="block truncate font-mono text-[11px] text-emerald-400">tx {rec.signature!.slice(0, 8)}…{rec.signature!.slice(-8)}</span>
+          </span>
+          <span className="ml-auto text-xs text-emerald-300">Explorer ↗</span>
+        </a>
+      ) : (
+        <p className="rounded-2xl bg-amber-900/40 p-3 text-sm text-amber-200">⏳ On-chain anchoring pending</p>
+      )}
       <div className="grid grid-cols-3 gap-2 text-center">
         {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "plastic avoided"], [`${t.pk ?? 0}g`, "packaging"]].map(([v, l]) => (
           <div key={l} className="rounded-xl bg-emerald-800/60 p-3"><div className="text-xl font-bold">{v}</div><div className="text-xs text-emerald-300">{l}</div></div>

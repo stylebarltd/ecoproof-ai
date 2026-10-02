@@ -9,6 +9,23 @@ type Result = {
   impact: { co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 };
 
+const short = (sig: string) => `${sig.slice(0, 6)}…${sig.slice(-6)}`;
+const txUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
+const STEPS = ["Reading receipt with Claude", "Calculating impact", "Anchoring proof on Solana"];
+
+function SolanaMark({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <defs><linearGradient id="sol" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#9945FF" /><stop offset="1" stopColor="#14F195" /></linearGradient></defs>
+      <g fill="url(#sol)">
+        <polygon points="5,3.5 22,3.5 19,7.5 2,7.5" />
+        <polygon points="2,10 19,10 22,14 5,14" />
+        <polygon points="5,16.5 22,16.5 19,20.5 2,20.5" />
+      </g>
+    </svg>
+  );
+}
+
 function getUserId() {
   try {
     let id = localStorage.getItem("ecoproof-user");
@@ -23,6 +40,7 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<Result | null>(null);
   const [err, setErr] = useState("");
+  const [step, setStep] = useState(0);
 
   const load = useCallback(async (id: string) => {
     const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}`);
@@ -39,7 +57,8 @@ export default function Home() {
   }, [load]);
 
   async function onFile(f: File) {
-    setBusy(true); setErr(""); setRes(null);
+    setBusy(true); setErr(""); setRes(null); setStep(0);
+    const timers = [setTimeout(() => setStep(1), 3500), setTimeout(() => setStep(2), 6500)];
     try {
       const fd = new FormData();
       fd.append("receipt", f);
@@ -50,6 +69,7 @@ export default function Home() {
       setRes(j);
       load(userId);
     } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
+    timers.forEach(clearTimeout);
     setBusy(false);
   }
 
@@ -62,7 +82,13 @@ export default function Home() {
   return (
     <div className="space-y-6 pb-10">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">🌱 EcoProof</h1>
+        <div>
+          <h1 className="text-2xl font-bold">🌱 EcoProof</h1>
+          <a href={pass?.registryUrl ?? "https://solana.com"} target="_blank" rel="noreferrer"
+             className="mt-1 inline-flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[11px] text-emerald-200 ring-1 ring-[#9945FF]/60">
+            <SolanaMark className="h-3 w-3" /> Proofs on Solana <span className="opacity-60">· devnet</span>
+          </a>
+        </div>
         <div className={`flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${pass?.streak ? "bg-orange-500 text-white" : "bg-emerald-800 text-emerald-300"}`}>
           🔥 {pass?.streak ?? 0}-day streak
         </div>
@@ -77,11 +103,16 @@ export default function Home() {
           <Stat v={String(t?.receipts ?? 0)} l="proofs" />
         </div>
         {pass && pass.longestStreak > 0 && <p className="mt-3 text-xs text-emerald-300">Best streak: {pass.longestStreak} day{pass.longestStreak > 1 ? "s" : ""}</p>}
+        <a href={pass?.registryUrl ?? "#"} target="_blank" rel="noreferrer"
+           className="mt-4 flex items-center justify-between rounded-xl bg-black/30 px-3 py-2 text-sm ring-1 ring-[#14F195]/40">
+          <span className="flex items-center gap-2"><SolanaMark className="h-5 w-5" /> <b>{pass?.anchored ?? 0}</b> of {t?.receipts ?? 0} proofs anchored on-chain</span>
+          <span className="text-xs text-emerald-300">view all ↗</span>
+        </a>
       </section>
 
       <label className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed py-8 text-lg ${busy ? "border-emerald-700 opacity-70" : "border-emerald-500 bg-emerald-900/40"}`}>
         <span className="text-4xl">{busy ? "🤖" : "📷"}</span>
-        {busy ? "Reading receipt & anchoring proof…" : "Scan a receipt"}
+        {busy ? STEPS[step] + "…" : "Scan a receipt"}
         <input type="file" accept="image/*" capture="environment" className="hidden" disabled={busy}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ""; }} />
       </label>
@@ -89,6 +120,16 @@ export default function Home() {
       <button onClick={tryDemo} disabled={busy} className="w-full rounded-xl border border-emerald-600 py-3 text-sm font-medium text-emerald-200 disabled:opacity-50">
         🧾 Try the demo receipt (SuperBee Eco Shop)
       </button>
+
+      {busy && (
+        <ol className="space-y-1 rounded-xl bg-emerald-900/40 p-3 text-sm">
+          {STEPS.map((l, i) => (
+            <li key={l} className={i <= step ? "text-emerald-50" : "text-emerald-500"}>
+              {i < step ? "✅" : i === step ? "⏳" : "○"} {l}
+            </li>
+          ))}
+        </ol>
+      )}
 
       {err && <p className="rounded-lg bg-red-900/50 p-3 text-red-200">{err}</p>}
 
@@ -109,11 +150,16 @@ export default function Home() {
           <p className="text-sm">
             +{res.impact.co2Kg} kg CO₂ · +{res.impact.plasticItems} plastics · +{res.impact.packagingG} g packaging
           </p>
-          <p className="break-all text-xs text-emerald-400">
-            ⛓️ {res.signature
-              ? <a className="underline" href={`https://explorer.solana.com/tx/${res.signature}?cluster=devnet`} target="_blank">Verified on Solana</a>
-              : "Anchoring pending"} · {res.hash.slice(0, 16)}…
-          </p>
+          {res.signature ? (
+            <a href={txUrl(res.signature)} target="_blank" rel="noreferrer"
+               className="block rounded-xl bg-black/40 p-3 ring-1 ring-[#14F195]/60">
+              <span className="flex items-center gap-2 font-semibold"><SolanaMark className="h-5 w-5" /> Anchored on Solana <span className="ml-auto text-xs font-normal text-emerald-300">view tx ↗</span></span>
+              <span className="mt-1 block break-all font-mono text-[11px] text-emerald-300">tx {short(res.signature)}</span>
+              <span className="block break-all font-mono text-[11px] text-emerald-400">sha256 {res.hash.slice(0, 24)}…</span>
+            </a>
+          ) : (
+            <p className="rounded-xl bg-amber-900/40 p-3 text-xs text-amber-200">⏳ Saved. On-chain anchoring pending.</p>
+          )}
           <Link href={`/p/${res.id}`} className="block rounded-xl bg-emerald-500 py-3 text-center font-semibold text-emerald-950">
             Open share card
           </Link>
@@ -145,7 +191,7 @@ export default function Home() {
                   </span>
                   <span className="shrink-0 text-right">
                     <span className="block">{r.co2Kg} kg</span>
-                    <span className="text-xs text-emerald-400">{r.verified ? "⛓️ on-chain" : "pending"}</span>
+                    <span className="flex items-center justify-end gap-1 text-xs text-emerald-400">{r.signature ? <><SolanaMark className="h-3 w-3" />{short(r.signature)}</> : "pending"}</span>
                   </span>
                 </Link>
               </li>

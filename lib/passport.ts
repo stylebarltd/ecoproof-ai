@@ -1,4 +1,5 @@
 import { query, type RecordRow } from "./db";
+import { addressUrl, payerAddress } from "./solana";
 
 export type Totals = { receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Badge = { id: string; icon: string; name: string; desc: string; earned: boolean };
@@ -8,7 +9,9 @@ export type Passport = {
   streak: number;
   longestStreak: number;
   badges: Badge[];
-  records: { id: string; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; createdAt: string }[];
+  anchored: number;
+  registryUrl: string | null;
+  records: { id: string; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
 
 const day = (d: Date | string) => new Date(d).toISOString().slice(0, 10);
@@ -61,9 +64,11 @@ export async function getPassport(userId: string): Promise<Passport> {
     streak: s.current,
     longestStreak: s.longest,
     badges: badgesFor(totals, s.longest),
+    anchored: rows.filter((r) => r.signature).length,
+    registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
     records: rows.slice(0, 20).map((r) => ({
       id: r.id, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
-      verified: !!r.signature, createdAt: new Date(r.created_at).toISOString(),
+      verified: !!r.signature, signature: r.signature, createdAt: new Date(r.created_at).toISOString(),
     })),
   };
 }

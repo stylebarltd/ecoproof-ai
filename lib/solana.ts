@@ -49,3 +49,9 @@ export async function readMemo(signature: string): Promise<{ memo: string | null
   const memo = ix && "parsed" in ix && typeof ix.parsed === "string" ? ix.parsed : null;
   return { memo, slot: tx.slot, blockTime: tx.blockTime ?? null };
 }
+
+/** Public address of the wallet that signs proofs; its Explorer page lists every EcoProof memo. */
+export function payerAddress(): string | null {
+  try { return payer().publicKey.toBase58(); } catch { return null; }
+}
+export const addressUrl = (a: string) => `https://explorer.solana.com/address/${a}?cluster=${CLUSTER}`;
