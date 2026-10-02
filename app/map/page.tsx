@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import PlaceSheet from "@/components/PlaceSheet";
-import { PRACTICES, PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/places";
+import { PRACTICES, PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/practices";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false, loading: () => <div className="h-full w-full bg-emerald-900" /> });
 

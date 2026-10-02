@@ -1,7 +1,7 @@
 "use client";
 import "leaflet/dist/leaflet.css";
 import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
-import type { PlaceSummary } from "@/lib/places";
+import type { PlaceSummary } from "@/lib/practices";
 
 const color = (p: PlaceSummary) => (p.verifiedCount ? "#22c55e" : p.pledgedCount ? "#f59e0b" : "#94a3b8");
 

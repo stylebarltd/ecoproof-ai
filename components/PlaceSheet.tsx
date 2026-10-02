@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PRACTICES, PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/places";
+import { PRACTICES, PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/practices";
 import { getUserId } from "@/lib/clientUser";
 
 const txUrl = (s: string) => `https://explorer.solana.com/tx/${s}?cluster=devnet`;
