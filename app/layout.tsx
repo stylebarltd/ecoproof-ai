@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "EcoProof AI",
   description: "Your verified environmental impact passport",
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/icons/192", apple: "/icons/180" },
+  icons: { icon: [{ url: "/logo.svg", type: "image/svg+xml" }, { url: "/icons/192", type: "image/png" }], apple: "/icons/180" },
   appleWebApp: { capable: true, title: "EcoProof", statusBarStyle: "black-translucent" },
 };
 export const viewport: Viewport = { themeColor: "#16a34a", width: "device-width", initialScale: 1 };

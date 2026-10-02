@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import InstallPrompt from "@/components/InstallPrompt";
+import { LogoLockup } from "@/components/Logo";
 import type { Passport } from "@/lib/passport";
 
 type Result = {
@@ -88,7 +89,7 @@ export default function Home() {
     <div className="space-y-6 pb-10">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">🌱 EcoProof</h1>
+          <h1><LogoLockup size={38} /></h1>
           <a href={pass?.registryUrl ?? "https://solana.com"} target="_blank" rel="noreferrer"
              className="mt-1 inline-flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[11px] text-emerald-200 ring-1 ring-[#9945FF]/60">
             <SolanaMark className="h-3 w-3" /> Proofs on Solana <span className="opacity-60">· devnet</span>

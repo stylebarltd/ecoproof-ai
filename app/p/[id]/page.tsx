@@ -5,6 +5,7 @@ import { query, type RecordRow } from "@/lib/db";
 import { getPassport } from "@/lib/passport";
 import VerifyButton from "@/components/VerifyButton";
 import ShareButtons from "@/components/ShareButtons";
+import { LogoLockup } from "@/components/Logo";
 
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -33,7 +34,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold">🌱 EcoProof Passport</h1>
+      <div className="flex items-center justify-between"><LogoLockup size={32} /><span className="text-xs uppercase tracking-wider text-emerald-300">Impact passport</span></div>
       {proof ? (
         <a href={proof} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-black/40 p-3 ring-1 ring-[#14F195]/60">
           <span className="text-2xl">⛓️</span>

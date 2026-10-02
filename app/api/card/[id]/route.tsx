@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { query, type RecordRow } from "@/lib/db";
+import { CHECK_PATH, CREAM, LEAF_PATH, SAGE, SAGE_LIGHT } from "@/lib/brand";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -15,7 +16,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 24, background: "linear-gradient(135deg,#052e22,#16a34a)", color: "white", padding: 56 }}>
-        <div style={{ display: "flex", fontSize: 40, fontWeight: 700 }}>🌱 EcoProof AI</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 76, height: 76, borderRadius: 19, background: SAGE }}>
+            <svg width="52" height="52" viewBox="0 0 48 48" fill="none" stroke={CREAM} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round">
+              <path d={LEAF_PATH} />
+              <path d={CHECK_PATH} />
+            </svg>
+          </div>
+          <div style={{ display: "flex", fontSize: 44, fontWeight: 700 }}>EcoProof<span style={{ color: SAGE_LIGHT, marginLeft: 12 }}>AI</span></div>
+        </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 54, fontWeight: 700 }}>My verified impact</div>
           <div style={{ fontSize: 28, color: "#a7f3d0" }}>{r.merchant}</div>
