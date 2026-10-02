@@ -15,7 +15,13 @@ function FitBounds({ places, active }: { places: PlaceSummary[]; active: boolean
   return null;
 }
 
-export default function MapView({ places, selectedId, onSelect, fit = false }: { places: PlaceSummary[]; selectedId: string | null; onSelect: (id: string) => void; fit?: boolean }) {
+function FlyTo({ place }: { place: PlaceSummary | null }) {
+  const map = useMap();
+  useEffect(() => { if (place) map.setView([place.lat, place.lng], 16); }, [map, place]);
+  return null;
+}
+
+export default function MapView({ places, selectedId, onSelect, fit = false, focus = null }: { places: PlaceSummary[]; selectedId: string | null; onSelect: (id: string) => void; fit?: boolean; focus?: PlaceSummary | null }) {
   return (
     <MapContainer center={[18.7945, 98.9858]} zoom={14} className="h-full w-full" zoomControl={false}>
       <TileLayer
@@ -23,6 +29,7 @@ export default function MapView({ places, selectedId, onSelect, fit = false }: {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitBounds places={places} active={fit} />
+      <FlyTo place={focus} />
       {places.map((p) => (
         <CircleMarker
           key={p.id}

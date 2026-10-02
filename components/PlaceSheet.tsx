@@ -104,8 +104,8 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
             ))}
           </ul>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <button onClick={() => open("review")} className="rounded-full bg-terra-500 py-3 font-heading text-sm text-cream">🧾 Review with receipt</button>
-            <button onClick={() => open("pledge")} className="rounded-full border-[1.5px] border-neutral-300 py-3 text-sm font-semibold">🏪 I run this place</button>
+            <button onClick={() => open("review")} className="rounded-full bg-terra-500 px-2 py-3 text-sm font-bold text-cream">Review with receipt</button>
+            <button onClick={() => open("pledge")} className="rounded-full border-[1.5px] border-neutral-300 px-2 py-3 text-sm font-semibold">I run this place</button>
           </div>
         </>
       ) : mode === "review" ? (
@@ -132,7 +132,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
           )}
           <div className="grid grid-cols-2 gap-2">
             <button onClick={() => setMode("view")} className="rounded-full border-[1.5px] border-neutral-300 py-2.5 font-semibold">Cancel</button>
-            <button disabled={busy} onClick={submitReview} className="rounded-full bg-terra-500 py-2.5 font-heading text-cream disabled:opacity-60">{busy ? "Verifying receipt…" : "Submit review"}</button>
+            <button disabled={busy} onClick={submitReview} className="rounded-full bg-terra-500 py-2.5 font-bold text-cream disabled:opacity-60">{busy ? "Verifying receipt…" : "Submit review"}</button>
           </div>
         </div>
       ) : (
@@ -145,7 +145,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
           {err && <p className="rounded-xl bg-terra-100 p-2.5 text-terra-800">{err}</p>}
           <div className="grid grid-cols-2 gap-2">
             <button onClick={() => setMode("view")} className="rounded-full border-[1.5px] border-neutral-300 py-2.5 font-semibold">Cancel</button>
-            <button disabled={busy} onClick={submitPledge} className="rounded-full bg-terra-500 py-2.5 font-heading text-cream disabled:opacity-60">{busy ? "Saving…" : "Save pledge"}</button>
+            <button disabled={busy} onClick={submitPledge} className="rounded-full bg-terra-500 py-2.5 font-bold text-cream disabled:opacity-60">{busy ? "Saving…" : "Save pledge"}</button>
           </div>
         </div>
       )}

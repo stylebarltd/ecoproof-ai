@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
 import PlaceSheet from "@/components/PlaceSheet";
 import { PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/practices";
@@ -22,10 +22,21 @@ export default function MapPage() {
   const [filter, setFilter] = useState<PracticeId | null>(null);
   const [onlyVerified, setOnlyVerified] = useState(false);
   const [bee, setBee] = useState(false);
+  const [focus, setFocus] = useState<PlaceSummary | null>(null);
+  const deepLinked = useRef(false);
 
   const load = useCallback(async () => {
     const r = await fetch("/api/places");
-    if (r.ok) setPlaces(await r.json());
+    if (r.ok) {
+      const list: PlaceSummary[] = await r.json();
+      setPlaces(list);
+      // Deep link: /map?place=<id> opens that place (shareable).
+      if (!deepLinked.current) {
+        deepLinked.current = true;
+        const hit = list.find((p) => p.id === new URLSearchParams(location.search).get("place"));
+        if (hit) { setSel(hit.id); setFocus(hit); }
+      }
+    }
     setLoaded(true);
   }, []);
   useEffect(() => { const init = async () => { await load(); }; init(); }, [load]);
@@ -59,7 +70,7 @@ export default function MapPage() {
         </div>
       </div>
       <div className="relative min-h-0 flex-1">
-        <MapView places={shown} selectedId={sel} onSelect={setSel} fit={bee} />
+        <MapView places={shown} selectedId={sel} onSelect={(id) => { setSel(id); setFocus(null); }} fit={bee} focus={focus} />
         {loaded && shown.length === 0 && (
           <div className="absolute inset-4 z-[1000] flex flex-col items-center justify-center gap-2 rounded-[28px] bg-neutral-100 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cream text-sage-600"><MapPin size={22} strokeWidth={2.5} /></span>
