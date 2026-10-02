@@ -3,6 +3,8 @@ import { query } from "@/lib/db";
 import { checkReceiptForPlace } from "@/lib/extract";
 import { PRACTICE_IDS } from "@/lib/places";
 import { rateLimited } from "@/lib/ratelimit";
+import { AuthError, resolveUser } from "@/lib/session";
+import { identityGroup } from "@/lib/users";
 import Anthropic from "@anthropic-ai/sdk";
 import { hashRecord } from "@/lib/solana";
 import { AlreadyClaimedError, claimOnChain, claimUrl, receiptFingerprint } from "@/lib/claim";
@@ -18,7 +20,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const form = await req.formData();
   const file = form.get("receipt");
-  const userId = String(form.get("userId") || "");
+  let userId: string;
+  try { userId = resolveUser(req, String(form.get("userId") || "")); }
+  catch (e) { if (e instanceof AuthError) return Response.json({ error: e.message }, { status: 401 }); throw e; }
   const stars = Math.round(Number(form.get("stars")));
   const confirmed = String(form.get("confirmed") || "").split(",").filter((p) => (PRACTICE_IDS as string[]).includes(p));
   const byoCup = form.get("byoCup") === "true";
@@ -51,7 +55,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       Response.json({ error: "This receipt has already been claimed on Solana, so it can't be used for another review.", claimAddress: addr, claimUrl: addr ? claimUrl(addr) : null }, { status: 409 });
     const dup = await query<{ claim_address: string | null }>("SELECT claim_address FROM reviews WHERE receipt_fp=$1", [fp]);
     if (dup.length) return taken(dup[0].claim_address);
-    const existing = await query<{ id: string }>("SELECT id FROM reviews WHERE place_id=$1 AND user_id=$2", [placeId, userId]);
+    const group = await identityGroup(userId); // a person who linked a wallet cannot review the same place twice
+    const existing = await query<{ id: string }>("SELECT id FROM reviews WHERE place_id=$1 AND user_id = ANY($2)", [placeId, group]);
     if (existing.length && !place.demo) return Response.json({ error: "You've already reviewed this place." }, { status: 409 });
 
     const reviewId = randomUUID();
@@ -66,7 +71,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       console.error("claim failed", e);
     }
 
-    if (existing.length) await query("DELETE FROM reviews WHERE place_id=$1 AND user_id=$2", [placeId, userId]);
+    if (existing.length) await query("DELETE FROM reviews WHERE place_id=$1 AND user_id = ANY($2)", [placeId, group]);
     try {
       await query(
         `INSERT INTO reviews (id,place_id,user_id,stars,confirmed,byo_cup,receipt_fp,receipt_date,hash,signature,created_at,claim_address)

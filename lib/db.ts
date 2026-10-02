@@ -51,6 +51,9 @@ const SCHEMA = [
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS claim_address TEXT`,
   `ALTER TABLE reviews ADD COLUMN IF NOT EXISTS claim_address TEXT`,
   `CREATE UNIQUE INDEX IF NOT EXISTS records_receipt_fp ON records (receipt_fp) WHERE receipt_fp IS NOT NULL`,
+  `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
+  `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
+  `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
 ];
 

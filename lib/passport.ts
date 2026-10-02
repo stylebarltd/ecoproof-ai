@@ -1,10 +1,13 @@
 import { query, type RecordRow } from "./db";
 import { addressUrl, payerAddress } from "./solana";
+import { identityGroup } from "./users";
+import { looksLikeWallet } from "./session";
 
 export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Badge = { id: string; icon: string; name: string; desc: string; earned: boolean };
 export type Passport = {
   userId: string;
+  wallet: string | null;
   totals: Totals;
   streak: number;
   longestStreak: number;
@@ -51,8 +54,9 @@ export function badgesFor(t: Totals, longest: number): Badge[] {
 }
 
 export async function getPassport(userId: string, tz = 0): Promise<Passport> {
-  const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id=$1 ORDER BY created_at DESC", [userId]);
-  const rev = await query<{ byo_cup: boolean; created_at: string }>("SELECT byo_cup, created_at FROM reviews WHERE user_id=$1", [userId]);
+  const ids = await identityGroup(userId);
+  const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id = ANY($1) ORDER BY created_at DESC", [ids]);
+  const rev = await query<{ byo_cup: boolean; created_at: string }>("SELECT byo_cup, created_at FROM reviews WHERE user_id = ANY($1)", [ids]);
   const cups = rev.filter((r) => r.byo_cup);
   const totals: Totals = { byoCups: cups.length, reviews: rev.length, receipts: rows.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
   for (const r of rows) {
@@ -69,6 +73,7 @@ export async function getPassport(userId: string, tz = 0): Promise<Passport> {
   const s = streaks([...rows.map((r) => r.created_at), ...cups.map((r) => r.created_at)], new Date(), tz);
   return {
     userId,
+    wallet: looksLikeWallet(ids[0]) ? ids[0] : null,
     totals,
     streak: s.current,
     longestStreak: s.longest,

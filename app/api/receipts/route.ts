@@ -7,6 +7,7 @@ import { rateLimited } from "@/lib/ratelimit";
 import { hashRecord } from "@/lib/solana";
 import { AlreadyClaimedError, claimUrl, claimWithRetry, receiptFingerprint } from "@/lib/claim";
 import { DEMO_MENUS, demoItems, type DemoKind } from "@/lib/demoMenus";
+import { AuthError, resolveUser } from "@/lib/session";
 
 export const maxDuration = 60;
 const TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"] as const;
@@ -110,7 +111,9 @@ export async function POST(req: Request) {
   if (Number(req.headers.get("content-length") || 0) > 8 * 1024 * 1024) return Response.json({ error: "Image too large (max 8MB)" }, { status: 413 });
   const form = await req.formData();
   const file = form.get("receipt");
-  const userId = String(form.get("userId") || "demo-user");
+  let userId: string;
+  try { userId = resolveUser(req, String(form.get("userId") || "")) || "demo-user"; }
+  catch (e) { if (e instanceof AuthError) return Response.json({ error: e.message }, { status: 401 }); throw e; }
   if (!(file instanceof File)) return Response.json({ error: "receipt file required" }, { status: 400 });
   const mediaType = TYPES.find((t) => t === file.type);
   if (!mediaType) return Response.json({ error: "unsupported image type" }, { status: 400 });

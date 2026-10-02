@@ -5,6 +5,7 @@ import { Camera, Flame, Loader2, Lock } from "lucide-react";
 import InstallPrompt from "@/components/InstallPrompt";
 import { LogoLockup } from "@/components/Logo";
 import ProofJourney, { type Journey } from "@/components/ProofJourney";
+import AccountChip from "@/components/AccountChip";
 import { prepareImage } from "@/lib/clientImage";
 import { CREAM } from "@/lib/brand";
 import type { Passport } from "@/lib/passport";
@@ -156,9 +157,12 @@ export default function Home() {
         </div>
       </header>
 
-      <a href={pass?.registryUrl ?? "https://solana.com"} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs text-sage-700 underline">
-        <SolanaMark className="h-3.5 w-3.5" /> Proofs on Solana · devnet
-      </a>
+      <div className="flex items-center justify-between gap-2">
+        <a href={pass?.registryUrl ?? "https://solana.com"} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs text-sage-700 underline">
+          <SolanaMark className="h-3.5 w-3.5" /> Proofs on Solana · devnet
+        </a>
+        <AccountChip onChange={() => { if (userId) load(userId); }} />
+      </div>
 
       <InstallPrompt />
 
