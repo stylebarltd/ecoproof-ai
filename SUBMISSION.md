@@ -41,6 +41,8 @@ Every verified impact record is hashed (SHA-256 over the record: receipt id, mer
 
 Each passport page has a **Verify on-chain** button. It recomputes the hash from the stored data, fetches the transaction from Solana, and checks that the on-chain memo matches. If the record had been edited after the fact, the check fails. Each passport also shows a QR code linking straight to the Solana Explorer transaction. Brands and consumers can therefore back a sustainability claim with transparent proof instead of relying on a centralized database.
 
+**Each receipt can only be claimed once, and Solana enforces that.** Every receipt gets a fingerprint (receipt number + date + total). That fingerprint deterministically maps to a claim account address on Solana. Claiming a receipt means creating that account, in the same transaction that records the impact hash. Solana's runtime refuses to create an account that already exists, so a second claim of the same receipt fails on-chain (custom program error 0x0), even if two servers race, and without any custom program. Anyone holding a receipt can recompute the address and check it on Explorer, so the rule is independently verifiable instead of living in our database. Passport receipts and place reviews use separate claim namespaces, so one purchase can count once for impact and once for a review.
+
 Currently the proofs are on Solana devnet. Mainnet is a configuration change.
 
 ### Category
@@ -56,7 +58,7 @@ No. All meaningful work was completed by the listed team members during the hack
 - EcoProof AI focuses on real-world consumer behavior rather than speculation. Nothing in it is tokenized or financialized.
 - It is built by the team behind a live sustainable ecommerce business, so the use case is real.
 - **What is built vs. planned.** Built and working today: receipt photo → AI extraction → impact calculation → Solana proof → passport with streaks, badges and share card → on-chain verification. Planned and not built yet: Shopify and WooCommerce import, product barcode scanning, brand APIs, NFT passport badges and corporate ESG dashboards.
-- **Plastic-free map (Chiang Mai).** Real cafes and restaurants from OpenStreetMap, with eco claims coming only from shop pledges that customers confirm. Reviews need a receipt from that place (checked by Claude), each receipt works once, and every review is anchored on Solana so history can't be edited. Bring-your-own-cup visits count toward the user's streak. We describe these as verified-purchase reviews with tamper-proof history, not as unfakeable.
+- **Plastic-free map (Chiang Mai).** Real cafes and restaurants from OpenStreetMap, with eco claims coming only from shop pledges that customers confirm. Reviews need a receipt from that place (checked by Claude), each receipt can be used once (enforced by an on-chain claim account), and every review is anchored on Solana so history can't be edited. Bring-your-own-cup visits count toward the user's streak. We describe these as verified-purchase reviews with tamper-proof history, not as unfakeable.
 - **Impact figures are estimates.** They come from a transparent, hand-built emission-factor table (`lib/impact.ts`), not audited lifecycle assessments. The blockchain proves a record was not altered after creation; it does not by itself prove the underlying purchase happened. Linking to merchant-issued receipts through ecommerce integrations is the roadmap path to closing that gap.
 
 ---
@@ -86,6 +88,8 @@ Before recording: use a fresh browser profile (or clear site data) so the passpo
 ### Likely judge questions
 - **"Does the chain prove the receipt is real?"** No. It proves the record was not altered after creation. Proving the purchase itself needs merchant-issued receipts, which is what the Shopify/WooCommerce integrations are for.
 - **"How accurate are the numbers?"** They are estimates from a transparent factor table, shown as such. The model only classifies the products; the maths is deterministic and auditable.
+- **"Why blockchain? Couldn't a database do this?"** A database only works if you trust whoever runs it. Here the "this receipt is already used" rule and each record's fingerprint live on a public ledger that we cannot edit, delete or quietly reset. Brands, users and judges can verify a claim without trusting us, and the rule survives even if EcoProof disappears. That is what makes a streak, a badge or a "verified" review mean something.
+- **"Can the same receipt be claimed twice?"** No: the second attempt is rejected, and the app links to the existing on-chain claim. We tested this on the live site for both passport scans and reviews. Limits: the fingerprint comes from what the AI reads (number, date, total), so a differently photographed receipt that is misread could get a different fingerprint, and a receipt with no readable number, date or total is rejected. POS-issued digital receipts would remove that ambiguity.
 - **"Why Solana?"** Proofs cost a fraction of a cent and confirm in seconds, which is what makes anchoring every receipt practical.
 - **"Business model?"** Free for consumers. Brands pay for verified-impact widgets and APIs for their storefronts, plus ESG reporting for businesses.
 
