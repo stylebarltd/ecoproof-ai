@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const image = `/api/card/${id}`;
   return {
     title, description,
-    openGraph: { title, description, images: [{ url: image, width: 1080, height: 566 }], type: "website" },
+    openGraph: { title, description, images: [{ url: image, width: 1200, height: 630 }], type: "website" },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }
@@ -48,7 +48,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
         <p className="rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">⏳ On-chain anchoring pending</p>
       )}
       <div className="grid grid-cols-3 gap-2 text-center">
-        {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "plastic avoided"], [`${t.pk ?? 0}g`, "packaging"]].map(([v, l]) => (
+        {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "plastics avoided"], [`${t.pk ?? 0}g`, "packaging cut"]].map(([v, l]) => (
           <div key={l} className="rounded-2xl bg-neutral-100 p-3"><div className="font-heading text-xl">{v}</div><div className="text-xs text-neutral-600">{l}</div></div>
         ))}
       </div>

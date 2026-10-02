@@ -37,6 +37,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         <div style={{ display: "flex", alignItems: "center", alignSelf: "flex-start", fontSize: 30, fontWeight: 700, color: INK, background: CREAM, border: "2px solid #9945FF", borderRadius: 999, padding: "12px 28px" }}>{r.signature ? "Verified on Solana" : "Pending on-chain proof"}</div>
       </div>
     ),
-    { width: 1080, height: square ? 1080 : 566 },
+    { width: square ? 1080 : 1200, height: square ? 1080 : 630 },
   );
 }
