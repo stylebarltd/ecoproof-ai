@@ -27,8 +27,8 @@ export async function GET(req: Request) {
           <div style={{ fontWeight: 700 }}>{name}</div>
           <div>Chiang Mai, Thailand</div>
           <div>-----------------------------</div>
-          <div>Date: {date}</div>
-          <div>Receipt #: {no}</div>
+          <div>{`Date: ${date}`}</div>
+          <div>{`Receipt #: ${no}`}</div>
           <div style={{ height: 8 }} />
           {rows.map(([q, n, p]) => line(`${q} x ${n}`, `THB ${p}`))}
           <div>-----------------------------</div>
@@ -41,6 +41,6 @@ export async function GET(req: Request) {
         </div>
       </div>
     ),
-    { width: 1080, height: 400 + rows.length * 62 + 640, headers: { "Cache-Control": "no-store" } },
+    { width: 1080, height: 760 + rows.length * 58, headers: { "Cache-Control": "no-store" } },
   );
 }
