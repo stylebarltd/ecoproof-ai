@@ -53,6 +53,11 @@ export default function Home() {
     setBusy(false);
   }
 
+  async function tryDemo() {
+    const blob = await (await fetch("/demo-receipt.jpg")).blob();
+    onFile(new File([blob], "demo-receipt.jpg", { type: "image/jpeg" }));
+  }
+
   const t = pass?.totals;
   return (
     <div className="space-y-6 pb-10">
@@ -80,6 +85,10 @@ export default function Home() {
         <input type="file" accept="image/*" capture="environment" className="hidden" disabled={busy}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ""; }} />
       </label>
+
+      <button onClick={tryDemo} disabled={busy} className="w-full rounded-xl border border-emerald-600 py-3 text-sm font-medium text-emerald-200 disabled:opacity-50">
+        🧾 Try the demo receipt (SuperBee Eco Shop)
+      </button>
 
       {err && <p className="rounded-lg bg-red-900/50 p-3 text-red-200">{err}</p>}
 
