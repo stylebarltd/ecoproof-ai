@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { db } from "@/lib/db";
+import { query } from "@/lib/db";
 import { extractReceipt } from "@/lib/extract";
 import { computeImpact } from "@/lib/impact";
 import { anchorHash, hashRecord } from "@/lib/solana";
@@ -30,10 +30,11 @@ export async function POST(req: Request) {
       console.error("anchor failed", e);
     }
 
-    db()
-      .prepare(`INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
-      .run(id, userId, merchant, JSON.stringify(items), impact.co2Kg, impact.plasticItems, impact.packagingG, impact.sustainableItems, hash, signature, createdAt);
+    await query(
+      `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [id, userId, merchant, JSON.stringify(items), impact.co2Kg, impact.plasticItems, impact.packagingG, impact.sustainableItems, hash, signature, createdAt],
+    );
 
     return Response.json({ id, merchant, items, impact, hash, signature });
   } catch (e) {

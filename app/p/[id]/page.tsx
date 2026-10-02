@@ -1,15 +1,16 @@
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
-import { db } from "@/lib/db";
+import { query, type RecordRow } from "@/lib/db";
 
-type Row = { id: string; user_id: string; merchant: string; co2_kg: number; plastic_items: number; packaging_g: number; sustainable_items: number; hash: string; signature: string | null };
 
 export default async function Passport({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const d = db();
-  const rec = d.prepare("SELECT * FROM records WHERE id=?").get(id) as Row | undefined;
+  const rec = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!rec) notFound();
-  const t = d.prepare("SELECT COUNT(*) n, SUM(co2_kg) co2, SUM(plastic_items) pl, SUM(packaging_g) pk FROM records WHERE user_id=?").get(rec.user_id) as { n: number; co2: number; pl: number; pk: number };
+  const t = (await query<{ n: number; co2: number; pl: number; pk: number }>(
+    "SELECT COUNT(*)::int n, COALESCE(SUM(co2_kg),0)::float co2, COALESCE(SUM(plastic_items),0)::int pl, COALESCE(SUM(packaging_g),0)::float pk FROM records WHERE user_id=$1",
+    [rec.user_id],
+  ))[0];
   const proof = rec.signature ? `https://explorer.solana.com/tx/${rec.signature}?cluster=devnet` : "";
   const qr = proof ? await QRCode.toDataURL(proof, { margin: 1, width: 160 }) : "";
   const badges = [

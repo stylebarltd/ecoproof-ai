@@ -1,11 +1,9 @@
 import { ImageResponse } from "next/og";
-import { db } from "@/lib/db";
-
-type Row = { merchant: string; co2_kg: number; plastic_items: number; packaging_g: number; signature: string | null };
+import { query, type RecordRow } from "@/lib/db";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const r = db().prepare("SELECT * FROM records WHERE id=?").get(id) as Row | undefined;
+  const r = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!r) return new Response("not found", { status: 404 });
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: "#065f46", borderRadius: 24, padding: "24px 32px" }}>

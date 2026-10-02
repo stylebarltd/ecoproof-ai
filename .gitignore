@@ -41,4 +41,5 @@ yarn-error.log*
 next-env.d.ts
 .payer.json
 ecoproof.db*
+.vercel
 .env*.local

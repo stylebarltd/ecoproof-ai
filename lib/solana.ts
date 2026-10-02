@@ -15,6 +15,7 @@ export function hashRecord(record: unknown): string {
 function payer(): Keypair {
   if (process.env.SOLANA_SECRET_KEY) return Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_SECRET_KEY));
   const file = path.join(process.cwd(), ".payer.json");
+  if (process.env.VERCEL) throw new Error("SOLANA_SECRET_KEY is not set");
   if (fs.existsSync(file)) return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(file, "utf8"))));
   const kp = Keypair.generate();
   fs.writeFileSync(file, JSON.stringify(Array.from(kp.secretKey)));

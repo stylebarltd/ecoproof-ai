@@ -1,23 +1,33 @@
-import Database from "better-sqlite3";
-import path from "path";
+import { Pool } from "pg";
 
-const g = globalThis as unknown as { _db?: Database.Database };
+const g = globalThis as unknown as { _pool?: Pool; _ready?: Promise<unknown> };
 
-export function db() {
-  if (!g._db) {
-    const d = new Database(path.join(process.cwd(), "ecoproof.db"));
-    d.pragma("journal_mode = WAL");
-    d.exec(`CREATE TABLE IF NOT EXISTS records (
-      id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL,
-      merchant TEXT,
-      items TEXT NOT NULL,
-      co2_kg REAL, plastic_items INTEGER, packaging_g REAL, sustainable_items INTEGER,
-      hash TEXT NOT NULL,
-      signature TEXT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    )`);
-    g._db = d;
+export type RecordRow = {
+  id: string; user_id: string; merchant: string; items: string;
+  co2_kg: number; plastic_items: number; packaging_g: number; sustainable_items: number;
+  hash: string; signature: string | null; created_at: string;
+};
+
+function pool() {
+  if (!g._pool) {
+    if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
+    g._pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3 });
   }
-  return g._db;
+  return g._pool;
+}
+
+export async function query<T = RecordRow>(text: string, params: unknown[] = []): Promise<T[]> {
+  const p = pool();
+  g._ready ??= p.query(`CREATE TABLE IF NOT EXISTS records (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    merchant TEXT,
+    items TEXT NOT NULL,
+    co2_kg DOUBLE PRECISION, plastic_items INTEGER, packaging_g DOUBLE PRECISION, sustainable_items INTEGER,
+    hash TEXT NOT NULL,
+    signature TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`);
+  await g._ready;
+  return (await p.query(text, params)).rows as T[];
 }
