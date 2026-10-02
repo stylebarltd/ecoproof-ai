@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 const timed = async <T,>(fn: () => Promise<T>) => {
   const t = Date.now();
-  try { return { ok: true as const, ms: Date.now() - t, value: await fn() }; }
+  try { const value = await fn(); return { ok: true as const, ms: Date.now() - t, value }; }
   catch (e) { return { ok: false as const, ms: Date.now() - t, error: e instanceof Error ? e.message.slice(0, 120) : "error" }; }
 };
 

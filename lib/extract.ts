@@ -1,6 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CATEGORIES, type LineItem } from "./impact";
 
+// Extraction speed matters on stage: override with EXTRACT_MODEL (benchmarked: Sonnet 5.5 ~3s, Opus 5.5 ~5-7s, Haiku 4.5 misread a date).
+export const EXTRACT_MODEL = process.env.EXTRACT_MODEL ?? "claude-sonnet-5-5";
+const effortFor = (model: string) => (model.includes("haiku") ? {} : { effort: "low" as const });
+
 export type Extraction = { merchant: string; receiptNumber: string; date: string; total: number; items: LineItem[] };
 
 const schema = {
@@ -48,9 +52,9 @@ export async function extractReceipt(base64: string, mediaType: MediaType): Prom
   if (!process.env.ANTHROPIC_API_KEY) return mockExtraction();
   const client = new Anthropic({ maxRetries: 3, timeout: 40_000 });
   const res = await client.messages.create({
-    model: "claude-opus-5-5",
+    model: EXTRACT_MODEL,
     max_tokens: 4000,
-    output_config: { effort: "low", format: { type: "json_schema", schema } },
+    output_config: { ...effortFor(EXTRACT_MODEL), format: { type: "json_schema", schema } },
     messages: [
       {
         role: "user",
@@ -104,9 +108,9 @@ export async function checkReceiptForPlace(base64: string, mediaType: MediaType,
   }
   const client = new Anthropic({ maxRetries: 3, timeout: 40_000 });
   const res = await client.messages.create({
-    model: "claude-opus-5-5",
+    model: EXTRACT_MODEL,
     max_tokens: 1000,
-    output_config: { effort: "low", format: { type: "json_schema", schema: checkSchema } },
+    output_config: { ...effortFor(EXTRACT_MODEL), format: { type: "json_schema", schema: checkSchema } },
     messages: [
       {
         role: "user",
