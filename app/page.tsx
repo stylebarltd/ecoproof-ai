@@ -15,7 +15,7 @@ type Result = {
 
 const short = (sig: string) => `${sig.slice(0, 6)}…${sig.slice(-6)}`;
 const txUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
-const STEPS = ["Reading receipt with Claude", "Calculating impact", "Anchoring proof on Solana"];
+const STEPS = ["Scanning your receipt", "Calculating impact", "Anchoring proof on Solana"];
 
 function SolanaMark({ className = "h-4 w-4" }: { className?: string }) {
   return (
