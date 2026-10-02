@@ -1,0 +1,48 @@
+import type { RecordRow } from "./db";
+import { hashRecord, readMemo } from "./solana";
+
+/** The exact object that is hashed at creation time. Key order matters. */
+export function hashInput(r: RecordRow) {
+  return {
+    id: r.id,
+    userId: r.user_id,
+    merchant: r.merchant,
+    items: JSON.parse(r.items),
+    impact: { co2Kg: r.co2_kg, plasticItems: r.plastic_items, packagingG: r.packaging_g, sustainableItems: r.sustainable_items },
+    createdAt: new Date(r.created_at).toISOString(),
+  };
+}
+
+export type Verification = {
+  dataIntact: boolean; // recomputed hash matches the stored hash
+  anchored: boolean; // a tx signature exists
+  onChainMatch: boolean; // memo on Solana equals ecoproof:v1:<hash>
+  recomputedHash: string;
+  storedHash: string;
+  slot?: number;
+  blockTime?: string;
+  error?: string;
+};
+
+export async function verifyRecord(r: RecordRow): Promise<Verification> {
+  const recomputedHash = hashRecord(hashInput(r));
+  const v: Verification = {
+    dataIntact: recomputedHash === r.hash,
+    anchored: !!r.signature,
+    onChainMatch: false,
+    recomputedHash,
+    storedHash: r.hash,
+  };
+  if (!r.signature) return v;
+  try {
+    const chain = await readMemo(r.signature);
+    if (!chain) { v.error = "Transaction not found on devnet"; return v; }
+    v.slot = chain.slot;
+    if (chain.blockTime) v.blockTime = new Date(chain.blockTime * 1000).toISOString();
+    // Compare the on-chain memo to a hash recomputed from the data, not the stored hash.
+    v.onChainMatch = chain.memo === `ecoproof:v1:${recomputedHash}`;
+  } catch (e) {
+    v.error = e instanceof Error ? e.message : "RPC error";
+  }
+  return v;
+}

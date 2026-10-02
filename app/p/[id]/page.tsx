@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { query, type RecordRow } from "@/lib/db";
 import { getPassport } from "@/lib/passport";
+import VerifyButton from "@/components/VerifyButton";
 
 
 export default async function Passport({ params }: { params: Promise<{ id: string }> }) {
@@ -34,6 +35,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
           {proof && <a className="underline" href={proof} target="_blank">View transaction</a>}
         </div>
       </div>
+      <VerifyButton id={rec.id} />
     </div>
   );
 }

@@ -39,3 +39,13 @@ export async function anchorHash(hash: string): Promise<string> {
 }
 
 export const explorerUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=${CLUSTER}`;
+
+/** Reads a confirmed tx from devnet and returns its memo text, slot and block time. */
+export async function readMemo(signature: string): Promise<{ memo: string | null; slot: number; blockTime: number | null } | null> {
+  const conn = new Connection(RPC, "confirmed");
+  const tx = await conn.getParsedTransaction(signature, { commitment: "confirmed", maxSupportedTransactionVersion: 0 });
+  if (!tx || tx.meta?.err) return null;
+  const ix = tx.transaction.message.instructions.find((i) => i.programId.equals(MEMO_PROGRAM));
+  const memo = ix && "parsed" in ix && typeof ix.parsed === "string" ? ix.parsed : null;
+  return { memo, slot: tx.slot, blockTime: tx.blockTime ?? null };
+}
