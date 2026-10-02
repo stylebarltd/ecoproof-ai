@@ -44,3 +44,4 @@ next-env.d.ts
 ecoproof.db*
 .vercel
 .env*.local
+*.tmp.*
