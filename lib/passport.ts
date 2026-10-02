@@ -2,6 +2,8 @@ import { query, type RecordRow } from "./db";
 import { addressUrl, payerAddress } from "./solana";
 import { identityGroup } from "./users";
 import { looksLikeWallet } from "./session";
+import { listNfts, type Nft } from "./milestones";
+import { MILESTONES } from "./nft";
 
 export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Badge = { id: string; icon: string; name: string; desc: string; earned: boolean };
@@ -13,6 +15,8 @@ export type Passport = {
   longestStreak: number;
   badges: Badge[];
   anchored: number;
+  nfts: Nft[];
+  nextMilestone: number | null;
   registryUrl: string | null;
   records: { id: string; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
@@ -79,6 +83,8 @@ export async function getPassport(userId: string, tz = 0): Promise<Passport> {
     longestStreak: s.longest,
     badges: badgesFor(totals, s.longest),
     anchored: rows.filter((r) => r.signature).length,
+    nfts: (await listNfts(userId)).map((n) => ({ ...n, imageUrl: `/api/nft/${n.id}/image`, metadataUrl: `/api/nft/${n.id}/metadata` })),
+    nextMilestone: MILESTONES.find((m) => m > rows.length) ?? null,
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
     records: rows.slice(0, 20).map((r) => ({
       id: r.id, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,

@@ -27,11 +27,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 54, fontWeight: 700 }}>My verified impact</div>
-          <div style={{ fontSize: 28, color: "#ccdbb2" }}>{r.merchant}</div>
+          <div style={{ fontSize: 34, color: "#ccdbb2" }}>{`with ${r.merchant}`}</div>
         </div>
         <div style={{ display: "flex", gap: 24 }}>
-          {stat(`${r.co2_kg}kg`, "CO₂ saved")}
           {stat(String(r.plastic_items), "plastic avoided")}
+          {stat(`${r.co2_kg}kg`, "CO₂ saved")}
           {stat(`${r.packaging_g}g`, "packaging cut")}
         </div>
         <div style={{ display: "flex", alignItems: "center", alignSelf: "flex-start", fontSize: 30, fontWeight: 700, color: INK, background: CREAM, border: "2px solid #9945FF", borderRadius: 999, padding: "12px 28px" }}>{r.signature ? "Verified on Solana" : "Pending on-chain proof"}</div>

@@ -6,7 +6,7 @@ export type RecordRow = {
   id: string; user_id: string; merchant: string; items: string;
   co2_kg: number; plastic_items: number; packaging_g: number; sustainable_items: number;
   hash: string; signature: string | null; created_at: string;
-  receipt_fp?: string | null; claim_address?: string | null;
+  receipt_fp?: string | null; claim_address?: string | null; brand_id?: string | null; order_id?: string | null;
 };
 
 function pool() {
@@ -50,7 +50,16 @@ const SCHEMA = [
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS receipt_fp TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS claim_address TEXT`,
   `ALTER TABLE reviews ADD COLUMN IF NOT EXISTS claim_address TEXT`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS brand_id TEXT`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS order_id TEXT`,
   `CREATE UNIQUE INDEX IF NOT EXISTS records_receipt_fp ON records (receipt_fp) WHERE receipt_fp IS NOT NULL`,
+  `CREATE TABLE IF NOT EXISTS nft_mints (
+    id TEXT PRIMARY KEY, owner_key TEXT NOT NULL, milestone INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending', -- pending | minting | minted
+    stats TEXT NOT NULL, svg TEXT, wallet TEXT, asset_id TEXT, mint_signature TEXT, freeze_signature TEXT, error TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(), minted_at TIMESTAMPTZ,
+    UNIQUE (owner_key, milestone)
+  )`,
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,

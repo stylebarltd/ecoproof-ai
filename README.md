@@ -56,16 +56,15 @@ Next.js 16 (App Router) · React · Tailwind · Anthropic Claude API · Solana (
 ## Project layout
 
 ```
-app/page.tsx                 passport home, scan, badges, history
+app/page.tsx                 passport home, badges, history
 app/p/[id]/page.tsx          passport + share card + verify button
-app/api/receipts/route.ts    upload → Claude → impact → Solana → DB
 app/api/verify/[id]/route.ts recompute hash, compare to on-chain memo
 app/api/passport/route.ts    totals, streaks, badges
 app/api/card/[id]/route.tsx  1200×630 share image
-lib/extract.ts               Claude vision extraction (structured output)
 lib/impact.ts                emission factors + impact maths
 lib/solana.ts, lib/verify.ts anchoring and verification
 lib/passport.ts              streak and badge logic
+lib/reviewGate.ts            review gating (one proof = one review), proof source pluggable
 ```
 
 ## Run locally

@@ -1,12 +1,10 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Camera, Flame, Loader2, Lock } from "lucide-react";
+import { Flame, Lock } from "lucide-react";
 import InstallPrompt from "@/components/InstallPrompt";
 import { LogoLockup } from "@/components/Logo";
-import ProofJourney, { type Journey } from "@/components/ProofJourney";
 import AccountChip from "@/components/AccountChip";
-import { prepareImage } from "@/lib/clientImage";
 import { CREAM } from "@/lib/brand";
 import type { Passport } from "@/lib/passport";
 
@@ -36,13 +34,6 @@ function getUserId() {
 export default function Home() {
   const [userId, setUserId] = useState("");
   const [pass, setPass] = useState<Passport | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [journey, setJourney] = useState<Journey | null>(null);
-  const [lastFile, setLastFile] = useState<File | null>(null);
-  const [retrying, setRetrying] = useState(false);
-  const [bump, setBump] = useState<string | null>(null);
-  const lastDemo = useRef<{ kind: string; meta: string } | null>(null);
-  const journeyRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async (id: string): Promise<Passport | null> => {
     const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}&tz=${new Date().getTimezoneOffset()}`);
@@ -60,91 +51,6 @@ export default function Home() {
     };
     init();
   }, [load]);
-
-  const patch = (p: Partial<Journey>) => setJourney((j) => ({ ...(j ?? {}), ...p }));
-
-  async function onFile(f: File, demo?: { kind: string; meta: string }) {
-    setBusy(true); setJourney({}); setLastFile(f); setBump(null); lastDemo.current = demo ?? null;
-    setTimeout(() => journeyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
-    const before = pass?.totals ?? null;
-    const out: { result: { id: string; impact: NonNullable<Journey["impact"]> } | null; failed: boolean } = { result: null, failed: false };
-    try {
-      const fd = new FormData();
-      fd.append("receipt", await prepareImage(f));
-      fd.append("userId", userId);
-      if (demo) { fd.append("demo", demo.kind); fd.append("demoMeta", demo.meta); }
-      const r = await fetch("/api/receipts", { method: "POST", headers: { "x-stream": "1" }, body: fd });
-      if (!r.ok || !r.body) {
-        const j = await r.json().catch(() => ({}));
-        throw Object.assign(new Error(j.error || "Upload failed"), { claimUrl: j.claimUrl });
-      }
-      // Newline-delimited JSON: one event per real pipeline stage, rendered as it arrives.
-      const reader = r.body.getReader();
-      const dec = new TextDecoder();
-      let buf = "";
-      const handle = (e: Record<string, any>) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-        switch (e.t) {
-          case "extracted": patch({ extracted: { merchant: e.merchant, receiptNumber: e.receiptNumber, date: e.date, total: e.total, items: e.items, sample: !!e.sample } }); break;
-          case "impact": patch({ impact: e.impact }); break;
-          case "hash": patch({ hash: e.hash }); break;
-          case "anchoring": patch({ anchoring: true }); break;
-          case "anchored": patch({ anchor: { signature: e.signature, claimAddress: e.claimAddress, claimUrl: e.claimUrl } }); break;
-          case "anchor_pending": patch({ anchor: "pending" }); break;
-          case "done": out.result = { id: e.result.id, impact: e.result.impact }; patch({ done: { id: e.result.id } }); break;
-          case "error": out.failed = true; patch({ error: { message: e.error, claimUrl: e.claimUrl } }); break;
-        }
-      };
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        let i: number;
-        while ((i = buf.indexOf("\n")) >= 0) {
-          const line = buf.slice(0, i).trim();
-          buf = buf.slice(i + 1);
-          if (line) handle(JSON.parse(line));
-        }
-      }
-      if (!out.result && !out.failed) patch({ error: { message: "That took too long. Check your connection and try again." } });
-    } catch (e) {
-      patch({ error: { message: e instanceof Error ? e.message : "Something went wrong.", claimUrl: (e as { claimUrl?: string }).claimUrl } });
-      out.failed = true;
-    }
-    const result = out.result;
-    if (result) {
-      const fresh = await load(userId);
-      const r2 = (n: number) => Math.round(n * 100) / 100;
-      const d = fresh && before
-        ? { dCo2: r2(fresh.totals.co2Kg - before.co2Kg), dPlastic: fresh.totals.plasticItems - before.plasticItems, dPack: r2(fresh.totals.packagingG - before.packagingG), streak: fresh.streak }
-        : { dCo2: result.impact.co2Kg, dPlastic: result.impact.plasticItems, dPack: result.impact.packagingG, streak: fresh?.streak ?? 0 };
-      patch({ passport: d });
-      // Bring the finished proof (Solana transaction + "Passport updated") into view.
-      setTimeout(() => document.getElementById("journey")?.scrollIntoView({ behavior: "smooth", block: "end" }), 250);
-      setBump(`+${d.dCo2} kg`);
-      setTimeout(() => setBump(null), 9000);
-    }
-    setBusy(false);
-  }
-
-  async function retryAnchor() {
-    const id = journey?.done?.id;
-    if (!id) return;
-    setRetrying(true);
-    try {
-      const r = await fetch(`/api/records/${id}/anchor`, { method: "POST" });
-      const j = await r.json();
-      if (r.ok) { patch({ anchor: { signature: j.signature, claimAddress: j.claimAddress, claimUrl: j.claimUrl } }); await load(userId); }
-    } finally { setRetrying(false); }
-  }
-
-  // Each tap generates a brand-new demo receipt (new number), so it can be claimed once, like a real one.
-  async function tryDemo(n: 1 | 2) {
-    const kind = n === 1 ? "superbee" : "greenmarket";
-    const name = n === 1 ? "SuperBee Eco Shop" : "Green Market";
-    const res = await fetch(`/api/demo-receipt?kind=${kind}&name=${encodeURIComponent(name)}`, { cache: "no-store" });
-    const meta = res.headers.get("X-Demo-Receipt") ?? "";
-    onFile(new File([await res.blob()], `demo-${n}.png`, { type: "image/png" }), { kind, meta });
-  }
 
   const t = pass?.totals;
   const SW = 2.5; // icon stroke width (design: Lucide-style, round caps)
@@ -170,7 +76,6 @@ export default function Home() {
         <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-terra-100">Your verified impact</span>
         <div className="flex items-baseline gap-2">
           <span className="font-heading text-[42px] leading-none text-cream">{(t?.co2Kg ?? 0).toFixed(1)} kg</span>
-          {bump && <span className="self-center rounded-full bg-cream px-2.5 py-0.5 text-xs font-bold text-terra-700">{bump}</span>}
           <span className="font-heading text-[17px] text-terra-100">CO₂ saved</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
@@ -200,35 +105,6 @@ export default function Home() {
         return latest ? <Link href={`/p/${latest.id}`} className={cls}>{inner}</Link> : <div className={cls}>{inner}</div>;
       })()}
 
-      <label className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-terra-500 py-3 font-heading text-[15px] text-cream ${busy ? "opacity-70" : ""}`}>
-        {busy ? <Loader2 size={20} strokeWidth={SW} className="animate-spin" /> : <Camera size={20} strokeWidth={SW} />}
-        {busy ? "Scanning your receipt…" : "Scan a receipt"}
-        <input type="file" accept="image/*" capture="environment" className="hidden" disabled={busy}
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ""; }} />
-      </label>
-
-      <div className="flex gap-2.5">
-        <button onClick={() => tryDemo(1)} disabled={busy} className="flex-1 rounded-full border-[1.5px] border-neutral-300 px-2 py-3 text-xs font-semibold disabled:opacity-50">
-          Demo: SuperBee Eco Shop
-        </button>
-        <button onClick={() => tryDemo(2)} disabled={busy} className="flex-1 rounded-full border-[1.5px] border-neutral-300 px-2 py-3 text-xs font-semibold disabled:opacity-50">
-          Demo: Green Market
-        </button>
-      </div>
-
-      {journey && (
-        <div ref={journeyRef} id="journey" className="scroll-mt-4 scroll-mb-28">
-          <ProofJourney
-            j={journey}
-            running={busy}
-            retrying={retrying}
-            onRetryAnchor={retryAnchor}
-            onAgain={lastFile ? () => onFile(lastFile, lastDemo.current ?? undefined) : undefined}
-            onViewPassport={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          />
-        </div>
-      )}
-
       <section className="pt-1">
         <h2 className="mb-2.5 text-[15px]">Badges</h2>
         <div className="grid grid-cols-4 gap-y-3">
@@ -242,6 +118,32 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {pass && (pass.nfts.length > 0 || pass.nextMilestone) && (
+        <section className="pt-1">
+          <h2 className="mb-1 text-[15px]">Eco Warrior NFTs</h2>
+          <p className="mb-2.5 text-[11.5px] text-neutral-600">
+            Soulbound badges for your milestones{pass.nextMilestone ? ` · next at ${pass.nextMilestone} proofs (${pass.nextMilestone - (t?.receipts ?? 0)} to go)` : ""}.
+          </p>
+          {pass.nfts.length > 0 && (
+            <div className="grid grid-cols-2 gap-3">
+              {pass.nfts.map((n) => (
+                <div key={n.id} className="overflow-hidden rounded-2xl bg-neutral-100 ring-1 ring-sage-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={n.imageUrl} alt={`${n.tier} eco warrior`} width={512} height={512} loading="lazy" className={`aspect-square w-full object-cover ${n.status === "minted" ? "" : "opacity-60"}`} />
+                  <div className="p-2.5">
+                    <div className="font-heading text-sm">{n.tier}</div>
+                    <div className="text-[11px] text-neutral-600">{n.milestone === 1 ? "First proof" : `${n.milestone} proofs`}</div>
+                    <div className="mt-1 text-[11px] font-semibold text-sage-700">
+                      {n.status === "minted" && n.assetId ? <a href={`https://explorer.solana.com/address/${n.assetId}?cluster=devnet`} target="_blank" rel="noreferrer" className="underline">Soulbound · view on Solana</a> : pass.wallet ? "Minting…" : "Sign in with a wallet to claim"}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {pass && pass.records.length > 0 && (
         <section className="pt-1">
