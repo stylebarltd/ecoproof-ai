@@ -1,9 +1,25 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { query, type RecordRow } from "@/lib/db";
 import { getPassport } from "@/lib/passport";
 import VerifyButton from "@/components/VerifyButton";
+import ShareButtons from "@/components/ShareButtons";
 
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const rec = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
+  if (!rec) return {};
+  const title = `${rec.co2_kg} kg CO₂ saved · ${rec.plastic_items} plastics avoided | EcoProof`;
+  const description = `Verified environmental impact${rec.signature ? ", anchored on Solana" : ""}. Make your impact visible with EcoProof AI.`;
+  const image = `/api/card/${id}`;
+  return {
+    title, description,
+    openGraph: { title, description, images: [{ url: image, width: 1080, height: 566 }], type: "website" },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
+  };
+}
 
 export default async function Passport({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -47,6 +63,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
           {proof && <a className="underline" href={proof} target="_blank">View transaction</a>}
         </div>
       </div>
+      <ShareButtons id={rec.id} co2={rec.co2_kg} plastics={rec.plastic_items} />
       <VerifyButton id={rec.id} />
     </div>
   );
