@@ -7,7 +7,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const r = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!r) return new Response("not found", { status: 404 });
   const stat = (v: string, l: string) => (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: "#065f46", borderRadius: 24, padding: "24px 32px" }}>
+    <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: "#065f46", borderRadius: 24, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700 }}>{v}</div>
       <div style={{ fontSize: 26, color: "#6ee7b7" }}>{l}</div>
     </div>
@@ -25,7 +25,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
           {stat(String(r.plastic_items), "plastic avoided")}
           {stat(`${r.packaging_g}g`, "packaging cut")}
         </div>
-        <div style={{ display: "flex", fontSize: 26, color: "#d1fae5" }}>{r.signature ? "⛓️ Proof anchored on Solana" : "Pending on-chain proof"}</div>
+        <div style={{ display: "flex", alignItems: "center", alignSelf: "flex-start", fontSize: 30, fontWeight: 700, color: "#14F195", background: "rgba(0,0,0,0.35)", border: "2px solid #9945FF", borderRadius: 999, padding: "12px 28px" }}>{r.signature ? "◎ Verified on Solana" : "Pending on-chain proof"}</div>
       </div>
     ),
     { width: 1080, height: square ? 1080 : 566 },
