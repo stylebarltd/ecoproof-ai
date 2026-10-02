@@ -10,6 +10,6 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { userIds?: string[]; pledgePlaceIds?: string[]; reviewPlaceIds?: string[] };
   const reviews = body.userIds?.length ? await query("DELETE FROM reviews WHERE user_id = ANY($1) RETURNING id", [body.userIds]) : [];
   const placeReviews = body.reviewPlaceIds?.length ? await query("DELETE FROM reviews WHERE place_id = ANY($1) RETURNING id", [body.reviewPlaceIds]) : [];
-  const pledges = body.pledgePlaceIds?.length ? await query("DELETE FROM pledges WHERE place_id = ANY($1) RETURNING practice", [body.pledgePlaceIds]) : [];
+  const pledges = body.pledgePlaceIds?.length ? await query("DELETE FROM pledges WHERE place_id = ANY($1) AND owner_confirmed = false RETURNING practice", [body.pledgePlaceIds]) : [];
   return Response.json({ reviewsDeleted: reviews.length + placeReviews.length, pledgesDeleted: pledges.length });
 }
