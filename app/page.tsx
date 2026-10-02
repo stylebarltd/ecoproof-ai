@@ -1,10 +1,11 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Camera, Check, ChevronRight, Circle, Flame, Loader2, Lock, RefreshCw } from "lucide-react";
+import { Camera, Check, Circle, Flame, Loader2, Lock, RefreshCw } from "lucide-react";
 import InstallPrompt from "@/components/InstallPrompt";
 import { LogoLockup } from "@/components/Logo";
 import { prepareImage } from "@/lib/clientImage";
+import { CREAM } from "@/lib/brand";
 import type { Passport } from "@/lib/passport";
 
 type Result = {
@@ -103,21 +104,38 @@ export default function Home() {
 
       <InstallPrompt />
 
-      <section className="rounded-[28px] bg-neutral-100 px-4 py-3.5">
-        <h2 className="text-sm">Your verified impact</h2>
-        <p className="mt-1 font-heading text-[28px] leading-tight text-sage-700">{(t?.co2Kg ?? 0).toFixed(1)} <span className="text-[17px]">kg CO₂ saved</span></p>
-        <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-          <Stat v={String(t?.plasticItems ?? 0)} l="plastics avoided" />
-          <Stat v={`${t?.packagingG ?? 0}g`} l="packaging cut" />
-          <Stat v={String(t?.receipts ?? 0)} l="proofs" />
+      <section className="flex flex-col gap-4 rounded-[28px] bg-terra-700 px-[18px] py-[22px]">
+        <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-terra-100">Your verified impact</span>
+        <div className="flex items-baseline gap-2">
+          <span className="font-heading text-[42px] leading-none text-cream">{(t?.co2Kg ?? 0).toFixed(1)} kg</span>
+          <span className="font-heading text-[17px] text-terra-100">CO₂ saved</span>
         </div>
-        {pass && pass.longestStreak > 0 && <p className="mt-2.5 text-xs text-neutral-600">Best streak: {pass.longestStreak} day{pass.longestStreak > 1 ? "s" : ""}</p>}
+        <div className="grid grid-cols-3 gap-2">
+          <Stat icon={<><path d="M3 8l9-5 9 5-9 5-9-5z" /><path d="M3 8v9l9 5 9-5V8" /><path d="M12 13v9" /></>} v={String(t?.plasticItems ?? 0)} l="plastics avoided" />
+          <Stat icon={<><path d="M12 3C7 3 4 7 4 12c0 4.5 3 8 8 8 4 0 7-3 7-7 0-6-4-10-7-10z" /><path d="M8 13l2.7 3L16 9" /></>} v={`${t?.packagingG ?? 0}g`} l="packaging cut" />
+          <Stat icon={<><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z" /><path d="M9 12l2.5 2.5L15 10" /></>} v={String(t?.receipts ?? 0)} l="proofs" />
+        </div>
+        {pass && pass.longestStreak > 0 && <p className="text-xs text-terra-100">Best streak: {pass.longestStreak} day{pass.longestStreak > 1 ? "s" : ""}</p>}
       </section>
 
-      <a href={pass?.registryUrl ?? "#"} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-2xl bg-sage-200 px-4 py-3 text-[13px] font-semibold text-sage-900">
-        <span className="flex items-center gap-2"><SolanaMark className="h-4 w-4" /> {pass?.anchored ?? 0} of {t?.receipts ?? 0} proofs anchored on-chain</span>
-        <ChevronRight size={18} strokeWidth={SW} />
-      </a>
+      {(() => {
+        const latest = pass?.records[0];
+        const inner = (
+          <>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-heading text-sm text-ink">Recent proof</span>
+              <span className="text-[11.5px] text-sage-900"><b>{pass?.anchored ?? 0}</b> of {t?.receipts ?? 0} anchored on-chain · view details &amp; share</span>
+            </div>
+            <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-sage-500">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={CREAM} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <circle cx="18" cy="5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="19" r="2.5" /><path d="M8.2 10.7l7.6-4.4M8.2 13.3l7.6 4.4" />
+              </svg>
+            </span>
+          </>
+        );
+        const cls = "flex items-center justify-between gap-3 rounded-2xl bg-sage-100 px-3.5 py-3 ring-1 ring-sage-200";
+        return latest ? <Link href={`/p/${latest.id}`} className={cls}>{inner}</Link> : <div className={cls}>{inner}</div>;
+      })()}
 
       <label className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-terra-500 py-3 font-heading text-[15px] text-cream ${busy ? "opacity-70" : ""}`}>
         {busy ? <Loader2 size={20} strokeWidth={SW} className="animate-spin" /> : <Camera size={20} strokeWidth={SW} />}
@@ -235,6 +253,14 @@ export default function Home() {
   );
 }
 
-function Stat({ v, l }: { v: string; l: string }) {
-  return <div className="rounded-2xl bg-cream px-1 py-2"><div className="font-heading text-[17px]">{v}</div><div className="text-[10px] text-neutral-600">{l}</div></div>;
+function Stat({ icon, v, l }: { icon: React.ReactNode; v: string; l: string }) {
+  return (
+    <div className="flex flex-col items-center gap-[5px] rounded-2xl bg-terra-800 px-1.5 py-2.5">
+      <span className="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-cream">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8c491a" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>{icon}</svg>
+      </span>
+      <div className="font-heading text-[17px] text-cream">{v}</div>
+      <div className="text-center text-[10px] text-terra-100">{l}</div>
+    </div>
+  );
 }
