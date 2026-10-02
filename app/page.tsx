@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import InstallPrompt from "@/components/InstallPrompt";
 import type { Passport } from "@/lib/passport";
 
 type Result = {
@@ -94,6 +95,8 @@ export default function Home() {
           🔥 {pass?.streak ?? 0}-day streak
         </div>
       </header>
+
+      <InstallPrompt />
 
       <section className="rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-900 p-5">
         <p className="text-sm text-emerald-200">Your verified impact</p>
