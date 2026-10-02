@@ -35,7 +35,8 @@ Known products from the SuperBee catalogue:
 - HexaWash (laundry pouch / laundry detergent replacement): plastic-free, one pouch lasts about 300 loads -> "plastic_free_laundry".
 - Dentos toothpaste tabs: plastic-free toothpaste -> "solid_personal_care".
 - Beeswax food wraps -> "beeswax_wrap".
-- Reusable produce bags -> "reusable_bag".`;
+- Reusable produce bags -> "reusable_bag".
+- Reusable bamboo kitchen towels and cloth napkins that replace disposable paper -> "reusable_household_textile".`;
 
 type MediaType = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
 

@@ -73,9 +73,10 @@ export default function Home() {
     setBusy(false);
   }
 
-  async function tryDemo() {
-    const blob = await (await fetch("/demo-receipt.jpg")).blob();
-    onFile(new File([blob], "demo-receipt.jpg", { type: "image/jpeg" }));
+  async function tryDemo(n: 1 | 2) {
+    const file = n === 1 ? "demo-receipt.jpg" : "demo-receipt-2.jpg";
+    const blob = await (await fetch(`/${file}`)).blob();
+    onFile(new File([blob], file, { type: "image/jpeg" }));
   }
 
   const t = pass?.totals;
@@ -117,9 +118,14 @@ export default function Home() {
           onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ""; }} />
       </label>
 
-      <button onClick={tryDemo} disabled={busy} className="w-full rounded-xl border border-emerald-600 py-3 text-sm font-medium text-emerald-200 disabled:opacity-50">
-        🧾 Try the demo receipt (SuperBee Eco Shop)
-      </button>
+      <div className="grid grid-cols-2 gap-2">
+        <button onClick={() => tryDemo(1)} disabled={busy} className="rounded-xl border border-emerald-600 px-2 py-3 text-xs font-medium text-emerald-200 disabled:opacity-50">
+          🧾 Demo: SuperBee Eco Shop
+        </button>
+        <button onClick={() => tryDemo(2)} disabled={busy} className="rounded-xl border border-emerald-600 px-2 py-3 text-xs font-medium text-emerald-200 disabled:opacity-50">
+          🧾 Demo: Green Market
+        </button>
+      </div>
 
       {busy && (
         <ol className="space-y-1 rounded-xl bg-emerald-900/40 p-3 text-sm">
