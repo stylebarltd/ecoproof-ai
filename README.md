@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" alt="EcoProof AI: verified impact, on-chain" width="480">
+</p>
+
 # 🌱 EcoProof AI
 
 **A mobile-first environmental impact passport and local discovery platform.** Scan a receipt, let AI turn purchases and sustainable actions into measurable impact, badges, streaks and shareable social cards, and anchor the proof on Solana.
