@@ -1,24 +1,18 @@
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { query, type RecordRow } from "@/lib/db";
+import { getPassport } from "@/lib/passport";
 
 
 export default async function Passport({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const rec = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!rec) notFound();
-  const t = (await query<{ n: number; co2: number; pl: number; pk: number }>(
-    "SELECT COUNT(*)::int n, COALESCE(SUM(co2_kg),0)::float co2, COALESCE(SUM(plastic_items),0)::int pl, COALESCE(SUM(packaging_g),0)::float pk FROM records WHERE user_id=$1",
-    [rec.user_id],
-  ))[0];
+  const pass = await getPassport(rec.user_id);
+  const t = { n: pass.totals.receipts, co2: pass.totals.co2Kg, pl: pass.totals.plasticItems, pk: pass.totals.packagingG };
   const proof = rec.signature ? `https://explorer.solana.com/tx/${rec.signature}?cluster=devnet` : "";
   const qr = proof ? await QRCode.toDataURL(proof, { margin: 1, width: 160 }) : "";
-  const badges = [
-    t.n >= 1 && "🌱 First Proof",
-    t.pl >= 100 && "♻️ Plastic Fighter",
-    t.co2 >= 5 && "🌍 Carbon Cutter",
-    t.n >= 3 && "🔥 3-Receipt Streak",
-  ].filter(Boolean) as string[];
+  const badges = pass.badges.filter((b) => b.earned).map((b) => `${b.icon} ${b.name}`);
 
   return (
     <div className="space-y-5">
