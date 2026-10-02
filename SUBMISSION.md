@@ -56,6 +56,7 @@ No. All meaningful work was completed by the listed team members during the hack
 - EcoProof AI focuses on real-world consumer behavior rather than speculation. Nothing in it is tokenized or financialized.
 - It is built by the team behind a live sustainable ecommerce business, so the use case is real.
 - **What is built vs. planned.** Built and working today: receipt photo → AI extraction → impact calculation → Solana proof → passport with streaks, badges and share card → on-chain verification. Planned and not built yet: Shopify and WooCommerce import, product barcode scanning, brand APIs, NFT passport badges and corporate ESG dashboards.
+- **Plastic-free map (Chiang Mai).** Real cafes and restaurants from OpenStreetMap, with eco claims coming only from shop pledges that customers confirm. Reviews need a receipt from that place (checked by Claude), each receipt works once, and every review is anchored on Solana so history can't be edited. Bring-your-own-cup visits count toward the user's streak. We describe these as verified-purchase reviews with tamper-proof history, not as unfakeable.
 - **Impact figures are estimates.** They come from a transparent, hand-built emission-factor table (`lib/impact.ts`), not audited lifecycle assessments. The blockchain proves a record was not altered after creation; it does not by itself prove the underlying purchase happened. Linking to merchant-issued receipts through ecommerce integrations is the roadmap path to closing that gap.
 
 ---

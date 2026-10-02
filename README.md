@@ -25,8 +25,17 @@ Next.js 16 (App Router) · React · Tailwind · Anthropic Claude API · Solana (
 | Solana proof + on-chain verification | Product barcode scanning |
 | Passport: streaks, badges, history | Brand APIs / embeddable badge |
 | Share card + proof QR | Passport NFT badges, ESG dashboards |
+| Plastic-free map of Chiang Mai (150 places from OpenStreetMap), shop pledges, receipt-verified reviews anchored on Solana, bring-your-own-cup streaks | More cities, merchant POS receipts, shop accounts |
 
 **Caveats.** Impact numbers are estimates from a hand-built factor table, not audited lifecycle data. The blockchain proves a record was not altered after creation; it does not prove the purchase happened. Merchant-issued receipts via ecommerce integrations are the planned path to that.
+
+## Plastic-free map (Chiang Mai)
+
+- Places come from OpenStreetMap with **no eco claims attached**. Claims exist only when a shop **pledges** a practice (no styrofoam, no plastic straws, no plastic cups, BYO-cup discount).
+- A pledge earns a **verified badge** once 3 different customers confirm it in reviews. (Demo shops need 1.)
+- **Reviews require a receipt from that place.** Claude checks the receipt belongs to the place and reads its date and number. Receipts older than 14 days are rejected, and one receipt can only ever be used for one review. Each review is hashed and anchored on Solana.
+- Ticking "I brought my own cup" adds the visit to your impact totals and **counts toward your streak**.
+- **Limits.** This makes fake reviews hard and reuse impossible, not impossible: someone could still photograph a receipt they did not pay for. Merchant-issued or POS-signed receipts are the planned fix. Discounts are shown, not enforced.
 
 ## Project layout
 
