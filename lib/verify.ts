@@ -1,5 +1,6 @@
 import type { RecordRow } from "./db";
 import { hashRecord, readMemo } from "./solana";
+import { claimAddressOf, claimUrl, isClaimed } from "./claim";
 
 /** The exact object that is hashed at creation time. Key order matters. */
 export function hashInput(r: RecordRow) {
@@ -19,6 +20,8 @@ export type Verification = {
   onChainMatch: boolean; // memo on Solana equals ecoproof:v1:<hash>
   recomputedHash: string;
   storedHash: string;
+  claimed: boolean | null; // receipt claim account exists on Solana (null for older records without one)
+  claimUrl?: string;
   slot?: number;
   blockTime?: string;
   error?: string;
@@ -32,7 +35,14 @@ export async function verifyRecord(r: RecordRow): Promise<Verification> {
     onChainMatch: false,
     recomputedHash,
     storedHash: r.hash,
+    claimed: null,
   };
+  if (r.receipt_fp) {
+    try {
+      v.claimed = await isClaimed("impact", r.receipt_fp);
+      v.claimUrl = claimUrl(claimAddressOf("impact", r.receipt_fp));
+    } catch { /* leave null if the RPC is unavailable */ }
+  }
   if (!r.signature) return v;
   try {
     const chain = await readMemo(r.signature);

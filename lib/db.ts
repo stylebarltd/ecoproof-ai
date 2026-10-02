@@ -6,6 +6,7 @@ export type RecordRow = {
   id: string; user_id: string; merchant: string; items: string;
   co2_kg: number; plastic_items: number; packaging_g: number; sustainable_items: number;
   hash: string; signature: string | null; created_at: string;
+  receipt_fp?: string | null; claim_address?: string | null;
 };
 
 function pool() {
@@ -45,6 +46,10 @@ const SCHEMA = [
     UNIQUE (place_id, user_id)
   )`,
   `ALTER TABLE places ADD COLUMN IF NOT EXISTS owner_verified BOOLEAN NOT NULL DEFAULT false`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS receipt_fp TEXT`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS claim_address TEXT`,
+  `ALTER TABLE reviews ADD COLUMN IF NOT EXISTS claim_address TEXT`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS records_receipt_fp ON records (receipt_fp) WHERE receipt_fp IS NOT NULL`,
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
 ];
 

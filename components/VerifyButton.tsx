@@ -33,6 +33,7 @@ export default function VerifyButton({ id }: { id: string }) {
             {row(v.dataIntact, "Record data matches its fingerprint (not edited)")}
             {row(v.anchored, "Fingerprint was submitted to Solana")}
             {row(v.onChainMatch, "On-chain memo equals the recomputed fingerprint")}
+            {v.claimed !== null && row(v.claimed, "Receipt is claimed on Solana and can never be used again")}
           </ul>
           {v.dataIntact && v.onChainMatch ? (
             <p className="rounded-lg bg-emerald-500 p-2 text-center text-sm font-semibold text-emerald-950">
@@ -41,6 +42,7 @@ export default function VerifyButton({ id }: { id: string }) {
           ) : (
             <p className="rounded-lg bg-red-900/60 p-2 text-center text-sm text-red-200">{v.error ?? "Verification failed"}</p>
           )}
+          {v.claimUrl && <a className="block text-xs underline text-emerald-300" href={v.claimUrl} target="_blank" rel="noreferrer">View the receipt claim account ↗</a>}
           <p className="break-all text-[11px] text-emerald-400">recomputed sha256 {v.recomputedHash}</p>
         </>
       )}

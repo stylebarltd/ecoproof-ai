@@ -4,15 +4,15 @@ import { createHash } from "crypto";
 import fs from "fs";
 import path from "path";
 
-const MEMO_PROGRAM = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+export const MEMO_PROGRAM = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
 export const CLUSTER = "devnet";
-const RPC = process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
+export const RPC = process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
 
 export function hashRecord(record: unknown): string {
   return createHash("sha256").update(JSON.stringify(record)).digest("hex");
 }
 
-function payer(): Keypair {
+export function payerKeypair(): Keypair {
   if (process.env.SOLANA_SECRET_KEY) return Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_SECRET_KEY));
   const file = path.join(process.cwd(), ".payer.json");
   if (process.env.VERCEL) throw new Error("SOLANA_SECRET_KEY is not set");
@@ -25,7 +25,7 @@ function payer(): Keypair {
 /** Anchors `ecoproof:v1:<sha256>` on Solana devnet via the Memo program. Returns the tx signature. */
 export async function anchorHash(hash: string, kind = "ecoproof:v1"): Promise<string> {
   const conn = new Connection(RPC, "confirmed");
-  const kp = payer();
+  const kp = payerKeypair();
   if ((await conn.getBalance(kp.publicKey)) < 0.01 * LAMPORTS_PER_SOL) {
     const sig = await conn.requestAirdrop(kp.publicKey, LAMPORTS_PER_SOL);
     await conn.confirmTransaction(sig, "confirmed");
@@ -52,6 +52,6 @@ export async function readMemo(signature: string): Promise<{ memo: string | null
 
 /** Public address of the wallet that signs proofs; its Explorer page lists every EcoProof memo. */
 export function payerAddress(): string | null {
-  try { return payer().publicKey.toBase58(); } catch { return null; }
+  try { return payerKeypair().publicKey.toBase58(); } catch { return null; }
 }
 export const addressUrl = (a: string) => `https://explorer.solana.com/address/${a}?cluster=${CLUSTER}`;

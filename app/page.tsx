@@ -5,7 +5,7 @@ import InstallPrompt from "@/components/InstallPrompt";
 import type { Passport } from "@/lib/passport";
 
 type Result = {
-  id: string; merchant: string; hash: string; signature: string | null;
+  id: string; merchant: string; hash: string; signature: string | null; claimAddress: string | null; claimUrl: string | null;
   items: { name: string; quantity: number; category: string }[];
   impact: { co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 };
@@ -42,6 +42,8 @@ export default function Home() {
   const [res, setRes] = useState<Result | null>(null);
   const [err, setErr] = useState("");
   const [step, setStep] = useState(0);
+  const [lastFile, setLastFile] = useState<File | null>(null);
+  const [errLink, setErrLink] = useState("");
 
   const load = useCallback(async (id: string) => {
     const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}`);
@@ -58,7 +60,7 @@ export default function Home() {
   }, [load]);
 
   async function onFile(f: File) {
-    setBusy(true); setErr(""); setRes(null); setStep(0);
+    setBusy(true); setErr(""); setErrLink(""); setRes(null); setStep(0); setLastFile(f);
     const timers = [setTimeout(() => setStep(1), 3500), setTimeout(() => setStep(2), 6500)];
     try {
       const fd = new FormData();
@@ -66,7 +68,7 @@ export default function Home() {
       fd.append("userId", userId);
       const r = await fetch("/api/receipts", { method: "POST", body: fd });
       const j = await r.json();
-      if (!r.ok) throw new Error(j.error || "Upload failed");
+      if (!r.ok) { setErrLink(j.claimUrl ?? ""); throw new Error(j.error || "Upload failed"); }
       setRes(j);
       load(userId);
     } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
@@ -74,10 +76,11 @@ export default function Home() {
     setBusy(false);
   }
 
+  // Each tap generates a brand-new demo receipt (new number), so it can be claimed once, like a real one.
   async function tryDemo(n: 1 | 2) {
-    const file = n === 1 ? "demo-receipt.jpg" : "demo-receipt-2.jpg";
-    const blob = await (await fetch(`/${file}`)).blob();
-    onFile(new File([blob], file, { type: "image/jpeg" }));
+    const q = n === 1 ? "kind=superbee&name=SuperBee%20Eco%20Shop" : "kind=greenmarket&name=Green%20Market";
+    const blob = await (await fetch(`/api/demo-receipt?${q}`, { cache: "no-store" })).blob();
+    onFile(new File([blob], `demo-${n}.png`, { type: "image/png" }));
   }
 
   const t = pass?.totals;
@@ -140,7 +143,12 @@ export default function Home() {
         </ol>
       )}
 
-      {err && <p className="rounded-lg bg-red-900/50 p-3 text-red-200">{err}</p>}
+      {err && (
+        <div className="rounded-lg bg-red-900/50 p-3 text-red-200">
+          <p>🔒 {err}</p>
+          {errLink && <a className="mt-1 block text-sm underline" href={errLink} target="_blank" rel="noreferrer">See the on-chain claim ↗</a>}
+        </div>
+      )}
 
       {res && (
         <section className="space-y-3 rounded-2xl bg-emerald-900/60 p-4">
@@ -169,6 +177,13 @@ export default function Home() {
           ) : (
             <p className="rounded-xl bg-amber-900/40 p-3 text-xs text-amber-200">⏳ Saved. On-chain anchoring pending.</p>
           )}
+          {res.claimAddress && (
+            <a href={res.claimUrl ?? "#"} target="_blank" rel="noreferrer" className="block rounded-xl bg-black/40 p-3 text-sm ring-1 ring-[#9945FF]/60">
+              🔒 <b>Receipt claimed on Solana</b> <span className="text-emerald-300">· it can never be counted again ↗</span>
+              <span className="block break-all font-mono text-[11px] text-emerald-400">claim {short(res.claimAddress)}</span>
+            </a>
+          )}
+          {lastFile && <button onClick={() => onFile(lastFile)} className="w-full rounded-xl border border-emerald-700 py-2 text-xs text-emerald-300">🔁 Try scanning this same receipt again</button>}
           <Link href={`/p/${res.id}`} className="block rounded-xl bg-emerald-500 py-3 text-center font-semibold text-emerald-950">
             Open share card
           </Link>

@@ -5,7 +5,7 @@ import { getUserId } from "@/lib/clientUser";
 
 const txUrl = (s: string) => `https://explorer.solana.com/tx/${s}?cluster=devnet`;
 
-type Done = { signature: string | null; byoCup: boolean; msg: string };
+type Done = { signature: string | null; claimUrl?: string | null; byoCup: boolean; msg: string };
 
 export default function PlaceSheet({ place, onClose, onChanged }: { place: PlaceSummary; onClose: () => void; onChanged: () => void }) {
   const [mode, setMode] = useState<"view" | "review" | "pledge">("view");
@@ -16,6 +16,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [errLink, setErrLink] = useState("");
   const [done, setDone] = useState<Done | null>(null);
 
   const toggle = (id: PracticeId) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
@@ -23,7 +24,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
   async function submitReview() {
     if (!file) return setErr("Add a photo of your receipt from this place.");
     if (!stars) return setErr("Pick a star rating.");
-    setBusy(true); setErr("");
+    setBusy(true); setErr(""); setErrLink("");
     try {
       const fd = new FormData();
       fd.append("receipt", file);
@@ -33,8 +34,8 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
       fd.append("byoCup", String(byo));
       const r = await fetch(`/api/places/${place.id}/reviews`, { method: "POST", body: fd });
       const j = await r.json();
-      if (!r.ok) throw new Error(j.error || "Could not submit");
-      setDone({ signature: j.signature, byoCup: j.byoCup, msg: "Review verified and saved." });
+      if (!r.ok) { setErrLink(j.claimUrl ?? ""); throw new Error(j.error || "Could not submit"); }
+      setDone({ signature: j.signature, claimUrl: j.claimUrl, byoCup: j.byoCup, msg: "Review verified and saved." });
       onChanged();
     } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
     setBusy(false);
@@ -52,6 +53,14 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
     } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
     setBusy(false);
   }
+
+  // Demo shops only: generate a fresh receipt (new number) printed with this shop's name.
+  async function useDemoReceipt() {
+    const kind = place.name === "SuperBee Eco Shop" ? "superbee" : place.name === "Green Market" ? "greenmarket" : "cafe";
+    const blob = await (await fetch(`/api/demo-receipt?kind=${kind}&name=${encodeURIComponent(place.name)}`, { cache: "no-store" })).blob();
+    setFile(new File([blob], "demo-receipt.png", { type: "image/png" }));
+  }
+  const retrySame = () => { setDone(null); setMode("review"); submitReview(); };
 
   const open = (m: "review" | "pledge") => { setMode(m); setErr(""); setDone(null); setPicked([]); };
   const input = "w-full rounded-lg bg-emerald-950/70 px-3 py-2 text-sm ring-1 ring-emerald-700";
@@ -77,6 +86,8 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
           <p className="font-semibold">✅ {done.msg}</p>
           {done.byoCup && <p>🔥 Bring-your-own-cup counted: +1 plastic avoided and your streak is updated.</p>}
           {done.signature && <a className="block underline" target="_blank" rel="noreferrer" href={txUrl(done.signature)}>⛓️ Review anchored on Solana ↗</a>}
+          {done.claimUrl && <a className="block underline" target="_blank" rel="noreferrer" href={done.claimUrl}>🔒 Receipt claimed on Solana, can&apos;t be reused ↗</a>}
+          {place.demo && file && <button onClick={retrySame} className="block text-xs text-emerald-300 underline">🔁 Try submitting the same receipt again</button>}
           <button onClick={() => { setMode("view"); setDone(null); }} className="mt-1 rounded-lg bg-emerald-500 px-3 py-1.5 font-semibold text-emerald-950">Back to place</button>
         </div>
       ) : mode === "view" ? (
@@ -111,8 +122,13 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
             {file ? `📎 ${file.name}` : "📷 Add your receipt photo"}
             <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           </label>
-          {place.demo && <p className="text-xs text-emerald-400">Tip: use the demo receipt from this shop ({place.name === "Green Market" ? "demo-receipt-2.jpg" : "demo-receipt.jpg"}).</p>}
-          {err && <p className="rounded-lg bg-red-900/50 p-2 text-red-200">{err}</p>}
+          {place.demo && <button onClick={useDemoReceipt} className="w-full rounded-lg bg-emerald-800 py-2 text-xs">🧾 Use a fresh demo receipt from this shop</button>}
+          {err && (
+            <div className="rounded-lg bg-red-900/50 p-2 text-red-200">
+              <p>🔒 {err}</p>
+              {errLink && <a className="underline" href={errLink} target="_blank" rel="noreferrer">See the on-chain claim ↗</a>}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-2">
             <button onClick={() => setMode("view")} className="rounded-xl bg-emerald-800 py-2.5">Cancel</button>
             <button disabled={busy} onClick={submitReview} className="rounded-xl bg-emerald-500 py-2.5 font-semibold text-emerald-950 disabled:opacity-60">{busy ? "Verifying receipt…" : "Submit review"}</button>

@@ -1,12 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CATEGORIES, type LineItem } from "./impact";
 
-export type Extraction = { merchant: string; items: LineItem[] };
+export type Extraction = { merchant: string; receiptNumber: string; date: string; total: number; items: LineItem[] };
 
 const schema = {
   type: "object",
   properties: {
     merchant: { type: "string" },
+    receiptNumber: { type: "string" },
+    date: { type: "string" },
+    total: { type: "number" },
     items: {
       type: "array",
       items: {
@@ -22,7 +25,7 @@ const schema = {
       },
     },
   },
-  required: ["merchant", "items"],
+  required: ["merchant", "receiptNumber", "date", "total", "items"],
   additionalProperties: false,
 } as const;
 
@@ -30,6 +33,7 @@ const PROMPT = `Read this receipt/invoice/product photo. List every purchased li
 Classify each item into exactly one category. Use "not_sustainable" for ordinary items with no clear
 plastic-avoidance, waste-reduction or low-carbon benefit. Only claim a sustainable category when the
 item name clearly supports it. confidence is 0-1.
+Also return receiptNumber (the printed receipt/bill/invoice number, or "" if none), date as ISO YYYY-MM-DD (receipts in Thailand are day-first DD/MM/YYYY; "" if unreadable) and total as a number (0 if unreadable).
 
 Known products from the SuperBee catalogue:
 - HexaWash (laundry pouch / laundry detergent replacement): plastic-free, one pouch lasts about 300 loads -> "plastic_free_laundry".
@@ -66,6 +70,9 @@ export async function extractReceipt(base64: string, mediaType: MediaType): Prom
 function mockExtraction(): Extraction {
   return {
     merchant: "Demo Eco Store (mock - set ANTHROPIC_API_KEY)",
+    receiptNumber: "MOCK-" + Date.now(),
+    date: new Date().toISOString().slice(0, 10),
+    total: 100,
     items: [
       { name: "Stainless steel water bottle", quantity: 1, category: "reusable_bottle", confidence: 0.95 },
       { name: "Beeswax food wraps 3-pack", quantity: 1, category: "beeswax_wrap", confidence: 0.9 },
