@@ -2,7 +2,7 @@
 
 **A mobile-first environmental impact passport and local discovery platform.** Scan a receipt, let AI turn purchases and sustainable actions into measurable impact, badges, streaks and shareable social cards, and anchor the proof on Solana.
 
-**Live demo:** https://ecoproofai.stylebar.de (tap *Try the demo receipt*)
+**Live demo:** https://ecoproof-ai.vercel.app (tap *Try the demo receipt*)
 
 ## Why EcoProof
 
