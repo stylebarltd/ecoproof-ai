@@ -8,7 +8,7 @@ type PlaceRow = { id: string; name: string; type: string; lat: number; lng: numb
 export async function listPlaces(): Promise<PlaceSummary[]> {
   const [places, pledges, reviews] = await Promise.all([
     query<PlaceRow>("SELECT * FROM places"),
-    query<{ place_id: string; practice: PracticeId; detail: string | null }>("SELECT * FROM pledges"),
+    query<{ place_id: string; practice: PracticeId; detail: string | null; owner_confirmed: boolean }>("SELECT * FROM pledges"),
     query<{ place_id: string; stars: number; confirmed: string }>("SELECT place_id, stars, confirmed FROM reviews"),
   ]);
   return places.map((p) => {
@@ -19,7 +19,8 @@ export async function listPlaces(): Promise<PlaceSummary[]> {
       const pledge = pl.find((x) => x.practice === id);
       const confirmations = confirmed.filter((c) => c === id).length;
       const n = needed(p.demo);
-      return { id, pledged: !!pledge, detail: pledge?.detail ?? null, confirmations, needed: n, verified: !!pledge && confirmations >= n };
+      const ownerConfirmed = !!pledge?.owner_confirmed;
+      return { id, pledged: !!pledge, detail: pledge?.detail ?? null, ownerConfirmed, confirmations, needed: n, verified: !!pledge && (ownerConfirmed || confirmations >= n) };
     });
     return {
       id: p.id, name: p.name, type: p.type, lat: p.lat, lng: p.lng, demo: p.demo, ownerVerified: p.owner_verified,

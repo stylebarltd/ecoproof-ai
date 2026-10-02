@@ -97,7 +97,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
               <li key={p.id} className="flex items-center justify-between gap-2 rounded-lg bg-emerald-950/50 px-3 py-2">
                 <span>{PRACTICES[p.id].icon} {PRACTICES[p.id].label}{p.id === "byo_discount" && p.detail ? <span className="text-emerald-300"> · {p.detail}</span> : null}</span>
                 <span className="shrink-0 text-xs">
-                  {p.verified ? <b className="text-emerald-300">✅ Verified</b> : p.pledged ? <span className="text-amber-300">🤝 {p.confirmations}/{p.needed} confirmed</span> : <span className="text-emerald-500">not pledged</span>}
+                  {p.verified ? <b className="text-emerald-300">{p.ownerConfirmed && p.confirmations < p.needed ? "✅ Owner-verified" : "✅ Verified"}</b> : p.pledged ? <span className="text-amber-300">🤝 {p.confirmations}/{p.needed} confirmed</span> : <span className="text-emerald-500">not pledged</span>}
                 </span>
               </li>
             ))}

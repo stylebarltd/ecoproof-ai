@@ -39,7 +39,7 @@ export default function MapPage() {
         <div className="flex gap-2 overflow-x-auto pb-1">
           <button className={chip(bee)} onClick={() => setBee((v) => !v)}>🐝 SuperBee shops</button>
           <button className={chip(onlyVerified)} onClick={() => setOnlyVerified((v) => !v)}>✅ Verified only</button>
-          {PRACTICE_IDS.map((id) => <button key={id} className={chip(filter === id)} onClick={() => setFilter(filter === id ? null : id)}>{PRACTICES[id].icon} {PRACTICES[id].label.replace("Discount if you bring your own cup/container", "BYO discount")}</button>)}
+          {PRACTICE_IDS.map((id) => <button key={id} className={chip(filter === id)} onClick={() => setFilter(filter === id ? null : id)}>{PRACTICES[id].icon} {PRACTICES[id].label.replace("Discount if you bring your own cup/container", "BYO discount").replace("Sells plastic-free products", "Plastic-free products")}</button>)}
         </div>
         <div className="flex gap-3 text-[10px] text-emerald-200">
           <span>🟢 verified</span><span>🟠 pledged</span><span>⚪ no pledge yet</span>

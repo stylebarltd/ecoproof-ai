@@ -45,6 +45,7 @@ const SCHEMA = [
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE (place_id, user_id)
   )`,
+  `ALTER TABLE pledges ADD COLUMN IF NOT EXISTS owner_confirmed BOOLEAN NOT NULL DEFAULT false`,
   `ALTER TABLE places ADD COLUMN IF NOT EXISTS owner_verified BOOLEAN NOT NULL DEFAULT false`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS receipt_fp TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS claim_address TEXT`,
@@ -75,6 +76,14 @@ async function seedOwnerShops(p: Pool) {
       `INSERT INTO places (id,name,type,lat,lng,demo,owner_verified) VALUES ($1,$2,$3,$4,$5,false,true)
        ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, lat=EXCLUDED.lat, lng=EXCLUDED.lng, owner_verified=true`,
       [sh.id, sh.name, sh.type, sh.lat, sh.lng],
+    );
+  }
+  // SuperBee sells plastic-free products: confirmed by the owner for every SuperBee shop (including the demo shop).
+  for (const id of [...shops.map((x) => x.id), "demo-0"]) {
+    await p.query(
+      `INSERT INTO pledges (place_id, practice, detail, owner_confirmed) VALUES ($1,'plastic_free_products',NULL,true)
+       ON CONFLICT (place_id, practice) DO UPDATE SET owner_confirmed=true`,
+      [id],
     );
   }
 }

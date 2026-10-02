@@ -1,8 +1,19 @@
 # 🌱 EcoProof AI
 
-**A verified environmental impact passport for sustainable purchases.** Snap a receipt, let AI work out the impact, and anchor the proof on Solana.
+**A mobile-first environmental impact passport and local discovery platform.** Scan a receipt, let AI turn purchases and sustainable actions into measurable impact, badges, streaks and shareable social cards, and anchor the proof on Solana.
 
-**Live demo:** https://ecoproof-ai.vercel.app (tap *Try the demo receipt*)
+**Live demo:** https://ecoproofai.stylebar.de (tap *Try the demo receipt*)
+
+## Why EcoProof
+
+People make sustainable choices every day, but the impact is invisible and there is little trustworthy information about which local businesses actually practise what they promise. EcoProof connects the whole loop: **discover** sustainable places, **make** better choices, **prove** them, and build a personal impact passport.
+
+The timing is right: AI makes receipt analysis practical, consumers increasingly discover businesses through digital communities, and Solana adds a simple layer of trust. Every receipt gets a unique fingerprint recorded on-chain, so the same purchase cannot be claimed twice, and receipt-gated reviews make fake sustainability ratings and achievements much harder.
+
+**Who it is for**
+
+- **Consumers** who want their sustainable choices to be visible, rewarding and shareable (streaks, badges, social cards).
+- **Businesses** (restaurants, cafes, shops) that pledge sustainability commitments (no plastic straws, no styrofoam, no plastic cups, reusable-container discounts) and earn badges when customers confirm them.
 
 ## How it works
 
@@ -10,8 +21,9 @@
 2. **Claude** (vision + structured output) extracts each line item and classifies it, e.g. reusable bag, beeswax wrap, refill product, solid personal care.
 3. A transparent **emission-factor table** (`lib/impact.ts`) estimates CO₂ saved, single-use plastics avoided and packaging reduced.
 4. The record is hashed (SHA-256) and the hash is written to **Solana** as a Memo transaction (`ecoproof:v1:<hash>`).
-5. The user's **passport** shows totals, a daily streak, achievement badges and a shareable social card with a proof QR code.
-6. **Verify on-chain** recomputes the hash from the stored data and checks it against the memo on Solana.
+5. Each receipt gets a unique **fingerprint**, so the same purchase cannot be claimed twice.
+6. The user's **passport** shows totals, a daily streak, achievement badges and a shareable social card with a proof QR code.
+7. **Verify on-chain** recomputes the hash from the stored data and checks it against the memo on Solana.
 
 ## Stack
 
