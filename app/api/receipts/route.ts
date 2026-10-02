@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import Anthropic from "@anthropic-ai/sdk";
 import { query } from "@/lib/db";
 import { extractReceipt } from "@/lib/extract";
 import { computeImpact } from "@/lib/impact";
@@ -11,7 +12,7 @@ const TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"] as const;
 
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  if (rateLimited(ip)) return Response.json({ error: "Too many uploads, try again later" }, { status: 429 });
+  if (rateLimited(ip, 60)) return Response.json({ error: "Too many uploads, try again later" }, { status: 429 });
   if (Number(req.headers.get("content-length") || 0) > 8 * 1024 * 1024) return Response.json({ error: "Image too large (max 8MB)" }, { status: 413 });
   const form = await req.formData();
   const file = form.get("receipt");
@@ -61,6 +62,8 @@ export async function POST(req: Request) {
     return Response.json({ id, merchant, items, impact, hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null });
   } catch (e) {
     console.error(e);
-    return Response.json({ error: e instanceof Error ? e.message : "failed" }, { status: 500 });
+    if (e instanceof Anthropic.BadRequestError) return Response.json({ error: "We couldn't read that image. Try a clearer photo of the whole receipt." }, { status: 422 });
+    if (e instanceof Anthropic.APIError) return Response.json({ error: "Receipt reading is busy right now. Please try again in a moment." }, { status: 503 });
+    return Response.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }

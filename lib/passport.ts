@@ -14,12 +14,13 @@ export type Passport = {
   records: { id: string; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
 
-const day = (d: Date | string) => new Date(d).toISOString().slice(0, 10);
+/** Calendar day in the user's timezone. tz = minutes as returned by Date#getTimezoneOffset() (UTC minus local; Thailand = -420). */
+const day = (d: Date | string, tz = 0) => new Date(new Date(d).getTime() - tz * 60_000).toISOString().slice(0, 10);
 const DAY_MS = 86_400_000;
 
 /** Consecutive UTC days with at least one receipt. Current streak stays alive if the last receipt was today or yesterday. */
-export function streaks(dates: (Date | string)[], now = new Date()) {
-  const days = [...new Set(dates.map(day))].sort();
+export function streaks(dates: (Date | string)[], now = new Date(), tz = 0) {
+  const days = [...new Set(dates.map((d) => day(d, tz)))].sort();
   let longest = 0, run = 0, prev = 0;
   for (const d of days) {
     const t = Date.parse(d);
@@ -28,7 +29,7 @@ export function streaks(dates: (Date | string)[], now = new Date()) {
     prev = t;
   }
   const last = days.length ? Date.parse(days[days.length - 1]) : 0;
-  const today = Date.parse(day(now));
+  const today = Date.parse(day(now, tz));
   const current = last && today - last <= DAY_MS ? run : 0;
   return { current, longest };
 }
@@ -49,7 +50,7 @@ export function badgesFor(t: Totals, longest: number): Badge[] {
   return list.map(([id, icon, name, desc, earned]) => ({ id, icon, name, desc, earned }));
 }
 
-export async function getPassport(userId: string): Promise<Passport> {
+export async function getPassport(userId: string, tz = 0): Promise<Passport> {
   const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id=$1 ORDER BY created_at DESC", [userId]);
   const rev = await query<{ byo_cup: boolean; created_at: string }>("SELECT byo_cup, created_at FROM reviews WHERE user_id=$1", [userId]);
   const cups = rev.filter((r) => r.byo_cup);
@@ -65,7 +66,7 @@ export async function getPassport(userId: string): Promise<Passport> {
   totals.plasticItems += cups.length;
   totals.packagingG += cups.length * 15;
   totals.co2Kg = Math.round(totals.co2Kg * 100) / 100;
-  const s = streaks([...rows.map((r) => r.created_at), ...cups.map((r) => r.created_at)]);
+  const s = streaks([...rows.map((r) => r.created_at), ...cups.map((r) => r.created_at)], new Date(), tz);
   return {
     userId,
     totals,

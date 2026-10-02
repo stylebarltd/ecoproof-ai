@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import InstallPrompt from "@/components/InstallPrompt";
 import { LogoLockup } from "@/components/Logo";
+import { prepareImage } from "@/lib/clientImage";
 import type { Passport } from "@/lib/passport";
 
 type Result = {
@@ -47,7 +48,7 @@ export default function Home() {
   const [errLink, setErrLink] = useState("");
 
   const load = useCallback(async (id: string) => {
-    const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}`);
+    const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}&tz=${new Date().getTimezoneOffset()}`);
     if (r.ok) setPass(await r.json());
   }, []);
 
@@ -65,7 +66,7 @@ export default function Home() {
     const timers = [setTimeout(() => setStep(1), 3500), setTimeout(() => setStep(2), 6500)];
     try {
       const fd = new FormData();
-      fd.append("receipt", f);
+      fd.append("receipt", await prepareImage(f));
       fd.append("userId", userId);
       const r = await fetch("/api/receipts", { method: "POST", body: fd });
       const j = await r.json();

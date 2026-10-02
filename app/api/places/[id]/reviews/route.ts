@@ -3,6 +3,7 @@ import { query } from "@/lib/db";
 import { checkReceiptForPlace } from "@/lib/extract";
 import { PRACTICE_IDS } from "@/lib/places";
 import { rateLimited } from "@/lib/ratelimit";
+import Anthropic from "@anthropic-ai/sdk";
 import { hashRecord } from "@/lib/solana";
 import { AlreadyClaimedError, claimOnChain, claimUrl, receiptFingerprint } from "@/lib/claim";
 
@@ -13,7 +14,7 @@ const MAX_AGE_DAYS = 14;
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: placeId } = await params;
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  if (rateLimited(ip, 15)) return Response.json({ error: "Too many uploads, try again later" }, { status: 429 });
+  if (rateLimited(ip, 60)) return Response.json({ error: "Too many uploads, try again later" }, { status: 429 });
 
   const form = await req.formData();
   const file = form.get("receipt");
@@ -45,7 +46,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
 
     // One receipt = one review at one place, enforced on Solana (and mirrored in the database).
-    const fp = receiptFingerprint({ receiptNumber: r.receiptNumber, date: r.date, total: r.total, merchant: r.merchant, scope: placeId });
+    const fp = receiptFingerprint({ receiptNumber: r.receiptNumber, date: r.date, total: r.total, merchant: r.merchant });
     const taken = (addr: string | null) =>
       Response.json({ error: "This receipt has already been claimed on Solana, so it can't be used for another review.", claimAddress: addr, claimUrl: addr ? claimUrl(addr) : null }, { status: 409 });
     const dup = await query<{ claim_address: string | null }>("SELECT claim_address FROM reviews WHERE receipt_fp=$1", [fp]);
@@ -79,6 +80,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return Response.json({ id: reviewId, hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, byoCup, confirmed, receipt: { merchant: r.merchant, date: r.date } });
   } catch (e) {
     console.error(e);
-    return Response.json({ error: e instanceof Error ? e.message : "failed" }, { status: 500 });
+    return friendlyError(e);
   }
+}
+
+function friendlyError(e: unknown) {
+  if (e instanceof Anthropic.BadRequestError) return Response.json({ error: "We couldn't read that image. Try a clearer photo of the whole receipt." }, { status: 422 });
+  if (e instanceof Anthropic.APIError) return Response.json({ error: "Receipt reading is busy right now. Please try again in a moment." }, { status: 503 });
+  return Response.json({ error: "Something went wrong. Please try again." }, { status: 500 });
 }

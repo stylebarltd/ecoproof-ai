@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PRACTICES, PRACTICE_IDS, type PlaceSummary, type PracticeId } from "@/lib/practices";
 import { getUserId } from "@/lib/clientUser";
+import { prepareImage } from "@/lib/clientImage";
 
 const txUrl = (s: string) => `https://explorer.solana.com/tx/${s}?cluster=devnet`;
 
@@ -27,7 +28,7 @@ export default function PlaceSheet({ place, onClose, onChanged }: { place: Place
     setBusy(true); setErr(""); setErrLink("");
     try {
       const fd = new FormData();
-      fd.append("receipt", file);
+      fd.append("receipt", await prepareImage(file));
       fd.append("userId", getUserId());
       fd.append("stars", String(stars));
       fd.append("confirmed", picked.join(","));
