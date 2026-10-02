@@ -1,7 +1,7 @@
 import { query, type RecordRow } from "./db";
 import { addressUrl, payerAddress } from "./solana";
 
-export type Totals = { receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
+export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Badge = { id: string; icon: string; name: string; desc: string; earned: boolean };
 export type Passport = {
   userId: string;
@@ -43,21 +43,29 @@ export function badgesFor(t: Totals, longest: number): Badge[] {
     ["streak3", "🔥", "3-Day Streak", "Log impact 3 days in a row", longest >= 3],
     ["streak7", "⚡", "Week Warrior", "Log impact 7 days in a row", longest >= 7],
     ["five", "🏅", "Regular", "Verify 5 receipts", t.receipts >= 5],
+    ["review", "📍", "Place Verifier", "Review a place with a receipt", t.reviews >= 1],
+    ["cup", "🥤", "Cup Hero", "Bring your own cup 5 times", t.byoCups >= 5],
   ];
   return list.map(([id, icon, name, desc, earned]) => ({ id, icon, name, desc, earned }));
 }
 
 export async function getPassport(userId: string): Promise<Passport> {
   const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id=$1 ORDER BY created_at DESC", [userId]);
-  const totals: Totals = { receipts: rows.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
+  const rev = await query<{ byo_cup: boolean; created_at: string }>("SELECT byo_cup, created_at FROM reviews WHERE user_id=$1", [userId]);
+  const cups = rev.filter((r) => r.byo_cup);
+  const totals: Totals = { byoCups: cups.length, reviews: rev.length, receipts: rows.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
   for (const r of rows) {
     totals.co2Kg += r.co2_kg ?? 0;
     totals.plasticItems += r.plastic_items ?? 0;
     totals.packagingG += r.packaging_g ?? 0;
     totals.sustainableItems += r.sustainable_items ?? 0;
   }
+  // Each bring-your-own-cup visit avoids one disposable cup (~15 g, ~0.1 kg CO2) and counts toward the streak.
+  totals.co2Kg += cups.length * 0.1;
+  totals.plasticItems += cups.length;
+  totals.packagingG += cups.length * 15;
   totals.co2Kg = Math.round(totals.co2Kg * 100) / 100;
-  const s = streaks(rows.map((r) => r.created_at));
+  const s = streaks([...rows.map((r) => r.created_at), ...cups.map((r) => r.created_at)]);
   return {
     userId,
     totals,

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import BottomNav from "@/components/BottomNav";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://ecoproof-ai.vercel.app"),
@@ -15,7 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen bg-emerald-950 text-emerald-50 antialiased">
-        <main className="mx-auto max-w-md px-4 py-6">{children}</main>
+        <main className="mx-auto max-w-md px-4 py-6 pb-20">{children}</main>
+        <BottomNav />
       </body>
     </html>
   );

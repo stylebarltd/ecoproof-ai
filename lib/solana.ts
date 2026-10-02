@@ -23,7 +23,7 @@ function payer(): Keypair {
 }
 
 /** Anchors `ecoproof:v1:<sha256>` on Solana devnet via the Memo program. Returns the tx signature. */
-export async function anchorHash(hash: string): Promise<string> {
+export async function anchorHash(hash: string, kind = "ecoproof:v1"): Promise<string> {
   const conn = new Connection(RPC, "confirmed");
   const kp = payer();
   if ((await conn.getBalance(kp.publicKey)) < 0.01 * LAMPORTS_PER_SOL) {
@@ -33,7 +33,7 @@ export async function anchorHash(hash: string): Promise<string> {
   const ix = new TransactionInstruction({
     keys: [{ pubkey: kp.publicKey, isSigner: true, isWritable: true }],
     programId: MEMO_PROGRAM,
-    data: Buffer.from(`ecoproof:v1:${hash}`, "utf8"),
+    data: Buffer.from(`${kind}:${hash}`, "utf8"),
   });
   return sendAndConfirmTransaction(conn, new Transaction().add(ix), [kp]);
 }

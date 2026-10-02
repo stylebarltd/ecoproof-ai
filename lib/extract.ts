@@ -74,3 +74,49 @@ function mockExtraction(): Extraction {
     ],
   };
 }
+
+export type ReceiptCheck = { merchant: string; matchesPlace: boolean; receiptNumber: string; date: string; total: number };
+
+const checkSchema = {
+  type: "object",
+  properties: {
+    merchant: { type: "string" },
+    matchesPlace: { type: "boolean" },
+    receiptNumber: { type: "string" },
+    date: { type: "string" },
+    total: { type: "number" },
+  },
+  required: ["merchant", "matchesPlace", "receiptNumber", "date", "total"],
+  additionalProperties: false,
+} as const;
+
+/** Reads only what is needed to tie a receipt to one place and one purchase. */
+export async function checkReceiptForPlace(base64: string, mediaType: MediaType, placeName: string): Promise<ReceiptCheck> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return { merchant: placeName, matchesPlace: true, receiptNumber: "MOCK-" + Date.now(), date: new Date().toISOString().slice(0, 10), total: 100 };
+  }
+  const client = new Anthropic();
+  const res = await client.messages.create({
+    model: "claude-opus-5-5",
+    max_tokens: 1000,
+    output_config: { effort: "low", format: { type: "json_schema", schema: checkSchema } },
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
+          {
+            type: "text",
+            text: `This should be a receipt from a place called "${placeName}" (names may be in English or Thai, or a branch name).
+Return: merchant (name printed on the receipt), matchesPlace (true only if the receipt plausibly comes from that place; false if it is clearly from somewhere else or is not a receipt),
+receiptNumber (printed receipt/bill/invoice number, or "" if none), date as ISO YYYY-MM-DD (receipts in Thailand use day-first DD/MM/YYYY; use "" if unreadable), total as a number (0 if unreadable).`,
+          },
+        ],
+      },
+    ],
+  });
+  if (res.stop_reason === "refusal") throw new Error("Model declined this image");
+  const block = res.content.find((b) => b.type === "text");
+  if (!block || block.type !== "text") throw new Error("No result returned");
+  return JSON.parse(block.text) as ReceiptCheck;
+}

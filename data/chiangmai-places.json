@@ -1,0 +1,1068 @@
+[
+{
+"osm": 0,
+"name": "SuperBee Eco Shop",
+"type": "shop",
+"lat": 18.7996,
+"lng": 98.9673,
+"demo": true
+},
+{
+"osm": -1,
+"name": "Green Market",
+"type": "shop",
+"lat": 18.7961,
+"lng": 98.9689,
+"demo": true
+},
+{
+"osm": 336237972,
+"name": "Starbucks Coffee",
+"type": "cafe",
+"lat": 18.78802,
+"lng": 98.99366
+},
+{
+"osm": 336244522,
+"name": "New Boomerang",
+"type": "restaurant",
+"lat": 18.791561,
+"lng": 98.996678
+},
+{
+"osm": 513199451,
+"name": "Franco Thai",
+"type": "restaurant",
+"lat": 18.797408,
+"lng": 98.982313
+},
+{
+"osm": 674670538,
+"name": "Palm Tree Restaurant",
+"type": "restaurant",
+"lat": 18.778681,
+"lng": 98.988761
+},
+{
+"osm": 766613470,
+"name": "Ginger & Kafe",
+"type": "restaurant",
+"lat": 18.792732,
+"lng": 98.993126
+},
+{
+"osm": 820315832,
+"name": "Green Days",
+"type": "restaurant",
+"lat": 18.783635,
+"lng": 98.996692
+},
+{
+"osm": 820792823,
+"name": "La Terrasse",
+"type": "restaurant",
+"lat": 18.784691,
+"lng": 98.993679
+},
+{
+"osm": 820836279,
+"name": "Batch : Baked & Brew",
+"type": "cafe",
+"lat": 18.784981,
+"lng": 98.994337
+},
+{
+"osm": 964686601,
+"name": "Mad Dog",
+"type": "restaurant",
+"lat": 18.784399,
+"lng": 98.992814
+},
+{
+"osm": 985255938,
+"name": "Pop Coffee and Restaurant",
+"type": "restaurant",
+"lat": 18.785876,
+"lng": 98.993501
+},
+{
+"osm": 1006843145,
+"name": "Cafe de Thaan Aoan",
+"type": "cafe",
+"lat": 18.785469,
+"lng": 98.988476
+},
+{
+"osm": 1041248368,
+"name": "Ratana's Kitchen",
+"type": "restaurant",
+"lat": 18.788176,
+"lng": 98.99565
+},
+{
+"osm": 1041278951,
+"name": "Rioja II",
+"type": "restaurant",
+"lat": 18.786941,
+"lng": 98.993639
+},
+{
+"osm": 1041280756,
+"name": "Aroon Rai",
+"type": "restaurant",
+"lat": 18.786252,
+"lng": 98.99355
+},
+{
+"osm": 1041286678,
+"name": "Coffee & Relax",
+"type": "cafe",
+"lat": 18.785634,
+"lng": 98.993475
+},
+{
+"osm": 1041391290,
+"name": "Le Bistrot de Chiang Mai",
+"type": "restaurant",
+"lat": 18.785264,
+"lng": 98.998462
+},
+{
+"osm": 1062004204,
+"name": "Sushi Ichiban",
+"type": "restaurant",
+"lat": 18.780965,
+"lng": 98.994166
+},
+{
+"osm": 1107234875,
+"name": "Coffee Bull",
+"type": "cafe",
+"lat": 18.785574,
+"lng": 98.987602
+},
+{
+"osm": 1107238261,
+"name": "Tein Sieng",
+"type": "restaurant",
+"lat": 18.782343,
+"lng": 98.988951
+},
+{
+"osm": 1108694113,
+"name": "New Delhi",
+"type": "restaurant",
+"lat": 18.780733,
+"lng": 98.988208
+},
+{
+"osm": 1129280654,
+"name": "Our House Coffee Shop",
+"type": "cafe",
+"lat": 18.794546,
+"lng": 98.99341
+},
+{
+"osm": 1133607799,
+"name": "Eden Restaurant",
+"type": "restaurant",
+"lat": 18.790104,
+"lng": 98.991713
+},
+{
+"osm": 1133608908,
+"name": "North Mountain Coffee",
+"type": "cafe",
+"lat": 18.790996,
+"lng": 98.991466
+},
+{
+"osm": 1133610755,
+"name": "Lucky Coffee",
+"type": "cafe",
+"lat": 18.791871,
+"lng": 98.991524
+},
+{
+"osm": 1138709494,
+"name": "Thapae Chill Garden",
+"type": "restaurant",
+"lat": 18.783774,
+"lng": 98.991525
+},
+{
+"osm": 1147255701,
+"name": "Chiang Mai Saloon",
+"type": "restaurant",
+"lat": 18.790643,
+"lng": 98.991232
+},
+{
+"osm": 1157479254,
+"name": "Zoe in Yellow Garden",
+"type": "restaurant",
+"lat": 18.790921,
+"lng": 98.990458
+},
+{
+"osm": 1410753447,
+"name": "Le Bon Temps Cafe",
+"type": "restaurant",
+"lat": 18.790918,
+"lng": 98.986687
+},
+{
+"osm": 1410763933,
+"name": "Kiat O Cha",
+"type": "restaurant",
+"lat": 18.789718,
+"lng": 98.986454
+},
+{
+"osm": 1416857573,
+"name": "La Fontana",
+"type": "restaurant",
+"lat": 18.785237,
+"lng": 98.991071
+},
+{
+"osm": 1449606755,
+"name": "Spicy Bollywood",
+"type": "restaurant",
+"lat": 18.791315,
+"lng": 98.994193
+},
+{
+"osm": 1455736004,
+"name": "Euro Diner",
+"type": "restaurant",
+"lat": 18.790651,
+"lng": 98.991174
+},
+{
+"osm": 1477503682,
+"name": "Rosa Place",
+"type": "cafe",
+"lat": 18.783551,
+"lng": 98.99669
+},
+{
+"osm": 1477507166,
+"name": "Roastniyom",
+"type": "restaurant",
+"lat": 18.781244,
+"lng": 98.996285
+},
+{
+"osm": 1477720119,
+"name": "Hawaiian Son",
+"type": "cafe",
+"lat": 18.782088,
+"lng": 98.994505
+},
+{
+"osm": 1477730810,
+"name": "Peshawar Restaurant",
+"type": "restaurant",
+"lat": 18.78398,
+"lng": 98.994984
+},
+{
+"osm": 1477737616,
+"name": "Born 2",
+"type": "cafe",
+"lat": 18.783759,
+"lng": 98.9958
+},
+{
+"osm": 1491288310,
+"name": "Juice",
+"type": "cafe",
+"lat": 18.791061,
+"lng": 98.990484
+},
+{
+"osm": 1491288376,
+"name": "The Corner",
+"type": "restaurant",
+"lat": 18.791218,
+"lng": 98.990243
+},
+{
+"osm": 1491288849,
+"name": "Chiang Mai Tea House",
+"type": "cafe",
+"lat": 18.79101,
+"lng": 98.990241
+},
+{
+"osm": 1491290179,
+"name": "Kebab House",
+"type": "restaurant",
+"lat": 18.790809,
+"lng": 98.990387
+},
+{
+"osm": 1491302514,
+"name": "Viva Pizza",
+"type": "restaurant",
+"lat": 18.790436,
+"lng": 98.991107
+},
+{
+"osm": 1491320808,
+"name": "City Cafe",
+"type": "cafe",
+"lat": 18.790375,
+"lng": 98.991823
+},
+{
+"osm": 1491348430,
+"name": "Stevan's Music Restaurant",
+"type": "restaurant",
+"lat": 18.791046,
+"lng": 98.993809
+},
+{
+"osm": 1527856500,
+"name": "Giorgio",
+"type": "restaurant",
+"lat": 18.780324,
+"lng": 98.9994
+},
+{
+"osm": 1527856527,
+"name": "Shabushi",
+"type": "restaurant",
+"lat": 18.78127,
+"lng": 98.999644
+},
+{
+"osm": 1595585867,
+"name": "Java Coffee",
+"type": "cafe",
+"lat": 18.787838,
+"lng": 98.994477
+},
+{
+"osm": 1598984135,
+"name": "Hot Chili",
+"type": "restaurant",
+"lat": 18.787909,
+"lng": 98.98998
+},
+{
+"osm": 1598984446,
+"name": "Wawee Coffee",
+"type": "cafe",
+"lat": 18.787861,
+"lng": 98.990162
+},
+{
+"osm": 1617076520,
+"name": "Miguel's",
+"type": "restaurant",
+"lat": 18.793397,
+"lng": 98.993982
+},
+{
+"osm": 1617076544,
+"name": "Sakura Restaurant",
+"type": "restaurant",
+"lat": 18.789231,
+"lng": 98.99435
+},
+{
+"osm": 1617102559,
+"name": "Fueng Fah",
+"type": "restaurant",
+"lat": 18.783874,
+"lng": 98.999556
+},
+{
+"osm": 1618868154,
+"name": "Good Morning Chiangmai",
+"type": "cafe",
+"lat": 18.783402,
+"lng": 98.985295
+},
+{
+"osm": 1618868156,
+"name": "Doi Chaang",
+"type": "cafe",
+"lat": 18.782375,
+"lng": 98.989966
+},
+{
+"osm": 1619287895,
+"name": "Khow Soi and Hainan Chicken Rice",
+"type": "restaurant",
+"lat": 18.789657,
+"lng": 98.985867
+},
+{
+"osm": 1619287955,
+"name": "ก๋วยเตี๋ยวเป็ด",
+"type": "restaurant",
+"lat": 18.789675,
+"lng": 98.986245
+},
+{
+"osm": 1620858578,
+"name": "ช้างม่อยกาแฟ",
+"type": "restaurant",
+"lat": 18.790668,
+"lng": 98.989577
+},
+{
+"osm": 1628665600,
+"name": "Huen Phen",
+"type": "restaurant",
+"lat": 18.785838,
+"lng": 98.985158
+},
+{
+"osm": 1628665611,
+"name": "Kao Dom Klang Kuen",
+"type": "restaurant",
+"lat": 18.788284,
+"lng": 98.987579
+},
+{
+"osm": 1643026281,
+"name": "The Olive Tree",
+"type": "restaurant",
+"lat": 18.785671,
+"lng": 98.992916
+},
+{
+"osm": 1681127596,
+"name": "Pho",
+"type": "restaurant",
+"lat": 18.778259,
+"lng": 98.99865
+},
+{
+"osm": 1854347608,
+"name": "Lum Him Kue",
+"type": "restaurant",
+"lat": 18.786415,
+"lng": 98.97825
+},
+{
+"osm": 1873959406,
+"name": "Le Barfly",
+"type": "restaurant",
+"lat": 18.783463,
+"lng": 98.99243
+},
+{
+"osm": 2039957239,
+"name": "Uncle Bear's Home",
+"type": "cafe",
+"lat": 18.788353,
+"lng": 98.986852
+},
+{
+"osm": 2039964810,
+"name": "Le Bateau Ivre",
+"type": "restaurant",
+"lat": 18.788174,
+"lng": 98.987129
+},
+{
+"osm": 2039968655,
+"name": "U",
+"type": "restaurant",
+"lat": 18.788335,
+"lng": 98.987004
+},
+{
+"osm": 2039975212,
+"name": "Garden Island",
+"type": "restaurant",
+"lat": 18.788146,
+"lng": 98.987265
+},
+{
+"osm": 2039997655,
+"name": "La Fourchette",
+"type": "restaurant",
+"lat": 18.78736,
+"lng": 98.988176
+},
+{
+"osm": 2040022297,
+"name": "J. Ju Coffee",
+"type": "cafe",
+"lat": 18.785582,
+"lng": 98.989989
+},
+{
+"osm": 2040039255,
+"name": "Kin Dee",
+"type": "restaurant",
+"lat": 18.785099,
+"lng": 98.992416
+},
+{
+"osm": 2040042303,
+"name": "Juicy4U",
+"type": "cafe",
+"lat": 18.785085,
+"lng": 98.992566
+},
+{
+"osm": 2041535372,
+"name": "Three Little Pigs",
+"type": "restaurant",
+"lat": 18.79588,
+"lng": 98.984531
+},
+{
+"osm": 2055855111,
+"name": "Zalux Coffee",
+"type": "restaurant",
+"lat": 18.785855,
+"lng": 98.991812
+},
+{
+"osm": 2055855117,
+"name": "Kopi-O Cafe",
+"type": "cafe",
+"lat": 18.786019,
+"lng": 98.992693
+},
+{
+"osm": 2055855118,
+"name": "peppermint coffee house",
+"type": "restaurant",
+"lat": 18.788464,
+"lng": 98.990886
+},
+{
+"osm": 2082864508,
+"name": "Kissa Cafe",
+"type": "cafe",
+"lat": 18.797696,
+"lng": 98.989521
+},
+{
+"osm": 2105737204,
+"name": "Hillkoff Coffee Sales & Service",
+"type": "cafe",
+"lat": 18.798445,
+"lng": 98.986689
+},
+{
+"osm": 2113309885,
+"name": "Chez Marco / Kenji Gyoza",
+"type": "restaurant",
+"lat": 18.785015,
+"lng": 98.994214
+},
+{
+"osm": 2132019005,
+"name": "Rajdarbar",
+"type": "restaurant",
+"lat": 18.784173,
+"lng": 98.998851
+},
+{
+"osm": 2142546557,
+"name": "Delicious Issan Food",
+"type": "restaurant",
+"lat": 18.788846,
+"lng": 98.99245
+},
+{
+"osm": 2292111473,
+"name": "The Peppermint",
+"type": "restaurant",
+"lat": 18.790728,
+"lng": 98.990707
+},
+{
+"osm": 2300395636,
+"name": "My Place Lounge Chiang Mai - Sports Bar & Restaurant",
+"type": "restaurant",
+"lat": 18.784117,
+"lng": 98.997432
+},
+{
+"osm": 2300400256,
+"name": "Garden Restaurant",
+"type": "restaurant",
+"lat": 18.784312,
+"lng": 98.997275
+},
+{
+"osm": 2404044286,
+"name": "Akha Ama Phrasingh",
+"type": "cafe",
+"lat": 18.78843,
+"lng": 98.983215
+},
+{
+"osm": 2411251055,
+"name": "Angel's Secrets",
+"type": "restaurant",
+"lat": 18.789933,
+"lng": 98.991865
+},
+{
+"osm": 2414292278,
+"name": "อาหารตามสั่ง",
+"type": "restaurant",
+"lat": 18.785277,
+"lng": 98.998654
+},
+{
+"osm": 2414298003,
+"name": "Cafe de Sirin",
+"type": "cafe",
+"lat": 18.787208,
+"lng": 98.998864
+},
+{
+"osm": 2414306640,
+"name": "Black Elephant Garden Bistro",
+"type": "restaurant",
+"lat": 18.788047,
+"lng": 98.996335
+},
+{
+"osm": 2414317551,
+"name": "Su Food",
+"type": "restaurant",
+"lat": 18.788055,
+"lng": 98.994367
+},
+{
+"osm": 2419667430,
+"name": "Rajdamnoen Coffee",
+"type": "cafe",
+"lat": 18.788202,
+"lng": 98.985346
+},
+{
+"osm": 2442812998,
+"name": "Pacamara",
+"type": "cafe",
+"lat": 18.788354,
+"lng": 98.986658
+},
+{
+"osm": 2466333301,
+"name": "ครัวทรายทอง",
+"type": "restaurant",
+"lat": 18.785324,
+"lng": 98.982153
+},
+{
+"osm": 2466333303,
+"name": "Tup Noi",
+"type": "restaurant",
+"lat": 18.78766,
+"lng": 98.979868
+},
+{
+"osm": 2466333305,
+"name": "Coffee in Narrow",
+"type": "cafe",
+"lat": 18.787231,
+"lng": 98.989792
+},
+{
+"osm": 2466401386,
+"name": "NAP'S Coffee Roaster",
+"type": "cafe",
+"lat": 18.789574,
+"lng": 98.984984
+},
+{
+"osm": 2536909059,
+"name": "Greenies & Co",
+"type": "restaurant",
+"lat": 18.789904,
+"lng": 98.99003
+},
+{
+"osm": 2537789993,
+"name": "Tong Lim Suki Chabu",
+"type": "restaurant",
+"lat": 18.798812,
+"lng": 98.979677
+},
+{
+"osm": 2537789994,
+"name": "Kuaitiao Nuea Sam Yan",
+"type": "restaurant",
+"lat": 18.798899,
+"lng": 98.979722
+},
+{
+"osm": 2554099859,
+"name": "Sudsanan",
+"type": "cafe",
+"lat": 18.799398,
+"lng": 98.973895
+},
+{
+"osm": 2567821739,
+"name": "Girasole",
+"type": "restaurant",
+"lat": 18.787668,
+"lng": 98.990145
+},
+{
+"osm": 2590185727,
+"name": "Come-On",
+"type": "cafe",
+"lat": 18.781903,
+"lng": 98.980758
+},
+{
+"osm": 2597939035,
+"name": "Ittetsu Ya",
+"type": "restaurant",
+"lat": 18.783865,
+"lng": 98.996722
+},
+{
+"osm": 2597971867,
+"name": "Cafe Blanco",
+"type": "cafe",
+"lat": 18.786019,
+"lng": 98.998617
+},
+{
+"osm": 2597978364,
+"name": "Billy's Restaurant",
+"type": "restaurant",
+"lat": 18.786554,
+"lng": 98.99795
+},
+{
+"osm": 2597979896,
+"name": "Thai Kiwi",
+"type": "restaurant",
+"lat": 18.786478,
+"lng": 98.997828
+},
+{
+"osm": 2598509572,
+"name": "Kaffe 151",
+"type": "cafe",
+"lat": 18.790811,
+"lng": 98.987677
+},
+{
+"osm": 2598509593,
+"name": "The Cozy Cafe",
+"type": "cafe",
+"lat": 18.781746,
+"lng": 98.989754
+},
+{
+"osm": 2598548356,
+"name": "Sum Sabai Chabu Hot Pan",
+"type": "restaurant",
+"lat": 18.78104,
+"lng": 98.981762
+},
+{
+"osm": 2610448151,
+"name": "By Hand Pizza Cafe",
+"type": "restaurant",
+"lat": 18.792856,
+"lng": 98.991139
+},
+{
+"osm": 2631133180,
+"name": "Casa Diverso",
+"type": "restaurant",
+"lat": 18.785787,
+"lng": 98.978805
+},
+{
+"osm": 2631868033,
+"name": "Anchan Noodle",
+"type": "restaurant",
+"lat": 18.794229,
+"lng": 98.972552
+},
+{
+"osm": 2638262563,
+"name": "Le Jitt",
+"type": "restaurant",
+"lat": 18.78595,
+"lng": 98.978619
+},
+{
+"osm": 2640586720,
+"name": "Amazing Sandwich",
+"type": "restaurant",
+"lat": 18.797575,
+"lng": 98.975212
+},
+{
+"osm": 2641740599,
+"name": "Butter is Better",
+"type": "restaurant",
+"lat": 18.780391,
+"lng": 98.999761
+},
+{
+"osm": 2649591567,
+"name": "The Garden",
+"type": "restaurant",
+"lat": 18.785807,
+"lng": 98.995074
+},
+{
+"osm": 2652877329,
+"name": "ร้านน้ำเงี้ยวพะเยา",
+"type": "restaurant",
+"lat": 18.77902,
+"lng": 98.991713
+},
+{
+"osm": 2652920111,
+"name": "Coffee 2 Days",
+"type": "cafe",
+"lat": 18.779753,
+"lng": 98.991547
+},
+{
+"osm": 2655145988,
+"name": "Bella Goose Coffee",
+"type": "cafe",
+"lat": 18.781249,
+"lng": 98.999002
+},
+{
+"osm": 2655153486,
+"name": "Doi Chang",
+"type": "cafe",
+"lat": 18.786922,
+"lng": 98.998836
+},
+{
+"osm": 2655155899,
+"name": "ขนมจีน4น้ำ ข้าวราดแกง",
+"type": "restaurant",
+"lat": 18.785905,
+"lng": 98.998768
+},
+{
+"osm": 2655172329,
+"name": "Noodle Shop",
+"type": "restaurant",
+"lat": 18.78462,
+"lng": 98.998534
+},
+{
+"osm": 2655178493,
+"name": "The Hideout",
+"type": "restaurant",
+"lat": 18.793617,
+"lng": 98.994482
+},
+{
+"osm": 2655179804,
+"name": "คุ้มเจ้าหลวง",
+"type": "restaurant",
+"lat": 18.782933,
+"lng": 98.998529
+},
+{
+"osm": 2655180134,
+"name": "Cafe' de Siam",
+"type": "cafe",
+"lat": 18.784,
+"lng": 98.998536
+},
+{
+"osm": 2655190971,
+"name": "กำแปงเมือง",
+"type": "restaurant",
+"lat": 18.782118,
+"lng": 98.998591
+},
+{
+"osm": 2655190996,
+"name": "Tianzi Restaurant",
+"type": "restaurant",
+"lat": 18.781978,
+"lng": 98.998708
+},
+{
+"osm": 2655203675,
+"name": "Cafe de Paris",
+"type": "restaurant",
+"lat": 18.791701,
+"lng": 98.996679
+},
+{
+"osm": 2655274603,
+"name": "Mea PanOn Restauran",
+"type": "restaurant",
+"lat": 18.791439,
+"lng": 98.996375
+},
+{
+"osm": 2655274604,
+"name": "Wiang Suki and Somtum Payalae",
+"type": "restaurant",
+"lat": 18.791376,
+"lng": 98.996422
+},
+{
+"osm": 2655274607,
+"name": "บะหมี่เกี๊ยว",
+"type": "restaurant",
+"lat": 18.79081,
+"lng": 98.996653
+},
+{
+"osm": 2655274721,
+"name": "ร้านก๋วยจั๊บน้ำข้น",
+"type": "restaurant",
+"lat": 18.79004,
+"lng": 98.998662
+},
+{
+"osm": 2655276693,
+"name": "ต้มเลือดธนาโอชา",
+"type": "restaurant",
+"lat": 18.790869,
+"lng": 98.998414
+},
+{
+"osm": 2655276700,
+"name": "ข้าวราดแกง 20 บาท",
+"type": "restaurant",
+"lat": 18.79142,
+"lng": 98.997953
+},
+{
+"osm": 2656759535,
+"name": "Mario",
+"type": "restaurant",
+"lat": 18.779421,
+"lng": 98.988207
+},
+{
+"osm": 2658260600,
+"name": "De Cassowary",
+"type": "cafe",
+"lat": 18.777427,
+"lng": 98.987272
+},
+{
+"osm": 2658286716,
+"name": "Bombay",
+"type": "restaurant",
+"lat": 18.780655,
+"lng": 98.988209
+},
+{
+"osm": 2658286723,
+"name": "Harrads",
+"type": "restaurant",
+"lat": 18.780799,
+"lng": 98.988203
+},
+{
+"osm": 2661221808,
+"name": "รุ่งเจริญพลอย",
+"type": "restaurant",
+"lat": 18.775301,
+"lng": 98.98959
+},
+{
+"osm": 2661676325,
+"name": "Gateaux House",
+"type": "cafe",
+"lat": 18.788868,
+"lng": 98.973089
+},
+{
+"osm": 2662194563,
+"name": "Archers",
+"type": "restaurant",
+"lat": 18.789983,
+"lng": 98.990019
+},
+{
+"osm": 2664633372,
+"name": "K Power of Nature",
+"type": "restaurant",
+"lat": 18.794739,
+"lng": 98.991534
+},
+{
+"osm": 2669393878,
+"name": "La Cucina",
+"type": "restaurant",
+"lat": 18.794155,
+"lng": 98.992397
+},
+{
+"osm": 2678552868,
+"name": "Rose Restaurant",
+"type": "restaurant",
+"lat": 18.795217,
+"lng": 98.987842
+},
+{
+"osm": 2716915567,
+"name": "The Coffee Club",
+"type": "cafe",
+"lat": 18.787913,
+"lng": 98.992941
+},
+{
+"osm": 2749125717,
+"name": "Fresh Wrap",
+"type": "restaurant",
+"lat": 18.78981,
+"lng": 98.993157
+},
+{
+"osm": 2881830813,
+"name": "Happy Cup",
+"type": "restaurant",
+"lat": 18.783933,
+"lng": 98.996705
+},
+{
+"osm": 2884931814,
+"name": "Tawan's Corner Bar and Bistro",
+"type": "restaurant",
+"lat": 18.776864,
+"lng": 98.997665
+},
+{
+"osm": 3057397479,
+"name": "Malee Noodle",
+"type": "restaurant",
+"lat": 18.790039,
+"lng": 98.978457
+},
+{
+"osm": 3069766172,
+"name": "J Restaurant",
+"type": "restaurant",
+"lat": 18.782407,
+"lng": 98.988949
+},
+{
+"osm": 3117930572,
+"name": "AMM (Aung Myint Mo Kyay Oh)",
+"type": "restaurant",
+"lat": 18.798672,
+"lng": 98.97524
+}
+]
