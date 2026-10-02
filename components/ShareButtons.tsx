@@ -41,10 +41,10 @@ export default function ShareButtons({ id, co2, plastics }: { id: string; co2: n
     setMsg("Link copied");
   }
 
-  const btn = "rounded-xl bg-emerald-800 py-3 text-center text-sm font-medium";
+  const btn = "rounded-full border-[1.5px] border-neutral-300 py-3 text-center text-sm font-semibold";
   return (
-    <div className="space-y-2 rounded-2xl bg-emerald-900/60 p-4">
-      <button onClick={share} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-emerald-950">📲 Share my impact</button>
+    <div className="space-y-2 rounded-[28px] bg-neutral-100 p-4">
+      <button onClick={share} className="w-full rounded-full bg-terra-500 py-3 font-heading text-cream">📲 Share my impact</button>
       <div className="grid grid-cols-2 gap-2">
         <a className={btn} target="_blank" rel="noreferrer"
            onClick={(e) => { e.currentTarget.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url())}`; }}
@@ -55,7 +55,7 @@ export default function ShareButtons({ id, co2, plastics }: { id: string; co2: n
         <button onClick={download} className={btn}>⬇️ Download image</button>
         <button onClick={copy} className={btn}>🔗 Copy link</button>
       </div>
-      {msg && <p className="text-center text-xs text-emerald-300">{msg}</p>}
+      {msg && <p className="text-center text-xs text-neutral-600">{msg}</p>}
     </div>
   );
 }

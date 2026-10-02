@@ -22,11 +22,11 @@ export default function VerifyButton({ id }: { id: string }) {
   );
 
   return (
-    <div className="space-y-3 rounded-2xl bg-emerald-900/60 p-4">
-      <button onClick={run} disabled={busy} className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-emerald-950 disabled:opacity-60">
+    <div className="space-y-3 rounded-[28px] bg-neutral-100 p-4">
+      <button onClick={run} disabled={busy} className="w-full rounded-full bg-terra-500 py-3 font-heading text-cream disabled:opacity-60">
         {busy ? "Checking Solana…" : v ? "Verify again" : "⛓️ Verify on-chain"}
       </button>
-      {err && <p className="text-sm text-red-300">{err}</p>}
+      {err && <p className="text-sm text-terra-700">{err}</p>}
       {v && (
         <>
           <ul className="space-y-1 text-sm">
@@ -36,14 +36,14 @@ export default function VerifyButton({ id }: { id: string }) {
             {v.claimed !== null && row(v.claimed, "Receipt is claimed on Solana and can never be used again")}
           </ul>
           {v.dataIntact && v.onChainMatch ? (
-            <p className="rounded-lg bg-emerald-500 p-2 text-center text-sm font-semibold text-emerald-950">
+            <p className="rounded-xl bg-sage-500 p-2 text-center text-sm font-semibold text-cream">
               Verified{v.blockTime ? ` · anchored ${new Date(v.blockTime).toLocaleString()}` : ""}{v.slot ? ` · slot ${v.slot}` : ""}
             </p>
           ) : (
-            <p className="rounded-lg bg-red-900/60 p-2 text-center text-sm text-red-200">{v.error ?? "Verification failed"}</p>
+            <p className="rounded-xl bg-terra-100 p-2 text-center text-sm text-terra-800">{v.error ?? "Verification failed"}</p>
           )}
-          {v.claimUrl && <a className="block text-xs underline text-emerald-300" href={v.claimUrl} target="_blank" rel="noreferrer">View the receipt claim account ↗</a>}
-          <p className="break-all text-[11px] text-emerald-400">recomputed sha256 {v.recomputedHash}</p>
+          {v.claimUrl && <a className="block text-xs text-sage-700 underline" href={v.claimUrl} target="_blank" rel="noreferrer">View the receipt claim account ↗</a>}
+          <p className="break-all text-[11px] text-neutral-500">recomputed sha256 {v.recomputedHash}</p>
         </>
       )}
     </div>

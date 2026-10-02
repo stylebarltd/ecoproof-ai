@@ -34,34 +34,34 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between"><LogoLockup size={32} /><span className="text-xs uppercase tracking-wider text-emerald-300">Impact passport</span></div>
+      <div className="flex items-center justify-between"><LogoLockup size={32} /><span className="text-xs uppercase tracking-wider text-neutral-600">Impact passport</span></div>
       {proof ? (
-        <a href={proof} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-black/40 p-3 ring-1 ring-[#14F195]/60">
-          <span className="text-2xl">⛓️</span>
+        <a href={proof} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-sage-300">
+          <span className="text-2xl text-sage-700">⛓</span>
           <span className="min-w-0 text-sm">
-            <b>Anchored on Solana</b> <span className="text-emerald-300">· devnet</span>
-            <span className="block truncate font-mono text-[11px] text-emerald-400">tx {rec.signature!.slice(0, 8)}…{rec.signature!.slice(-8)}</span>
+            <b>Anchored on Solana</b> <span className="text-neutral-600">· devnet</span>
+            <span className="block truncate font-mono text-[11px] text-neutral-500">tx {rec.signature!.slice(0, 8)}…{rec.signature!.slice(-8)}</span>
           </span>
-          <span className="ml-auto text-xs text-emerald-300">Explorer ↗</span>
+          <span className="ml-auto text-xs text-sage-700">Explorer ↗</span>
         </a>
       ) : (
-        <p className="rounded-2xl bg-amber-900/40 p-3 text-sm text-amber-200">⏳ On-chain anchoring pending</p>
+        <p className="rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">⏳ On-chain anchoring pending</p>
       )}
       <div className="grid grid-cols-3 gap-2 text-center">
         {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "plastic avoided"], [`${t.pk ?? 0}g`, "packaging"]].map(([v, l]) => (
-          <div key={l} className="rounded-xl bg-emerald-800/60 p-3"><div className="text-xl font-bold">{v}</div><div className="text-xs text-emerald-300">{l}</div></div>
+          <div key={l} className="rounded-2xl bg-neutral-100 p-3"><div className="font-heading text-xl">{v}</div><div className="text-xs text-neutral-600">{l}</div></div>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2">{badges.map((b) => <span key={b} className="rounded-full bg-emerald-500 px-3 py-1 text-sm font-medium text-emerald-950">{b}</span>)}</div>
+      <div className="flex flex-wrap gap-2">{badges.map((b) => <span key={b} className="rounded-full bg-sage-500 px-3 py-1 text-sm font-semibold text-cream">{b}</span>)}</div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={`/api/card/${rec.id}`} alt="Impact card" className="w-full rounded-2xl" />
-      <div className="flex items-center gap-4 rounded-2xl bg-emerald-900/60 p-4">
+      <div className="flex items-center gap-4 rounded-[28px] bg-neutral-100 p-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {qr && <img src={qr} alt="Proof QR" width={96} height={96} className="rounded bg-white p-1" />}
-        <div className="min-w-0 text-xs text-emerald-300">
-          <p className="font-semibold text-emerald-100">{rec.signature ? "Verified on Solana" : "Not yet anchored"}</p>
+        <div className="min-w-0 text-xs text-neutral-600">
+          <p className="font-semibold text-ink">{rec.signature ? "Verified on Solana" : "Not yet anchored"}</p>
           <p className="break-all">sha256 {rec.hash}</p>
-          {proof && <a className="underline" href={proof} target="_blank">View transaction</a>}
+          {proof && <a className="text-sage-700 underline" href={proof} target="_blank">View transaction</a>}
         </div>
       </div>
       <ShareButtons id={rec.id} co2={rec.co2_kg} plastics={rec.plastic_items} />

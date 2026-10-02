@@ -1,20 +1,61 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: dark;
-  --background: #022c22; /* emerald-950 */
-  --foreground: #ecfdf5; /* emerald-50 */
+/* EcoProof "Organic" design tokens (from the Claude Design handoff). */
+@theme {
+  --color-cream: #f5ead8;
+  --color-surface: #ebddc5;
+  --color-ink: #201e1d;
+
+  --color-neutral-100: #f9f4ed;
+  --color-neutral-200: #eee7db;
+  --color-neutral-300: #dcd3c4;
+  --color-neutral-400: #c0b6a5;
+  --color-neutral-500: #a19786;
+  --color-neutral-600: #82796a;
+  --color-neutral-700: #645c50;
+  --color-neutral-800: #474238;
+  --color-neutral-900: #2e2b25;
+
+  /* terracotta (accent) */
+  --color-terra-100: #fff2eb;
+  --color-terra-200: #ffe1d0;
+  --color-terra-300: #ffc6a5;
+  --color-terra-400: #f6a06b;
+  --color-terra-500: #d67f48;
+  --color-terra-600: #b2622d;
+  --color-terra-700: #8c491a;
+  --color-terra-800: #643312;
+  --color-terra-900: #402310;
+
+  /* sage (accent-2) */
+  --color-sage-100: #f0fae1;
+  --color-sage-200: #e1eecc;
+  --color-sage-300: #ccdbb2;
+  --color-sage-400: #aebf92;
+  --color-sage-500: #8fa073;
+  --color-sage-600: #728157;
+  --color-sage-700: #56633f;
+  --color-sage-800: #3d472b;
+  --color-sage-900: #272e1b;
+
+  --font-heading: var(--font-caprasimo), system-ui, sans-serif;
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  color-scheme: light;
+  --background: #f0fae1; /* sage-100: screens use a light sage tint so the surface reads "green" */
+  --foreground: #201e1d;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-figtree), system-ui, sans-serif;
 }
+
+h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-serif; font-weight: 400; }
+
+/* single-row chip strips scroll without a visible scrollbar */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

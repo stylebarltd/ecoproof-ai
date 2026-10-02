@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { CircleMarker, MapContainer, TileLayer, useMap } from "react-leaflet";
 import type { PlaceSummary } from "@/lib/practices";
 
-const color = (p: PlaceSummary) => (p.ownerVerified || p.verifiedCount ? "#22c55e" : p.pledgedCount ? "#f59e0b" : "#94a3b8");
+// Legend colours from the design: verified = sage-500, pledged = terracotta-500, no pledge yet = neutral-400.
+const color = (p: PlaceSummary) => (p.ownerVerified || p.verifiedCount ? "#8fa073" : p.pledgedCount ? "#d67f48" : "#c0b6a5");
 
 function FitBounds({ places, active }: { places: PlaceSummary[]; active: boolean }) {
   const map = useMap();
@@ -27,7 +28,7 @@ export default function MapView({ places, selectedId, onSelect, fit = false }: {
           key={p.id}
           center={[p.lat, p.lng]}
           radius={p.id === selectedId ? 13 : p.ownerVerified || p.verifiedCount || p.pledgedCount ? 10 : 7}
-          pathOptions={{ color: p.id === selectedId ? "#fff" : "#064e3b", weight: p.id === selectedId ? 3 : 1.5, fillColor: color(p), fillOpacity: 0.95 }}
+          pathOptions={{ color: p.id === selectedId ? "#201e1d" : "#ffffff", weight: p.id === selectedId ? 3 : 2, fillColor: color(p), fillOpacity: 0.95 }}
           eventHandlers={{ click: () => onSelect(p.id) }}
         />
       ))}
