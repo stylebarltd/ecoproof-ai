@@ -2,12 +2,16 @@ import { randomUUID } from "crypto";
 import { query } from "@/lib/db";
 import { extractReceipt } from "@/lib/extract";
 import { computeImpact } from "@/lib/impact";
+import { rateLimited } from "@/lib/ratelimit";
 import { anchorHash, hashRecord } from "@/lib/solana";
 
 export const maxDuration = 60;
 const TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"] as const;
 
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  if (rateLimited(ip)) return Response.json({ error: "Too many uploads, try again later" }, { status: 429 });
+  if (Number(req.headers.get("content-length") || 0) > 8 * 1024 * 1024) return Response.json({ error: "Image too large (max 8MB)" }, { status: 413 });
   const form = await req.formData();
   const file = form.get("receipt");
   const userId = String(form.get("userId") || "demo-user");
