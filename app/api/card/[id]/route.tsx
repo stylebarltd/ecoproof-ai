@@ -37,8 +37,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={stampImg} width={190} height={190} alt="" />
             <div style={{ display: "flex", flexDirection: "column", fontSize: 34, color: CREAM }}>
-              <div style={{ fontSize: 46, fontWeight: 700 }}>Eco stamp collected</div>
-              {place?.impact_note && r.source === "order" ? <div style={{ color: "#ccdbb2" }}>{place.impact_note}</div> : null}
+              <div style={{ fontSize: 46, fontWeight: 700 }}>{r.source === "order" ? "Verified order stamp" : "Eco stamp collected"}</div>
+              {r.source === "order" && r.impact_note ? <div style={{ color: "#ffd98a" }}>{r.impact_note}</div> : null}
             </div>
           </div>
         ) : (

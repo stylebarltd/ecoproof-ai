@@ -5,6 +5,8 @@ import { hashInput } from "./verify";
 import { AlreadyClaimedError, claimUrl, claimWithRetry } from "./claim";
 import { identityGroup } from "./users";
 import { distanceM, getPlace, stampDay, type StampPlace } from "./stampPlaces";
+import { orderFingerprint } from "./order";
+import type { Impact, LineItem } from "./impact";
 
 export class ClaimError extends Error { constructor(message: string, public status = 400, public extra: Record<string, unknown> = {}) { super(message); } }
 
@@ -19,7 +21,7 @@ export type StampResult = {
  * The proof is a claim account on Solana derived from (place, person, day), so "once per day per person per place" is enforced
  * on-chain as well as in the database. `source` records which door produced it (this stage: the place QR).
  */
-export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace; cardCode?: string }): Promise<StampResult> {
+export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace; cardCode?: string; order?: { orderId: string; items: LineItem[]; impact: Impact; line: string } }): Promise<StampResult> {
   const place = opts.place ?? (await getPlace(opts.placeId));
   if (!place) throw new ClaimError("Unknown place", 404);
   const source = opts.source ?? "qr";
@@ -33,18 +35,23 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
   const person = (await identityGroup(opts.passportId))[0]; // a linked wallet and its device ids count as one person
   const day = stampDay();
   // QR door: once per day per person per place. Card door: each printed code works exactly once, by anyone, any day.
-  const fp = opts.cardCode
+  // Order door: each real order works exactly once; its stamp carries the order's true impact.
+  const fp = opts.order
+    ? orderFingerprint(place.id, opts.order.orderId)
+    : opts.cardCode
     ? createHash("sha256").update(`ecoproof:stamp:v1:card:${place.id}:${opts.cardCode}`).digest("hex")
     : createHash("sha256").update(`ecoproof:stamp:v1:${place.id}:${person}:${day}`).digest("hex");
   const dup = await query<{ id: string; claim_address: string | null }>("SELECT id, claim_address FROM records WHERE receipt_fp=$1", [fp]);
-  const already = (id: string | null, addr: string | null) => opts.cardCode
+  const already = (id: string | null, addr: string | null) => opts.order
+    ? new ClaimError("This order has already been claimed.", 409, { recordId: id, claimAddress: addr })
+    : opts.cardCode
     ? new ClaimError("This card has already been used.", 409, { recordId: id, claimAddress: addr })
     : new ClaimError(`You already collected a ${place.name} stamp today. Come back tomorrow!`, 409, { recordId: id, claimAddress: addr });
   if (dup.length) throw already(dup[0].id, dup[0].claim_address);
 
   const row: RecordRow = {
-    id: randomUUID(), user_id: opts.passportId, merchant: place.name, items: "[]",
-    co2_kg: 0, plastic_items: 0, packaging_g: 0, sustainable_items: 0,
+    id: randomUUID(), user_id: opts.passportId, merchant: place.name, items: JSON.stringify(opts.order?.items ?? []),
+    co2_kg: opts.order?.impact.co2Kg ?? 0, plastic_items: opts.order?.impact.plasticItems ?? 0, packaging_g: opts.order?.impact.packagingG ?? 0, sustainable_items: opts.order?.impact.sustainableItems ?? 0,
     hash: "", signature: null, created_at: new Date().toISOString(), place_id: place.id, source,
   };
   row.hash = hashRecord(hashInput(row));
@@ -59,13 +66,13 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
   }
   try {
     await query(
-      `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at,receipt_fp,claim_address,place_id,source,impact_note)
-       VALUES ($1,$2,$3,'[]',0,0,0,0,$4,$5,$6,$7,$8,$9,$10,$11)`,
-      [row.id, row.user_id, row.merchant, row.hash, signature, row.created_at, fp, claimAddress, place.id, source, null],
+      `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at,receipt_fp,claim_address,place_id,source,impact_note,brand_id,order_id)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)`,
+      [row.id, row.user_id, row.merchant, row.items, row.co2_kg, row.plastic_items, row.packaging_g, row.sustainable_items, row.hash, signature, row.created_at, fp, claimAddress, place.id, source, opts.order?.line ?? null, opts.order ? place.id : null, opts.order?.orderId ?? null],
     );
   } catch (e) {
     if ((e as { code?: string }).code === "23505") throw already(null, claimAddress);
     throw e;
   }
-  return { recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: source === "order" ? place.impact_note : null, /* only a verified order may carry an impact line */ hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
+  return { recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: opts.order?.line ?? null, /* only a verified order carries an impact line */ hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
 }

@@ -76,6 +76,14 @@ const SCHEMA = [
     code TEXT PRIMARY KEY, place_id TEXT NOT NULL, batch TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(), claimed_at TIMESTAMPTZ, record_id TEXT
   )`,
+  `CREATE TABLE IF NOT EXISTS woo_orders (
+    place_id TEXT NOT NULL, order_id TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'valid', -- valid | void (refunded / cancelled before it was claimed)
+    items TEXT NOT NULL, impact TEXT NOT NULL, line TEXT NOT NULL,  -- only product names, quantities and the computed impact: no prices, no customer data
+    claimed_at TIMESTAMPTZ, record_id TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(), updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (place_id, order_id)
+  )`,
   `CREATE INDEX IF NOT EXISTS claim_cards_batch ON claim_cards (batch)`,
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
