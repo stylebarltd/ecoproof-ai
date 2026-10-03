@@ -84,6 +84,12 @@ const SCHEMA = [
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(), updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (place_id, order_id)
   )`,
+  `ALTER TABLE stamp_places ADD COLUMN IF NOT EXISTS owner TEXT`, // wallet of the owner for self-serve places; null for places we set up
+  `CREATE INDEX IF NOT EXISTS stamp_places_owner ON stamp_places (owner) WHERE owner IS NOT NULL`,
+  `CREATE TABLE IF NOT EXISTS stamp_place_locations (
+    id SERIAL PRIMARY KEY, place_id TEXT NOT NULL, name TEXT, lat DOUBLE PRECISION NOT NULL, lng DOUBLE PRECISION NOT NULL,
+    UNIQUE (place_id, lat, lng)
+  )`,
   `CREATE INDEX IF NOT EXISTS claim_cards_batch ON claim_cards (batch)`,
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
@@ -128,13 +134,14 @@ async function seedOwnerShops(p: Pool) {
 /** Launch-partner places (our own place-setup). Upserted on cold start so edits to the JSON take effect; secrets are kept. */
 async function seedStampPlaces(p: Pool) {
   const { randomBytes } = await import("crypto");
-  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null }[];
+  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null; locations?: { name?: string; lat: number; lng: number }[] }[];
   for (const x of list) {
     await p.query(
       `INSERT INTO stamp_places (id,name,kind,tagline,impact_note,colour,lat,lng,gps_radius_m,secret) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
        ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, kind=EXCLUDED.kind, tagline=EXCLUDED.tagline, impact_note=EXCLUDED.impact_note, colour=EXCLUDED.colour, lat=EXCLUDED.lat, lng=EXCLUDED.lng, gps_radius_m=EXCLUDED.gps_radius_m`,
       [x.id, x.name, x.kind, x.tagline ?? null, x.impactNote ?? null, x.colour ?? null, x.lat ?? null, x.lng ?? null, x.gpsRadiusM ?? null, randomBytes(24).toString("hex")],
     );
+    for (const l of x.locations ?? []) await p.query("INSERT INTO stamp_place_locations (place_id,name,lat,lng) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING", [x.id, l.name ?? null, l.lat, l.lng]);
   }
 }
 

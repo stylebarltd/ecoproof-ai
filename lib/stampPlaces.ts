@@ -42,3 +42,14 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
   const inner = p.image ? `<clipPath id="lc"><circle cx="128" cy="116" r="62"/></clipPath><image href="${esc(p.image)}" x="66" y="54" width="124" height="124" clip-path="url(#lc)" preserveAspectRatio="xMidYMid slice"/>` : glyph;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${name} stamp"><circle cx="128" cy="128" r="124" fill="${c}"/>${ring}<circle cx="128" cy="128" r="100" fill="none" stroke="#f5ead8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>${inner}<text x="128" y="206" text-anchor="middle" font-family="Figtree,system-ui,sans-serif" font-size="22" font-weight="800" fill="#f5ead8">${name}</text></svg>`;
 }
+
+export type MapPlace = { id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number };
+
+/** Places that have actually joined EcoProof and have a physical location, one entry per location. "Verified" on the map means
+ *  claimed and set up on EcoProof (a real owner or partner created it); independent vetting is roadmap. */
+export async function listMapPlaces(): Promise<MapPlace[]> {
+  const rows = await query<{ id: string; name: string; kind: string; tagline: string | null; lid: number; lname: string | null; lat: number; lng: number }>(
+    "SELECT p.id, p.name, p.kind, p.tagline, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id ORDER BY p.created_at, l.id",
+  );
+  return rows.map((r) => ({ id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, lat: r.lat, lng: r.lng }));
+}

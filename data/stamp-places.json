@@ -1,12 +1,45 @@
 [
   {
-    "id": "superbee", "name": "SuperBee", "kind": "shop", "colour": "#e8a317",
+    "id": "superbee",
+    "name": "SuperBee",
+    "kind": "shop",
+    "colour": "#e8a317",
     "tagline": "Plastic-free home goods, handmade in Chiang Mai",
-    "impactNote": "≈ 20 rolls of cling film saved"
+    "impactNote": null,
+    "locations": [
+      {
+        "name": "SuperBee Flagship Store",
+        "lat": 18.7692896,
+        "lng": 98.9681659
+      },
+      {
+        "name": "SuperBee Eco Store & Workshops",
+        "lat": 18.7937167,
+        "lng": 98.8386597
+      },
+      {
+        "name": "SuperBee Shop Maeha",
+        "lat": 18.7930225,
+        "lng": 98.8366164
+      }
+    ]
   },
   {
-    "id": "demo-cafe", "name": "Demo Café", "kind": "cafe", "colour": "#8c491a",
+    "id": "demo-cafe",
+    "name": "Demo Café",
+    "kind": "cafe",
+    "colour": "#8c491a",
     "tagline": "Bring your own cup, skip the disposable",
-    "impactNote": null, "lat": 18.7967, "lng": 98.9687, "gpsRadiusM": null
+    "impactNote": null,
+    "lat": 18.7967,
+    "lng": 98.9687,
+    "gpsRadiusM": null,
+    "locations": [
+      {
+        "name": "Demo Café",
+        "lat": 18.7967,
+        "lng": 98.9687
+      }
+    ]
   }
 ]
