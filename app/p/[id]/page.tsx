@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const rec = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!rec) return {};
-  const title = `${rec.co2_kg} kg CO₂ saved · ${rec.plastic_items} plastics avoided | EcoProof`;
+  const title = rec.place_id ? `Eco stamp collected at ${rec.merchant} | EcoProof` : `${rec.co2_kg} kg CO₂ saved · ${rec.plastic_items} plastics avoided | EcoProof`;
   const description = `Verified environmental impact${rec.signature ? ", anchored on Solana" : ""}. Make your impact visible with EcoProof AI.`;
   const image = `/api/card/${id}`;
   return {

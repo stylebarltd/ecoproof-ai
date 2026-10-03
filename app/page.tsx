@@ -81,7 +81,7 @@ export default function Home() {
         <div className="grid grid-cols-3 gap-2">
           <Stat icon={<><path d="M3 8l9-5 9 5-9 5-9-5z" /><path d="M3 8v9l9 5 9-5V8" /><path d="M12 13v9" /></>} v={String(t?.plasticItems ?? 0)} l="plastics avoided" />
           <Stat icon={<><path d="M12 3C7 3 4 7 4 12c0 4.5 3 8 8 8 4 0 7-3 7-7 0-6-4-10-7-10z" /><path d="M8 13l2.7 3L16 9" /></>} v={`${t?.packagingG ?? 0}g`} l="packaging cut" />
-          <Stat icon={<><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z" /><path d="M9 12l2.5 2.5L15 10" /></>} v={String(t?.receipts ?? 0)} l="proofs" />
+          <Stat icon={<><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z" /><path d="M9 12l2.5 2.5L15 10" /></>} v={String(t?.receipts ?? 0)} l="stamps" />
         </div>
         {pass && pass.longestStreak > 0 && <p className="text-xs text-terra-100">Best streak: {pass.longestStreak} day{pass.longestStreak > 1 ? "s" : ""}</p>}
       </section>
@@ -119,11 +119,27 @@ export default function Home() {
         </div>
       </section>
 
+      {pass && pass.places.length > 0 && (
+        <section className="pt-1">
+          <h2 className="mb-1 text-[15px]">Stamp collection</h2>
+          <p className="mb-2.5 text-[11.5px] text-neutral-600">{t?.receipts ?? 0} stamp{(t?.receipts ?? 0) === 1 ? "" : "s"} · {pass.nextMilestone - (t?.receipts ?? 0)} to your next milestone ({pass.nextMilestone})</p>
+          <div className="grid grid-cols-4 gap-3">
+            {pass.places.map((pl) => (
+              <Link key={pl.id} href={`/c/${pl.id}`} title={pl.name} className="flex flex-col items-center gap-1 text-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={pl.imageUrl} alt={pl.name} width={64} height={64} className={pl.earned ? "" : "opacity-25 grayscale"} />
+                <span className={`text-[10px] leading-tight ${pl.earned ? "font-semibold text-ink" : "text-neutral-500"}`}>{pl.name}{pl.count > 1 ? ` ×${pl.count}` : ""}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {pass && (pass.nfts.length > 0 || pass.nextMilestone) && (
         <section className="pt-1">
           <h2 className="mb-1 text-[15px]">Eco Warrior NFTs</h2>
           <p className="mb-2.5 text-[11.5px] text-neutral-600">
-            Soulbound badges for your milestones{pass.nextMilestone ? ` · next at ${pass.nextMilestone} proofs (${pass.nextMilestone - (t?.receipts ?? 0)} to go)` : ""}.
+            Soulbound badges for your milestones{pass.nextMilestone ? ` · next at ${pass.nextMilestone} stamps (${pass.nextMilestone - (t?.receipts ?? 0)} to go)` : ""}.
           </p>
           {pass.nfts.length > 0 && (
             <div className="grid grid-cols-2 gap-3">
@@ -133,7 +149,7 @@ export default function Home() {
                   <img src={n.imageUrl} alt={`${n.tier} eco warrior`} width={512} height={512} loading="lazy" className={`aspect-square w-full object-cover ${n.status === "minted" ? "" : "opacity-60"}`} />
                   <div className="p-2.5">
                     <div className="font-heading text-sm">{n.tier}</div>
-                    <div className="text-[11px] text-neutral-600">{n.milestone === 1 ? "First proof" : `${n.milestone} proofs`}</div>
+                    <div className="text-[11px] text-neutral-600">{n.milestone === 1 ? "First stamp" : `${n.milestone} stamps`}</div>
                     <div className="mt-1 text-[11px] font-semibold text-sage-700">
                       {n.status === "minted" && n.assetId ? <a href={`https://explorer.solana.com/address/${n.assetId}?cluster=devnet`} target="_blank" rel="noreferrer" className="underline">Soulbound · view on Solana</a> : pass.wallet ? "Minting…" : "Sign in with a wallet to claim"}
                     </div>

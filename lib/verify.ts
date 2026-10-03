@@ -11,6 +11,8 @@ export function hashInput(r: RecordRow) {
     items: JSON.parse(r.items),
     impact: { co2Kg: r.co2_kg, plasticItems: r.plastic_items, packagingG: r.packaging_g, sustainableItems: r.sustainable_items },
     createdAt: new Date(r.created_at).toISOString(),
+    // Stamp claims also commit to their place and door. Older records have no place_id, so their hash input is unchanged.
+    ...(r.place_id ? { placeId: r.place_id, source: r.source ?? "qr" } : {}),
   };
 }
 

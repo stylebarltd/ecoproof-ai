@@ -7,6 +7,7 @@ export type RecordRow = {
   co2_kg: number; plastic_items: number; packaging_g: number; sustainable_items: number;
   hash: string; signature: string | null; created_at: string;
   receipt_fp?: string | null; claim_address?: string | null; brand_id?: string | null; order_id?: string | null;
+  place_id?: string | null; source?: string | null; impact_note?: string | null;
 };
 
 function pool() {
@@ -52,6 +53,17 @@ const SCHEMA = [
   `ALTER TABLE reviews ADD COLUMN IF NOT EXISTS claim_address TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS brand_id TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS order_id TEXT`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS place_id TEXT`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS source TEXT`,
+  `ALTER TABLE records ADD COLUMN IF NOT EXISTS impact_note TEXT`,
+  `CREATE INDEX IF NOT EXISTS records_place ON records (place_id) WHERE place_id IS NOT NULL`,
+  `CREATE TABLE IF NOT EXISTS stamp_places (
+    id TEXT PRIMARY KEY, name TEXT NOT NULL, kind TEXT NOT NULL DEFAULT 'shop',
+    tagline TEXT, impact_note TEXT, image TEXT, colour TEXT,
+    lat DOUBLE PRECISION, lng DOUBLE PRECISION, gps_radius_m INTEGER,
+    secret TEXT NOT NULL, -- per-place signing secret (used by the signed claim links of later doors)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS records_receipt_fp ON records (receipt_fp) WHERE receipt_fp IS NOT NULL`,
   `CREATE TABLE IF NOT EXISTS nft_mints (
     id TEXT PRIMARY KEY, owner_key TEXT NOT NULL, milestone INTEGER NOT NULL,
@@ -100,9 +112,22 @@ async function seedOwnerShops(p: Pool) {
   }
 }
 
+/** Launch-partner places (our own place-setup). Upserted on cold start so edits to the JSON take effect; secrets are kept. */
+async function seedStampPlaces(p: Pool) {
+  const { randomBytes } = await import("crypto");
+  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null }[];
+  for (const x of list) {
+    await p.query(
+      `INSERT INTO stamp_places (id,name,kind,tagline,impact_note,colour,lat,lng,gps_radius_m,secret) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+       ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, kind=EXCLUDED.kind, tagline=EXCLUDED.tagline, impact_note=EXCLUDED.impact_note, colour=EXCLUDED.colour, lat=EXCLUDED.lat, lng=EXCLUDED.lng, gps_radius_m=EXCLUDED.gps_radius_m`,
+      [x.id, x.name, x.kind, x.tagline ?? null, x.impactNote ?? null, x.colour ?? null, x.lat ?? null, x.lng ?? null, x.gpsRadiusM ?? null, randomBytes(24).toString("hex")],
+    );
+  }
+}
+
 export async function query<T = RecordRow>(text: string, params: unknown[] = []): Promise<T[]> {
   const p = pool();
-  g._ready ??= init(p).then(() => seedOwnerShops(p));
+  g._ready ??= init(p).then(() => seedOwnerShops(p)).then(() => seedStampPlaces(p));
   await g._ready;
   return (await p.query(text, params)).rows as T[];
 }

@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { query, type RecordRow } from "@/lib/db";
+import { getPlace, stampSvg } from "@/lib/stampPlaces";
 import { CHECK_PATH, CREAM, INK, LEAF_PATH, SAGE, TERRA_LIGHT } from "@/lib/brand";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -7,6 +8,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const square = new URL(req.url).searchParams.get("format") === "square";
   const r = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!r) return new Response("not found", { status: 404 });
+  const place = r.place_id ? await getPlace(r.place_id) : null;
+  const stampImg = place ? `data:image/svg+xml;base64,${Buffer.from(stampSvg(place)).toString("base64")}` : null;
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: CREAM, borderRadius: 28, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700, color: INK }}>{v}</div>
@@ -26,14 +29,25 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
           <div style={{ display: "flex", fontSize: 44, fontWeight: 700 }}>EcoProof<span style={{ color: TERRA_LIGHT, marginLeft: 12 }}>AI</span></div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 54, fontWeight: 700 }}>My verified impact</div>
+          <div style={{ fontSize: 54, fontWeight: 700 }}>{r.place_id ? "My eco passport" : "My verified impact"}</div>
           <div style={{ fontSize: 34, color: "#ccdbb2" }}>{`with ${r.merchant}`}</div>
         </div>
+        {stampImg ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={stampImg} width={190} height={190} alt="" />
+            <div style={{ display: "flex", flexDirection: "column", fontSize: 34, color: CREAM }}>
+              <div style={{ fontSize: 46, fontWeight: 700 }}>Eco stamp collected</div>
+              {place?.impact_note ? <div style={{ color: "#ccdbb2" }}>{place.impact_note}</div> : null}
+            </div>
+          </div>
+        ) : (
         <div style={{ display: "flex", gap: 24 }}>
           {stat(String(r.plastic_items), "plastic avoided")}
           {stat(`${r.co2_kg}kg`, "CO₂ saved")}
           {stat(`${r.packaging_g}g`, "packaging cut")}
         </div>
+        )}
         <div style={{ display: "flex", alignItems: "center", alignSelf: "flex-start", fontSize: 30, fontWeight: 700, color: INK, background: CREAM, border: "2px solid #9945FF", borderRadius: 999, padding: "12px 28px" }}>{r.signature ? "Verified on Solana" : "Pending on-chain proof"}</div>
       </div>
     ),

@@ -3,7 +3,7 @@ import { addressUrl, payerAddress } from "./solana";
 import { identityGroup } from "./users";
 import { looksLikeWallet } from "./session";
 import { listNfts, type Nft } from "./milestones";
-import { MILESTONES } from "./nft";
+import { nextMilestone } from "./nft";
 
 export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Badge = { id: string; icon: string; name: string; desc: string; earned: boolean };
@@ -16,9 +16,11 @@ export type Passport = {
   badges: Badge[];
   anchored: number;
   nfts: Nft[];
-  nextMilestone: number | null;
+  /** Every joined place; `earned` = this passport has at least one stamp from it. */
+  places: { id: string; name: string; imageUrl: string; impactNote: string | null; earned: boolean; count: number }[];
+  nextMilestone: number;
   registryUrl: string | null;
-  records: { id: string; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
+  records: { id: string; placeId: string | null; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
 
 /** Calendar day in the user's timezone. tz = minutes as returned by Date#getTimezoneOffset() (UTC minus local; Thailand = -420). */
@@ -43,15 +45,15 @@ export function streaks(dates: (Date | string)[], now = new Date(), tz = 0) {
 
 export function badgesFor(t: Totals, longest: number): Badge[] {
   const list: [string, string, string, string, boolean][] = [
-    ["first", "🌱", "First Proof", "Verify your first receipt", t.receipts >= 1],
+    ["first", "🌱", "First Proof", "Collect your first stamp", t.receipts >= 1],
     ["plastic", "♻️", "Plastic Fighter", "Avoid 100 single-use plastics", t.plasticItems >= 100],
     ["plastic500", "🐢", "Turtle Guardian", "Avoid 500 single-use plastics", t.plasticItems >= 500],
     ["carbon", "🌍", "Carbon Cutter", "Save 5 kg CO₂", t.co2Kg >= 5],
     ["carbon25", "🌳", "Forest Maker", "Save 25 kg CO₂", t.co2Kg >= 25],
     ["streak3", "🔥", "3-Day Streak", "Log impact 3 days in a row", longest >= 3],
     ["streak7", "⚡", "Week Warrior", "Log impact 7 days in a row", longest >= 7],
-    ["five", "🏅", "Regular", "Verify 5 receipts", t.receipts >= 5],
-    ["review", "📍", "Place Verifier", "Review a place with a receipt", t.reviews >= 1],
+    ["five", "🏅", "Regular", "Collect 5 stamps", t.receipts >= 5],
+    ["review", "📍", "Place Verifier", "Review a place you visited", t.reviews >= 1],
     ["cup", "🥤", "Cup Hero", "Bring your own cup 5 times", t.byoCups >= 5],
   ];
   return list.map(([id, icon, name, desc, earned]) => ({ id, icon, name, desc, earned }));
@@ -82,12 +84,16 @@ export async function getPassport(userId: string, tz = 0): Promise<Passport> {
     streak: s.current,
     longestStreak: s.longest,
     badges: badgesFor(totals, s.longest),
+    places: (await query<{ id: string; name: string; impact_note: string | null }>("SELECT id,name,impact_note FROM stamp_places ORDER BY created_at, name")).map((pl) => {
+      const count = rows.filter((r) => r.place_id === pl.id).length;
+      return { id: pl.id, name: pl.name, imageUrl: `/api/stamp-places/${pl.id}/stamp`, impactNote: pl.impact_note, earned: count > 0, count };
+    }),
     anchored: rows.filter((r) => r.signature).length,
     nfts: (await listNfts(userId)).map((n) => ({ ...n, imageUrl: `/api/nft/${n.id}/image`, metadataUrl: `/api/nft/${n.id}/metadata` })),
-    nextMilestone: MILESTONES.find((m) => m > rows.length) ?? null,
+    nextMilestone: nextMilestone(rows.length),
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
     records: rows.slice(0, 20).map((r) => ({
-      id: r.id, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
+      id: r.id, placeId: r.place_id ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
       verified: !!r.signature, signature: r.signature, createdAt: new Date(r.created_at).toISOString(),
     })),
   };

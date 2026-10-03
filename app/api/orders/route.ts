@@ -2,7 +2,7 @@ import { BRANDS } from "@/lib/brands";
 import { OrderError, parseOrder } from "@/lib/order";
 import { DuplicateOrderError, proveOrder } from "@/lib/proof";
 import { getPassport } from "@/lib/passport";
-import { mintPending, recordMilestones } from "@/lib/milestones";
+import { afterProof } from "@/lib/milestones";
 import { rateLimited } from "@/lib/ratelimit";
 
 export const maxDuration = 60;
@@ -26,13 +26,7 @@ export async function POST(req: Request) {
 
     const proof = await proveOrder(order, passportId, brand.name);
     const passport = await getPassport(passportId);
-    // Milestone NFTs (1st, 10th, 50th, 100th proof). Minted now if the passport has a wallet, otherwise held until it links one.
-    // A failed mint never fails the order: the proof is already anchored and the NFT stays pending for retry.
-    let nfts = [] as Awaited<ReturnType<typeof mintPending>>;
-    try {
-      await recordMilestones(passportId, { proofs: passport.totals.receipts, plasticItems: passport.totals.plasticItems, co2Kg: passport.totals.co2Kg, brand: brand.name });
-      nfts = await mintPending(passportId);
-    } catch (e) { console.error("milestone step failed", e); }
+    const nfts = await afterProof(passportId, passport.totals, brand.name);
     return Response.json({ proof, passport, nfts }, { status: 201 });
   } catch (e) {
     if (e instanceof OrderError) return Response.json({ error: e.message }, { status: 400 });

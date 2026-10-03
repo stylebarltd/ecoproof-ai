@@ -1,0 +1,66 @@
+import { createHash, randomUUID } from "crypto";
+import { query, type RecordRow } from "./db";
+import { hashRecord } from "./solana";
+import { hashInput } from "./verify";
+import { AlreadyClaimedError, claimUrl, claimWithRetry } from "./claim";
+import { identityGroup } from "./users";
+import { distanceM, getPlace, stampDay, type StampPlace } from "./stampPlaces";
+
+export class ClaimError extends Error { constructor(message: string, public status = 400, public extra: Record<string, unknown> = {}) { super(message); } }
+
+export type StampSource = "qr" | "card" | "order";
+export type StampResult = {
+  recordId: string; placeId: string; placeName: string; source: StampSource; day: string; impactNote: string | null;
+  hash: string; signature: string | null; claimAddress: string | null; claimUrl: string | null; proofUrl: string;
+};
+
+/**
+ * One valid claim = one stamp = one Solana proof. This is the single door every claim method goes through.
+ * The proof is a claim account on Solana derived from (place, person, day), so "once per day per person per place" is enforced
+ * on-chain as well as in the database. `source` records which door produced it (this stage: the place QR).
+ */
+export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace }): Promise<StampResult> {
+  const place = opts.place ?? (await getPlace(opts.placeId));
+  if (!place) throw new ClaimError("Unknown place", 404);
+  const source = opts.source ?? "qr";
+
+  if (place.gps_radius_m && place.lat != null && place.lng != null) {
+    if (!opts.geo) throw new ClaimError("Share your location to collect this stamp: it must be claimed at the place.", 422, { needsGps: true });
+    const d = distanceM(place.lat, place.lng, opts.geo.lat, opts.geo.lng);
+    if (d > place.gps_radius_m) throw new ClaimError(`You're ${Math.round(d)} m away. Stamps for ${place.name} can only be collected at the place.`, 403, { distanceM: Math.round(d) });
+  }
+
+  const person = (await identityGroup(opts.passportId))[0]; // a linked wallet and its device ids count as one person
+  const day = stampDay();
+  const fp = createHash("sha256").update(`ecoproof:stamp:v1:${place.id}:${person}:${day}`).digest("hex");
+  const dup = await query<{ id: string; claim_address: string | null }>("SELECT id, claim_address FROM records WHERE receipt_fp=$1", [fp]);
+  const already = (id: string | null, addr: string | null) => new ClaimError(`You already collected a ${place.name} stamp today. Come back tomorrow!`, 409, { recordId: id, claimAddress: addr });
+  if (dup.length) throw already(dup[0].id, dup[0].claim_address);
+
+  const row: RecordRow = {
+    id: randomUUID(), user_id: opts.passportId, merchant: place.name, items: "[]",
+    co2_kg: 0, plastic_items: 0, packaging_g: 0, sustainable_items: 0,
+    hash: "", signature: null, created_at: new Date().toISOString(), place_id: place.id, source,
+  };
+  row.hash = hashRecord(hashInput(row));
+
+  let signature: string | null = null;
+  let claimAddress: string | null = null;
+  try {
+    ({ signature, claimAddress } = await claimWithRetry("impact", fp, `ecoproof:v1:${row.hash}`));
+  } catch (e) {
+    if (e instanceof AlreadyClaimedError) throw already(null, e.claimAddress);
+    console.error("anchor failed; saving stamp as pending", e); // kept, and /api/records/[id]/anchor can retry it
+  }
+  try {
+    await query(
+      `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at,receipt_fp,claim_address,place_id,source,impact_note)
+       VALUES ($1,$2,$3,'[]',0,0,0,0,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [row.id, row.user_id, row.merchant, row.hash, signature, row.created_at, fp, claimAddress, place.id, source, null],
+    );
+  } catch (e) {
+    if ((e as { code?: string }).code === "23505") throw already(null, claimAddress);
+    throw e;
+  }
+  return { recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: place.impact_note, hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
+}

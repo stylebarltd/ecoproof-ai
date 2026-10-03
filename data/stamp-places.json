@@ -1,0 +1,12 @@
+[
+  {
+    "id": "superbee", "name": "SuperBee", "kind": "shop", "colour": "#e8a317",
+    "tagline": "Plastic-free home goods, handmade in Chiang Mai",
+    "impactNote": "≈ 20 rolls of cling film saved"
+  },
+  {
+    "id": "demo-cafe", "name": "Demo Café", "kind": "cafe", "colour": "#8c491a",
+    "tagline": "Bring your own cup, skip the disposable",
+    "impactNote": null, "lat": 18.7967, "lng": 98.9687, "gpsRadiusM": null
+  }
+]

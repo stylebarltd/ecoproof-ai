@@ -16,13 +16,20 @@ import { payerKeypair, RPC } from "./solana";
 //    tree account: right after our own mint, the new leaf is the rightmost one and its proof is stored on-chain.
 //    Mints are therefore serialised by the caller (see lib/milestones.ts).
 
-export const MILESTONES = [1, 10, 50, 100] as const;
-export const TIERS: Record<number, { name: string; title: string }> = {
-  1: { name: "Seedling", title: "First proof" },
-  10: { name: "Sprout", title: "10 proofs" },
-  50: { name: "Guardian", title: "50 proofs" },
-  100: { name: "Legend", title: "100 proofs" },
-};
+// Milestones are stamp counts: 1, 3, 10, 25, then every 50. Every stamp writes a proof; only milestones mint.
+export const BASE_MILESTONES = [1, 3, 10, 25] as const;
+export const reachedMilestones = (n: number): number[] => [...BASE_MILESTONES.filter((m) => m <= n), ...Array.from({ length: Math.floor(n / 50) }, (_, i) => (i + 1) * 50)];
+export const nextMilestone = (n: number): number => BASE_MILESTONES.find((m) => m > n) ?? (Math.floor(n / 50) + 1) * 50;
+
+export type Tier = { key: "seedling" | "sprout" | "guardian" | "legend"; name: string };
+/** Four tiers that visibly level up; every milestone from 25 on is a Legend (its artwork scales with the count). */
+export function tierFor(milestone: number): Tier {
+  if (milestone >= 25) return { key: "legend", name: "Legend" };
+  if (milestone >= 10) return { key: "guardian", name: "Guardian" };
+  if (milestone >= 3) return { key: "sprout", name: "Sprout" };
+  return { key: "seedling", name: "Seedling" };
+}
+export const milestoneLabel = (m: number) => (m === 1 ? "First stamp" : `${m} stamps`);
 
 export const appUrl = () => (process.env.APP_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")).replace(/\/$/, "");
 
