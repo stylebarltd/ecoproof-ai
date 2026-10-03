@@ -4,67 +4,81 @@
 
 # 🌱 EcoProof AI
 
-**A mobile-first environmental impact passport and local discovery platform.** Scan a receipt, let AI turn purchases and sustainable actions into measurable impact, badges, streaks and shareable social cards, and anchor the proof on Solana.
+**Scan → collect → unlock.** EcoProof gives sustainable shops, cafés, markets and online brands a way to turn real eco-friendly visits and purchases into shareable, verified social proof. A customer taps a link or scans a QR code and collects a **stamp** in their eco passport. Collect enough stamps and a **soulbound Eco Warrior NFT** unlocks. Every valid claim is anchored on **Solana**.
 
-**Live demo:** https://ecoproof-ai.vercel.app (tap *Try the demo receipt*)
+> Status: hackathon build on **Solana devnet**. Impact figures are estimates (see [Honest limits](#honest-limits)).
 
-## Why EcoProof
+## The idea
 
-People make sustainable choices every day, but the impact is invisible and there is little trustworthy information about which local businesses actually practise what they promise. EcoProof connects the whole loop: **discover** sustainable places, **make** better choices, **prove** them, and build a personal impact passport.
+Sustainable brands have no cheap way to show that real people really chose them, and customers have nothing to show for sustainable habits. EcoProof sits between the two:
 
-The timing is right: AI makes receipt analysis practical, consumers increasingly discover businesses through digital communities, and Solana adds a simple layer of trust. Every receipt gets a unique fingerprint recorded on-chain, so the same purchase cannot be claimed twice, and receipt-gated reviews make fake sustainability ratings and achievements much harder.
+- **Customers** get an eco passport: a collection of stamps, streaks, and collectible NFTs that level up (Seedling → Sprout → Guardian → Legend). It's a travel passport crossed with a collectible-card game, and it's built to be shared.
+- **Brands** get new customers through that sharing, and a verified record that doesn't depend on trusting their own database.
 
-**Who it is for**
-
-- **Consumers** who want their sustainable choices to be visible, rewarding and shareable (streaks, badges, social cards).
-- **Businesses** (restaurants, cafes, shops) that pledge sustainability commitments (no plastic straws, no styrofoam, no plastic cups, reusable-container discounts) and earn badges when customers confirm them.
+Underneath, every claim writes a proof on Solana: a hash of the claim plus a claim account that makes "one scan, one stamp" enforceable on-chain.
 
 ## How it works
 
-1. **Scan** a receipt photo on your phone (mobile-first PWA).
-2. **Claude** (vision + structured output) extracts each line item and classifies it, e.g. reusable bag, beeswax wrap, refill product, solid personal care.
-3. A transparent **emission-factor table** (`lib/impact.ts`) estimates CO₂ saved, single-use plastics avoided and packaging reduced.
-4. The record is hashed (SHA-256) and the hash is written to **Solana** as a Memo transaction (`ecoproof:v1:<hash>`).
-5. Each receipt gets a unique **fingerprint**, so the same purchase cannot be claimed twice.
-6. The user's **passport** shows totals, a daily streak, achievement badges and a shareable social card with a proof QR code.
-7. **Verify on-chain** recomputes the hash from the stored data and checks it against the memo on Solana.
+### Places
+Everything is a **place**: SuperBee, a café, a market stall, an online shop. A place has a name, a stamp (its logo, or a generated badge), a one-line tagline, and its own QR. We set up launch partners ourselves; owners can also **self-serve** at `/join` (sign in with a wallet, add name, logo and tagline, get a QR and a print-ready counter card).
+
+### Three claim doors, one destination
+Each produces one stamp and one Solana proof.
+
+| Door | Use it for | What it proves |
+|---|---|---|
+| **Place QR / link** (`/c/<place>`) | A counter display at a café, shop or stall | Someone was scanning that code. Once per day per person per place. Physical places set up through `/join` always get a GPS check (150 m). |
+| **Printed card** (`/k/<code>`) | A card dropped into a parcel, on any channel (Amazon, Lazada, Shopee, own shop). The app generates the cards; the shop needs no code. | One card, one stamp, once. A generic stamp with **no impact number**, because a card doesn't prove what was bought. |
+| **Verified order** (`/o/<place>/<order>.<sig>`) | WooCommerce shops (SuperBee is the showcase) | A real completed order. A signed QR/link in the order-completed email carries the order, so the stamp shows its **real impact line**. Only this door proves the order happened. |
+
+Online shops have no map pin and no GPS check, and choose door 2, door 3, or both, in `/join`.
+
+### Milestones and NFTs
+Every claim writes a proof; only milestones mint. A **soulbound compressed NFT** (Metaplex Bubblegum V2, made non-transferable) is minted to the customer's wallet at **1, 3, 10 and 25 stamps, then every 50**. The artwork is code-drawn SVG with a different look per tier, so it visibly levels up. Customers who haven't connected a wallet yet get the NFT when they do.
+
+### Proofs on Solana
+For each claim, EcoProof hashes the record (SHA-256) and writes `ecoproof:v1:<hash>` to Solana as a Memo transaction, in the same transaction that creates a **claim account** derived from the claim's fingerprint (place + person + day, or card code, or order id). Solana refuses to create an account that already exists, so a repeat claim fails on-chain without a custom program. Each proof has a **Verify on-chain** button that recomputes the hash from the stored data and compares it with the memo.
+
+### The passport (the hero screen)
+Frosted-glass panels over an earthy green gradient with a honey-gold accent: earned Eco Warrior NFTs shown as their real artwork (highest tier largest, linking to Solana Explorer), the stamp collection (earned bright, not-yet-earned as dashed placeholders), a progress line to the next milestone, and the proof trail. A share button produces a polished image (NFT + stamps + numbers) with a link back to the live passport.
+
+### The map
+Only places that have actually joined EcoProof are shown. "Verified" here means **claimed and set up on EcoProof**; independent vetting is on the roadmap.
 
 ## Stack
 
-Next.js 16 (App Router) · React · Tailwind · Anthropic Claude API · Solana (`@solana/web3.js`, devnet) · PostgreSQL (Neon) · `next/og` · Vercel
+Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devnet) · Metaplex Bubblegum V2 + MPL-Core · PostgreSQL (Neon) · `next/og` · `qrcode` · Anthropic Claude (classifying products the catalogue doesn't know) · Vercel
 
-## What is built, and what is not
+## Honest limits
 
-| Built | Planned |
-|---|---|
-| Receipt photo → AI extraction → impact estimate | Shopify / WooCommerce import |
-| Solana proof + on-chain verification | Product barcode scanning |
-| Passport: streaks, badges, history | Brand APIs / embeddable badge |
-| Share card + proof QR | Passport NFT badges, ESG dashboards |
-| Plastic-free map of Chiang Mai (150 places from OpenStreetMap), shop pledges, receipt-verified reviews anchored on Solana, bring-your-own-cup streaks | More cities, merchant POS receipts, shop accounts |
-
-**Caveats.** Impact numbers are estimates from a hand-built factor table, not audited lifecycle data. The blockchain proves a record was not altered after creation; it does not prove the purchase happened. Merchant-issued receipts via ecommerce integrations are the planned path to that.
-
-## Plastic-free map (Chiang Mai)
-
-- Places come from OpenStreetMap with **no eco claims attached**. Claims exist only when a shop **pledges** a practice (no styrofoam, no plastic straws, no plastic cups, BYO-cup discount).
-- A pledge earns a **verified badge** once 3 different customers confirm it in reviews. (Demo shops need 1.)
-- **Reviews require a receipt from that place.** Claude checks the receipt belongs to the place and reads its date and number. Receipts older than 14 days are rejected, and one receipt can only ever be used for one review. Each review is hashed and anchored on Solana.
-- Ticking "I brought my own cup" adds the visit to your impact totals and **counts toward your streak**.
-- **Limits.** This makes fake reviews hard and reuse impossible, not impossible: someone could still photograph a receipt they did not pay for. Merchant-issued or POS-signed receipts are the planned fix. Discounts are shown, not enforced.
+- **Impact numbers are estimates** from a hand-built factor table (`lib/impact.ts`), not audited lifecycle data. SuperBee's catalogue is mapped by hand; for other shops, unknown product names are classified by an AI and are marked as estimates.
+- **Only the verified-order door proves a purchase.** QR and card stamps are generic stamps. A chain proof shows a record wasn't altered after creation, not that someone bought something.
+- **GPS checks can be spoofed.** They stop casual abuse, not a determined cheater.
+- **Self-serve places are not vetted** beyond format limits and three places per owner. The map says so.
+- **Devnet only.** NFTs on devnet may not appear in wallets that don't index it; the passport page and Solana Explorer always show them.
+- The old receipt-photo flow and the receipt-gated review flow were removed in the pivot. The review gating logic is kept in `lib/reviewGate.ts` and is paused until it is pointed at stamps.
 
 ## Project layout
 
 ```
-app/page.tsx                 passport home, badges, history
-app/p/[id]/page.tsx          passport + share card + verify button
-app/api/verify/[id]/route.ts recompute hash, compare to on-chain memo
-app/api/passport/route.ts    totals, streaks, badges
-app/api/card/[id]/route.tsx  1200×630 share image
-lib/impact.ts                emission factors + impact maths
-lib/solana.ts, lib/verify.ts anchoring and verification
-lib/passport.ts              streak and badge logic
-lib/reviewGate.ts            review gating (one proof = one review), proof source pluggable
+app/page.tsx                  passport home (splash, hero NFTs, stamps, progress, proof trail)
+app/u/[id]/page.tsx           public read-only passport (the link a shared image points to)
+app/c/[id]/page.tsx           place QR claim page          app/k/[code]/page.tsx   printed card claim page
+app/o/[place]/[token]/page.tsx  verified-order claim page   app/map/page.tsx        joined places map
+app/join/page.tsx             self-serve place setup (+ online shop options)
+app/place/[id]/page.tsx       print-ready counter card     app/place/[id]/cards    print sheet for card batches
+app/api/claims                one endpoint for all three doors (streams live progress as NDJSON)
+app/api/woo/webhook/[place]   WooCommerce webhook ingest   app/api/woo/qr          QR image for the order email
+app/api/passport-card/[id]    share image of a passport    app/api/card/[id]       share image of one stamp
+app/api/verify/[id]           recompute hash, compare to the on-chain memo
+lib/stamp.ts                  the single claim function (checks, proof, record)
+lib/cards.ts · lib/woo.ts     printed-card and verified-order doors
+lib/milestones.ts · lib/nft.ts · lib/milestoneRules.ts · lib/nftArt.ts   milestones, minting, tier art
+lib/claim.ts · lib/solana.ts · lib/verify.ts   Solana proofs and verification
+lib/passport.ts · lib/impact.ts · lib/order.ts · lib/proof.ts
+lib/reviewGate.ts             review gating, proof source pluggable (paused)
+scripts/nft-setup.ts          one-time: creates the Merkle tree and the NFT collection
+docs/woocommerce/             shop connection guide and a local staging recipe
 ```
 
 ## Run locally
@@ -77,12 +91,20 @@ npm run dev                  # http://localhost:3000
 
 | Variable | Purpose |
 |---|---|
-| `ANTHROPIC_API_KEY` | Receipt reading. Without it a mock extractor is used. |
-| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). |
-| `SOLANA_SECRET_KEY` | Base58 secret key of a **devnet** wallet that pays for memo transactions. Locally, a key is generated in `.payer.json` if unset. The wallet needs devnet SOL (faucet.solana.com). |
+| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables and the demo places are created automatically. |
+| `SOLANA_SECRET_KEY` | Base58 secret key of a **devnet** wallet that pays for proofs and NFT mints. Locally a key is generated in `.payer.json` if unset. It needs devnet SOL (faucet.solana.com). |
 | `SOLANA_RPC_URL` | Optional, defaults to public devnet. |
+| `NFT_TREE_ADDRESS`, `NFT_COLLECTION_ADDRESS` | Output of `npx tsx scripts/nft-setup.ts` (run once, with the same wallet as `SOLANA_SECRET_KEY`). Without them stamps still work, NFTs stay pending. |
+| `APP_URL` | Public base URL. It goes into NFT metadata and claim links, so set it wherever the app is public. |
+| `SESSION_SECRET` | 32+ characters, signs wallet-sign-in sessions (required in production). |
+| `ADMIN_TOKEN` | Enables our own place setup and card generation endpoints (`x-admin-token` header). Leave unset to disable them. |
+| `ANTHROPIC_API_KEY` | Classifies products the catalogue doesn't know. Optional: without it unknown products count as "not sustainable". |
 
-Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -p 5433:5432 postgres:16-alpine`, then `DATABASE_URL=postgres://postgres:pg@localhost:5433/ecoproof`. The table is created automatically.
+Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -p 5433:5432 postgres:16-alpine`, then `DATABASE_URL=postgres://postgres:pg@localhost:5433/ecoproof`.
+
+## Connecting a WooCommerce shop
+
+See [docs/woocommerce/README.md](./docs/woocommerce/README.md) (webhook + a snippet that adds the QR to the order-completed email only) and [STAGING.md](./docs/woocommerce/STAGING.md) (a local throw-away shop for testing before anything touches a live one).
 
 ## More
 
