@@ -1,6 +1,6 @@
 # EcoProof AI: submission text and demo script
 
-> **Before you submit (delete this box):** this text describes the stamp-model build on branch `pivot/order-proofs-nft`. Until that build is promoted to production, `https://ecoproof-ai.vercel.app` still serves the earlier receipt-scanning version, so either point the live link at the preview (`https://ecoproof-ai-git-pivot-order-proofs-nft-stylebar.vercel.app`) or promote the branch first. Also confirm the SuperBee impact wording and logo, and that the demo wallet has devnet SOL.
+> **Before you submit (delete this box):** confirm the SuperBee impact wording and logo, the business-model sentence, and that the demo wallet has devnet SOL. The live app link below is the production site, which now serves this stamp-model build.
 
 Live app: https://ecoproof-ai.vercel.app
 Code: https://github.com/stylebarltd/ecoproof-ai
