@@ -43,7 +43,7 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
     ? `<path d="M84 100h72v34a30 30 0 0 1-30 30h-12a30 30 0 0 1-30-30z" fill="#f5ead8"/><path d="M156 108h12a14 14 0 0 1 0 28h-14" fill="none" stroke="#f5ead8" stroke-width="9" stroke-linecap="round"/><path d="M104 76q-8-12 0-22M128 76q-8-12 0-22" fill="none" stroke="#f5ead8" stroke-width="7" stroke-linecap="round"/>`
     : `<path d="M128 74l38 22v44l-38 22-38-22V96z" fill="#f5ead8"/><path d="M128 100c-14 0-22 10-22 22 0 13 9 22 22 22 12 0 22-9 22-21 0-14-10-23-22-23z" fill="${c}"/>`;
   const name = esc(p.name.length > 18 ? p.name.slice(0, 17) + "…" : p.name);
-  const inner = p.image ? `<clipPath id="lc"><circle cx="128" cy="116" r="62"/></clipPath><image href="${esc(p.image)}" x="66" y="54" width="124" height="124" clip-path="url(#lc)" preserveAspectRatio="xMidYMid slice"/>` : glyph;
+  const inner = p.image ? `<clipPath id="lc"><circle cx="128" cy="116" r="62"/></clipPath><circle cx="128" cy="116" r="62" fill="#fff8e6"/><image href="${esc(p.image)}" x="70" y="58" width="116" height="116" clip-path="url(#lc)" preserveAspectRatio="xMidYMid meet"/>` : glyph;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${name} stamp"><circle cx="128" cy="128" r="124" fill="${c}"/>${ring}<circle cx="128" cy="128" r="100" fill="none" stroke="#f5ead8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>${inner}${opts.labels === false ? "" : `<text x="128" y="206" text-anchor="middle" font-family="Figtree,system-ui,sans-serif" font-size="22" font-weight="800" fill="#f5ead8">${name}</text>`}</svg>`;
 }
 

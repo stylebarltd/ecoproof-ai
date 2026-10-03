@@ -1,6 +1,8 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
-import { Flame } from "lucide-react";
+import { Camera, Flame } from "lucide-react";
+import QrScanner from "@/components/QrScanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import AccountChip from "@/components/AccountChip";
 import SharePassport from "@/components/SharePassport";
@@ -31,6 +33,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
   const prog = progress(stamps, pass?.nextMilestone ?? 1);
   const slots = Math.max(0, 8 - (pass?.places.length ?? 0));
   const t = pass?.totals;
+  const [scanning, setScanning] = useState(false);
 
   return (
     <div className="space-y-4">
@@ -50,6 +53,12 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
         </div>
       )}
       {owner && <InstallPrompt />}
+      {owner && (
+        <button onClick={() => setScanning(true)} className="glass flex w-full items-center justify-center gap-2 rounded-full py-3 font-heading text-[15px] text-ink">
+          <Camera size={18} strokeWidth={2.5} /> Scan a QR to collect a stamp
+        </button>
+      )}
+      {scanning && <QrScanner onClose={() => setScanning(false)} />}
 
       {/* 1. Hero: earned Eco Warrior NFTs, highest tier largest */}
       <Glass className="p-4">
