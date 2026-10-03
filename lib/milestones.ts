@@ -32,7 +32,7 @@ export async function recordMilestones(passportId: string, stats: Omit<NftStats,
 }
 
 /** Mints every pending NFT for this passport that has a wallet to receive it. Safe to call repeatedly; failures stay pending. */
-export async function mintPending(passportId: string): Promise<Nft[]> {
+export async function mintPending(passportId: string, onMint?: (milestone: number) => void): Promise<Nft[]> {
   const group = await identityGroup(passportId);
   const wallet = looksLikeWallet(group[0]) ? group[0] : null;
   if (!wallet || !nftConfig()) return listNfts(passportId);
@@ -41,6 +41,7 @@ export async function mintPending(passportId: string): Promise<Nft[]> {
     // claim the row so concurrent calls cannot double-mint
     const claimed = await query("UPDATE nft_mints SET status='minting', wallet=$2 WHERE id=$1 AND status='pending' RETURNING id", [row.id, wallet]);
     if (!claimed.length) continue;
+    onMint?.(row.milestone);
     try {
       const stats = JSON.parse(row.stats) as NftStats;
       await query("UPDATE nft_mints SET svg=$2 WHERE id=$1", [row.id, artSvg(stats)]);
@@ -60,9 +61,9 @@ export async function listNfts(passportId: string): Promise<Nft[]> {
 }
 
 /** After any valid proof: record the milestones the passport has now reached and mint those it can. A failed mint never fails the claim. */
-export async function afterProof(passportId: string, totals: { receipts: number; plasticItems: number; co2Kg: number }, brand = "EcoProof"): Promise<Nft[]> {
+export async function afterProof(passportId: string, totals: { receipts: number; plasticItems: number; co2Kg: number }, brand = "EcoProof", onMint?: (milestone: number) => void): Promise<Nft[]> {
   try {
     await recordMilestones(passportId, { proofs: totals.receipts, plasticItems: totals.plasticItems, co2Kg: totals.co2Kg, brand });
-    return await mintPending(passportId);
+    return await mintPending(passportId, onMint);
   } catch (e) { console.error("milestone step failed", e); return []; }
 }

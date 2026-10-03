@@ -8,8 +8,13 @@ import { AuthError, resolveUser } from "@/lib/session";
 
 export const maxDuration = 60;
 
-/** Claim doors: place QR { placeId, userId, lat?, lng? }, printed card { cardCode, userId }, or verified order { placeId, orderToken, userId }.
- *  Place QR: -> one stamp + one Solana proof (+ a milestone NFT when one is reached). */
+type Step = "verify" | "anchor" | "save";
+
+/**
+ * Claim doors: place QR { placeId, userId, lat?, lng? }, printed card { cardCode, userId }, or verified order { placeId, orderToken, userId }.
+ * One valid claim = one stamp + one Solana proof (+ a milestone NFT when one is reached).
+ * Send `Accept: application/x-ndjson` to get live progress: one JSON object per line ({step}, then {done} or {error}).
+ */
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
   if (rateLimited(ip, 60)) return Response.json({ error: "Too many requests, try again later" }, { status: 429 });
@@ -21,14 +26,35 @@ export async function POST(req: Request) {
   const lat = Number(b.lat), lng = Number(b.lng);
   const geo = b.lat != null && b.lng != null && Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
 
-  try {
-    const stamp = b.orderToken ? await claimOrder(String(b.placeId ?? ""), String(b.orderToken), passportId) : b.cardCode ? await claimCard(String(b.cardCode), passportId) : await claimStamp({ placeId: String(b.placeId ?? ""), passportId, source: "qr", geo });
+  const run = async (emit: (e: Record<string, unknown>) => void) => {
+    const onStep = (s: Step) => emit({ step: s });
+    const stamp = b.orderToken ? await claimOrder(String(b.placeId ?? ""), String(b.orderToken), passportId, onStep)
+      : b.cardCode ? await claimCard(String(b.cardCode), passportId, onStep)
+      : await claimStamp({ placeId: String(b.placeId ?? ""), passportId, source: "qr", geo, onStep });
+    emit({ step: "passport" });
     const passport = await getPassport(passportId);
-    const nfts = await afterProof(passportId, passport.totals);
-    return Response.json({ stamp, passport: { stamps: passport.totals.receipts, nextMilestone: passport.nextMilestone }, nfts }, { status: 201 });
-  } catch (e) {
-    if (e instanceof ClaimError) return Response.json({ error: e.message, ...e.extra }, { status: e.status });
+    const nfts = await afterProof(passportId, passport.totals, undefined, (milestone) => emit({ step: "nft", milestone }));
+    return { stamp, passport: { stamps: passport.totals.receipts, nextMilestone: passport.nextMilestone }, nfts };
+  };
+  const fail = (e: unknown): { status: number; body: Record<string, unknown> } => {
+    if (e instanceof ClaimError) return { status: e.status, body: { error: e.message, ...e.extra } };
     console.error(e);
-    return Response.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+    return { status: 500, body: { error: "Something went wrong. Please try again." } };
+  };
+
+  if (!(req.headers.get("accept") ?? "").includes("application/x-ndjson")) {
+    try { return Response.json(await run(() => {}), { status: 201 }); }
+    catch (e) { const f = fail(e); return Response.json(f.body, { status: f.status }); }
   }
+
+  const enc = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const emit = (e: Record<string, unknown>) => controller.enqueue(enc.encode(JSON.stringify(e) + "\n"));
+      try { emit({ done: await run(emit) }); }
+      catch (e) { const f = fail(e); emit({ error: f.body.error, status: f.status, ...f.body }); }
+      controller.close();
+    },
+  });
+  return new Response(stream, { headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store", "X-Accel-Buffering": "no" } });
 }

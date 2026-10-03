@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
+import { kindOf } from "@/lib/placeKinds";
 import type { MapPlace } from "@/lib/stampPlaces";
 
-const KIND: Record<string, string> = { shop: "Shop", cafe: "Café", market: "Market" };
 
 export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; onClose: () => void }) {
   return (
@@ -12,7 +12,7 @@ export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; o
         <img src={place.imageUrl} alt="" width={64} height={64} className="shrink-0 rounded-full" />
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-lg">{place.name}</h2>
-          <p className="text-xs text-neutral-600">{KIND[place.kind] ?? "Place"}{place.locationName && place.locationName !== place.name ? ` · ${place.locationName}` : ""}</p>
+          <p className="text-xs text-neutral-600">{kindOf(place.kind)?.label ?? "Place"}{place.locationName && place.locationName !== place.name ? ` · ${place.locationName}` : ""}</p>
           {place.tagline && <p className="mt-1 text-sm text-neutral-700">{place.tagline}</p>}
         </div>
         <button onClick={onClose} aria-label="Close" className="text-neutral-600">✕</button>

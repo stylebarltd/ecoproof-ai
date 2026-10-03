@@ -21,10 +21,12 @@ export type StampResult = {
  * The proof is a claim account on Solana derived from (place, person, day), so "once per day per person per place" is enforced
  * on-chain as well as in the database. `source` records which door produced it (this stage: the place QR).
  */
-export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace; cardCode?: string; order?: { orderId: string; items: LineItem[]; impact: Impact; line: string } }): Promise<StampResult> {
+export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace; cardCode?: string; onStep?: (s: "verify" | "anchor" | "save") => void; order?: { orderId: string; items: LineItem[]; impact: Impact; line: string } }): Promise<StampResult> {
+  opts.onStep?.("verify");
   const place = opts.place ?? (await getPlace(opts.placeId));
   if (!place) throw new ClaimError("Unknown place", 404);
   const source = opts.source ?? "qr";
+  if (place.kind === "online" && source === "qr") throw new ClaimError("This is an online shop. Collect your stamp from the card in your parcel or the link in your order email.", 422);
 
   if (place.gps_radius_m && place.lat != null && place.lng != null) {
     if (!opts.geo) throw new ClaimError("Share your location to collect this stamp: it must be claimed at the place.", 422, { needsGps: true });
@@ -56,6 +58,7 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
   };
   row.hash = hashRecord(hashInput(row));
 
+  opts.onStep?.("anchor");
   let signature: string | null = null;
   let claimAddress: string | null = null;
   try {
@@ -64,6 +67,7 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
     if (e instanceof AlreadyClaimedError) throw already(null, e.claimAddress);
     console.error("anchor failed; saving stamp as pending", e); // kept, and /api/records/[id]/anchor can retry it
   }
+  opts.onStep?.("save");
   try {
     await query(
       `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at,receipt_fp,claim_address,place_id,source,impact_note,brand_id,order_id)

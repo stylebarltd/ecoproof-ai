@@ -9,7 +9,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const r = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!r) return new Response("not found", { status: 404 });
   const place = r.place_id ? await getPlace(r.place_id) : null;
-  const stampImg = place ? `data:image/svg+xml;base64,${Buffer.from(stampSvg(place)).toString("base64")}` : null;
+  const stampImg = place ? `data:image/svg+xml;base64,${Buffer.from(stampSvg(place, { labels: false })).toString("base64")}` : null;
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: CREAM, borderRadius: 28, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700, color: INK }}>{v}</div>

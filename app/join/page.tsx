@@ -3,13 +3,42 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AccountChip from "@/components/AccountChip";
 import { currentAddress } from "@/lib/wallet";
+import { PLACE_KINDS, isPhysical } from "@/lib/placeKinds";
 import { prepareLogo } from "@/lib/clientLogo";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
-const KINDS: [string, string][] = [["shop", "Shop"], ["cafe", "Café"], ["market", "Market stall"]];
 const input = "w-full rounded-xl bg-white px-3 py-2.5 text-sm ring-1 ring-neutral-300";
 
+function CardsButton({ id }: { id: string }) {
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  async function go() {
+    setBusy(true); setMsg("");
+    const r = await fetch(`/api/places/mine/${id}/cards`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ count: 20 }) });
+    const j = await r.json().catch(() => ({}));
+    setBusy(false);
+    if (r.ok) window.open(j.printUrl, "_blank"); else setMsg(j.error || "Could not make cards");
+  }
+  return (
+    <div>
+      <button onClick={go} disabled={busy} className="w-full rounded-full bg-honey-500 py-2.5 text-sm font-semibold text-ink disabled:opacity-60">{busy ? "Making cards…" : "Make 20 printable cards for your parcels"}</button>
+      {msg && <p className="mt-1 text-xs text-terra-800">{msg}</p>}
+    </div>
+  );
+}
+
 function PlaceCard({ p }: { p: PublicPlace }) {
+  if (p.kind === "online") {
+    return (
+      <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={p.imageUrl} alt="" width={96} height={96} className="mx-auto" />
+        <h3 className="text-lg">{p.name}</h3>
+        <p className="text-xs text-neutral-600">Online shop: drop a card in each parcel. Every card gives one stamp, once.</p>
+        <CardsButton id={p.id} />
+      </div>
+    );
+  }
   return (
     <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -33,7 +62,6 @@ export default function Join() {
   const [tagline, setTagline] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
   const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(null);
-  const [gps, setGps] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [created, setCreated] = useState<{ place: PublicPlace; onMap: boolean } | null>(null);
@@ -55,7 +83,7 @@ export default function Join() {
   async function submit() {
     setBusy(true); setErr("");
     try {
-      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, ...(loc ?? {}), requireGps: gps && !!loc }) });
+      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, ...(isPhysical(kind) ? loc ?? {} : {}) }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Could not set up your place");
       setCreated(j); await refresh();
@@ -77,26 +105,30 @@ export default function Join() {
         <>
           <p className="rounded-xl bg-sage-200 p-3 text-sm font-semibold text-sage-900">🎉 {created.place.name} is set up{created.onMap ? " and on the map" : ""}. Put the QR where customers can scan it.</p>
           <PlaceCard p={created.place} />
-          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setGps(false); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
+          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
         </>
       ) : (
         <div className="space-y-3 rounded-[28px] bg-neutral-100 p-4">
           <label className="block text-sm font-semibold">Name<input className={`${input} mt-1`} value={name} maxLength={60} onChange={(e) => setName(e.target.value)} placeholder="e.g. Green Bean Café" /></label>
           <div>
             <span className="text-sm font-semibold">What is it?</span>
-            <div className="mt-1 flex gap-2">{KINDS.map(([k, l]) => <button key={k} onClick={() => setKind(k)} className={`flex-1 rounded-full py-2 text-xs font-bold ${kind === k ? "bg-sage-500 text-cream" : "border-[1.5px] border-neutral-300"}`}>{l}</button>)}</div>
+            <div className="mt-1 flex flex-wrap gap-2">{PLACE_KINDS.map((k) => <button key={k.id} onClick={() => setKind(k.id)} className={`rounded-full px-3 py-2 text-xs font-bold ${kind === k.id ? "bg-sage-500 text-cream" : "border-[1.5px] border-neutral-300"}`}>{k.label}</button>)}</div>
           </div>
           <label className="block text-sm font-semibold">One-line tagline<input className={`${input} mt-1`} value={tagline} maxLength={90} onChange={(e) => setTagline(e.target.value)} placeholder="e.g. Bring your own cup, skip the plastic" /></label>
           <label className="block rounded-2xl border-2 border-dashed border-neutral-300 p-3 text-center text-sm">
             {logo ? <span className="flex items-center justify-center gap-3">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={logo} alt="" width={56} height={56} className="rounded-full" /> Logo added · tap to change</span> : "🖼️ Upload your logo (optional)"}
             <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => pickLogo(e.target.files?.[0])} />
           </label>
-          <div className="space-y-2 rounded-2xl bg-cream p-3 text-sm">
-            <button onClick={locate} className="rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-neutral-300">{loc ? "📍 Location saved" : "📍 Use my current location (puts you on the map)"}</button>
-            <label className={`flex items-center gap-2 text-xs ${loc ? "" : "opacity-50"}`}><input type="checkbox" disabled={!loc} checked={gps} onChange={(e) => setGps(e.target.checked)} /> Only give stamps to people who are at my place (GPS check)</label>
-          </div>
+          {isPhysical(kind) ? (
+            <div className="space-y-2 rounded-2xl bg-cream p-3 text-sm">
+              <button onClick={locate} className="rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-neutral-300">{loc ? "📍 Location saved" : "📍 Use my current location"}</button>
+              <p className="text-xs text-neutral-600">Do this while you&apos;re at your place. It puts you on the map, and stamps are only given to people who are there (GPS check, always on).</p>
+            </div>
+          ) : (
+            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. Customers collect stamps from the printed card in their parcel or the link in their order email.</p>
+          )}
           {err && <p className="rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
-          <button onClick={submit} disabled={busy || name.trim().length < 2} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>
+          <button onClick={submit} disabled={busy || name.trim().length < 2 || (isPhysical(kind) && !loc)} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>
           <p className="text-[11px] text-neutral-500">Places are listed as &ldquo;claimed and set up&rdquo;. Independent vetting is on our roadmap.</p>
         </div>
       )}

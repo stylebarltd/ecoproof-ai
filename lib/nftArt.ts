@@ -20,7 +20,13 @@ const arms = (fill: string) => `<path d="M190 366q-34 18-40 52" fill="none" stro
 const plaque = (text: string, gold: boolean) => `<rect x="86" y="452" width="340" height="42" rx="21" fill="${gold ? DG : CR}" stroke="${gold ? G : DG}" stroke-width="3"/><text x="256" y="480" text-anchor="middle" font-family="Figtree,system-ui,Arial,sans-serif" font-size="22" font-weight="800" fill="${gold ? GL : DG}">${text}</text>`;
 const frame = (c: string, w: number) => `<rect x="8" y="8" width="496" height="496" rx="40" fill="none" stroke="${c}" stroke-width="${w}"/>`;
 
-export function artSvg(st: NftStats): string {
+/** `labels: false` leaves out every <text> (plaque and count badge). Used where the SVG is rasterised without fonts (Vercel's og renderer), which would draw empty boxes. */
+export function artSvg(st: NftStats, opts: { labels?: boolean } = {}): string {
+  const svg = artSvgFull(st);
+  return opts.labels === false ? svg.replace(/<text\b[\s\S]*?<\/text>/g, "") : svg;
+}
+
+function artSvgFull(st: NftStats): string {
   const tier = tierFor(st.milestone).key;
   const label = `${tierFor(st.milestone).name} · ${milestoneLabel(st.milestone)}`;
   const head = (inner: string, bg: string, defs = "") => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Eco ${label}"><title>Eco ${label}</title><defs>${bg}${defs}</defs>`;

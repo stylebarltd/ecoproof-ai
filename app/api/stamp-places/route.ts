@@ -1,12 +1,13 @@
 import { randomBytes } from "crypto";
 import { query } from "@/lib/db";
+import { isKind } from "@/lib/placeKinds";
 import { listPlaces, slug, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
 export const GET = async () => Response.json({ places: (await listPlaces()).map(toPublic) });
 
 /**
  * Our own place-setup (launch partners). Requires the ADMIN_TOKEN header. Creating a place generates its QR/claim URL.
- * Body: { name, kind?: "shop"|"cafe"|"market", tagline?, impactNote?, colour?, image? (data:image/... URL), lat?, lng?, gpsRadiusM? }
+ * Body: { name, kind?: "shop"|"cafe"|"restaurant"|"market"|"online", tagline?, impactNote?, colour?, image? (data:image/... URL), lat?, lng?, gpsRadiusM? }
  */
 export async function POST(req: Request) {
   const token = process.env.ADMIN_TOKEN;
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
   const b = (await req.json().catch(() => ({}))) as Record<string, unknown>;
   const name = String(b.name ?? "").trim().slice(0, 60);
   if (!name) return Response.json({ error: "name required" }, { status: 400 });
-  const kind = ["shop", "cafe", "market"].includes(String(b.kind)) ? String(b.kind) : "shop";
+  const kind = isKind(String(b.kind)) ? String(b.kind) : "shop";
   const image = typeof b.image === "string" && /^data:image\/(png|jpeg|webp|svg\+xml);base64,/.test(b.image) && b.image.length < 400_000 ? b.image : null;
   const num = (v: unknown) => (v == null || v === "" || !Number.isFinite(Number(v)) ? null : Number(v));
   const lat = num(b.lat), lng = num(b.lng), radius = num(b.gpsRadiusM);

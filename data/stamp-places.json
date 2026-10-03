@@ -41,5 +41,41 @@
         "lng": 98.9687
       }
     ]
+  },
+  {
+    "id": "demo-restaurant",
+    "name": "Demo Restaurant",
+    "kind": "restaurant",
+    "colour": "#b2622d",
+    "tagline": "Plant-based plates, zero single-use plastic",
+    "impactNote": null,
+    "lat": 18.799,
+    "lng": 98.9655,
+    "gpsRadiusM": null,
+    "locations": [
+      {
+        "name": "Demo Restaurant",
+        "lat": 18.799,
+        "lng": 98.9655
+      }
+    ]
+  },
+  {
+    "id": "demo-coffee",
+    "name": "Demo Coffee Roasters",
+    "kind": "cafe",
+    "colour": "#8c491a",
+    "tagline": "Roasted in town, served in reusable cups",
+    "impactNote": null,
+    "lat": 18.7885,
+    "lng": 98.993,
+    "gpsRadiusM": null,
+    "locations": [
+      {
+        "name": "Demo Coffee Roasters",
+        "lat": 18.7885,
+        "lng": 98.993
+      }
+    ]
   }
 ]

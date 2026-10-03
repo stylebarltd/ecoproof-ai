@@ -29,7 +29,7 @@ export async function getCard(code: string): Promise<Card | null> {
 }
 
 /** Redeem a card: reserve it atomically, then stamp. A failed attempt releases the card so the customer can retry. */
-export async function claimCard(code: string, passportId: string): Promise<StampResult> {
+export async function claimCard(code: string, passportId: string, onStep?: (s: "verify" | "anchor" | "save") => void): Promise<StampResult> {
   const c = normaliseCode(code);
   const card = await getCard(c);
   if (!card) throw new ClaimError("This card isn't valid.", 404);
@@ -38,7 +38,7 @@ export async function claimCard(code: string, passportId: string): Promise<Stamp
   const reserved = await query("UPDATE claim_cards SET claimed_at=now() WHERE code=$1 AND claimed_at IS NULL RETURNING code", [c]);
   if (!reserved.length) throw new ClaimError("This card has already been used.", 409);
   try {
-    const stamp = await claimStamp({ placeId: place.id, passportId, source: "card", cardCode: c, place });
+    const stamp = await claimStamp({ placeId: place.id, passportId, source: "card", cardCode: c, place, onStep });
     await query("UPDATE claim_cards SET record_id=$2 WHERE code=$1", [c, stamp.recordId]);
     return stamp;
   } catch (e) {

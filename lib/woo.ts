@@ -80,7 +80,7 @@ export const getOrder = async (placeId: string, orderId: string) =>
   (await query<OrderRow>("SELECT * FROM woo_orders WHERE place_id=$1 AND order_id=$2", [placeId, orderId]))[0] ?? null;
 
 /** Redeem an order link: verify the signature, reserve the order atomically, then stamp with its real impact. */
-export async function claimOrder(placeId: string, token: string, passportId: string): Promise<StampResult> {
+export async function claimOrder(placeId: string, token: string, passportId: string, onStep?: (s: "verify" | "anchor" | "save") => void): Promise<StampResult> {
   const place = await getPlace(placeId);
   if (!place) throw new ClaimError("This link isn't valid.", 404);
   const orderId = verifyToken(place.secret, placeId, token);
@@ -91,7 +91,7 @@ export async function claimOrder(placeId: string, token: string, passportId: str
   const reserved = await query("UPDATE woo_orders SET claimed_at=now() WHERE place_id=$1 AND order_id=$2 AND claimed_at IS NULL AND status='valid' RETURNING order_id", [placeId, orderId]);
   if (!reserved.length) throw new ClaimError("This order has already been claimed.", 409);
   try {
-    const stamp = await claimStamp({ placeId, passportId, source: "order", place, order: { orderId, items: JSON.parse(order.items), impact: JSON.parse(order.impact), line: order.line } });
+    const stamp = await claimStamp({ placeId, passportId, source: "order", place, onStep, order: { orderId, items: JSON.parse(order.items), impact: JSON.parse(order.impact), line: order.line } });
     await query("UPDATE woo_orders SET record_id=$3 WHERE place_id=$1 AND order_id=$2", [placeId, orderId, stamp.recordId]);
     return stamp;
   } catch (e) {

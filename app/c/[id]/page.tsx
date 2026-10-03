@@ -8,5 +8,6 @@ export const dynamic = "force-dynamic";
 export default async function Claim({ params }: { params: Promise<{ id: string }> }) {
   const place = await getPlace((await params).id);
   if (!place) notFound();
+  if (place.kind === "online") return <div className="pt-16 text-center"><h1 className="text-2xl">{place.name}</h1><p className="mx-auto mt-2 max-w-xs text-sm text-neutral-600">This is an online shop. Collect your stamp with the card in your parcel or the link in your order email.</p></div>;
   return <ClaimStamp place={toPublic(place)} />;
 }

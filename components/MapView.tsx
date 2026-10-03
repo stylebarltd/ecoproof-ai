@@ -2,9 +2,10 @@
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import { CircleMarker, MapContainer, TileLayer, useMap } from "react-leaflet";
+import { kindOf } from "@/lib/placeKinds";
 import type { MapPlace } from "@/lib/stampPlaces";
 
-const HONEY = "#e8a317", SAGE = "#8fa073";
+const HONEY = "#e8a317";
 
 function FitBounds({ places }: { places: MapPlace[] }) {
   const map = useMap();
@@ -33,7 +34,7 @@ export default function MapView({ places, selectedId, onSelect, focus = null }: 
             key={key}
             center={[p.lat, p.lng]}
             radius={key === selectedId ? 15 : 11}
-            pathOptions={{ color: key === selectedId ? "#201e1d" : "#ffffff", weight: key === selectedId ? 3 : 2.5, fillColor: p.kind === "cafe" ? "#d67f48" : p.kind === "market" ? SAGE : HONEY, fillOpacity: 0.95 }}
+            pathOptions={{ color: key === selectedId ? "#201e1d" : "#ffffff", weight: key === selectedId ? 3 : 2.5, fillColor: kindOf(p.kind)?.colour ?? HONEY, fillOpacity: 0.95 }}
             eventHandlers={{ click: () => onSelect(key) }}
           />
         );

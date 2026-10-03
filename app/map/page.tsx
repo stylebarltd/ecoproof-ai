@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
 import StampPlaceSheet from "@/components/StampPlaceSheet";
+import { PLACE_KINDS } from "@/lib/placeKinds";
 import type { MapPlace } from "@/lib/stampPlaces";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false, loading: () => <div className="h-full w-full bg-sage-200" /> });
 
-const KINDS: [string, string][] = [["shop", "Shops"], ["cafe", "Cafés"], ["market", "Markets"]];
+const KINDS = PLACE_KINDS.filter((k) => k.physical); // online shops have no pin
 const key = (p: MapPlace) => `${p.id}:${p.locationId}`;
 
 export default function MapPage() {
@@ -53,12 +54,10 @@ export default function MapPage() {
         </div>
         <div className="no-scrollbar -mx-5 flex gap-1.5 overflow-x-auto px-5">
           <button className={chip(!kind)} onClick={() => setKind(null)}>All</button>
-          {KINDS.map(([k, label]) => <button key={k} className={chip(kind === k)} onClick={() => setKind(kind === k ? null : k)}>{label}</button>)}
+          {KINDS.map((k) => <button key={k.id} className={chip(kind === k.id)} onClick={() => setKind(kind === k.id ? null : k.id)}>{k.plural}</button>)}
         </div>
-        <div className="flex gap-3.5 text-xs text-neutral-700">
-          <span className="flex items-center gap-1.5">{dot("#e8a317")} shop</span>
-          <span className="flex items-center gap-1.5">{dot("#d67f48")} café</span>
-          <span className="flex items-center gap-1.5">{dot("#8fa073")} market</span>
+        <div className="flex flex-wrap gap-x-3.5 gap-y-1 text-xs text-neutral-700">
+          {KINDS.map((k) => <span key={k.id} className="flex items-center gap-1.5">{dot(k.colour)} {k.label.toLowerCase()}</span>)}
         </div>
         <p className="text-[11px] leading-snug text-neutral-500">Verified = claimed and set up on EcoProof by its owner. Independent vetting is on our roadmap.</p>
       </div>

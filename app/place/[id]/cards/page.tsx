@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
+import { COOKIE, sessionFromToken } from "@/lib/session";
 import QRCode from "qrcode";
 import { query } from "@/lib/db";
 import { cardUrl } from "@/lib/cards";
@@ -8,12 +10,14 @@ import PrintButton from "@/components/PrintButton";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Print claim cards", robots: { index: false } };
 
-/** Print sheet for a batch of claim cards (parcel inserts). The codes are secrets, so it needs ?token=<ADMIN_TOKEN>. */
+/** Print sheet for a batch of claim cards (parcel inserts). The codes are secrets: it needs ?token=<ADMIN_TOKEN> or the place owner signed in. */
 export default async function CardSheet({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ batch?: string; token?: string }> }) {
   const { id } = await params;
   const { batch, token } = await searchParams;
-  if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) notFound();
   const place = await getPlace(id);
+  const isAdmin = !!process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN;
+  const session = sessionFromToken((await cookies()).get(COOKIE)?.value);
+  if (!isAdmin && !(place?.owner && session?.address === place.owner)) notFound(); // admin token, or the place's owner signed in
   if (!place || !batch) notFound();
   const p = toPublic(place);
   const rows = await query<{ code: string }>("SELECT code FROM claim_cards WHERE place_id=$1 AND batch=$2 ORDER BY created_at, code", [id, batch]);

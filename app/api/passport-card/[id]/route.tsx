@@ -22,8 +22,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const prog = progress(stamps, pass.nextMilestone);
   const placeRows = await query<{ id: string; name: string; kind: string; colour: string | null; image: string | null }>("SELECT id,name,kind,colour,image FROM stamp_places ORDER BY created_at, name");
   const earned = new Set(pass.places.filter((p) => p.earned).map((p) => p.id));
-  const show = placeRows.slice(0, square ? 8 : 6);
-  const art = uri(artSvg({ milestone: top?.milestone ?? 1, proofs: stamps, plasticItems: 0, co2Kg: 0, brand: "" }));
+  const show = [...placeRows].sort((a, b) => Number(earned.has(b.id)) - Number(earned.has(a.id))).slice(0, square ? 8 : 6); // earned stamps first
+  const artMilestone = top?.milestone ?? 1;
+  const art = uri(artSvg({ milestone: artMilestone, proofs: stamps, plasticItems: 0, co2Kg: 0, brand: "" }, { labels: false })); // text is drawn below: the SVG rasteriser has no fonts on Vercel
+  const legend = tier?.key === "legend";
+  const host = new URL(appUrl()).host;
+  const shownHost = host.endsWith(".vercel.app") && host.includes("ecoproof") ? "ecoproof-ai.vercel.app" : host;
   const W = square ? 1080 : 1200, H = square ? 1080 : 630;
   const artSize = square ? 400 : 360;
   const stampSize = square ? 92 : 72;
@@ -32,7 +36,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     <div style={{ display: "flex", gap: square ? 18 : 14, flexWrap: "wrap" }}>
       {show.map((p) => (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={p.id} src={uri(stampSvg(p))} width={stampSize} height={stampSize} alt="" style={{ borderRadius: 999, opacity: earned.has(p.id) ? 1 : 0.28, border: earned.has(p.id) ? "3px solid rgba(255,255,255,0.9)" : "3px dashed rgba(255,255,255,0.7)" }} />
+        <img key={p.id} src={uri(stampSvg(p, { labels: false }))} width={stampSize} height={stampSize} alt="" style={{ borderRadius: 999, opacity: earned.has(p.id) ? 1 : 0.28, border: earned.has(p.id) ? "3px solid rgba(255,255,255,0.9)" : "3px dashed rgba(255,255,255,0.7)" }} />
       ))}
     </div>
   );
@@ -52,6 +56,19 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     </div>
   );
 
+  const k = artSize / 512;
+  const txt = { display: "flex", position: "absolute", alignItems: "center", justifyContent: "center", fontWeight: 800 } as const;
+  const artTile = (
+    <div style={{ display: "flex", padding: 6, borderRadius: square ? 54 : 46, background: "rgba(255,255,255,0.9)" }}>
+      <div style={{ display: "flex", position: "relative", width: artSize, height: artSize, borderRadius: square ? 48 : 40, overflow: "hidden" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={art} width={artSize} height={artSize} alt="" />
+        <div style={{ ...txt, left: 86 * k, top: 452 * k, width: 340 * k, height: 42 * k, fontSize: 22 * k, color: legend ? HONEY_L : "#272e1b" }}>{`${tier?.name ?? "Seedling"} · ${artMilestone === 1 ? "First stamp" : `${artMilestone} stamps`}`}</div>
+        {artMilestone >= 50 ? <div style={{ ...txt, left: 56 * k, top: 68 * k, width: 72 * k, height: 72 * k, fontSize: (artMilestone >= 100 ? 24 : 28) * k, color: HONEY_L, fontWeight: 900 }}>{String(artMilestone)}</div> : null}
+      </div>
+    </div>
+  );
+
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: square ? 56 : 48, color: CREAM, background: `radial-gradient(circle at 12% 0%, rgba(247,210,122,0.85), rgba(247,210,122,0) 55%), linear-gradient(160deg,#3d472b,#56633f 50%,#8fa073)` }}>
@@ -67,22 +84,20 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
         {square ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 26 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={art} width={artSize} height={artSize} alt="" style={{ borderRadius: 48, border: "6px solid rgba(255,255,255,0.9)" }} />
+            {artTile}
             {numbers}
             {stampsRow}
           </div>
         ) : (
           <div style={{ display: "flex", alignItems: "center", gap: 44 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={art} width={artSize} height={artSize} alt="" style={{ borderRadius: 40, border: "5px solid rgba(255,255,255,0.9)" }} />
+            {artTile}
             <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>{numbers}{stampsRow}</div>
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: square ? 26 : 22, color: "#dcebc4" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, fontSize: square ? 26 : 22, color: "#dcebc4" }}>
           <div>My eco passport · every stamp anchored on Solana</div>
-          <div>{new URL(appUrl()).host}</div>
+          <div style={{ display: "flex", flexShrink: 0 }}>{shownHost}</div>
         </div>
       </div>
     ),

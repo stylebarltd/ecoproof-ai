@@ -55,6 +55,11 @@ export function getSession(req: Request): { address: string } | null {
   } catch { return null; }
 }
 
+/** Same as getSession but from a cookie value (server components read cookies via next/headers rather than a Request). */
+export function sessionFromToken(t: string | null | undefined): { address: string } | null {
+  try { const address = t ? readToken(t) : null; return address ? { address } : null; } catch { return null; }
+}
+
 export function sessionCookie(token: string, maxAgeSec: number): string {
   return `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAgeSec}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`;
 }
