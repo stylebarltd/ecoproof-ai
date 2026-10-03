@@ -7,7 +7,7 @@ import { Camera, X } from "lucide-react";
 const CLAIM_PATH = /^\/(c\/[a-z0-9-]+|k\/[A-Za-z0-9]+|o\/[a-z0-9-]+\/[A-Za-z0-9_.-]+)$/;
 
 /** Opens the camera, finds a QR code, and goes to its claim page. We follow the path on this site only, never the host in the code. */
-export default function QrScanner({ onClose }: { onClose: () => void }) {
+export default function QrScanner({ onClose, onPath }: { onClose: () => void; onPath?: (path: string) => boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const [err, setErr] = useState("");
   const [seen, setSeen] = useState("");
@@ -30,7 +30,7 @@ export default function QrScanner({ onClose }: { onClose: () => void }) {
         if (hit?.data) {
           let path = "";
           try { const u = new URL(hit.data); path = u.pathname; } catch { /* not a URL */ }
-          if (CLAIM_PATH.test(path)) { stopped = true; location.assign(path); return; }
+          if (CLAIM_PATH.test(path)) { stopped = true; if (!onPath?.(path)) location.assign(path); return; }
           setSeen("That QR code isn't an EcoProof stamp.");
         }
       }
@@ -52,7 +52,7 @@ export default function QrScanner({ onClose }: { onClose: () => void }) {
     })();
 
     return () => { stopped = true; clearTimeout(raf); stream?.getTracks().forEach((t) => t.stop()); };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="fixed inset-0 z-[6000] flex flex-col bg-black/90 text-cream" role="dialog" aria-label="Scan a QR code">

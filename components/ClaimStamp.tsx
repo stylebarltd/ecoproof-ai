@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Loader2 } from "lucide-react";
+import { Camera, Check, Loader2 } from "lucide-react";
+import QrScanner from "@/components/QrScanner";
 import { getUserId } from "@/lib/clientUser";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
@@ -30,6 +31,7 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine }: {
   const [steps, setSteps] = useState<Step[]>(BASE);
   const [current, setCurrent] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
+  const [scanning, setScanning] = useState(false);
 
   async function claim() {
     setBusy(true); setErr(""); setSteps(BASE); setCurrent(null);
@@ -80,8 +82,16 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine }: {
       {!done ? (
         <>
           {!busy && (
-            <button onClick={claim} className="w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">Collect stamp</button>
+            <div className="w-full space-y-2.5">
+              <button onClick={claim} className="w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">Collect stamp</button>
+              {!orderToken && !cardCode && (
+                <button onClick={() => setScanning(true)} className="flex w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-neutral-300 bg-white py-3 text-sm font-bold text-ink">
+                  <Camera size={17} strokeWidth={2.5} /> Scan the QR code at {place.kind === "online" ? "your parcel" : "the counter"}
+                </button>
+              )}
+            </div>
           )}
+          {scanning && <QrScanner onClose={() => setScanning(false)} onPath={(p) => { if (p === location.pathname) { setScanning(false); claim(); return true; } return false; }} />}
           {busy && (
             <ol className="w-full space-y-2.5 rounded-[28px] bg-white p-4 text-left ring-1 ring-sage-300" aria-live="polite">
               {locating && <li className="flex items-center gap-3 text-sm font-semibold"><Loader2 size={18} className="animate-spin text-terra-500" /> Checking you&apos;re at {place.name}…</li>}

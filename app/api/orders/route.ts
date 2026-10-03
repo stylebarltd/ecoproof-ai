@@ -3,15 +3,18 @@ import { OrderError, parseOrder } from "@/lib/order";
 import { DuplicateOrderError, proveOrder } from "@/lib/proof";
 import { getPassport } from "@/lib/passport";
 import { afterProof } from "@/lib/milestones";
+import { isAdmin } from "@/lib/adminAuth";
 import { rateLimited } from "@/lib/ratelimit";
 
 export const maxDuration = 60;
 
 /**
- * Entry point of the loop. Body: { order: {brandId, orderId, items[]}, passportId }.
- * If the brand has an order key configured (env, see lib/brands.ts), the request must send it as `x-brand-key`.
+ * Hand-made test entry point of the proof loop: { order: {brandId, orderId, items[]}, passportId }.
+ * ADMIN ONLY (x-admin-token): it can write impact into any passport and trigger NFT mints, so it must never be public.
+ * Real orders arrive through the signed WooCommerce webhook and the customer's own order link (lib/woo.ts).
  */
 export async function POST(req: Request) {
+  if (!isAdmin(req)) return Response.json({ error: "forbidden" }, { status: 403 });
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
   if (rateLimited(ip, 60)) return Response.json({ error: "Too many requests" }, { status: 429 });
   const body = (await req.json().catch(() => null)) as { order?: unknown; passportId?: unknown } | null;
@@ -19,8 +22,6 @@ export async function POST(req: Request) {
     const order = parseOrder(body?.order);
     const brand = BRANDS[order.brandId];
     if (!brand) return Response.json({ error: `Unknown brand "${order.brandId}"` }, { status: 404 });
-    const key = process.env[brand.apiKeyEnv];
-    if (key && req.headers.get("x-brand-key") !== key) return Response.json({ error: "Invalid brand key" }, { status: 401 });
     const passportId = String(body?.passportId ?? "").trim();
     if (!passportId || passportId.length > 64) return Response.json({ error: "passportId required" }, { status: 400 });
 

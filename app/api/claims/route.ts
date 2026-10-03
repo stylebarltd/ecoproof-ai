@@ -17,12 +17,13 @@ type Step = "verify" | "anchor" | "save";
  */
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  if (rateLimited(ip, 60)) return Response.json({ error: "Too many requests, try again later" }, { status: 429 });
+  if (rateLimited(`claims-ip:${ip}`, 600)) return Response.json({ error: "Too many requests, try again later" }, { status: 429 }); // generous: a venue's Wi-Fi is one address
   const b = (await req.json().catch(() => ({}))) as { placeId?: unknown; cardCode?: unknown; orderToken?: unknown; userId?: unknown; lat?: unknown; lng?: unknown };
   let passportId: string;
   try { passportId = resolveUser(req, String(b.userId ?? "")); }
   catch (e) { if (e instanceof AuthError) return Response.json({ error: e.message }, { status: 401 }); throw e; }
   if (!passportId || passportId.length > 64) return Response.json({ error: "userId required" }, { status: 400 });
+  if (rateLimited(`claims-user:${passportId}`, 40)) return Response.json({ error: "You're going fast. Try again in a little while." }, { status: 429 }); // per person, so one device can't spam
   const lat = Number(b.lat), lng = Number(b.lng);
   const geo = b.lat != null && b.lng != null && Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
 
