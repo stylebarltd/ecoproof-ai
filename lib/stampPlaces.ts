@@ -4,6 +4,7 @@ import { appUrl } from "./nft";
 export type StampPlace = {
   id: string; name: string; kind: string; tagline: string | null; impact_note: string | null; image: string | null; colour: string | null;
   lat: number | null; lng: number | null; gps_radius_m: number | null; secret: string; owner: string | null;
+  status: string; status_note: string | null; rules_accepted_at: string | null;
 };
 export type PublicPlace = { id: string; name: string; kind: string; tagline: string | null; impactNote: string | null; imageUrl: string; claimUrl: string; qrUrl: string; requiresGps: boolean };
 
@@ -16,7 +17,8 @@ export const toPublic = (p: StampPlace): PublicPlace => ({
 export async function getPlace(id: string): Promise<StampPlace | null> {
   return (await query<StampPlace>("SELECT * FROM stamp_places WHERE id=$1", [id]))[0] ?? null;
 }
-export const listPlaces = () => query<StampPlace>("SELECT * FROM stamp_places ORDER BY created_at, name");
+/** Public places: paused and removed places are not listed. */
+export const listPlaces = () => query<StampPlace>("SELECT * FROM stamp_places WHERE status='active' ORDER BY created_at, name");
 
 export const slug = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 32) || "place";
 
@@ -53,7 +55,7 @@ export type MapPlace = { id: string; locationId: number; name: string; locationN
  *  claimed and set up on EcoProof (a real owner or partner created it); independent vetting is roadmap. */
 export async function listMapPlaces(): Promise<MapPlace[]> {
   const rows = await query<{ id: string; name: string; kind: string; tagline: string | null; lid: number; lname: string | null; lat: number; lng: number }>(
-    "SELECT p.id, p.name, p.kind, p.tagline, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id ORDER BY p.created_at, l.id",
+    "SELECT p.id, p.name, p.kind, p.tagline, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' ORDER BY p.created_at, l.id",
   );
   return rows.map((r) => ({ id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, lat: r.lat, lng: r.lng }));
 }

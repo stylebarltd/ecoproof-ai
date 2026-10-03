@@ -90,6 +90,16 @@ const SCHEMA = [
     id SERIAL PRIMARY KEY, place_id TEXT NOT NULL, name TEXT, lat DOUBLE PRECISION NOT NULL, lng DOUBLE PRECISION NOT NULL,
     UNIQUE (place_id, lat, lng)
   )`,
+  `ALTER TABLE stamp_places ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active'`, // active | under_review | suspended
+  `ALTER TABLE stamp_places ADD COLUMN IF NOT EXISTS status_note TEXT`,
+  `ALTER TABLE stamp_places ADD COLUMN IF NOT EXISTS status_at TIMESTAMPTZ`,
+  `ALTER TABLE stamp_places ADD COLUMN IF NOT EXISTS rules_accepted_at TIMESTAMPTZ`, // owner accepted the eco rules when joining
+  `CREATE TABLE IF NOT EXISTS place_reports (
+    id TEXT PRIMARY KEY, place_id TEXT NOT NULL, reporter TEXT NOT NULL, reason TEXT NOT NULL, details TEXT,
+    verified_visitor BOOLEAN NOT NULL DEFAULT false, -- the reporter has a stamp from this place
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(), resolved_at TIMESTAMPTZ, resolution TEXT
+  )`,
+  `CREATE INDEX IF NOT EXISTS place_reports_place ON place_reports (place_id, created_at)`,
   `CREATE INDEX IF NOT EXISTS claim_cards_batch ON claim_cards (batch)`,
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,

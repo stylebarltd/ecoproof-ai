@@ -26,6 +26,7 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
   const place = opts.place ?? (await getPlace(opts.placeId));
   if (!place) throw new ClaimError("Unknown place", 404);
   const source = opts.source ?? "qr";
+  if (place.status !== "active") throw new ClaimError(`${place.name} is paused while we review it, so stamps can't be collected right now.`, 423, { paused: true });
   if (place.kind === "online" && source === "qr") throw new ClaimError("This is an online shop. Collect your stamp from the card in your parcel or the link in your order email.", 422);
 
   if (place.gps_radius_m && place.lat != null && place.lng != null) {

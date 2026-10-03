@@ -20,6 +20,7 @@ export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; o
       <p className="mt-3 rounded-xl bg-sage-200 px-3 py-1.5 text-xs text-sage-900">✅ EcoProof place · claimed and set up by its owner</p>
       <Link href={`/c/${place.id}`} className="mt-3 block rounded-full bg-terra-500 py-3 text-center font-bold text-cream">Collect a stamp here</Link>
       <p className="mt-2 text-center text-[11px] text-neutral-500">Stamps are anchored on Solana. Some places check your location.</p>
+      <p className="mt-1 text-center text-[11px]"><Link href={`/report/${place.id}`} className="text-neutral-500 underline">Not eco? Report this place</Link></p>
     </div>
   );
 }

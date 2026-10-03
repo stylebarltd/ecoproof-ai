@@ -99,6 +99,7 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine }: {
             </ol>
           )}
           {err && <p className="rounded-xl bg-terra-100 p-3 text-sm text-terra-800">{err}</p>}
+          {!busy && <p className="text-[11px]"><Link href={`/report/${place.id}`} className="text-neutral-400 underline">Not eco? Report this place</Link></p>}
           {!busy && <p className="text-xs text-neutral-500">{orderToken ? "Verified order: this stamp carries its real impact. One stamp per order, anchored on Solana." : cardCode ? "This card works once. Each stamp is anchored on Solana." : "One stamp per day. Each stamp is anchored on Solana."}</p>}
         </>
       ) : (

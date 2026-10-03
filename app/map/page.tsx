@@ -59,7 +59,7 @@ export default function MapPage() {
         <div className="flex flex-wrap gap-x-3.5 gap-y-1 text-xs text-neutral-700">
           {KINDS.map((k) => <span key={k.id} className="flex items-center gap-1.5">{dot(k.colour)} {k.label.toLowerCase()}</span>)}
         </div>
-        <p className="text-[11px] leading-snug text-neutral-500">Verified = claimed and set up on EcoProof by its owner. Independent vetting is on our roadmap.</p>
+        <p className="text-[11px] leading-snug text-neutral-500">Verified = claimed and set up on EcoProof by its owner. Independent vetting is on our roadmap. <Link href="/rules" className="underline">Eco rules and reporting</Link></p>
       </div>
       <div className="relative min-h-0 flex-1">
         <MapView places={shown} selectedId={sel} onSelect={(k) => { setSel(k); setFocus(null); }} focus={focus} />

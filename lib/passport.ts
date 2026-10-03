@@ -84,7 +84,7 @@ export async function getPassport(userId: string, tz = 0): Promise<Passport> {
     streak: s.current,
     longestStreak: s.longest,
     badges: badgesFor(totals, s.longest),
-    places: (await query<{ id: string; name: string; impact_note: string | null }>("SELECT id,name,impact_note FROM stamp_places ORDER BY created_at, name")).map((pl) => {
+    places: (await query<{ id: string; name: string; impact_note: string | null; status: string }>("SELECT id,name,impact_note,status FROM stamp_places ORDER BY created_at, name")).filter((pl) => pl.status === "active" || rows.some((r) => r.place_id === pl.id)).map((pl) => { // hide paused places unless this passport has stamps from them
       const count = rows.filter((r) => r.place_id === pl.id).length;
       return { id: pl.id, name: pl.name, imageUrl: `/api/stamp-places/${pl.id}/stamp`, impactNote: pl.impact_note, earned: count > 0, count };
     }),

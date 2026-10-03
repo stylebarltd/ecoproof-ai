@@ -10,5 +10,6 @@ export default async function CardClaim({ params }: { params: Promise<{ code: st
   const place = card ? await getPlace(card.place_id) : null;
   if (!card || !place) return <div className="pt-16 text-center"><h1 className="text-2xl">This card isn&apos;t valid</h1><p className="mt-2 text-sm text-neutral-600">Check the code on your card and try again.</p></div>;
   if (card.claimed_at) return <div className="pt-16 text-center"><h1 className="text-2xl">This card has been used</h1><p className="mt-2 text-sm text-neutral-600">Each card gives one stamp, once.</p></div>;
+  if (place.status !== "active") return <div className="pt-16 text-center"><h1 className="text-2xl">{place.name}</h1><p className="mx-auto mt-2 max-w-xs text-sm text-neutral-600">{place.status === "suspended" ? "This place is no longer part of EcoProof." : "This place is paused while we review it, so stamps can't be collected right now."}</p></div>;
   return <ClaimStamp place={toPublic(place)} cardCode={card.code} />;
 }

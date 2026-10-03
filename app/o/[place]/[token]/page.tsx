@@ -15,5 +15,6 @@ export default async function OrderClaim({ params }: { params: Promise<{ place: 
   const order = await getOrder(placeId, orderId);
   if (order?.claimed_at) return <Msg title="This order has been claimed" body="Each order gives one stamp, once." />;
   if (order && order.status !== "valid") return <Msg title="This order can't be claimed" body="It was cancelled or refunded." />;
+  if (place.status !== "active") return <div className="pt-16 text-center"><h1 className="text-2xl">{place.name}</h1><p className="mx-auto mt-2 max-w-xs text-sm text-neutral-600">{place.status === "suspended" ? "This place is no longer part of EcoProof." : "This place is paused while we review it, so stamps can't be collected right now."}</p></div>;
   return <ClaimStamp place={toPublic(place)} orderToken={token} orderLine={order?.line ?? null} />;
 }

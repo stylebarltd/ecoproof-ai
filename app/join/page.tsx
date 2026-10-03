@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import AccountChip from "@/components/AccountChip";
 import { currentAddress } from "@/lib/wallet";
 import { PLACE_KINDS, isPhysical } from "@/lib/placeKinds";
+import { rulesFor } from "@/lib/ecoRules";
 import { prepareLogo } from "@/lib/clientLogo";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
@@ -27,6 +28,7 @@ function CardsButton({ id }: { id: string }) {
   );
 }
 
+type MyPlace = PublicPlace & { status?: string; statusNote?: string | null };
 type WooSetup = { webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string };
 
 function WooOption({ id }: { id: string }) {
@@ -58,13 +60,15 @@ function WooOption({ id }: { id: string }) {
   );
 }
 
-function PlaceCard({ p }: { p: PublicPlace }) {
+function PlaceCard({ p }: { p: MyPlace }) {
+  const notice = p.status && p.status !== "active" ? <p className="rounded-xl bg-terra-100 p-2.5 text-xs text-terra-800">{p.status === "suspended" ? "This place was removed from EcoProof." : "This place is paused while we review reports."} {p.statusNote}</p> : null;
   if (p.kind === "online") {
     return (
       <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={p.imageUrl} alt="" width={96} height={96} className="mx-auto" />
         <h3 className="text-lg">{p.name}</h3>
+        {notice}
         <p className="text-xs text-neutral-600">Two ways to give customers their stamp. Use one or both.</p>
         <WooOption id={p.id} />
         <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
@@ -80,6 +84,7 @@ function PlaceCard({ p }: { p: PublicPlace }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={p.imageUrl} alt="" width={96} height={96} className="mx-auto" />
       <h3 className="text-lg">{p.name}</h3>
+      {notice}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={p.qrUrl} alt={`QR code to collect a ${p.name} stamp`} width={180} height={180} className="mx-auto" />
       <div className="grid grid-cols-2 gap-2 text-sm font-semibold">
@@ -92,12 +97,13 @@ function PlaceCard({ p }: { p: PublicPlace }) {
 
 export default function Join() {
   const [address, setAddress] = useState<string | null | undefined>(undefined);
-  const [mine, setMine] = useState<PublicPlace[]>([]);
+  const [mine, setMine] = useState<MyPlace[]>([]);
   const [name, setName] = useState("");
   const [kind, setKind] = useState("shop");
   const [tagline, setTagline] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
   const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(null);
+  const [rules, setRules] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [created, setCreated] = useState<{ place: PublicPlace; onMap: boolean } | null>(null);
@@ -119,7 +125,7 @@ export default function Join() {
   async function submit() {
     setBusy(true); setErr("");
     try {
-      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, ...(isPhysical(kind) ? loc ?? {} : {}) }) });
+      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, acceptRules: rules, ...(isPhysical(kind) ? loc ?? {} : {}) }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Could not set up your place");
       setCreated(j); await refresh();
@@ -141,7 +147,7 @@ export default function Join() {
         <>
           <p className="rounded-xl bg-sage-200 p-3 text-sm font-semibold text-sage-900">🎉 {created.place.name} is set up{created.onMap ? " and on the map" : ""}. Put the QR where customers can scan it.</p>
           <PlaceCard p={created.place} />
-          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
+          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setRules(false); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
         </>
       ) : (
         <div className="space-y-3 rounded-[28px] bg-neutral-100 p-4">
@@ -163,8 +169,13 @@ export default function Join() {
           ) : (
             <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. After you create it you choose how customers get their stamp: a QR in your order email (WooCommerce), printed QR cards in the parcel (any channel, e.g. Amazon), or both.</p>
           )}
+          <div className="space-y-2 rounded-2xl bg-white p-3 text-sm ring-1 ring-neutral-300">
+            <p className="font-semibold">EcoProof is only for eco places</p>
+            <ul className="list-disc space-y-1 pl-5 text-xs text-neutral-700">{rulesFor(kind).map((r) => <li key={r}>{r}</li>)}</ul>
+            <label className="flex items-start gap-2 text-xs"><input type="checkbox" className="mt-0.5" checked={rules} onChange={(e) => setRules(e.target.checked)} /> <span>I confirm my place keeps these rules. I understand customers can report places that don&apos;t, and that EcoProof can pause or remove them. <Link href="/rules" className="underline">Read the rules</Link></span></label>
+          </div>
           {err && <p className="rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
-          <button onClick={submit} disabled={busy || name.trim().length < 2 || (isPhysical(kind) && !loc)} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>
+          <button onClick={submit} disabled={busy || name.trim().length < 2 || !rules || (isPhysical(kind) && !loc)} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>
           <p className="text-[11px] text-neutral-500">Places are listed as &ldquo;claimed and set up&rdquo;. Independent vetting is on our roadmap.</p>
         </div>
       )}
