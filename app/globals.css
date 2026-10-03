@@ -59,3 +59,25 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 /* single-row chip strips scroll without a visible scrollbar */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Passport "glass" system: honey-gold accent over earthy greens, frosted translucent panels. */
+@theme {
+  --color-honey-300: #f7d27a;
+  --color-honey-400: #f0b93e;
+  --color-honey-500: #e8a317;
+  --color-honey-700: #a86f00;
+}
+.passport-bg {
+  background:
+    radial-gradient(120% 70% at 12% -5%, rgba(247, 210, 122, 0.75) 0%, rgba(247, 210, 122, 0) 55%),
+    radial-gradient(90% 60% at 100% 25%, rgba(143, 160, 115, 0.55) 0%, rgba(143, 160, 115, 0) 60%),
+    linear-gradient(180deg, #e4f1cf 0%, #c3d6a6 45%, #9db582 100%);
+}
+.glass {
+  background: rgba(255, 255, 255, 0.38);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px rgba(39, 46, 27, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+.glass-strong { background: rgba(255, 255, 255, 0.55); }

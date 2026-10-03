@@ -1,4 +1,4 @@
-import { milestoneLabel, tierFor } from "./nft";
+import { milestoneLabel, tierFor } from "./milestoneRules";
 
 export type NftStats = { milestone: number; proofs: number; plasticItems: number; co2Kg: number; brand: string };
 
