@@ -38,7 +38,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             <img src={stampImg} width={190} height={190} alt="" />
             <div style={{ display: "flex", flexDirection: "column", fontSize: 34, color: CREAM }}>
               <div style={{ fontSize: 46, fontWeight: 700 }}>Eco stamp collected</div>
-              {place?.impact_note ? <div style={{ color: "#ccdbb2" }}>{place.impact_note}</div> : null}
+              {place?.impact_note && r.source === "order" ? <div style={{ color: "#ccdbb2" }}>{place.impact_note}</div> : null}
             </div>
           </div>
         ) : (

@@ -19,7 +19,7 @@ export type StampResult = {
  * The proof is a claim account on Solana derived from (place, person, day), so "once per day per person per place" is enforced
  * on-chain as well as in the database. `source` records which door produced it (this stage: the place QR).
  */
-export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace }): Promise<StampResult> {
+export async function claimStamp(opts: { placeId: string; passportId: string; source?: StampSource; geo?: { lat: number; lng: number } | null; place?: StampPlace; cardCode?: string }): Promise<StampResult> {
   const place = opts.place ?? (await getPlace(opts.placeId));
   if (!place) throw new ClaimError("Unknown place", 404);
   const source = opts.source ?? "qr";
@@ -32,9 +32,14 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
 
   const person = (await identityGroup(opts.passportId))[0]; // a linked wallet and its device ids count as one person
   const day = stampDay();
-  const fp = createHash("sha256").update(`ecoproof:stamp:v1:${place.id}:${person}:${day}`).digest("hex");
+  // QR door: once per day per person per place. Card door: each printed code works exactly once, by anyone, any day.
+  const fp = opts.cardCode
+    ? createHash("sha256").update(`ecoproof:stamp:v1:card:${place.id}:${opts.cardCode}`).digest("hex")
+    : createHash("sha256").update(`ecoproof:stamp:v1:${place.id}:${person}:${day}`).digest("hex");
   const dup = await query<{ id: string; claim_address: string | null }>("SELECT id, claim_address FROM records WHERE receipt_fp=$1", [fp]);
-  const already = (id: string | null, addr: string | null) => new ClaimError(`You already collected a ${place.name} stamp today. Come back tomorrow!`, 409, { recordId: id, claimAddress: addr });
+  const already = (id: string | null, addr: string | null) => opts.cardCode
+    ? new ClaimError("This card has already been used.", 409, { recordId: id, claimAddress: addr })
+    : new ClaimError(`You already collected a ${place.name} stamp today. Come back tomorrow!`, 409, { recordId: id, claimAddress: addr });
   if (dup.length) throw already(dup[0].id, dup[0].claim_address);
 
   const row: RecordRow = {
@@ -62,5 +67,5 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
     if ((e as { code?: string }).code === "23505") throw already(null, claimAddress);
     throw e;
   }
-  return { recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: place.impact_note, hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
+  return { recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: source === "order" ? place.impact_note : null, /* only a verified order may carry an impact line */ hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
 }

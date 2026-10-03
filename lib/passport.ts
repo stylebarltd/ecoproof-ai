@@ -20,7 +20,7 @@ export type Passport = {
   places: { id: string; name: string; imageUrl: string; impactNote: string | null; earned: boolean; count: number }[];
   nextMilestone: number;
   registryUrl: string | null;
-  records: { id: string; placeId: string | null; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
+  records: { id: string; placeId: string | null; source: string | null; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
 
 /** Calendar day in the user's timezone. tz = minutes as returned by Date#getTimezoneOffset() (UTC minus local; Thailand = -420). */
@@ -93,7 +93,7 @@ export async function getPassport(userId: string, tz = 0): Promise<Passport> {
     nextMilestone: nextMilestone(rows.length),
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
     records: rows.slice(0, 20).map((r) => ({
-      id: r.id, placeId: r.place_id ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
+      id: r.id, placeId: r.place_id ?? null, source: r.source ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
       verified: !!r.signature, signature: r.signature, createdAt: new Date(r.created_at).toISOString(),
     })),
   };

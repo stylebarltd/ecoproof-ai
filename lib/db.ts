@@ -72,6 +72,11 @@ const SCHEMA = [
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(), minted_at TIMESTAMPTZ,
     UNIQUE (owner_key, milestone)
   )`,
+  `CREATE TABLE IF NOT EXISTS claim_cards (
+    code TEXT PRIMARY KEY, place_id TEXT NOT NULL, batch TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(), claimed_at TIMESTAMPTZ, record_id TEXT
+  )`,
+  `CREATE INDEX IF NOT EXISTS claim_cards_batch ON claim_cards (batch)`,
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,

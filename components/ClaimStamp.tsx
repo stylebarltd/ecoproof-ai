@@ -13,7 +13,7 @@ function position(): Promise<{ lat: number; lng: number }> {
   });
 }
 
-export default function ClaimStamp({ place }: { place: PublicPlace }) {
+export default function ClaimStamp({ place, cardCode }: { place: PublicPlace; cardCode?: string }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [done, setDone] = useState<Result | null>(null);
@@ -21,8 +21,8 @@ export default function ClaimStamp({ place }: { place: PublicPlace }) {
   async function claim() {
     setBusy(true); setErr("");
     try {
-      const geo = place.requiresGps ? await position() : null;
-      const r = await fetch("/api/claims", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ placeId: place.id, userId: getUserId(), ...geo }) });
+      const geo = !cardCode && place.requiresGps ? await position() : null;
+      const r = await fetch("/api/claims", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cardCode ? { cardCode, userId: getUserId() } : { placeId: place.id, userId: getUserId(), ...geo }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Could not collect the stamp");
       setDone(j);
@@ -38,13 +38,12 @@ export default function ClaimStamp({ place }: { place: PublicPlace }) {
       <div>
         <h1 className="text-2xl">{place.name}</h1>
         {place.tagline && <p className="mt-1 text-sm text-neutral-600">{place.tagline}</p>}
-        {place.impactNote && <p className="mt-2 inline-block rounded-full bg-sage-200 px-3 py-1 text-xs font-semibold text-sage-800">{place.impactNote}</p>}
       </div>
       {!done ? (
         <>
           <button onClick={claim} disabled={busy} className="w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream disabled:opacity-60">{busy ? "Stamping your passport…" : "Collect stamp"}</button>
           {err && <p className="rounded-xl bg-terra-100 p-3 text-sm text-terra-800">{err}</p>}
-          <p className="text-xs text-neutral-500">One stamp per day. Each stamp is anchored on Solana.</p>
+          <p className="text-xs text-neutral-500">{cardCode ? "This card works once. Each stamp is anchored on Solana." : "One stamp per day. Each stamp is anchored on Solana."}</p>
         </>
       ) : (
         <div className="w-full space-y-3 rounded-[28px] bg-white p-5 ring-1 ring-sage-300">

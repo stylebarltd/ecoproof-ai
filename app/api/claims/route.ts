@@ -1,4 +1,5 @@
 import { ClaimError, claimStamp } from "@/lib/stamp";
+import { claimCard } from "@/lib/cards";
 import { afterProof } from "@/lib/milestones";
 import { getPassport } from "@/lib/passport";
 import { rateLimited } from "@/lib/ratelimit";
@@ -6,11 +7,12 @@ import { AuthError, resolveUser } from "@/lib/session";
 
 export const maxDuration = 60;
 
-/** The place-QR door: { placeId, userId, lat?, lng? } -> one stamp + one Solana proof (+ a milestone NFT when one is reached). */
+/** Claim doors: place QR { placeId, userId, lat?, lng? } or printed card { cardCode, userId }.
+ *  Place QR: -> one stamp + one Solana proof (+ a milestone NFT when one is reached). */
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
   if (rateLimited(ip, 60)) return Response.json({ error: "Too many requests, try again later" }, { status: 429 });
-  const b = (await req.json().catch(() => ({}))) as { placeId?: unknown; userId?: unknown; lat?: unknown; lng?: unknown };
+  const b = (await req.json().catch(() => ({}))) as { placeId?: unknown; cardCode?: unknown; userId?: unknown; lat?: unknown; lng?: unknown };
   let passportId: string;
   try { passportId = resolveUser(req, String(b.userId ?? "")); }
   catch (e) { if (e instanceof AuthError) return Response.json({ error: e.message }, { status: 401 }); throw e; }
@@ -19,7 +21,7 @@ export async function POST(req: Request) {
   const geo = b.lat != null && b.lng != null && Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
 
   try {
-    const stamp = await claimStamp({ placeId: String(b.placeId ?? ""), passportId, source: "qr", geo });
+    const stamp = b.cardCode ? await claimCard(String(b.cardCode), passportId) : await claimStamp({ placeId: String(b.placeId ?? ""), passportId, source: "qr", geo });
     const passport = await getPassport(passportId);
     const nfts = await afterProof(passportId, passport.totals);
     return Response.json({ stamp, passport: { stamps: passport.totals.receipts, nextMilestone: passport.nextMilestone }, nfts }, { status: 201 });

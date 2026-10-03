@@ -136,7 +136,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
                   <img src={`/api/stamp-places/${r.placeId}/stamp`} alt="" width={36} height={36} className="shrink-0 rounded-full" />
                 )}
                 <Link href={`/p/${r.id}`} className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{r.merchant}</span>
+                  <span className="block truncate text-sm font-semibold">{r.merchant}{r.source === "card" && <em className="ml-1.5 rounded-full bg-white/70 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-sage-800">card</em>}{r.source === "order" && <em className="ml-1.5 rounded-full bg-honey-300 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-ink">verified order</em>}</span>
                   <span className="text-[11px] text-sage-900">{new Date(r.createdAt).toLocaleDateString()}</span>
                 </Link>
                 {r.signature ? (
