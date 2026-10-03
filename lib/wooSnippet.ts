@@ -1,9 +1,8 @@
-/** The theme snippet for the shop's CHILD theme functions.php: puts the signed claim link + QR into the completed-order email,
- *  the thank-you page and the order view. Generated per brand so it carries the right app URL, place and secret. */
+/** The theme snippet for the shop's CHILD theme functions.php: puts the signed claim link + QR into the completed-order email only. Generated per brand so it carries the right app URL, place and secret. */
 export function wooSnippet(o: { appUrl: string; placeId: string; secret: string }): string {
   return `<?php
 /**
- * EcoProof AI: eco stamp for completed orders.
+ * EcoProof AI: eco stamp QR in the "order completed" email.
  * Add to the CHILD theme's functions.php (never the parent theme). Remove this block to switch it off.
  * The secret signs each order's claim link so it can't be guessed. Keep it private (better: define it in wp-config.php).
  */
@@ -33,18 +32,10 @@ function ecoproof_block( $order, $plain = false ) {
 		. '</div>';
 }
 
-// 1. The "order completed" email to the customer.
+// The "order completed" email to the customer: the signed QR + button. (Nothing is added to the shop pages.)
 add_action( 'woocommerce_email_after_order_table', function ( $order, $sent_to_admin, $plain_text, $email ) {
 	if ( $sent_to_admin || ! $email || 'customer_completed_order' !== $email->id ) return;
 	echo ecoproof_block( $order, (bool) $plain_text ); // phpcs:ignore WordPress.Security.EscapeOutput
 }, 20, 4 );
-
-// 2. Thank-you page and 3. the order view in My Account (only shows once the order is completed).
-add_action( 'woocommerce_thankyou', function ( $order_id ) {
-	echo ecoproof_block( wc_get_order( $order_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput
-}, 20 );
-add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
-	echo ecoproof_block( $order ); // phpcs:ignore WordPress.Security.EscapeOutput
-}, 20 );
 `;
 }

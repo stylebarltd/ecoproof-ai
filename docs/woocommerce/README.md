@@ -16,7 +16,7 @@ curl -H "x-admin-token: $ADMIN_TOKEN" https://<app>/api/stamp-places/superbee/wo
 EcoProof keeps only the order id, status, product names and quantities of **completed** orders. Prices and every customer field are discarded on arrival. Refunded or cancelled orders that were not yet claimed become invalid.
 
 ## 2. Theme snippet
-Paste `themeSnippet` into the **child theme's functions.php**. It adds a "Collect your eco stamp" block (button + QR) to the *order completed* email, the thank-you page and the order view in My Account, but only for completed orders.
+Paste `themeSnippet` into the **child theme's functions.php**. It adds a "Collect your eco stamp" block (button + QR) to the *order completed* email only. Nothing is added to the shop's pages.
 
 ## How the link is signed
 `token = <orderId>.<first 22 chars of base64url(HMAC-SHA256(secret, "ecoproof:order-link:v1:<place>:<orderId>"))>`.

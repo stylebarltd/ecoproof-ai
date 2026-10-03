@@ -27,6 +27,37 @@ function CardsButton({ id }: { id: string }) {
   );
 }
 
+type WooSetup = { webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string };
+
+function WooOption({ id }: { id: string }) {
+  const [setup, setSetup] = useState<WooSetup | null>(null);
+  const [msg, setMsg] = useState("");
+  async function load() {
+    const r = await fetch(`/api/places/mine/${id}/woo`);
+    const j = await r.json().catch(() => ({}));
+    if (r.ok) setSetup(j); else setMsg(j.error || "Could not load the setup");
+  }
+  const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => setMsg("Copied"), () => setMsg("Select and copy it by hand"));
+  return (
+    <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
+      <p className="font-semibold">A. QR in your order email <span className="font-normal text-neutral-600">(WooCommerce shops)</span></p>
+      <p className="text-xs text-neutral-600">Customers get a personal QR and button in the &ldquo;order completed&rdquo; email. It&apos;s signed per order, so a verified order stamp carries the real impact of what they bought.</p>
+      {!setup ? (
+        <button onClick={load} className="rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-neutral-300">Show setup steps</button>
+      ) : (
+        <ol className="list-decimal space-y-2 pl-4 text-xs">
+          <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
+          <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <button onClick={() => copy(setup.webhook.deliveryUrl)} className="font-bold underline">copy</button></li>
+          <li>Secret: <code className="break-all">{setup.webhook.secret}</code> <button onClick={() => copy(setup.webhook.secret)} className="font-bold underline">copy</button> (keep it private)</li>
+          <li>Paste this into your <b>child theme&apos;s functions.php</b>: <button onClick={() => copy(setup.themeSnippet)} className="font-bold underline">copy snippet</button>
+            <textarea readOnly value={setup.themeSnippet} rows={5} className="mt-1 w-full rounded-lg bg-white p-2 font-mono text-[10px] ring-1 ring-neutral-300" /></li>
+        </ol>
+      )}
+      {msg && <p className="text-xs text-sage-800">{msg}</p>}
+    </div>
+  );
+}
+
 function PlaceCard({ p }: { p: PublicPlace }) {
   if (p.kind === "online") {
     return (
@@ -34,8 +65,13 @@ function PlaceCard({ p }: { p: PublicPlace }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={p.imageUrl} alt="" width={96} height={96} className="mx-auto" />
         <h3 className="text-lg">{p.name}</h3>
-        <p className="text-xs text-neutral-600">Online shop: drop a card in each parcel. Every card gives one stamp, once.</p>
-        <CardsButton id={p.id} />
+        <p className="text-xs text-neutral-600">Two ways to give customers their stamp. Use one or both.</p>
+        <WooOption id={p.id} />
+        <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
+          <p className="font-semibold">B. Printed QR cards in the parcel <span className="font-normal text-neutral-600">(any channel: Amazon, Lazada, Shopee…)</span></p>
+          <p className="text-xs text-neutral-600">No shop code needed. Print the cards and drop one in each parcel. Every card gives one stamp, once. It can&apos;t show the order&apos;s impact, because a card doesn&apos;t prove what was bought.</p>
+          <CardsButton id={p.id} />
+        </div>
       </div>
     );
   }
@@ -125,7 +161,7 @@ export default function Join() {
               <p className="text-xs text-neutral-600">Do this while you&apos;re at your place. It puts you on the map, and stamps are only given to people who are there (GPS check, always on).</p>
             </div>
           ) : (
-            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. Customers collect stamps from the printed card in their parcel or the link in their order email.</p>
+            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. After you create it you choose how customers get their stamp: a QR in your order email (WooCommerce), printed QR cards in the parcel (any channel, e.g. Amazon), or both.</p>
           )}
           {err && <p className="rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
           <button onClick={submit} disabled={busy || name.trim().length < 2 || (isPhysical(kind) && !loc)} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>

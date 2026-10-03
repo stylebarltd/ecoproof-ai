@@ -4,7 +4,8 @@ import { appUrl } from "./nft";
 import { computeImpact, type Impact, type LineItem } from "./impact";
 import { matchItems } from "./order";
 import { ClaimError, claimStamp, type StampResult } from "./stamp";
-import { getPlace } from "./stampPlaces";
+import { getPlace, type StampPlace } from "./stampPlaces";
+import { wooSnippet } from "./wooSnippet";
 
 // Premium door: WooCommerce's built-in webhook sends the completed order here; the shop's order email carries a signed link
 // (and QR) to claim it. Only this door proves a real order happened, so only its stamp carries a real impact line.
@@ -100,3 +101,9 @@ export async function claimOrder(placeId: string, token: string, passportId: str
   }
 }
 
+
+/** Everything a shop owner needs to connect WooCommerce: the webhook settings and the ready-to-paste email snippet (contains the secret). */
+export const wooSetup = (place: StampPlace) => ({
+  webhook: { name: "EcoProof", status: "Active", topic: "Order updated", deliveryUrl: `${appUrl()}/api/woo/webhook/${place.id}`, secret: place.secret, apiVersion: "WP REST API Integration v3" },
+  themeSnippet: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }),
+});
