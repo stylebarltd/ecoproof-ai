@@ -11,7 +11,7 @@ export default function Home() {
   const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(async (id: string) => {
-    const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}&tz=${new Date().getTimezoneOffset()}`);
+    const r = await fetch(`/api/passport?userId=${encodeURIComponent(id)}`);
     if (r.ok) setPass(await r.json());
     setLoaded(true); // also on failure: never leave the splash up
   }, []);

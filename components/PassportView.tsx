@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Camera, Check, CircleHelp, Flame } from "lucide-react";
+import { Camera, Check, CircleHelp } from "lucide-react";
 import QrScanner from "@/components/QrScanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import AccountChip from "@/components/AccountChip";
@@ -43,9 +43,6 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
 
       <header className="flex items-center justify-between">
         <h1><LogoLockup size={34} /></h1>
-        <div className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-ink">
-          <Flame size={15} strokeWidth={2.5} className={pass?.streak ? "text-honey-700" : "text-neutral-500"} /> {pass?.streak ?? 0}-day streak
-        </div>
       </header>
 
       {owner && (
