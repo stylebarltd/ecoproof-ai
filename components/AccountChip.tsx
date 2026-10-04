@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Check, Copy, LogOut, ShieldCheck, Wallet, X } from "lucide-react";
 import { currentAddress, deepLinks, detectWallets, isMobile, linkDevicePassport, shortAddress, signInWith, signOut, type WalletInfo } from "@/lib/wallet";
 import { getUserId } from "@/lib/clientUser";
+import { startDeeplinkSignIn } from "@/lib/walletDeeplink";
 
 /** Header chip: "Connect wallet" when signed out, the wallet address (with a small menu) when signed in. */
 export default function AccountChip({ onChange }: { onChange: () => void }) {
@@ -99,8 +100,15 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
               <p className="font-semibold">No wallet found in this browser</p>
               {mobile ? (
                 <>
-                  <p className="text-neutral-700">Open this page inside your wallet app:</p>
-                  <div className="flex gap-2">{links.map((l) => <a key={l.name} href={l.href} className="flex-1 rounded-full bg-terra-500 py-2.5 text-center font-bold text-cream">{l.name}</a>)}</div>
+                  <p className="text-neutral-700">Connect your wallet app. You stay in this browser, so the camera keeps working:</p>
+                  <div className="flex gap-2">
+                    {(["phantom", "solflare"] as const).map((p) => (
+                      <button key={p} onClick={() => startDeeplinkSignIn(p, location.pathname + location.search)} className="flex-1 rounded-full bg-terra-500 py-2.5 text-center font-bold capitalize text-cream">{p}</button>
+                    ))}
+                  </div>
+                  <p className="pt-1 text-xs text-neutral-600">Your wallet app opens, you approve a free signature, and it brings you back here.</p>
+                  <p className="pt-1 text-xs text-neutral-600">Or open EcoProof inside the wallet&apos;s own browser (the camera may be blocked there):</p>
+                  <div className="flex gap-2">{links.map((l) => <a key={l.name} href={l.href} className="flex-1 rounded-full border-[1.5px] border-neutral-300 py-2 text-center text-xs font-bold">{l.name} browser</a>)}</div>
                 </>
               ) : (
                 <p className="text-neutral-700">Install <a className="underline" href="https://phantom.app/download" target="_blank" rel="noreferrer">Phantom</a> or <a className="underline" href="https://solflare.com/download" target="_blank" rel="noreferrer">Solflare</a>, then reload this page.</p>
