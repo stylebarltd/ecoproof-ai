@@ -20,7 +20,7 @@ Underneath, every claim writes a proof on Solana: a hash of the claim plus a cla
 ## How it works
 
 ### Places
-Everything is a **place**: SuperBee, a café, a market stall, an online shop. A place has a name, a stamp (its logo, or a generated badge), a one-line tagline, and its own QR. We set up launch partners ourselves; owners can also **self-serve** at `/join` (sign in with a wallet, add name, logo and tagline, get a QR and a print-ready counter card).
+Everything is a **place**: a shop, a café, a market stall, an online shop. A place has a name, a stamp (its logo, or a generated badge), a one-line tagline, and its own QR. We set up launch partners ourselves; owners can also **self-serve** at `/join` (sign in with a wallet, add name, logo and tagline, get a QR and a print-ready counter card).
 
 ### Three claim doors, one destination
 Each produces one stamp and one Solana proof.
@@ -29,7 +29,7 @@ Each produces one stamp and one Solana proof.
 |---|---|---|
 | **Place QR / link** (`/c/<place>`) | A counter display at a café, shop or stall | Someone was scanning that code. Once per day per person per place. Physical places set up through `/join` always get a GPS check (150 m). |
 | **Printed card** (`/k/<code>`) | A card dropped into a parcel, on any channel (Amazon, Lazada, Shopee, own shop). The app generates the cards; the shop needs no code. | One card, one stamp, once. A generic stamp with **no impact number**, because a card doesn't prove what was bought. |
-| **Verified order** (`/o/<place>/<order>.<sig>`) | WooCommerce shops (SuperBee is the showcase) | A real completed order. A signed QR/link in the order-completed email carries the order, so the stamp shows its **real impact line**. Only this door proves the order happened. |
+| **Verified order** (`/o/<place>/<order>.<sig>`) | WooCommerce shops | A real completed order. A signed QR/link in the order-completed email carries the order, so the stamp shows its **real impact line**. Only this door proves the order happened. |
 
 Online shops have no map pin and no GPS check, and choose door 2, door 3, or both, in `/join`.
 
@@ -57,7 +57,7 @@ Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devne
 
 ## Honest limits
 
-- **Impact numbers are estimates** from a hand-built factor table (`lib/impact.ts`), not audited lifecycle data. SuperBee's catalogue is mapped by hand; for other shops, unknown product names are classified by an AI and are marked as estimates.
+- **Impact numbers are estimates** from a hand-built factor table (`lib/impact.ts`), not audited lifecycle data. A shop can have its own hand-mapped product catalogue (the first connected shop does); for other shops, unknown product names are classified by an AI and are marked as estimates.
 - **Only the verified-order door proves a purchase.** QR and card stamps are generic stamps. A chain proof shows a record wasn't altered after creation, not that someone bought something.
 - **GPS checks can be spoofed.** They stop casual abuse, not a determined cheater.
 - **Self-serve places are not vetted** beyond format limits and three places per owner. The map says so.

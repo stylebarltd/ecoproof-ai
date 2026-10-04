@@ -56,7 +56,7 @@ export type MapPlace = { demo: boolean; id: string; locationId: number; name: st
  *  claimed and set up on EcoProof (a real owner or partner created it); independent vetting is roadmap. */
 export async function listMapPlaces(): Promise<MapPlace[]> {
   const rows = await query<{ id: string; name: string; kind: string; tagline: string | null; demo: boolean; lid: number; lname: string | null; lat: number; lng: number }>(
-    "SELECT p.id, p.name, p.kind, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' ORDER BY p.created_at, l.id",
+    "SELECT p.id, p.name, p.kind, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' AND p.kind <> 'online' ORDER BY p.created_at, l.id",
   );
   return rows.map((r) => ({ demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, lat: r.lat, lng: r.lng }));
 }

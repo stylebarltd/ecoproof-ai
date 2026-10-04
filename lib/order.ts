@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { CATEGORIES, type Category, type LineItem } from "./impact";
-import { superbeeParts } from "./superbeeCatalogue";
+import { cataloguePartsFor } from "./catalogues";
 
 /**
  * The single entry point to the proof loop. Deliberately small: no prices, no customer personal data.
@@ -45,7 +45,7 @@ export async function matchItems(order: Order): Promise<Matched[]> {
   const out: Matched[] = [];
   for (const it of order.items) {
     if (isCategory(it.category)) { out.push({ name: it.name, quantity: it.quantity, category: it.category, confidence: 1, source: "given" }); continue; }
-    const parts = order.brandId === "superbee" ? superbeeParts(it.productId, it.name) : null; // by product id (English and Thai listings), else by name
+    const parts = cataloguePartsFor(order.brandId, it.productId, it.name); // the place's own catalogue: by product id (any language listing), else by name
     if (parts) {
       if (!parts.length) out.push({ name: it.name, quantity: it.quantity, category: "not_sustainable", confidence: 1, source: "catalogue" }); // known, but not counted (raw fabric, fire starters)
       for (const [category, count] of parts) out.push({ name: it.name, quantity: it.quantity * count, category, confidence: 1, source: "catalogue" }); // a bundle is several products

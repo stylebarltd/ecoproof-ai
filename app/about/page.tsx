@@ -59,9 +59,9 @@ export default function About() {
       </header>
 
       {/* In-page navigation */}
-      <nav aria-label="On this page" className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 py-1 text-[12px] font-bold">
+      <nav aria-label="On this page" className="flex flex-wrap justify-center gap-2 py-1 text-[12px] font-bold">
         {[["#idea", "The idea"], ["#customers", "For customers"], ["#points", "Points & ranks"], ["#owners", "For shops"], ["#help", "Help out"], ["#proof", "The proof"], ["#faq", "Questions"]].map(([href, label]) => (
-          <a key={href} href={href} className="glass shrink-0 rounded-full px-3.5 py-1.5">{label}</a>
+          <a key={href} href={href} className="glass rounded-full px-3.5 py-1.5">{label}</a>
         ))}
       </nav>
 
@@ -99,7 +99,7 @@ export default function About() {
         <div className="mt-2 grid gap-3">
           <div className="relative rounded-2xl bg-gradient-to-br from-honey-300/60 via-white/70 to-honey-300/30 p-3.5 ring-2 ring-honey-400 shadow-[0_10px_28px_rgba(232,163,23,0.4)]">
             <span className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-honey-700">Verified purchase <span className="rounded-full bg-honey-500 px-1.5 py-0.5 text-[9px] text-ink">+{POINTS_VERIFIED} pts</span></span>
-            <p className="mt-1 font-heading text-[16px]">SuperBee</p>
+            <p className="mt-1 font-heading text-[16px]">Green Goods Co. <span className="font-sans text-[11px] font-semibold text-ink/60">(example online shop)</span></p>
             <p className="text-[12.5px] font-bold">110 single-use plastics avoided · 4.5 kg CO₂ saved</p>
             <p className="mt-1.5 text-[12.5px] leading-snug text-ink/80">Comes from a real online order. Because the shop tells us what was in it, the stamp shows the real impact of your purchase. Worth <b>{POINTS_VERIFIED} points</b>.</p>
           </div>

@@ -1,4 +1,4 @@
-import { BRANDS } from "@/lib/brands";
+import { getPlace } from "@/lib/stampPlaces";
 import { OrderError, parseOrder } from "@/lib/order";
 import { DuplicateOrderError, proveOrder } from "@/lib/proof";
 import { getPassport } from "@/lib/passport";
@@ -20,8 +20,8 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { order?: unknown; passportId?: unknown } | null;
   try {
     const order = parseOrder(body?.order);
-    const brand = BRANDS[order.brandId];
-    if (!brand) return Response.json({ error: `Unknown brand "${order.brandId}"` }, { status: 404 });
+    const brand = await getPlace(order.brandId); // brandId is a place id
+    if (!brand) return Response.json({ error: `Unknown place "${order.brandId}"` }, { status: 404 });
     const passportId = String(body?.passportId ?? "").trim();
     if (!passportId || passportId.length > 64) return Response.json({ error: "passportId required" }, { status: 400 });
 

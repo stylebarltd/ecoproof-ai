@@ -126,26 +126,6 @@ async function init(p: Pool) {
   }
 }
 
-/** Shops whose owner has confirmed them to EcoProof. Upserted on every cold start so edits to the JSON take effect. */
-async function seedOwnerShops(p: Pool) {
-  const shops = (await import("../data/superbee-shops.json")).default as { id: string; name: string; type: string; lat: number; lng: number }[];
-  for (const sh of shops) {
-    await p.query(
-      `INSERT INTO places (id,name,type,lat,lng,demo,owner_verified) VALUES ($1,$2,$3,$4,$5,false,true)
-       ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, lat=EXCLUDED.lat, lng=EXCLUDED.lng, owner_verified=true`,
-      [sh.id, sh.name, sh.type, sh.lat, sh.lng],
-    );
-  }
-  // SuperBee sells plastic-free products: confirmed by the owner for every SuperBee shop (including the demo shop).
-  for (const id of [...shops.map((x) => x.id), "demo-0"]) {
-    await p.query(
-      `INSERT INTO pledges (place_id, practice, detail, owner_confirmed) VALUES ($1,'plastic_free_products',NULL,true)
-       ON CONFLICT (place_id, practice) DO UPDATE SET owner_confirmed=true`,
-      [id],
-    );
-  }
-}
-
 /** Launch-partner places (our own place-setup). Upserted on cold start so edits to the JSON take effect; secrets are kept. */
 async function seedStampPlaces(p: Pool) {
   const { randomBytes } = await import("crypto");
@@ -156,13 +136,14 @@ async function seedStampPlaces(p: Pool) {
        ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, kind=EXCLUDED.kind, tagline=EXCLUDED.tagline, impact_note=EXCLUDED.impact_note, colour=EXCLUDED.colour, lat=EXCLUDED.lat, lng=EXCLUDED.lng, gps_radius_m=EXCLUDED.gps_radius_m, image=EXCLUDED.image, demo=EXCLUDED.demo`,
       [x.id, x.name, x.kind, x.tagline ?? null, x.impactNote ?? null, x.colour ?? null, x.lat ?? null, x.lng ?? null, x.gpsRadiusM ?? null, randomBytes(24).toString("hex"), x.image ?? null, !!x.demo],
     );
+    await p.query("DELETE FROM stamp_place_locations WHERE place_id=$1", [x.id]); // the data file is the source of truth for seeded places (an online shop has no pin)
     for (const l of x.locations ?? []) await p.query("INSERT INTO stamp_place_locations (place_id,name,lat,lng) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING", [x.id, l.name ?? null, l.lat, l.lng]);
   }
 }
 
 export async function query<T = RecordRow>(text: string, params: unknown[] = []): Promise<T[]> {
   const p = pool();
-  g._ready ??= init(p).then(() => seedOwnerShops(p)).then(() => seedStampPlaces(p));
+  g._ready ??= init(p).then(() => seedStampPlaces(p));
   await g._ready;
   return (await p.query(text, params)).rows as T[];
 }
