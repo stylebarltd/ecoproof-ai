@@ -102,6 +102,10 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS place_reports_place ON place_reports (place_id, created_at)`,
   `ALTER TABLE stamp_places ADD COLUMN IF NOT EXISTS demo BOOLEAN NOT NULL DEFAULT false`, // demo places can be collected by tapping, others only by scanning their QR
   `CREATE INDEX IF NOT EXISTS claim_cards_batch ON claim_cards (batch)`,
+  `CREATE TABLE IF NOT EXISTS auth_dl (
+    sid TEXT PRIMARY KEY, claim_hash TEXT NOT NULL, state TEXT NOT NULL, return_to TEXT NOT NULL DEFAULT '/',
+    status TEXT NOT NULL DEFAULT 'pending', address TEXT, consumed_at TIMESTAMPTZ, created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`, // wallet deep-link sign-ins in progress (ephemeral keys, a few minutes)
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,

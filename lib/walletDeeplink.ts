@@ -30,8 +30,8 @@ export function newState(provider: DlProvider, returnTo: string, now = Date.now(
 const q = (o: Record<string, string>) => Object.entries(o).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join("&");
 const shared = (theirPub: string, secret: string) => nacl.box.before(bs58.decode(theirPub), bs58.decode(secret));
 
-export const connectUrl = (s: DlState, origin: string) =>
-  `${BASE[s.provider]}/connect?${q({ app_url: origin, dapp_encryption_public_key: s.pub, redirect_link: `${origin}/wallet/callback`, cluster: s.cluster })}`;
+export const connectUrl = (s: DlState, origin: string, redirect: string) =>
+  `${BASE[s.provider]}/connect?${q({ app_url: origin, dapp_encryption_public_key: s.pub, redirect_link: redirect, cluster: s.cluster })}`;
 
 /** After a cluster mismatch: the same sign-in with the other network, once. Returns null if we already tried both. */
 export function otherCluster(s: DlState): DlState | null {
@@ -51,10 +51,10 @@ export function readConnect(s: DlState, p: URLSearchParams): DlState {
 }
 
 /** Builds the `signMessage` request for the server's sign-in message. */
-export function signUrl(s: DlState, message: string, origin: string, nonce = nacl.randomBytes(24)): string {
+export function signUrl(s: DlState, message: string, redirect: string, nonce = nacl.randomBytes(24)): string {
   const payload = new TextEncoder().encode(JSON.stringify({ session: s.session, message: bs58.encode(new TextEncoder().encode(message)), display: "utf8" }));
   const box = nacl.box.after(payload, nonce, shared(s.theirPub!, s.secret));
-  return `${BASE[s.provider]}/signMessage?${q({ dapp_encryption_public_key: s.pub, nonce: bs58.encode(nonce), redirect_link: `${origin}/wallet/callback`, payload: bs58.encode(box) })}`;
+  return `${BASE[s.provider]}/signMessage?${q({ dapp_encryption_public_key: s.pub, nonce: bs58.encode(nonce), redirect_link: redirect, payload: bs58.encode(box) })}`;
 }
 
 /** Reads the wallet's answer to `signMessage`: the signature (64 bytes). */
@@ -77,18 +77,3 @@ function failIfError(p: URLSearchParams) {
   throw new Error(/reject|denied|cancel|4001/i.test(`${code} ${msg}`) ? "Sign-in was cancelled in your wallet." : `The wallet reported an error${msg ? `: ${msg}` : ""}.`);
 }
 
-// ---- browser layer ------------------------------------------------------------------------------------------------------
-const KEY = "ecoproof-deeplink";
-const MAX_AGE_MS = 12 * 60_000;
-export const loadState = (): DlState | null => {
-  try { const s = JSON.parse(localStorage.getItem(KEY) ?? "null") as DlState | null; return s && Date.now() - s.at < MAX_AGE_MS ? s : null; } catch { return null; }
-};
-export const saveState = (s: DlState) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { /* the callback will explain */ } };
-export const clearState = () => { try { localStorage.removeItem(KEY); } catch { /* nothing to clear */ } };
-
-/** Step 1: remember a fresh key pair, then hand over to the wallet app. It returns to /wallet/callback in this browser. */
-export function startDeeplinkSignIn(provider: DlProvider, returnTo = "/") {
-  const s = newState(provider, returnTo);
-  saveState(s);
-  location.href = connectUrl(s, location.origin);
-}

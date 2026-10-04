@@ -1,18 +1,44 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, ChevronRight, Copy, Loader2, LogOut, ShieldCheck, Smartphone, Wallet, X } from "lucide-react";
 import { currentAddress, deepLinks, detectWallets, isMobile, linkDevicePassport, shortAddress, signInWith, signOut, type WalletInfo } from "@/lib/wallet";
 import { getUserId } from "@/lib/clientUser";
-import { startDeeplinkSignIn } from "@/lib/walletDeeplink";
+import { clearPending, finishLogin, pendingLogin, pollLogin, startDeeplinkSignIn } from "@/lib/walletLogin";
 import { LogoTile } from "@/components/Logo";
 
 /** Header chip: "Connect wallet" when signed out, the wallet address (with a small menu) when signed in. */
 export default function AccountChip({ onChange }: { onChange: () => void }) {
   const [address, setAddress] = useState<string | null>(null);
   const [open, setOpen] = useState<"sheet" | "menu" | null>(null);
+  const [waiting, setWaiting] = useState(false);
 
   useEffect(() => { const init = async () => { setAddress(await currentAddress().catch(() => null)); }; init(); }, []);
   const done = useCallback((a: string | null) => { setAddress(a); onChange(); }, [onChange]);
+
+  const doneRef = useRef(done);
+  doneRef.current = done; // the polling effect must not restart whenever the parent re-renders
+
+  // Came back from the wallet app (maybe via a browser tab): a sign-in started here may have finished. Collect it.
+  useEffect(() => {
+    let stop = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const check = async () => {
+      const p = pendingLogin();
+      if (!p) { setWaiting(false); return; }
+      setWaiting(true);
+      try {
+        const r = await pollLogin(p);
+        if (stop) return;
+        if (typeof r === "object") { await finishLogin(); setWaiting(false); doneRef.current(r.address); return; }
+        if (r === "expired") { clearPending(); setWaiting(false); return; }
+      } catch { /* offline for a moment: keep waiting */ }
+      timer = setTimeout(check, 1500);
+    };
+    const onVisible = () => { if (document.visibilityState === "visible") { clearTimeout(timer); void check(); } };
+    document.addEventListener("visibilitychange", onVisible);
+    void check();
+    return () => { stop = true; clearTimeout(timer); document.removeEventListener("visibilitychange", onVisible); };
+  }, []);
 
   return (
     <>
@@ -20,8 +46,8 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
         onClick={() => setOpen(address ? "menu" : "sheet")}
         className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-ink active:scale-[0.98]"
       >
-        {address ? <ShieldCheck size={14} strokeWidth={2.5} className="text-sage-700" /> : <Wallet size={14} strokeWidth={2.5} />}
-        {address ? shortAddress(address) : "Connect wallet"}
+        {waiting ? <Loader2 size={14} className="animate-spin text-honey-700" /> : address ? <ShieldCheck size={14} strokeWidth={2.5} className="text-sage-700" /> : <Wallet size={14} strokeWidth={2.5} />}
+        {waiting ? "Waiting for wallet…" : address ? shortAddress(address) : "Connect wallet"}
       </button>
       {open === "sheet" && <WalletSheet onClose={() => setOpen(null)} onSignedIn={(a) => { done(a); }} />}
       {open === "menu" && address && <Menu address={address} onClose={() => setOpen(null)} onSignedOut={() => { setOpen(null); done(null); }} />}
@@ -132,7 +158,7 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
         ) : mobile ? (
           <>
             {(["phantom", "solflare"] as const).map((p) => (
-              <WalletRow key={p} id={p} name={p === "phantom" ? "Phantom" : "Solflare"} sub="Opens the app, then brings you back here" onClick={() => startDeeplinkSignIn(p, location.pathname + location.search)} />
+              <WalletRow key={p} id={p} name={p === "phantom" ? "Phantom" : "Solflare"} sub="Opens the app, then brings you back here" onClick={() => { setErr(""); startDeeplinkSignIn(p, location.pathname + location.search).catch((e) => setErr(e instanceof Error ? e.message : "Couldn't start the sign-in.")); }} />
             ))}
             <p className="px-1 pt-1 text-[11.5px] leading-snug text-sage-900">You stay in this browser, so the camera keeps working. Prefer the wallet&apos;s own browser?{" "}
               {links.map((l, i) => <span key={l.name}>{i > 0 && " · "}<a href={l.href} className="font-bold underline">{l.name}</a></span>)}
