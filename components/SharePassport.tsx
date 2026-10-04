@@ -66,8 +66,8 @@ export default function SharePassport({ passportId, stamps, tier }: Props) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[4000] flex items-end bg-ink/50" onClick={() => setOpen(false)}>
-          <div className="mx-auto max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-neutral-100 p-4 pb-8 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="anim-fade fixed inset-0 z-[4000] flex items-end bg-ink/50 backdrop-blur-sm" onClick={() => setOpen(false)}>
+          <div className="anim-sheet mx-auto max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-neutral-100 p-4 pb-8 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-lg">Share your passport</h2>
               <button onClick={() => setOpen(false)} aria-label="Close" className="rounded-full bg-white p-1.5"><X size={18} /></button>

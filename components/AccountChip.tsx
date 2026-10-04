@@ -1,9 +1,10 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { Check, Copy, LogOut, ShieldCheck, Wallet, X } from "lucide-react";
+import { Check, ChevronRight, Copy, Loader2, LogOut, ShieldCheck, Smartphone, Wallet, X } from "lucide-react";
 import { currentAddress, deepLinks, detectWallets, isMobile, linkDevicePassport, shortAddress, signInWith, signOut, type WalletInfo } from "@/lib/wallet";
 import { getUserId } from "@/lib/clientUser";
 import { startDeeplinkSignIn } from "@/lib/walletDeeplink";
+import { LogoTile } from "@/components/Logo";
 
 /** Header chip: "Connect wallet" when signed out, the wallet address (with a small menu) when signed in. */
 export default function AccountChip({ onChange }: { onChange: () => void }) {
@@ -17,9 +18,9 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
     <>
       <button
         onClick={() => setOpen(address ? "menu" : "sheet")}
-        className="flex items-center gap-1.5 rounded-full border-[1.5px] border-neutral-300 px-3 py-1 text-xs font-semibold text-ink"
+        className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-ink active:scale-[0.98]"
       >
-        {address ? <ShieldCheck size={14} strokeWidth={2.5} className="text-sage-600" /> : <Wallet size={14} strokeWidth={2.5} />}
+        {address ? <ShieldCheck size={14} strokeWidth={2.5} className="text-sage-700" /> : <Wallet size={14} strokeWidth={2.5} />}
         {address ? shortAddress(address) : "Connect wallet"}
       </button>
       {open === "sheet" && <WalletSheet onClose={() => setOpen(null)} onSignedIn={(a) => { done(a); }} />}
@@ -28,12 +29,54 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
   );
 }
 
-function Backdrop({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+/** Bottom sheet in the passport's glass style. */
+function Sheet({ onClose, title, subtitle, children }: { onClose: () => void; title: string; subtitle?: string; children: React.ReactNode }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
   return (
-    <div className="fixed inset-0 z-[3000] flex items-end bg-ink/40" onClick={onClose}>
-      <div className="mx-auto w-full max-w-md rounded-t-[28px] bg-neutral-100 p-5 pb-8 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>{children}</div>
+    <div className="anim-fade fixed inset-0 z-[3000] flex items-end bg-ink/45 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-label={title}>
+      <div className="anim-sheet passport-bg mx-auto w-full max-w-md rounded-t-[32px] border-t border-white/70 p-5 pb-8 text-ink shadow-[0_-12px_40px_rgba(39,46,27,0.25)]" onClick={(e) => e.stopPropagation()}>
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-sage-700/25" aria-hidden />
+        <div className="flex items-start gap-3">
+          <LogoTile size={40} />
+          <div className="min-w-0 flex-1">
+            <h2 className="text-[19px] leading-tight">{title}</h2>
+            {subtitle && <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">{subtitle}</p>}
+          </div>
+          <button aria-label="Close" onClick={onClose} className="glass rounded-full p-1.5 text-sage-900"><X size={16} strokeWidth={2.5} /></button>
+        </div>
+        {children}
+      </div>
     </div>
   );
+}
+
+const ICONS: Record<string, string> = { phantom: "/wallets/phantom.svg", solflare: "/wallets/solflare.svg" };
+function WalletLogo({ id, size = 44 }: { id: string; size?: number }) {
+  return ICONS[id] ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={ICONS[id]} alt="" width={size} height={size} className="shrink-0 rounded-xl" />
+  ) : (
+    <span className="flex shrink-0 items-center justify-center rounded-xl bg-sage-700 font-heading text-cream" style={{ width: size, height: size }}>{id.slice(0, 1).toUpperCase()}</span>
+  );
+}
+
+function WalletRow({ id, name, sub, busy, disabled, onClick, href }: { id: string; name: string; sub: string; busy?: boolean; disabled?: boolean; onClick?: () => void; href?: string }) {
+  const cls = "glass glass-strong flex w-full items-center gap-3 rounded-2xl p-3 text-left transition active:scale-[0.99] disabled:opacity-60";
+  const inner = (
+    <>
+      <WalletLogo id={id} />
+      <span className="min-w-0 flex-1">
+        <span className="block font-heading text-[16px] leading-tight">{name}</span>
+        <span className="block text-[11.5px] text-sage-900">{busy ? "Check your wallet…" : sub}</span>
+      </span>
+      {busy ? <Loader2 size={20} className="animate-spin text-honey-700" /> : <ChevronRight size={20} strokeWidth={2.5} className="text-sage-700" />}
+    </>
+  );
+  return href ? <a href={href} target="_blank" rel="noreferrer" className={cls}>{inner}</a> : <button disabled={disabled} onClick={onClick} className={cls}>{inner}</button>;
 }
 
 function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn: (address: string) => void }) {
@@ -66,81 +109,69 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
   }
 
   const links = typeof window !== "undefined" ? deepLinks(window.location.href) : [];
+
+  if (result) {
+    const n = result.receipts + result.reviews;
+    return (
+      <Sheet onClose={onClose} title="You're connected" subtitle="Your passport now follows your wallet to any device.">
+        <div className="mt-5 flex flex-col items-center gap-3 text-center">
+          <span className="anim-pop flex h-16 w-16 items-center justify-center rounded-full bg-honey-500 text-ink shadow-[0_8px_24px_rgba(232,163,23,0.5)] ring-4 ring-white/70"><Check size={34} strokeWidth={3.2} /></span>
+          <span className="glass rounded-full px-3.5 py-1.5 font-mono text-xs font-bold">{shortAddress(result.address)}</span>
+          {n > 0 && <p className="glass rounded-2xl px-4 py-2.5 text-sm font-semibold text-sage-900">We added {n} stamp{n === 1 ? "" : "s"} from this device to your wallet passport.</p>}
+          <button onClick={onClose} className="w-full rounded-full bg-honey-500 py-3 font-heading text-[15px] text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">Done</button>
+        </div>
+      </Sheet>
+    );
+  }
+
   return (
-    <Backdrop onClose={onClose}>
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="text-xl">Sign in with your wallet</h2>
-        <button aria-label="Close" onClick={onClose} className="text-neutral-500"><X size={20} strokeWidth={2.5} /></button>
+    <Sheet onClose={onClose} title="Connect your wallet" subtitle="Keep your passport and Eco Warrior NFTs on every device.">
+      <div className="mt-4 space-y-2.5">
+        {wallets.length > 0 ? (
+          wallets.map((w) => <WalletRow key={w.key} id={w.key} name={w.name} sub="Detected in this browser" busy={busy === w.key} disabled={!!busy} onClick={() => go(w)} />)
+        ) : mobile ? (
+          <>
+            {(["phantom", "solflare"] as const).map((p) => (
+              <WalletRow key={p} id={p} name={p === "phantom" ? "Phantom" : "Solflare"} sub="Opens the app, then brings you back here" onClick={() => startDeeplinkSignIn(p, location.pathname + location.search)} />
+            ))}
+            <p className="px-1 pt-1 text-[11.5px] leading-snug text-sage-900">You stay in this browser, so the camera keeps working. Prefer the wallet&apos;s own browser?{" "}
+              {links.map((l, i) => <span key={l.name}>{i > 0 && " · "}<a href={l.href} className="font-bold underline">{l.name}</a></span>)}
+            </p>
+          </>
+        ) : (
+          <>
+            <WalletRow id="phantom" name="Phantom" sub="Get the extension, then reload" href="https://phantom.app/download" />
+            <WalletRow id="solflare" name="Solflare" sub="Get the extension, then reload" href="https://solflare.com/download" />
+          </>
+        )}
       </div>
 
-      {result ? (
-        <div className="mt-3 space-y-3 text-sm">
-          <p className="flex items-center gap-2 font-semibold"><Check size={18} strokeWidth={3} className="text-sage-600" /> Signed in as {shortAddress(result.address)}</p>
-          {result.receipts + result.reviews > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sage-900">We added {result.receipts} receipt{result.receipts === 1 ? "" : "s"}{result.reviews ? ` and ${result.reviews} review${result.reviews === 1 ? "" : "s"}` : ""} from this device to your wallet passport.</p>}
-          <button onClick={onClose} className="w-full rounded-full bg-terra-500 py-3 font-heading text-cream">Done</button>
-        </div>
-      ) : (
-        <div className="mt-3 space-y-3 text-sm">
-          <ul className="space-y-1.5 text-neutral-700">
-            <li className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-sage-600" /> Keep your passport and streak on any device</li>
-            <li className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-sage-600" /> Nothing to pay: you only sign a short message</li>
-            <li className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-sage-600" /> We never see your keys or touch your funds</li>
-          </ul>
+      <ul className="mt-4 grid grid-cols-3 gap-2 text-center text-[10.5px] font-semibold leading-tight text-sage-900">
+        {[[Check, "A free signature"], [ShieldCheck, "Your funds are never touched"], [Smartphone, "Works on any device"]].map(([Icon, text]) => {
+          const I = Icon as typeof Check;
+          return <li key={text as string} className="glass rounded-2xl px-1.5 py-2.5"><I size={16} strokeWidth={2.6} className="mx-auto mb-1 text-sage-700" />{text as string}</li>;
+        })}
+      </ul>
 
-          {wallets.length > 0 ? (
-            <div className="space-y-2 pt-1">
-              {wallets.map((w) => (
-                <button key={w.key} disabled={!!busy} onClick={() => go(w)} className="flex w-full items-center justify-between rounded-full bg-terra-500 px-5 py-3 font-bold text-cream disabled:opacity-60">
-                  <span>{busy === w.key ? "Check your wallet…" : `Continue with ${w.name}`}</span><Wallet size={18} strokeWidth={2.5} />
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2 rounded-2xl bg-cream p-3">
-              <p className="font-semibold">No wallet found in this browser</p>
-              {mobile ? (
-                <>
-                  <p className="text-neutral-700">Connect your wallet app. You stay in this browser, so the camera keeps working:</p>
-                  <div className="flex gap-2">
-                    {(["phantom", "solflare"] as const).map((p) => (
-                      <button key={p} onClick={() => startDeeplinkSignIn(p, location.pathname + location.search)} className="flex-1 rounded-full bg-terra-500 py-2.5 text-center font-bold capitalize text-cream">{p}</button>
-                    ))}
-                  </div>
-                  <p className="pt-1 text-xs text-neutral-600">Your wallet app opens, you approve a free signature, and it brings you back here.</p>
-                  <p className="pt-1 text-xs text-neutral-600">Or open EcoProof inside the wallet&apos;s own browser (the camera may be blocked there):</p>
-                  <div className="flex gap-2">{links.map((l) => <a key={l.name} href={l.href} className="flex-1 rounded-full border-[1.5px] border-neutral-300 py-2 text-center text-xs font-bold">{l.name} browser</a>)}</div>
-                </>
-              ) : (
-                <p className="text-neutral-700">Install <a className="underline" href="https://phantom.app/download" target="_blank" rel="noreferrer">Phantom</a> or <a className="underline" href="https://solflare.com/download" target="_blank" rel="noreferrer">Solflare</a>, then reload this page.</p>
-              )}
-            </div>
-          )}
-          {err && <p className="rounded-xl bg-terra-100 p-2.5 text-terra-800">{err}</p>}
-          <button onClick={onClose} className="w-full text-xs font-semibold text-neutral-600 underline">Continue without a wallet</button>
-        </div>
-      )}
-    </Backdrop>
+      {err && <p className="mt-3 rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
+      <button onClick={onClose} className="mt-3 w-full text-xs font-bold text-sage-900 underline">Continue without a wallet</button>
+    </Sheet>
   );
 }
 
 function Menu({ address, onClose, onSignedOut }: { address: string; onClose: () => void; onSignedOut: () => void }) {
   const [copied, setCopied] = useState(false);
   return (
-    <Backdrop onClose={onClose}>
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="text-xl">Your wallet</h2>
-        <button aria-label="Close" onClick={onClose} className="text-neutral-500"><X size={20} strokeWidth={2.5} /></button>
-      </div>
-      <p className="mt-2 break-all rounded-xl bg-cream p-3 font-mono text-xs">{address}</p>
-      <p className="mt-2 text-xs text-neutral-600">Your passport is saved to this wallet, so it follows you to any device where you sign in.</p>
+    <Sheet onClose={onClose} title="Your wallet" subtitle="Your passport is saved to this wallet and follows you to any device.">
+      <p className="glass mt-4 break-all rounded-2xl p-3 text-center font-mono text-xs font-semibold">{address}</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <button onClick={async () => { await navigator.clipboard.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="flex items-center justify-center gap-1.5 rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">
-          {copied ? <Check size={15} strokeWidth={2.5} /> : <Copy size={15} strokeWidth={2.5} />} {copied ? "Copied" : "Copy address"}
+        <button onClick={async () => { await navigator.clipboard.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="glass flex items-center justify-center gap-1.5 rounded-full py-2.5 text-sm font-bold">
+          {copied ? <Check size={15} strokeWidth={2.5} className="text-sage-700" /> : <Copy size={15} strokeWidth={2.5} />} {copied ? "Copied" : "Copy address"}
         </button>
-        <button onClick={async () => { await signOut(); onSignedOut(); }} className="flex items-center justify-center gap-1.5 rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">
+        <button onClick={async () => { await signOut(); onSignedOut(); }} className="glass flex items-center justify-center gap-1.5 rounded-full py-2.5 text-sm font-bold">
           <LogOut size={15} strokeWidth={2.5} /> Sign out
         </button>
       </div>
-    </Backdrop>
+    </Sheet>
   );
 }
