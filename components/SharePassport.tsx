@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Copy, Download, Share2, X } from "lucide-react";
+import { FacebookIcon, InstagramIcon, TelegramIcon, WhatsAppIcon, XIcon } from "@/components/BrandIcons";
 
 type Props = { passportId: string; stamps: number; tier: string | null };
 
@@ -88,11 +89,11 @@ export default function SharePassport({ passportId, stamps, tier }: Props) {
 
             <div className="mt-3 grid grid-cols-3 gap-2">
               {canFiles && <button onClick={shareImage} className={`${chip} col-span-3 bg-honey-500 text-sm`}><span className="flex items-center gap-2 text-sm"><Share2 size={16} /> Share image… (Instagram, Stories, Messages)</span></button>}
-              <button onClick={() => go(`https://t.me/share/url?url=${enc(link)}&text=${enc(caption)}`)} className={chip}><span className="text-lg">✈️</span>Telegram</button>
-              <button onClick={() => go(`https://twitter.com/intent/tweet?text=${enc(caption)}&url=${enc(link)}`)} className={chip}><span className="text-lg font-black">𝕏</span>X</button>
-              <button onClick={() => go(`https://www.facebook.com/sharer/sharer.php?u=${enc(link)}`)} className={chip}><span className="text-lg font-black text-[#1877f2]">f</span>Facebook</button>
-              <button onClick={() => go(`https://wa.me/?text=${enc(full)}`)} className={chip}><span className="text-lg">💬</span>WhatsApp</button>
-              <button onClick={instagram} disabled={!file} className={`${chip} disabled:opacity-50`}><span className="text-lg">📷</span>Instagram</button>
+              <button onClick={() => go(`https://t.me/share/url?url=${enc(link)}&text=${enc(caption)}`)} className={chip}><TelegramIcon size={28} className="text-[#26A5E4]" />Telegram</button>
+              <button onClick={() => go(`https://twitter.com/intent/tweet?text=${enc(caption)}&url=${enc(link)}`)} className={chip}><XIcon size={26} className="text-black" />X</button>
+              <button onClick={() => go(`https://www.facebook.com/sharer/sharer.php?u=${enc(link)}`)} className={chip}><FacebookIcon size={28} className="text-[#0866FF]" />Facebook</button>
+              <button onClick={() => go(`https://wa.me/?text=${enc(full)}`)} className={chip}><WhatsAppIcon size={28} className="text-[#25D366]" />WhatsApp</button>
+              <button onClick={instagram} disabled={!file} className={`${chip} disabled:opacity-50`}><InstagramIcon size={28} />Instagram</button>
               <button onClick={() => copy(full, "Post copied. Paste it anywhere.")} className={chip}><Copy size={18} />Copy post</button>
               <button onClick={download} disabled={!file} className={`${chip} col-span-3 disabled:opacity-50`}><span className="flex items-center gap-2"><Download size={16} /> Save image</span></button>
             </div>
