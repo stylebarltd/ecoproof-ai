@@ -9,24 +9,34 @@ import bs58 from "bs58";
 
 export type DlProvider = "phantom" | "solflare";
 const BASE: Record<DlProvider, string> = { phantom: "https://phantom.app/ul/v1", solflare: "https://solflare.com/ul/v1" };
-const CLUSTER = "devnet";
+// Solflare insists that the cluster we name matches the network the wallet is currently set to ("DAPP connection cluster differs from
+// wallet current endpoint"). We only ever sign a message (no transaction), so the network doesn't matter: start with the default
+// (mainnet-beta, what wallets use out of the box) and, if the wallet refuses, retry once with the other one.
+export type Cluster = "mainnet-beta" | "devnet";
+const OTHER: Record<Cluster, Cluster> = { "mainnet-beta": "devnet", devnet: "mainnet-beta" };
+export class ClusterMismatch extends Error {}
 
 export type DlState = {
   provider: DlProvider; pub: string; secret: string; // our key pair (base58)
-  step: "connect" | "sign"; returnTo: string; at: number;
+  step: "connect" | "sign"; returnTo: string; at: number; cluster: Cluster; retried?: boolean;
   theirPub?: string; session?: string; address?: string; message?: string;
 };
 
 export function newState(provider: DlProvider, returnTo: string, now = Date.now()): DlState {
   const kp = nacl.box.keyPair();
-  return { provider, pub: bs58.encode(kp.publicKey), secret: bs58.encode(kp.secretKey), step: "connect", returnTo, at: now };
+  return { provider, pub: bs58.encode(kp.publicKey), secret: bs58.encode(kp.secretKey), step: "connect", returnTo, at: now, cluster: "mainnet-beta" };
 }
 
 const q = (o: Record<string, string>) => Object.entries(o).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join("&");
 const shared = (theirPub: string, secret: string) => nacl.box.before(bs58.decode(theirPub), bs58.decode(secret));
 
 export const connectUrl = (s: DlState, origin: string) =>
-  `${BASE[s.provider]}/connect?${q({ app_url: origin, dapp_encryption_public_key: s.pub, redirect_link: `${origin}/wallet/callback`, cluster: CLUSTER })}`;
+  `${BASE[s.provider]}/connect?${q({ app_url: origin, dapp_encryption_public_key: s.pub, redirect_link: `${origin}/wallet/callback`, cluster: s.cluster })}`;
+
+/** After a cluster mismatch: the same sign-in with the other network, once. Returns null if we already tried both. */
+export function otherCluster(s: DlState): DlState | null {
+  return s.retried ? null : { ...s, cluster: OTHER[s.cluster], retried: true, at: Date.now() };
+}
 
 /** Reads the wallet's answer to `connect`. Returns the updated state (address + session) or throws with a readable reason. */
 export function readConnect(s: DlState, p: URLSearchParams): DlState {
@@ -63,6 +73,7 @@ function failIfError(p: URLSearchParams) {
   const code = p.get("errorCode");
   if (!code && !p.get("errorMessage")) return;
   const msg = p.get("errorMessage") ?? "";
+  if (/cluster|endpoint|network/i.test(msg)) throw new ClusterMismatch(msg);
   throw new Error(/reject|denied|cancel|4001/i.test(`${code} ${msg}`) ? "Sign-in was cancelled in your wallet." : `The wallet reported an error${msg ? `: ${msg}` : ""}.`);
 }
 

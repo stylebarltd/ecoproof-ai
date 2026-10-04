@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-import { clearState, loadState, readConnect, readSignature, saveState, signUrl } from "@/lib/walletDeeplink";
+import { ClusterMismatch, clearState, connectUrl, loadState, otherCluster, readConnect, readSignature, saveState, signUrl } from "@/lib/walletDeeplink";
 import { linkDevicePassport } from "@/lib/wallet";
 import { getUserId } from "@/lib/clientUser";
 
@@ -45,6 +45,14 @@ export default function WalletCallback() {
         clearState();
         location.replace(state.returnTo || "/");
       } catch (e) {
+        if (e instanceof ClusterMismatch) {
+          const st = loadState();
+          const retry = st ? otherCluster(st) : null;
+          if (retry) { saveState(retry); location.href = connectUrl(retry, location.origin); return; } // try the wallet's other network once
+          clearState();
+          setErr("Your wallet is set to a different network than we asked for. In the wallet, switch to Mainnet (or Devnet) and try again.");
+          return;
+        }
         clearState();
         setErr(e instanceof Error ? e.message : "Sign-in failed.");
       }
