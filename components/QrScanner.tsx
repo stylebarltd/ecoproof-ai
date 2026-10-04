@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
 import { Camera, X } from "lucide-react";
+import { detectWallets, isMobile } from "@/lib/wallet";
 
 /** Only EcoProof claim paths are accepted: a counter QR (/c/..), a printed card (/k/..) or an order link (/o/../..). */
 const CLAIM_PATH = /^\/(c\/[a-z0-9-]+|k\/[A-Za-z0-9]+|o\/[a-z0-9-]+\/[A-Za-z0-9_.-]+)$/;
@@ -12,6 +13,8 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
   const [err, setErr] = useState("");
   const [seen, setSeen] = useState("");
   const [photoBusy, setPhotoBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [inWallet] = useState(() => isMobile() && detectWallets().length > 0); // a wallet app's built-in browser
 
   /** Handles a QR code's text. Returns true when it was an EcoProof claim code (and we're navigating). */
   const handleCode = (data: string): boolean => {
@@ -100,7 +103,15 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
               <Camera size={18} /> {photoBusy ? "Reading the photo…" : "Take a photo of the QR code"}
               <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { void readPhoto(e.target.files?.[0]); e.target.value = ""; }} />
             </label>
-            <p className="text-xs text-cream/70">Or open this page in Safari / Chrome, or point your phone&apos;s own camera app at the QR code.</p>
+            <p className="text-xs text-cream/80">{inWallet ? "Wallet browsers often block the camera. The easiest way: point your phone's own camera app at the QR code. It opens EcoProof in your normal browser." : "Or point your phone's own camera app at the QR code."}</p>
+            {inWallet && (
+              <div className="mx-auto flex max-w-xs gap-2 text-xs font-bold">
+                {/android/i.test(navigator.userAgent) && (
+                  <a href={`intent://${location.host}${location.pathname}${location.search}#Intent;scheme=https;package=com.android.chrome;end`} className="flex-1 rounded-full bg-white/15 py-2.5">Open in Chrome</a>
+                )}
+                <button onClick={async () => { try { await navigator.clipboard.writeText(location.href); setCopied(true); } catch { /* ignore */ } }} className="flex-1 rounded-full bg-white/15 py-2.5">{copied ? "Link copied" : "Copy link"}</button>
+              </div>
+            )}
           </>
         )}
       </div>
