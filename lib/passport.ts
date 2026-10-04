@@ -7,12 +7,10 @@ import { nextMilestone } from "./nft";
 import { pointsFor, stampClass, type StampClass } from "./stampClasses";
 
 export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
-export type Badge = { id: string; icon: string; name: string; desc: string; earned: boolean };
 export type Passport = {
   userId: string;
   wallet: string | null;
   totals: Totals;
-  badges: Badge[];
   anchored: number;
   nfts: Nft[];
   /** Every joined place; `earned` = this passport has at least one stamp from it. */
@@ -26,20 +24,6 @@ export type Passport = {
   registryUrl: string | null;
   records: { id: string; placeId: string | null; source: string | null; class: StampClass; points: number; impactNote: string | null; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
-
-export function badgesFor(t: Totals): Badge[] {
-  const list: [string, string, string, string, boolean][] = [
-    ["first", "🌱", "First Proof", "Collect your first stamp", t.receipts >= 1],
-    ["plastic", "♻️", "Plastic Fighter", "Avoid 100 single-use plastics", t.plasticItems >= 100],
-    ["plastic500", "🐢", "Turtle Guardian", "Avoid 500 single-use plastics", t.plasticItems >= 500],
-    ["carbon", "🌍", "Carbon Cutter", "Save 5 kg CO₂", t.co2Kg >= 5],
-    ["carbon25", "🌳", "Forest Maker", "Save 25 kg CO₂", t.co2Kg >= 25],
-    ["five", "🏅", "Regular", "Collect 5 stamps", t.receipts >= 5],
-    ["review", "📍", "Place Verifier", "Review a place you visited", t.reviews >= 1],
-    ["cup", "🥤", "Cup Hero", "Bring your own cup 5 times", t.byoCups >= 5],
-  ];
-  return list.map(([id, icon, name, desc, earned]) => ({ id, icon, name, desc, earned }));
-}
 
 export async function getPassport(userId: string): Promise<Passport> {
   const ids = await identityGroup(userId);
@@ -63,7 +47,6 @@ export async function getPassport(userId: string): Promise<Passport> {
     userId,
     wallet: looksLikeWallet(ids[0]) ? ids[0] : null,
     totals,
-    badges: badgesFor(totals),
     places: (await query<{ id: string; name: string; impact_note: string | null; status: string }>("SELECT id,name,impact_note,status FROM stamp_places ORDER BY created_at, name")).filter((pl) => pl.status === "active" || rows.some((r) => r.place_id === pl.id)).map((pl) => { // hide paused places unless this passport has stamps from them
       const mine = rows.filter((r) => r.place_id === pl.id);
       return { id: pl.id, name: pl.name, imageUrl: `/api/stamp-places/${pl.id}/stamp`, impactNote: pl.impact_note, earned: mine.length > 0, count: mine.length, verifiedCount: mine.filter((r) => stampClass(r.source) === "verified").length };

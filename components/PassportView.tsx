@@ -194,13 +194,6 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
         </Glass>
       )}
 
-      {pass && pass.badges.some((b) => b.earned) && (
-        <Glass className="px-4 py-3">
-          <div className="flex flex-wrap gap-1.5">
-            {pass.badges.filter((b) => b.earned).map((b) => <span key={b.id} className="rounded-full bg-white/60 px-2.5 py-1 text-[11px] font-bold text-sage-900 ring-1 ring-white/70">{b.icon} {b.name}</span>)}
-          </div>
-        </Glass>
-      )}
       <p className="pb-1 pt-1 text-center text-[11.5px] font-semibold text-sage-900">
         <Link href="/about" className="underline">How EcoProof works</Link> · <Link href="/about#owners" className="underline">For shops</Link> · <Link href="/rules" className="underline">Eco rules</Link>
       </p>

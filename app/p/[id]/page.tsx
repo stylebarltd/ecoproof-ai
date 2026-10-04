@@ -31,7 +31,6 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
   const t = { n: pass.totals.receipts, co2: pass.totals.co2Kg, pl: pass.totals.plasticItems, pk: pass.totals.packagingG };
   const proof = rec.signature ? `https://explorer.solana.com/tx/${rec.signature}?cluster=devnet` : "";
   const qr = proof ? await QRCode.toDataURL(proof, { margin: 1, width: 160 }) : "";
-  const badges = pass.badges.filter((b) => b.earned).map((b) => `${b.icon} ${b.name}`);
 
   return (
     <div className="space-y-5">
@@ -53,7 +52,6 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
           <div key={l} className="rounded-2xl bg-neutral-100 p-3"><div className="font-heading text-xl">{v}</div><div className="text-xs text-neutral-600">{l}</div></div>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2">{badges.map((b) => <span key={b} className="rounded-full bg-sage-500 px-3 py-1 text-sm font-semibold text-cream">{b}</span>)}</div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={`/api/card/${rec.id}`} alt="Impact card" className="w-full rounded-2xl" />
       <div className="flex items-center gap-4 rounded-[28px] bg-neutral-100 p-4">
