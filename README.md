@@ -8,6 +8,16 @@
 
 > Status: hackathon build on **Solana devnet**. Impact figures are estimates (see [Honest limits](#honest-limits)).
 
+## Try it: scan the three demo QR codes
+
+Open **https://ecoproof.superbee.me** on your phone, then scan these QR codes one by one with the in-app **Scan a QR to collect a stamp** button (or your phone's camera). Each one opens a demo place; tap **Collect stamp**. The demo places have **no GPS check**, so this works from anywhere, and you can also just tap them in the passport or on the map.
+
+| 1. Demo Café | 2. Demo Restaurant | 3. Demo Coffee Roasters |
+|:---:|:---:|:---:|
+| <img src="docs/demo-qr/1-demo-cafe.png" width="200" alt="QR code: Demo Café"> | <img src="docs/demo-qr/2-demo-restaurant.png" width="200" alt="QR code: Demo Restaurant"> | <img src="docs/demo-qr/3-demo-coffee-roasters.png" width="200" alt="QR code: Demo Coffee Roasters"> |
+
+Three presence stamps are 3 points, which unlocks your first two Eco Warriors (Seedling at 1 point, Sprout at 3). Connect a wallet first (Phantom or Solflare, free signature) so the NFTs are minted to it. Each place gives one stamp per day. The codes are regenerated with `npx tsx scripts/demo-qr.ts`.
+
 ## The idea
 
 Sustainable brands have no cheap way to show that real people really chose them, and customers have nothing to show for sustainable habits. EcoProof sits between the two:
