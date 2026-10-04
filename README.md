@@ -22,7 +22,7 @@ Three presence stamps are 3 points, which unlocks your first two Eco Warriors (S
 
 Sustainable brands have no cheap way to show that real people really chose them, and customers have nothing to show for sustainable habits. EcoProof sits between the two:
 
-- **Customers** get an eco passport: a collection of stamps, streaks, and collectible NFTs that level up (Seedling → Sprout → Guardian → Legend). It's a travel passport crossed with a collectible-card game, and it's built to be shared.
+- **Customers** get an eco passport: a collection of stamps and collectible NFTs that level up (Seedling → Sprout → Guardian → Legend). It's a travel passport crossed with a collectible-card game, and it's built to be shared.
 - **Brands** get new customers through that sharing, and a verified record that doesn't depend on trusting their own database.
 
 Underneath, every claim writes a proof on Solana: a hash of the claim plus a claim account that makes "one scan, one stamp" enforceable on-chain.
