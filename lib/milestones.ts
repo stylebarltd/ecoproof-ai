@@ -44,7 +44,7 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
     onMint?.(row.milestone);
     try {
       const stats = JSON.parse(row.stats) as NftStats;
-      await query("UPDATE nft_mints SET svg=$2 WHERE id=$1", [row.id, artSvg(stats)]);
+      await query("UPDATE nft_mints SET svg=$2 WHERE id=$1", [row.id, artSvg({ ...stats, seed: wallet })]);
       const out = await serial(() => mintSoulbound({ owner: wallet, name: `Eco ${tierFor(row.milestone).name} · ${row.milestone === 1 ? "1 stamp" : `${row.milestone} stamps`}`.slice(0, 32), uri: `${appUrl()}/api/nft/${row.id}/metadata` }));
       await query("UPDATE nft_mints SET status='minted', asset_id=$2, mint_signature=$3, freeze_signature=$4, error=NULL, minted_at=now() WHERE id=$1", [row.id, out.assetId, out.mintSignature, out.freezeSignature]);
     } catch (e) {

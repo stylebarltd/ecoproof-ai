@@ -1,8 +1,6 @@
 # EcoProof AI: submission text and demo script
 
-> **Before you submit (delete this box):** confirm the SuperBee impact wording and logo, the business-model sentence, and that the demo wallet has devnet SOL. The live app link below is the production site, which now serves this stamp-model build.
-
-Live app: https://ecoproof-ai.vercel.app
+Live app: https://ecoproof.superbee.me
 Code: https://github.com/stylebarltd/ecoproof-ai
 Chain: Solana devnet (proofs and soulbound compressed NFTs)
 

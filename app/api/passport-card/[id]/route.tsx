@@ -24,7 +24,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const earned = new Set(pass.places.filter((p) => p.earned).map((p) => p.id));
   const show = [...placeRows].sort((a, b) => Number(earned.has(b.id)) - Number(earned.has(a.id))).slice(0, square ? 8 : 6); // earned stamps first
   const artMilestone = top?.milestone ?? 1;
-  const art = uri(artSvg({ milestone: artMilestone, proofs: stamps, plasticItems: 0, co2Kg: 0, brand: "" }, { labels: false })); // text is drawn below: the SVG rasteriser has no fonts on Vercel
+  const art = uri(artSvg({ milestone: artMilestone, proofs: stamps, plasticItems: 0, co2Kg: 0, brand: "", seed: pass.wallet ?? id }, { labels: false })); // text is drawn below: the SVG rasteriser has no fonts on Vercel
   const legend = tier?.key === "legend";
   const host = new URL(appUrl()).host;
   const shownHost = host.endsWith(".vercel.app") && host.includes("ecoproof") ? "ecoproof-ai.vercel.app" : host;

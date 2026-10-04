@@ -11,6 +11,36 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
   const video = useRef<HTMLVideoElement>(null);
   const [err, setErr] = useState("");
   const [seen, setSeen] = useState("");
+  const [photoBusy, setPhotoBusy] = useState(false);
+
+  /** Handles a QR code's text. Returns true when it was an EcoProof claim code (and we're navigating). */
+  const handleCode = (data: string): boolean => {
+    let path = "";
+    try { path = new URL(data).pathname; } catch { /* not a URL */ }
+    if (!CLAIM_PATH.test(path)) return false;
+    if (!onPath?.(path)) location.assign(path);
+    return true;
+  };
+
+  /** Fallback for in-app browsers (wallet browsers etc.) where live camera access is blocked: take a photo with the phone's camera instead. */
+  async function readPhoto(file: File | undefined) {
+    if (!file) return;
+    setPhotoBusy(true); setSeen("");
+    try {
+      const bmp = await createImageBitmap(file);
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d", { willReadFrequently: true })!;
+      for (const maxSide of [1400, 900, 600]) { // QR codes are sometimes small in a photo, so try a few sizes
+        const k = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+        c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+        ctx.drawImage(bmp, 0, 0, c.width, c.height);
+        const hit = jsQR(ctx.getImageData(0, 0, c.width, c.height).data, c.width, c.height, { inversionAttempts: "attemptBoth" });
+        if (hit?.data) { if (handleCode(hit.data)) return; setSeen("That QR code isn't an EcoProof stamp."); setPhotoBusy(false); return; }
+      }
+      setSeen("We couldn't find a QR code in that photo. Get closer, keep it flat and well lit, and try again.");
+    } catch { setSeen("We couldn't read that photo. Try again."); }
+    setPhotoBusy(false);
+  }
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -28,9 +58,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
         ctx.drawImage(v, 0, 0, w, h);
         const hit = jsQR(ctx.getImageData(0, 0, w, h).data, w, h, { inversionAttempts: "dontInvert" });
         if (hit?.data) {
-          let path = "";
-          try { const u = new URL(hit.data); path = u.pathname; } catch { /* not a URL */ }
-          if (CLAIM_PATH.test(path)) { stopped = true; if (!onPath?.(path)) location.assign(path); return; }
+          if (handleCode(hit.data)) { stopped = true; return; }
           setSeen("That QR code isn't an EcoProof stamp.");
         }
       }
@@ -47,7 +75,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
         await v.play();
         tick();
       } catch {
-        setErr("We couldn't open the camera. Allow camera access, or point your phone's own camera app at the QR code.");
+        setErr("The live camera isn't available here. This often happens inside a wallet app's browser.");
       }
     })();
 
@@ -64,7 +92,18 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
         <video ref={video} playsInline muted className="max-h-full w-full rounded-3xl object-cover" />
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-3xl border-4 border-honey-400/90" />
       </div>
-      <p className="p-5 text-center text-sm">{err || seen || "Point the camera at the QR code on the counter, your parcel card or your order email."}</p>
+      <div className="space-y-3 p-5 text-center text-sm">
+        <p>{seen || err || "Point the camera at the QR code on the counter, your parcel card or your order email."}</p>
+        {err && (
+          <>
+            <label className="mx-auto flex w-full max-w-xs cursor-pointer items-center justify-center gap-2 rounded-full bg-honey-500 py-3 font-bold text-ink">
+              <Camera size={18} /> {photoBusy ? "Reading the photo…" : "Take a photo of the QR code"}
+              <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { void readPhoto(e.target.files?.[0]); e.target.value = ""; }} />
+            </label>
+            <p className="text-xs text-cream/70">Or open this page in Safari / Chrome, or point your phone&apos;s own camera app at the QR code.</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
