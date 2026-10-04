@@ -16,7 +16,7 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
   const done = useCallback((a: string | null) => { setAddress(a); onChange(); }, [onChange]);
 
   const doneRef = useRef(done);
-  doneRef.current = done; // the polling effect must not restart whenever the parent re-renders
+  useEffect(() => { doneRef.current = done; }); // keeps the latest callback without restarting the polling effect on every parent render
 
   // Came back from the wallet app (maybe via a browser tab): a sign-in started here may have finished. Collect it.
   useEffect(() => {
