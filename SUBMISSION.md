@@ -4,69 +4,63 @@ Live app: https://ecoproof.superbee.me
 Code: https://github.com/stylebarltd/ecoproof-ai
 Chain: Solana devnet (proofs and soulbound compressed NFTs)
 
-One-liner: **EcoProof turns a scan into a stamp in an eco passport, every stamp is proven on Solana, and enough stamps unlock a soulbound Eco Warrior NFT. It brings sustainable brands new customers through the social proof their customers share.**
+Tagline: **"I'm eco — and I have proof."** EcoProof turns a scan into a stamp in an eco passport, every stamp is proven on Solana, and enough stamps unlock a soulbound Eco Warrior NFT. Brands get new customers through the proof their customers share.
 
 ---
 
 ## Submission form answers
 
-### What are you building, and who is it for?
-EcoProof is a mobile-first web app that lets sustainable brands turn real eco-friendly visits and purchases into shareable, verified social proof.
+Chain: **Solana**. Category: **Consumer / Climate**. Mobile-focused: **yes**, a mobile-first PWA built around scanning, tapping links, mobile wallets and sharing.
 
-A customer taps a link or scans a QR code and collects a **stamp** in their EcoProof passport: scan, collect, unlock. Collect enough stamps and a **soulbound Eco Warrior NFT** is minted to their wallet at 1, 3, 10 and 25 stamps, then every 50. The artwork levels up from Seedling to Sprout, Guardian and Legend. The passport is built to be shared: a polished image with the customer's NFT, stamps and progress, linking back to their live passport, which is how a brand gains new customers.
+### Brief description (≤500 chars)
+"I'm eco — and I have proof." EcoProof turns your real sustainable purchases into a shareable eco passport. Scan a QR or tap a link after an eco purchase and collect a stamp from that brand or café, each one anchored on Solana so it can't be edited or reused. Hit milestones and mint a soulbound eco-warrior NFT. Show the world you actually walk the talk. And because customers love showing it off, brands get real, verified social proof that brings new ones in.
 
-Everything is a **place**: an online brand like SuperBee, a café, a market stall. A place has a name, a stamp (its logo), a one-line tagline and its own QR. We set up launch partners ourselves, and owners can self-serve: sign in with a wallet, upload a logo, and the app generates their QR and a print-ready counter card.
+*(462 chars)*
 
-There are three ways to claim a stamp, all producing one stamp and one Solana proof:
-1. **Place QR**: a counter display (once per day per person; physical places set up by their owner always get a GPS check).
-2. **Printed card**: single-use QR cards dropped into a parcel. It works on any channel, including Amazon, Lazada and Shopee, and needs no code from the shop.
-3. **Verified order** (WooCommerce): the shop's built-in webhook sends the completed order, and the order-completed email carries a QR signed per order. This is the only door that proves a real order happened, so only this stamp carries a real impact line ("110 single-use plastics avoided").
+### What are you building and who is it for? (≤1000 chars)
+Lots of people think of themselves as eco-conscious but have nothing to show for it. EcoProof gives them proof.
 
-It's for sustainable brands and local businesses that want customers to show them off, and for customers who want their habits to be visible and rewarding.
+After a sustainable purchase you scan a QR or tap a link, and a "stamp" lands in your personal eco passport — each one anchored on Solana, so it's tamper-proof and can only be used once. Stamps come from anywhere: an online order, a card in your parcel, a café counter. Collect enough and you mint a soulbound "eco warrior" NFT. Your passport fills with real brand stamps and badges, and becomes a gorgeous card you share on social: "I'm eco, and here's the proof."
 
-### Why did you decide to build this, and why now?
-Customers have nothing to show for sustainable habits, and sustainable brands have no cheap way to prove that real people really chose them. Marketing claims are unverifiable and loyalty programmes are expensive, closed and forgettable.
+It's for conscious shoppers who want their values to be visible and rewarded. And it's for sustainable brands — like our showcase brand SuperBee, a certified B Corp — because customers proudly broadcasting verified stamps is the most credible marketing there is. Customers want the status; brands get the growth. That's the engine.
 
-Two things make this the right time. Compressed NFTs on Solana mean a collectible costs a fraction of a cent, so a reward can be the NFT itself instead of a freebie that costs the brand money. And people already share streaks and collectibles online, so a passport that looks good to share does the brand's marketing for it.
+*(911 chars)*
 
-We run a sustainable ecommerce business (SuperBee, a certified B Corp), so the online-order path was built for a real shop and a real email, and we tested it end to end on a staging copy of a WooCommerce store.
+### Why did you decide to build this, and why build it now? (≤1000 chars)
+I run SuperBee, a certified B Corp eco brand, so I see both sides of this. Customers tell us they care about sustainability, but they've got no way to prove it, even to themselves. And brands doing the real work get drowned out by ones that just claim to be green. Everyone's making eco choices into a void.
 
-### What technologies are you using or integrating with?
-- **Solana** (devnet, `@solana/web3.js`): Memo-program proofs plus claim accounts that enforce "once only" on-chain
-- **Metaplex Bubblegum V2 and MPL-Core**: compressed NFTs, made non-transferable (soulbound) with `setNonTransferableV2`
-- **Sign-In With Solana** (Phantom, Solflare, Backpack): wallet sessions with a one-time nonce
-- **WooCommerce** built-in webhooks (HMAC-signed) and a child-theme snippet for the order email
-- **Next.js 16 / React / Tailwind** (mobile-first PWA), **`next/og`** for share images, **`qrcode`**
-- **PostgreSQL (Neon)**, **Vercel**
-- **Anthropic Claude API**: classifies products the catalogue doesn't know into impact categories (estimates)
+EcoProof makes those choices visible and verifiable. People get a badge of identity they're genuinely proud to share, and that sharing is exactly what credible brands have been missing.
 
-### Which chains does your product use?
-Solana
+Why now: Solana means we can anchor every stamp and mint collectible rewards (compressed NFTs) for fractions of a cent — impossible to afford before. Conscious consumerism has gone mainstream, trust and proof are the missing pieces, and the on-chain cost barrier has finally gone. As a real eco shop owner, I can build it and be its first user from day one.
 
-### How does your product use these chains?
-**Every valid claim writes a proof.** The claim record (place, person, door, time, and the order's items and impact when there is one) is hashed with SHA-256 and written to Solana as an `ecoproof:v1:<hash>` memo. Each proof has a *Verify on-chain* button that recomputes the hash from the stored data and compares it with the memo.
+*(853 chars)*
 
-**"One scan, one stamp" is enforced by Solana, not by our database.** Each claim has a fingerprint: place + person + day for the counter QR, the code for a printed card, and the order id for a verified order. The fingerprint deterministically maps to a claim account address, and claiming means creating that account in the same transaction that records the proof. Solana's runtime refuses to create an account that already exists, so a repeat claim fails on-chain, even if two servers race, and without any custom program. Anyone can recompute the address and check it on Explorer.
+### What technologies are you using or integrating with? (≤400 chars)
+Next.js (App Router), React and Tailwind on Vercel. Solana anchors every stamp as an on-chain proof and mints soulbound compressed NFTs via Metaplex Bubblegum. Code-drawn generative SVG gives each wallet its own eco warrior. Anthropic's Claude API maps unknown products to impact. PostgreSQL (Neon) for passports and stamps. WooCommerce webhooks for brand onboarding. Dynamic share cards via next/og.
 
-**Milestones mint soulbound compressed NFTs.** At 1, 3, 10, 25 and then every 50 stamps, EcoProof mints a compressed NFT with Bubblegum V2 into a Merkle tree and MPL-Core collection we created, then marks it non-transferable, so the collectible can't be bought, only earned. The NFT artwork and its metadata are served by the app. Passports show each NFT with a link to Solana Explorer.
+*(400 chars)*
 
-Everything runs on Solana devnet today; mainnet is a configuration change.
+### How does your product use these chains? (Solana, ≤500 chars)
+Solana is the trust layer. Every valid claim writes a proof on-chain, so each stamp is a tamper-proof, publicly verifiable record, and a claim account on Solana makes each code or order usable only once. At milestones we mint soulbound compressed NFTs (Metaplex Bubblegum) as eco-warrior badges, costing fractions of a cent so it scales to every customer. Solana does the proving, not the paying.
 
-### Category
-Consumer / Climate (alternatives: Green Tech, NFTs & Collectibles)
+*(396 chars)*
 
-### Is your project a mobile-focused dApp?
-Yes. It is a mobile-first PWA built around phone use: scanning a QR, tapping a link in an email, connecting a mobile wallet, and sharing an image from the phone's share sheet.
+### Did anyone not listed on the team do meaningful work? (≤600 chars)
+No one outside the team. This was built solo by me. I used AI assistants — Anthropic's Claude — heavily during development, for coding, design and talking through product decisions. But all the concept, direction and decisions are my own. Claude is also part of the product itself, mapping products to their impact, so AI is both how I built it and part of how it works.
 
-### Did anyone not listed on the team do meaningful work on this project?
-No. All meaningful work was completed by the listed team members during the hackathon period.
+*(370 chars)*
 
-### Anything else judges should know?
-- **What is built and working today:** places with QR, stamp art and print-ready counter cards; self-serve place setup at `/join`; the three claim doors; Solana proofs with on-chain verification and on-chain once-only claims; soulbound milestone NFTs with four tiers of artwork; a glass-style passport with hero NFTs, stamp collection, progress and proof trail; a shareable passport image; a map of joined places only; live progress while a stamp is written to Solana.
-- **WooCommerce was tested end to end on a local staging shop**: completed order → signed webhook → order-completed email with the QR → claim → stamp with the real impact line. Refunded or cancelled orders are voided, and a second claim of the same order is refused. We have **not** installed anything on the live SuperBee shop yet.
-- **Honest limits.** Only the verified-order door proves a purchase; QR and card stamps are generic stamps with no impact number. GPS checks stop casual abuse but can be spoofed. Impact figures are estimates from a hand-built factor table (`lib/impact.ts`), not audited lifecycle data; for shops other than SuperBee, unknown products are classified by an AI and the result is an estimate. Self-serve places are limited to three per owner and are not independently vetted: the map's "verified" means *claimed and set up on EcoProof*, and real vetting is roadmap. NFTs are on devnet and may not show in every wallet.
-- **Removed on purpose.** An earlier version of this project scanned receipt photos with AI. We replaced it because the proof should come from the shop, not from a customer photo.
-- **Roadmap:** capture line items from marketplace order emails (Amazon, Shopee, Lazada) with DKIM verification of the email; Shopify and other platforms; owner dashboards and place editing; independent vetting of places; mainnet.
+### Anything else judges should know? (≤500 chars)
+I'm not a hypothetical founder. I run SuperBee, a certified B Corp eco brand, so EcoProof is built by its own first real user — grounded in a genuine problem, not a pitch deck. I can walk through the whole loop with real products. And the stamp model works across every channel — online, in-store, even marketplace parcels — so any eco business can join in minutes with nothing but a QR code. Customers get the pride of "I'm eco, and I have proof." Brands get the growth.
+
+*(471 chars)*
+
+### Notes for judges (the longer, honest version, for the README or follow-up questions)
+- **Built and working:** places with QR, stamp art and counter cards; self-serve setup at `/join`; three claim doors (place QR, printed parcel card, verified WooCommerce order); a Solana proof for every claim with on-chain once-only enforcement; soulbound milestone NFTs with four levelling tiers and an individual character per wallet; a glass-style passport; a shareable passport image with one-tap posting; a map of joined places; eco rules with customer reporting and review.
+- **WooCommerce** was tested end to end on a local staging shop (completed order, signed webhook, QR in the order email, claim, stamp with the real impact line). It is not installed on the live SuperBee shop yet.
+- **Honest limits:** only the verified-order door proves a purchase; QR and card stamps are generic. GPS checks stop casual abuse but can be spoofed. Impact figures are estimates from a hand-built factor table. Self-serve places are not independently vetted: the map's "verified" means claimed and set up on EcoProof. NFTs are on devnet and may not show in every wallet.
+- **Removed on purpose:** an earlier version scanned receipt photos with AI. We replaced it because the proof should come from the shop, not from a customer photo.
+- **Roadmap:** marketplace order emails (Amazon, Shopee, Lazada) with DKIM verification; Shopify; owner dashboard and editing; on-chain brand certification (for example B Corp); independent vetting of places; mainnet.
 
 ---
 
