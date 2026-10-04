@@ -4,14 +4,15 @@ import { appUrl } from "./nft";
 export type StampPlace = {
   id: string; name: string; kind: string; tagline: string | null; impact_note: string | null; image: string | null; colour: string | null;
   lat: number | null; lng: number | null; gps_radius_m: number | null; secret: string; owner: string | null;
-  status: string; status_note: string | null; rules_accepted_at: string | null;
+  status: string; status_note: string | null; rules_accepted_at: string | null; demo: boolean;
 };
-export type PublicPlace = { id: string; name: string; kind: string; tagline: string | null; impactNote: string | null; imageUrl: string; claimUrl: string; qrUrl: string; requiresGps: boolean };
+export type PublicPlace = { id: string; name: string; kind: string; tagline: string | null; impactNote: string | null; imageUrl: string; claimUrl: string; qrUrl: string; requiresGps: boolean; demo: boolean };
 
 export const toPublic = (p: StampPlace): PublicPlace => ({
   id: p.id, name: p.name, kind: p.kind, tagline: p.tagline, impactNote: p.impact_note,
-  imageUrl: `/api/stamp-places/${p.id}/stamp`, claimUrl: `${appUrl()}/c/${p.id}`, qrUrl: `/api/stamp-places/${p.id}/qr`,
-  requiresGps: !!(p.gps_radius_m && p.lat != null && p.lng != null),
+  imageUrl: `/api/stamp-places/${p.id}/stamp`, claimUrl: `${appUrl()}/c/${p.id}?src=qr`, // the link/QR a customer scans: it opens the place ready to collect
+   qrUrl: `/api/stamp-places/${p.id}/qr`,
+  requiresGps: !!(p.gps_radius_m && p.lat != null && p.lng != null), demo: !!p.demo,
 });
 
 export async function getPlace(id: string): Promise<StampPlace | null> {
@@ -49,13 +50,13 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${name} stamp"><circle cx="128" cy="128" r="124" fill="${c}"/>${ring}<circle cx="128" cy="128" r="100" fill="none" stroke="#f5ead8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>${inner}${opts.labels === false ? "" : `<text x="128" y="206" text-anchor="middle" font-family="Figtree,system-ui,sans-serif" font-size="22" font-weight="800" fill="#f5ead8">${name}</text>`}</svg>`;
 }
 
-export type MapPlace = { id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number };
+export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number };
 
 /** Places that have actually joined EcoProof and have a physical location, one entry per location. "Verified" on the map means
  *  claimed and set up on EcoProof (a real owner or partner created it); independent vetting is roadmap. */
 export async function listMapPlaces(): Promise<MapPlace[]> {
-  const rows = await query<{ id: string; name: string; kind: string; tagline: string | null; lid: number; lname: string | null; lat: number; lng: number }>(
-    "SELECT p.id, p.name, p.kind, p.tagline, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' ORDER BY p.created_at, l.id",
+  const rows = await query<{ id: string; name: string; kind: string; tagline: string | null; demo: boolean; lid: number; lname: string | null; lat: number; lng: number }>(
+    "SELECT p.id, p.name, p.kind, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' ORDER BY p.created_at, l.id",
   );
-  return rows.map((r) => ({ id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, lat: r.lat, lng: r.lng }));
+  return rows.map((r) => ({ demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, lat: r.lat, lng: r.lng }));
 }

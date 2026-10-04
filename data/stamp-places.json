@@ -41,7 +41,8 @@
         "lat": 18.7967,
         "lng": 98.9687
       }
-    ]
+    ],
+    "demo": true
   },
   {
     "id": "demo-restaurant",
@@ -59,7 +60,8 @@
         "lat": 18.799,
         "lng": 98.9655
       }
-    ]
+    ],
+    "demo": true
   },
   {
     "id": "demo-coffee",
@@ -77,6 +79,7 @@
         "lat": 18.7885,
         "lng": 98.993
       }
-    ]
+    ],
+    "demo": true
   }
 ]

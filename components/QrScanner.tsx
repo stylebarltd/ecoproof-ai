@@ -21,7 +21,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
     let path = "";
     try { path = new URL(data).pathname; } catch { /* not a URL */ }
     if (!CLAIM_PATH.test(path)) return false;
-    if (!onPath?.(path)) location.assign(path);
+    if (!onPath?.(path)) location.assign(path.startsWith("/c/") ? `${path}?src=qr` : path); // a scanned place QR opens the place ready to collect
     return true;
   };
 

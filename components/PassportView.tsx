@@ -52,7 +52,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
           <AccountChip onChange={onAccountChange ?? (() => {})} />
         </div>
       )}
-      {owner && <InstallPrompt />}
+      {owner && <InstallPrompt stamps={stamps} />}
       {owner && (
         <button onClick={() => setScanning(true)} className="glass flex w-full items-center justify-center gap-2 rounded-full py-3 font-heading text-[15px] text-ink">
           <Camera size={18} strokeWidth={2.5} /> Scan a QR to collect a stamp

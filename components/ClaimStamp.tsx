@@ -24,7 +24,10 @@ function position(): Promise<{ lat: number; lng: number }> {
   });
 }
 
-export default function ClaimStamp({ place, cardCode, orderToken, orderLine }: { place: PublicPlace; cardCode?: string; orderToken?: string; orderLine?: string | null }) {
+export default function ClaimStamp({ place, cardCode, orderToken, orderLine, viaQr = true }: { place: PublicPlace; cardCode?: string; orderToken?: string; orderLine?: string | null; viaQr?: boolean }) {
+  // At a real place the stamp is collected by scanning its QR. Opened any other way (passport, map) the page only explains that,
+  // except demo places, which can be tapped. Cards and order links are always ready to collect.
+  const canTap = !!cardCode || !!orderToken || viaQr || place.demo;
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [done, setDone] = useState<Result | null>(null);
@@ -83,9 +86,16 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine }: {
         <>
           {!busy && (
             <div className="w-full space-y-2.5">
-              <button onClick={claim} className="w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">Collect stamp</button>
-              {!orderToken && !cardCode && (
-                <button onClick={() => setScanning(true)} className="flex w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-neutral-300 bg-white py-3 text-sm font-bold text-ink">
+              {canTap ? (
+                <>
+                  <button onClick={claim} className="w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">{!cardCode && !orderToken && !viaQr && place.demo ? "Collect stamp (demo)" : "Collect stamp"}</button>
+                  {!cardCode && !orderToken && !viaQr && place.demo && <p className="text-xs text-neutral-500">This is a demo place, so you can collect it by tapping. At real places you scan the QR code on the counter.</p>}
+                </>
+              ) : (
+                <p className="rounded-2xl bg-cream p-3 text-sm text-neutral-700">To collect a stamp here, <b>scan the QR code</b> {place.kind === "online" ? "on your parcel card" : "at the counter"}. Stamps can&apos;t be collected from this page.</p>
+              )}
+              {!orderToken && !cardCode && !viaQr && (
+                <button onClick={() => setScanning(true)} className={`flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-bold ${canTap ? "border-[1.5px] border-neutral-300 bg-white text-ink" : "bg-terra-500 text-cream"}`}>
                   <Camera size={17} strokeWidth={2.5} /> Scan the QR code at {place.kind === "online" ? "your parcel" : "the counter"}
                 </button>
               )}
