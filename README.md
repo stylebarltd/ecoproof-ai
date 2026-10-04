@@ -67,6 +67,7 @@ Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devne
 ## Project layout
 
 ```
+app/about/page.tsx            "How EcoProof works": the guide for customers and shops (linked from the passport and the bottom nav)
 app/page.tsx                  passport home (splash, hero NFTs, stamps, progress, proof trail)
 app/u/[id]/page.tsx           public read-only passport (the link a shared image points to)
 app/c/[id]/page.tsx           place QR claim page          app/k/[code]/page.tsx   printed card claim page

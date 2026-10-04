@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Camera, Check, Flame } from "lucide-react";
+import { Camera, Check, CircleHelp, Flame } from "lucide-react";
 import QrScanner from "@/components/QrScanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import AccountChip from "@/components/AccountChip";
@@ -55,6 +55,12 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
         </div>
       )}
       {owner && <InstallPrompt stamps={stamps} />}
+      {owner && stamps === 0 && (
+        <Link href="/about" className="glass flex items-center gap-3 rounded-2xl px-4 py-3 ring-2 ring-honey-400/70">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-honey-500 text-ink"><CircleHelp size={20} strokeWidth={2.6} /></span>
+          <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof works</span><span className="block text-[11.5px] text-sage-900">Stamps, Eco Warrior NFTs and how to collect them, in one minute.</span></span>
+        </Link>
+      )}
       {owner && (
         <button onClick={() => setScanning(true)} className="glass flex w-full items-center justify-center gap-2 rounded-full py-3 font-heading text-[15px] text-ink">
           <Camera size={18} strokeWidth={2.5} /> Scan a QR to collect a stamp
@@ -82,7 +88,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={dataUri(artSvg({ milestone: 1, proofs: 1, plasticItems: 0, co2Kg: 0, brand: "" }))} alt="Seedling, locked" width={180} height={180} className="rounded-3xl opacity-40 grayscale" />
             <p className="font-heading text-base">Your Seedling is waiting</p>
-            <p className="text-xs text-sage-900">Collect your first stamp to unlock it.</p>
+            <p className="text-xs text-sage-900">Collect your first stamp to unlock it. <Link href="/about#customers" className="font-bold underline">How do I collect one?</Link></p>
           </div>
         )}
         {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} points={points} tier={top ? tierFor(top.milestone).name : null} /></div>}
@@ -198,6 +204,9 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
           </div>
         </Glass>
       )}
+      <p className="pb-1 pt-1 text-center text-[11.5px] font-semibold text-sage-900">
+        <Link href="/about" className="underline">How EcoProof works</Link> · <Link href="/about#owners" className="underline">For shops</Link> · <Link href="/rules" className="underline">Eco rules</Link>
+      </p>
     </div>
   );
 }

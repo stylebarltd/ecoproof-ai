@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapPin } from "lucide-react";
+import { CircleHelp, MapPin } from "lucide-react";
 import { LeafMark } from "@/components/Logo";
 
 export default function BottomNav() {
@@ -16,6 +16,7 @@ export default function BottomNav() {
     <nav className="fixed inset-x-0 bottom-0 z-[2000] mx-auto flex max-w-md border-t border-neutral-200 bg-cream">
       {tab("/", <LeafMark size={24} stroke="currentColor" strokeWidth={2.5} />, "Passport", passport)}
       {tab("/map", <MapPin size={24} strokeWidth={2.5} />, "Map", path.startsWith("/map"))}
+      {tab("/about", <CircleHelp size={24} strokeWidth={2.5} />, "How it works", path.startsWith("/about") || path.startsWith("/rules"))}
     </nav>
   );
 }
