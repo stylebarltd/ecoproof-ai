@@ -1,12 +1,13 @@
 import { createHash } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { CATEGORIES, type Category, type LineItem } from "./impact";
+import { superbeeParts } from "./superbeeCatalogue";
 
 /**
  * The single entry point to the proof loop. Deliberately small: no prices, no customer personal data.
  * `category` is optional; when absent we match the product name against the brand catalogue, then ask the AI.
  */
-export type OrderItem = { name: string; quantity: number; category?: string };
+export type OrderItem = { name: string; quantity: number; category?: string; productId?: number };
 export type Order = { brandId: string; orderId: string; items: OrderItem[] };
 
 export function parseOrder(raw: unknown): Order {
@@ -23,7 +24,7 @@ export function parseOrder(raw: unknown): Order {
     const quantity = Math.round(Number(i?.quantity));
     if (!name) bad("every item needs a name");
     if (!(quantity >= 1 && quantity <= 1000)) bad(`item "${name}": quantity must be 1–1000`);
-    return { name, quantity, category: i?.category ? String(i.category) : undefined };
+    return { name, quantity, category: i?.category ? String(i.category) : undefined, productId: Number.isInteger(Number(i?.productId)) && Number(i?.productId) > 0 ? Number(i?.productId) : undefined };
   });
   return { brandId, orderId, items };
 }
@@ -36,18 +37,6 @@ export const orderFingerprint = (brandId: string, orderId: string) =>
 
 // ---- Item -> category matching ------------------------------------------------------------------------------------
 
-/** Hand-mapped catalogue of SuperBee's real products (from its public range). First matching keyword wins. */
-const SUPERBEE: [RegExp, Category][] = [
-  [/hexawash|laundry pouch|magnesium/i, "plastic_free_laundry"],
-  [/beeswax|bees\s?wax|ugly wrap|food wrap|fire ?starter/i, "beeswax_wrap"],
-  [/mesh|produce bag|tote|cotton bag|bag/i, "reusable_bag"],
-  [/loofah|scrubber|dryer ball|wool ball/i, "natural_cleaning_tool"],
-  [/toothbrush|toothpaste|tooth tab|oral|floss/i, "plastic_free_oral_care"],
-  [/straw|cutlery/i, "reusable_straw_cutlery"],
-  [/towel|napkin|cloth/i, "reusable_household_textile"],
-];
-const CATALOGUES: Record<string, [RegExp, Category][]> = { superbee: SUPERBEE };
-
 export type Matched = LineItem & { source: "given" | "catalogue" | "ai" | "none" };
 
 const isCategory = (c: string | undefined): c is Category => !!c && (CATEGORIES as readonly string[]).includes(c);
@@ -56,8 +45,12 @@ export async function matchItems(order: Order): Promise<Matched[]> {
   const out: Matched[] = [];
   for (const it of order.items) {
     if (isCategory(it.category)) { out.push({ name: it.name, quantity: it.quantity, category: it.category, confidence: 1, source: "given" }); continue; }
-    const hit = CATALOGUES[order.brandId]?.find(([re]) => re.test(it.name));
-    if (hit) { out.push({ name: it.name, quantity: it.quantity, category: hit[1], confidence: 1, source: "catalogue" }); continue; }
+    const parts = order.brandId === "superbee" ? superbeeParts(it.productId, it.name) : null; // by product id (English and Thai listings), else by name
+    if (parts) {
+      if (!parts.length) out.push({ name: it.name, quantity: it.quantity, category: "not_sustainable", confidence: 1, source: "catalogue" }); // known, but not counted (raw fabric, fire starters)
+      for (const [category, count] of parts) out.push({ name: it.name, quantity: it.quantity * count, category, confidence: 1, source: "catalogue" }); // a bundle is several products
+      continue;
+    }
     const ai = await inferCategory(it.name);
     out.push({ name: it.name, quantity: it.quantity, ...ai });
   }

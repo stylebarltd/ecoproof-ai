@@ -29,7 +29,7 @@ function CardsButton({ id }: { id: string }) {
 }
 
 type MyPlace = PublicPlace & { status?: string; statusNote?: string | null };
-type WooSetup = { webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string };
+type WooSetup = { webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
 
 function WooOption({ id }: { id: string }) {
   const [setup, setSetup] = useState<WooSetup | null>(null);
@@ -53,6 +53,7 @@ function WooOption({ id }: { id: string }) {
           <li>Secret: <code className="break-all">{setup.webhook.secret}</code> <button onClick={() => copy(setup.webhook.secret)} className="font-bold underline">copy</button> (keep it private)</li>
           <li>Paste this into your <b>child theme&apos;s functions.php</b>: <button onClick={() => copy(setup.themeSnippet)} className="font-bold underline">copy snippet</button>
             <textarea readOnly value={setup.themeSnippet} rows={5} className="mt-1 w-full rounded-lg bg-white p-2 font-mono text-[10px] ring-1 ring-neutral-300" /></li>
+          <li>Only if your order emails come from another plugin (an email customizer, FunnelKit…) and the QR doesn&apos;t show up: use <b>this snippet instead</b>. It sends its own short email when an order is completed. <button onClick={() => copy(setup.themeSnippetOwnEmail)} className="font-bold underline">copy snippet B</button></li>
         </ol>
       )}
       {msg && <p className="text-xs text-sage-800">{msg}</p>}

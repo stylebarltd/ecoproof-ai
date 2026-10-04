@@ -36,15 +36,15 @@ export function verifyWebhook(secret: string, rawBody: string, signature: string
   return safeEq(signature, createHmac("sha256", secret).update(rawBody, "utf8").digest("base64"));
 }
 
-export type WooOrder = { orderId: string; status: string; items: { name: string; quantity: number }[] };
-/** Keeps only what the impact engine needs (order id, status, product names and quantities). Everything else in the payload, including all customer data and prices, is dropped. */
+export type WooOrder = { orderId: string; status: string; items: { name: string; quantity: number; productId?: number }[] };
+/** Keeps only what the impact engine needs (order id, status, product ids, names and quantities). Everything else in the payload, including all customer data and prices, is dropped. */
 export function parseWoo(payload: unknown): WooOrder | null {
   const o = payload as { id?: unknown; status?: unknown; line_items?: unknown } | null;
   if (!o || typeof o !== "object" || o.id == null || typeof o.status !== "string" || !Array.isArray(o.line_items)) return null;
   const orderId = String(o.id);
   if (!/^[A-Za-z0-9_-]{1,40}$/.test(orderId)) return null;
-  const items = (o.line_items as { name?: unknown; quantity?: unknown }[])
-    .map((l) => ({ name: String(l?.name ?? "").trim().slice(0, 200), quantity: Math.round(Number(l?.quantity)) }))
+  const items = (o.line_items as { name?: unknown; quantity?: unknown; product_id?: unknown }[])
+    .map((l) => ({ name: String(l?.name ?? "").trim().slice(0, 200), quantity: Math.round(Number(l?.quantity)), productId: Number(l?.product_id) > 0 ? Math.round(Number(l?.product_id)) : undefined }))
     .filter((l) => l.name && l.quantity >= 1 && l.quantity <= 1000);
   return { orderId, status: o.status, items };
 }
@@ -106,4 +106,5 @@ export async function claimOrder(placeId: string, token: string, passportId: str
 export const wooSetup = (place: StampPlace) => ({
   webhook: { name: "EcoProof", status: "Active", topic: "Order updated", deliveryUrl: `${appUrl()}/api/woo/webhook/${place.id}`, secret: place.secret, apiVersion: "WP REST API Integration v3" },
   themeSnippet: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }),
+  themeSnippetOwnEmail: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }, "own-email"),
 });

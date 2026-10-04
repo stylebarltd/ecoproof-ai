@@ -104,7 +104,7 @@ Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -
 
 ## Connecting a WooCommerce shop
 
-See [docs/woocommerce/README.md](./docs/woocommerce/README.md) (webhook + a snippet that adds the QR to the order-completed email only) and [STAGING.md](./docs/woocommerce/STAGING.md) (a local throw-away shop for testing before anything touches a live one).
+See [docs/woocommerce/README.md](./docs/woocommerce/README.md) (webhook + a snippet that adds the QR to the order-completed email only) [STAGING.md](./docs/woocommerce/STAGING.md) (a local throw-away shop for testing before anything touches a live one) and [SUPERBEE_ROLLOUT.md](./docs/woocommerce/SUPERBEE_ROLLOUT.md) (the plan for connecting SuperBee).
 
 ## More
 

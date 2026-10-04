@@ -1,5 +1,5 @@
 /** The theme snippet for the shop's CHILD theme functions.php: puts the signed claim link + QR into the completed-order email only. Generated per brand so it carries the right app URL, place and secret. */
-export function wooSnippet(o: { appUrl: string; placeId: string; secret: string }): string {
+export function wooSnippet(o: { appUrl: string; placeId: string; secret: string }, variant: "email-block" | "own-email" = "email-block"): string {
   return `<?php
 /**
  * EcoProof AI: eco stamp QR in the "order completed" email.
@@ -32,10 +32,28 @@ function ecoproof_block( $order, $plain = false ) {
 		. '</div>';
 }
 
-// The "order completed" email to the customer: the signed QR + button. (Nothing is added to the shop pages.)
+${variant === "own-email" ? `// Sends its own short email when an order is completed. Use this INSTEAD of the block above when the shop's order emails come from
+// another plugin (an email customizer, FunnelKit Automations, ...) that doesn't run WooCommerce's standard email hooks.
+add_action( 'woocommerce_order_status_completed', function ( $order_id ) {
+	$order = wc_get_order( $order_id );
+	if ( ! $order || $order->get_meta( '_ecoproof_stamp_mailed' ) ) return; // once per order
+	$to = $order->get_billing_email();
+	if ( ! is_email( $to ) ) return;
+	$html = ecoproof_block( $order );
+	if ( ! $html ) return;
+	$body = '<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:16px">' . $html . '</div>';
+	$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+	$from = get_option( 'woocommerce_email_from_address' ); // same sender as the shop's other order emails
+	if ( is_email( $from ) ) $headers[] = 'From: ' . wp_specialchars_decode( (string) get_option( 'woocommerce_email_from_name' ), ENT_QUOTES ) . ' <' . $from . '>';
+	if ( wp_mail( $to, 'Collect your eco stamp 🌱 | รับแสตมป์รักษ์โลกของคุณ', $body, $headers ) ) {
+		$order->update_meta_data( '_ecoproof_stamp_mailed', time() );
+		$order->save();
+	}
+}, 30 );
+` : `// The "order completed" email to the customer: the signed QR + button. (Nothing is added to the shop pages.)
 add_action( 'woocommerce_email_after_order_table', function ( $order, $sent_to_admin, $plain_text, $email ) {
 	if ( $sent_to_admin || ! $email || 'customer_completed_order' !== $email->id ) return;
 	echo ecoproof_block( $order, (bool) $plain_text ); // phpcs:ignore WordPress.Security.EscapeOutput
 }, 20, 4 );
-`;
+`}`;
 }
