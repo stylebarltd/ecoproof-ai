@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     const proof = await proveOrder(order, passportId, brand.name);
     const passport = await getPassport(passportId);
-    const nfts = await afterProof(passportId, passport.totals, brand.name);
+    const nfts = await afterProof(passportId, { points: passport.points, plasticItems: passport.totals.plasticItems, co2Kg: passport.totals.co2Kg }, brand.name);
     return Response.json({ proof, passport, nfts }, { status: 201 });
   } catch (e) {
     if (e instanceof OrderError) return Response.json({ error: e.message }, { status: 400 });

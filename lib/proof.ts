@@ -46,8 +46,8 @@ export async function proveOrder(order: Order, passportId: string, brandName: st
 
   try {
     await query(
-      `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at,receipt_fp,claim_address,brand_id,order_id)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+      `INSERT INTO records (id,user_id,merchant,items,co2_kg,plastic_items,packaging_g,sustainable_items,hash,signature,created_at,receipt_fp,claim_address,brand_id,order_id,source)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,'order')`,
       [row.id, row.user_id, row.merchant, row.items, row.co2_kg, row.plastic_items, row.packaging_g, row.sustainable_items, row.hash, signature, row.created_at, fp, claimAddress, order.brandId, order.orderId],
     );
   } catch (e) {

@@ -18,7 +18,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   );
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 24, background: "linear-gradient(160deg,#272e1b,#56633f 55%,#8fa073)", color: CREAM, padding: 56 }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 24, border: r.source === "order" ? "12px solid #e8a317" : "0px solid transparent", background: "linear-gradient(160deg,#272e1b,#56633f 55%,#8fa073)", color: CREAM, padding: 56 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 76, height: 76, borderRadius: 19, background: SAGE }}>
             <svg width="52" height="52" viewBox="0 0 48 48" fill="none" stroke={CREAM} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +37,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={stampImg} width={190} height={190} alt="" />
             <div style={{ display: "flex", flexDirection: "column", fontSize: 34, color: CREAM }}>
-              <div style={{ fontSize: 46, fontWeight: 700 }}>{r.source === "order" ? "Verified order stamp" : "Eco stamp collected"}</div>
+              <div style={{ fontSize: 46, fontWeight: 700 }}>{r.source === "order" ? "Verified purchase" : "Presence stamp · +1 point"}</div>
               {r.source === "order" && r.impact_note ? <div style={{ color: "#ffd98a" }}>{r.impact_note}</div> : null}
             </div>
           </div>

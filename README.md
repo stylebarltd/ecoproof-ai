@@ -33,8 +33,14 @@ Each produces one stamp and one Solana proof.
 
 Online shops have no map pin and no GPS check, and choose door 2, door 3, or both, in `/join`.
 
+### Two classes of stamp, one passport
+- **Verified purchase** (the WooCommerce order door): a real order, so the stamp carries the order's real impact line. Premium look, worth **5 points**.
+- **Presence** (a place QR or a parcel card): "I was here", no impact number, plainer look, worth **1 point**.
+
+The values are two constants in `lib/stampClasses.ts` (`POINTS_VERIFIED`, `POINTS_PRESENCE`), so the ratio can change with one edit. Both classes write a Solana proof.
+
 ### Milestones and NFTs
-Every claim writes a proof; only milestones mint. A **soulbound compressed NFT** (Metaplex Bubblegum V2, made non-transferable) is minted to the customer's wallet at **1, 3, 10 and 25 stamps, then every 50**. The artwork is code-drawn SVG with a different look per tier, so it visibly levels up. Customers who haven't connected a wallet yet get the NFT when they do.
+Milestones count **points**, not scans. Every claim writes a proof; only milestones mint. A **soulbound compressed NFT** (Metaplex Bubblegum V2, made non-transferable) is minted to the customer's wallet at **1, 3, 10 and 25 points, then every 50** (so one verified purchase reaches the first two ranks at once). The artwork is code-drawn SVG with a different look per tier, so it visibly levels up. Customers who haven't connected a wallet yet get the NFT when they do.
 
 ### Proofs on Solana
 For each claim, EcoProof hashes the record (SHA-256) and writes `ecoproof:v1:<hash>` to Solana as a Memo transaction, in the same transaction that creates a **claim account** derived from the claim's fingerprint (place + person + day, or card code, or order id). Solana refuses to create an account that already exists, so a repeat claim fails on-chain without a custom program. Each proof has a **Verify on-chain** button that recomputes the hash from the stored data and compares it with the memo.

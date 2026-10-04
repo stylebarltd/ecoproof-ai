@@ -1,6 +1,6 @@
 import { milestoneLabel, tierFor } from "./milestoneRules";
 
-export type NftStats = { milestone: number; proofs: number; plasticItems: number; co2Kg: number; brand: string; /** the owner's wallet: makes the character theirs (same face at every tier). Without it a default character is drawn. */ seed?: string };
+export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticItems: number; co2Kg: number; brand: string; /** the owner's wallet: makes the character theirs (same face at every tier). Without it a default character is drawn. */ seed?: string };
 
 // Code-drawn, deterministic artwork: four tiers that visibly level up (Seedling -> Sprout -> Guardian -> Legend).
 // Same input => same SVG, so the image never depends on an external model or service. Legend scales with the milestone.

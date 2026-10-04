@@ -61,9 +61,9 @@ export async function listNfts(passportId: string): Promise<Nft[]> {
 }
 
 /** After any valid proof: record the milestones the passport has now reached and mint those it can. A failed mint never fails the claim. */
-export async function afterProof(passportId: string, totals: { receipts: number; plasticItems: number; co2Kg: number }, brand = "EcoProof", onMint?: (milestone: number) => void): Promise<Nft[]> {
+export async function afterProof(passportId: string, totals: { points: number; plasticItems: number; co2Kg: number }, brand = "EcoProof", onMint?: (milestone: number) => void): Promise<Nft[]> {
   try {
-    await recordMilestones(passportId, { proofs: totals.receipts, plasticItems: totals.plasticItems, co2Kg: totals.co2Kg, brand });
+    await recordMilestones(passportId, { proofs: totals.points, plasticItems: totals.plasticItems, co2Kg: totals.co2Kg, brand });
     return await mintPending(passportId, onMint);
   } catch (e) { console.error("milestone step failed", e); return []; }
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Camera, Flame } from "lucide-react";
+import { Camera, Check, Flame } from "lucide-react";
 import QrScanner from "@/components/QrScanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import AccountChip from "@/components/AccountChip";
@@ -9,6 +9,7 @@ import SharePassport from "@/components/SharePassport";
 import { LogoLockup } from "@/components/Logo";
 import { artSvg } from "@/lib/nftArt";
 import { milestoneLabel, tierFor } from "@/lib/milestoneRules";
+import { POINTS_PRESENCE, POINTS_VERIFIED } from "@/lib/stampClasses";
 import { explorerAsset, explorerTx, progress, rankNfts } from "@/lib/passportView";
 import type { Passport } from "@/lib/passport";
 
@@ -30,7 +31,8 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
   const stamps = pass?.totals.receipts ?? 0;
   const nfts = rankNfts(pass?.nfts ?? []);
   const [top, ...rest] = nfts;
-  const prog = progress(stamps, pass?.nextMilestone ?? 1);
+  const points = pass?.points ?? 0;
+  const prog = progress(points, pass?.nextMilestone ?? 1); // ranks are reached by points: a verified purchase is worth more than a presence stamp
   const slots = Math.max(0, 8 - (pass?.places.length ?? 0));
   const t = pass?.totals;
   const [scanning, setScanning] = useState(false);
@@ -83,7 +85,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
             <p className="text-xs text-sage-900">Collect your first stamp to unlock it.</p>
           </div>
         )}
-        {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} tier={top ? tierFor(top.milestone).name : null} /></div>}
+        {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} points={points} tier={top ? tierFor(top.milestone).name : null} /></div>}
       </Glass>
 
       {/* 3. Progress to the next milestone */}
@@ -97,23 +99,52 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
         </div>
       </Glass>
 
-      {/* 2. Stamp collection */}
+      {/* 2. Stamp collection: verified purchases (premium, with their impact) and presence stamps (plainer), one passport */}
       <Glass className="p-4">
-        <h2 className="mb-3 text-[17px]">Stamp collection</h2>
+        <h2 className="text-[17px]">Stamp collection</h2>
+        <p className="mb-3 mt-0.5 text-[11.5px] text-sage-900">
+          <b>{points}</b> point{points === 1 ? "" : "s"} · {pass?.stampsByClass.verified ?? 0} verified purchase{(pass?.stampsByClass.verified ?? 0) === 1 ? "" : "s"} · {pass?.stampsByClass.presence ?? 0} presence stamp{(pass?.stampsByClass.presence ?? 0) === 1 ? "" : "s"}
+        </p>
+
+        {pass && pass.verifiedStamps.length > 0 && (
+          <div className="mb-4 space-y-2.5">
+            {pass.verifiedStamps.slice(0, 4).map((v) => (
+              <Link key={v.id} href={`/p/${v.id}`} className="relative flex items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-br from-honey-300/60 via-white/70 to-honey-300/30 p-3 ring-2 ring-honey-400 shadow-[0_10px_28px_rgba(232,163,23,0.4)]">
+                <span className="relative shrink-0">
+                  {v.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={v.imageUrl} alt="" width={64} height={64} className="rounded-full ring-2 ring-honey-500 ring-offset-2 ring-offset-white/80" />
+                  )}
+                  <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-honey-500 text-ink ring-2 ring-white"><Check size={12} strokeWidth={3.4} /></span>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-honey-700">Verified purchase <span className="rounded-full bg-honey-500 px-1.5 py-0.5 text-[9px] text-ink">+{POINTS_VERIFIED} pts</span></span>
+                  <span className="block truncate font-heading text-[16px] leading-tight">{v.placeName}</span>
+                  <span className="block text-[12px] font-bold leading-snug text-ink">{v.impactNote ?? `${v.plasticItems} single-use plastics avoided · ${v.co2Kg} kg CO₂ saved`}</span>
+                  <span className="text-[10.5px] text-sage-900">{new Date(v.createdAt).toLocaleDateString()}</span>
+                </span>
+              </Link>
+            ))}
+            {pass.verifiedStamps.length > 4 && <p className="text-center text-[11px] font-semibold text-sage-900">+ {pass.verifiedStamps.length - 4} more verified purchases</p>}
+          </div>
+        )}
+
+        <h3 className="mb-2 text-[13px] text-sage-900">Places you&apos;ve been <span className="font-sans text-[10.5px] font-semibold">· {POINTS_PRESENCE} point each</span></h3>
         <div className="grid grid-cols-4 gap-x-2 gap-y-3.5">
           {(pass?.places ?? []).map((pl) => (
             <Link key={pl.id} href={`/c/${pl.id}`} title={pl.name} className="flex flex-col items-center gap-1 text-center">
               <span className="relative">
                 {pl.earned ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={pl.imageUrl} alt={pl.name} width={68} height={68} className="rounded-full shadow-[0_4px_14px_rgba(168,111,0,0.35)] ring-2 ring-white/80" />
+                  <img src={pl.imageUrl} alt={pl.name} width={68} height={68} className="rounded-full shadow-sm ring-2 ring-white/80" />
                 ) : (
                   <span className="relative block h-[68px] w-[68px] rounded-full border-2 border-dashed border-white/90 bg-white/20">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={pl.imageUrl} alt={pl.name} width={64} height={64} className="absolute inset-0 m-auto rounded-full opacity-25 grayscale" />
                   </span>
                 )}
-                {pl.count > 1 && <span className="absolute -right-1 -top-1 rounded-full bg-honey-500 px-1.5 text-[10px] font-extrabold text-ink ring-2 ring-white/80">×{pl.count}</span>}
+                {pl.count > 1 && <span className="absolute -right-1 -top-1 rounded-full bg-white px-1.5 text-[10px] font-extrabold text-sage-900 ring-2 ring-white/80">×{pl.count}</span>}
+                {pl.verifiedCount > 0 && <span className="absolute -bottom-1 -right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-honey-500 text-ink ring-2 ring-white" title="Includes a verified purchase"><Check size={11} strokeWidth={3.4} /></span>}
               </span>
               <span className={`text-[10px] leading-tight ${pl.earned ? "font-bold text-ink" : "text-sage-800"}`}>{pl.name}</span>
             </Link>
@@ -145,8 +176,8 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
                   <img src={`/api/stamp-places/${r.placeId}/stamp`} alt="" width={36} height={36} className="shrink-0 rounded-full" />
                 )}
                 <Link href={`/p/${r.id}`} className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{r.merchant}{r.source === "card" && <em className="ml-1.5 rounded-full bg-white/70 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-sage-800">card</em>}{r.source === "order" && <em className="ml-1.5 rounded-full bg-honey-300 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-ink">verified order</em>}</span>
-                  <span className="text-[11px] text-sage-900">{new Date(r.createdAt).toLocaleDateString()}</span>
+                  <span className="block truncate text-sm font-semibold">{r.merchant}{r.source === "card" && <em className="ml-1.5 rounded-full bg-white/70 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-sage-800">card</em>}{r.class === "verified" && <em className="ml-1.5 rounded-full bg-honey-300 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-ink">verified purchase</em>}</span>
+                  <span className="text-[11px] text-sage-900">{new Date(r.createdAt).toLocaleDateString()} · +{r.points} pt{r.points === 1 ? "" : "s"}</span>
                 </Link>
                 {r.signature ? (
                   <a href={explorerTx(r.signature)} target="_blank" rel="noreferrer" className="flex shrink-0 items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-sage-800 ring-1 ring-white/80">

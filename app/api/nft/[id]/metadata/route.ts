@@ -11,12 +11,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   return Response.json({
     name: `Eco ${tier.name} · ${milestoneLabel(r.milestone)}`,
     symbol: "ECOPROOF",
-    description: `Soulbound EcoProof AI eco-warrior badge for collecting ${milestoneLabel(r.milestone).toLowerCase()} in the EcoProof passport. Every stamp is anchored on Solana.`,
+    description: `Soulbound EcoProof AI eco-warrior badge for reaching ${milestoneLabel(r.milestone)} in the EcoProof passport (verified purchases count for more than presence stamps). Every stamp is anchored on Solana.`,
     image,
     external_url: appUrl(),
     attributes: [
       { trait_type: "Tier", value: tier.name },
-      { trait_type: "Stamps", value: r.milestone },
+      { trait_type: "Points", value: r.milestone },
       { trait_type: "Soulbound", value: "true" },
     ],
     properties: { files: [{ uri: image, type: "image/svg+xml" }], category: "image" },

@@ -10,8 +10,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const id = decodeURIComponent((await params).id);
   const pass = await getPassport(id);
   const top = [...pass.nfts].sort((a, b) => b.milestone - a.milestone)[0];
-  const stamps = pass.totals.receipts;
-  const title = `${stamps} eco stamp${stamps === 1 ? "" : "s"}${top ? ` · Eco ${tierFor(top.milestone).name}` : ""} | EcoProof passport`;
+  const points = pass.points;
+  const title = `${points} eco point${points === 1 ? "" : "s"}${top ? ` · Eco ${tierFor(top.milestone).name}` : ""} | EcoProof passport`;
   const description = "Every stamp is verified on Solana. Collect yours with EcoProof.";
   const image = `/api/passport-card/${encodeURIComponent(id)}`;
   return { title, description, openGraph: { title, description, images: [{ url: image, width: 1200, height: 630 }], type: "website" }, twitter: { card: "summary_large_image", title, description, images: [image] } };

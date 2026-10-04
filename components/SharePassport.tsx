@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Copy, Download, Share2, X } from "lucide-react";
 import { FacebookIcon, InstagramIcon, TelegramIcon, WhatsAppIcon, XIcon } from "@/components/BrandIcons";
 
-type Props = { passportId: string; stamps: number; tier: string | null };
+type Props = { passportId: string; stamps: number; points: number; tier: string | null };
 
 const enc = encodeURIComponent;
 
@@ -14,7 +14,7 @@ const enc = encodeURIComponent;
  * - "Share image…" opens the phone's share sheet with the PNG attached (Instagram, Stories, Messages, anything installed).
  *   The image is fetched when the sheet opens, because phones only allow sharing straight from a tap.
  */
-export default function SharePassport({ passportId, stamps, tier }: Props) {
+export default function SharePassport({ passportId, stamps, points, tier }: Props) {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
@@ -22,7 +22,7 @@ export default function SharePassport({ passportId, stamps, tier }: Props) {
   const [loadErr, setLoadErr] = useState(false);
   const [msg, setMsg] = useState("");
   const link = typeof window === "undefined" ? "" : `${location.origin}/u/${enc(passportId)}`;
-  const defaultCaption = `I collected ${stamps} eco stamp${stamps === 1 ? "" : "s"}${tier ? ` and earned my Eco ${tier} NFT` : ""} with EcoProof 🌱🐝 Every stamp is verified on Solana. #EcoProof #PlasticFree #Solana`;
+  const defaultCaption = `I collected ${points} eco point${points === 1 ? "" : "s"} from ${stamps} stamp${stamps === 1 ? "" : "s"}${tier ? ` and earned my Eco ${tier} NFT` : ""} with EcoProof 🌱🐝 Every stamp is verified on Solana. #EcoProof #PlasticFree #Solana`;
   const [caption, setCaption] = useState(defaultCaption);
   const started = useRef(false);
 

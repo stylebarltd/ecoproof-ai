@@ -6,7 +6,7 @@ import QrScanner from "@/components/QrScanner";
 import { getUserId } from "@/lib/clientUser";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
-type Result = { stamp: { signature: string | null; claimUrl: string | null; impactNote: string | null }; passport: { stamps: number; nextMilestone: number }; nfts: { milestone: number; tier: string; status: string; id: string }[] };
+type Result = { stamp: { signature: string | null; claimUrl: string | null; impactNote: string | null; stampClass: "verified" | "presence"; points: number }; passport: { stamps: number; points: number; nextMilestone: number }; nfts: { milestone: number; tier: string; status: string; id: string }[] };
 type Step = { key: string; label: string; hint?: string };
 
 const BASE: Step[] = [
@@ -72,7 +72,8 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
   }
 
   const idx = (k: string | null) => steps.findIndex((s) => s.key === k);
-  const minted = done?.nfts.find((n) => n.milestone === done.passport.stamps);
+  const before = done ? done.passport.points - done.stamp.points : 0;
+  const newNfts = done ? done.nfts.filter((n) => n.milestone > before && n.milestone <= done.passport.points) : []; // ranks this stamp unlocked (a verified purchase can unlock several)
   return (
     <div className="flex flex-col items-center gap-5 pt-6 text-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -123,10 +124,18 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
           {!busy && <p className="text-xs text-neutral-500">{orderToken ? "Verified order: this stamp carries its real impact. One stamp per order, anchored on Solana." : cardCode ? "This card works once. Each stamp is anchored on Solana." : "One stamp per day. Each stamp is anchored on Solana."}</p>}
         </>
       ) : (
-        <div className="w-full space-y-3 rounded-[28px] bg-white p-5 ring-1 ring-sage-300">
-          <p className="font-heading text-xl">Stamp collected! 🎉</p>
-          <p className="text-sm text-neutral-600">{done.passport.stamps} stamp{done.passport.stamps > 1 ? "s" : ""} in your passport · next milestone at {done.passport.nextMilestone}</p>
-          {minted && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Eco Warrior NFT: {minted.tier} {minted.status === "minted" ? "(minted)" : "(on its way: sign in with a wallet to receive it)"}</p>}
+        <div className={`w-full space-y-3 rounded-[28px] bg-white p-5 ${done.stamp.stampClass === "verified" ? "ring-2 ring-honey-400 shadow-[0_10px_34px_rgba(232,163,23,0.35)]" : "ring-1 ring-sage-300"}`}>
+          {done.stamp.stampClass === "verified" ? (
+            <>
+              <span className="inline-flex items-center gap-1 rounded-full bg-honey-300 px-3 py-1 text-xs font-extrabold text-ink"><Check size={14} strokeWidth={3.2} /> Verified purchase</span>
+              <p className="font-heading text-xl">Stamp collected! ✨</p>
+              {done.stamp.impactNote && <p className="rounded-xl bg-honey-300/40 p-2.5 text-sm font-semibold text-ink">{done.stamp.impactNote}</p>}
+            </>
+          ) : (
+            <p className="font-heading text-xl">Stamp collected! 🎉</p>
+          )}
+          <p className="text-sm text-neutral-600"><b className="text-ink">+{done.stamp.points} point{done.stamp.points === 1 ? "" : "s"}</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
+          {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Eco Warrior NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : "(on its way: connect a wallet to receive "+(newNfts.length > 1 ? "them" : "it")+")"}</p>}
           {done.stamp.claimUrl && <a className="block text-xs text-sage-700 underline" href={done.stamp.claimUrl} target="_blank" rel="noreferrer">See the proof on Solana ↗</a>}
           <Link href="/" className="block rounded-full bg-sage-500 py-3 font-bold text-cream">View my passport</Link>
         </div>

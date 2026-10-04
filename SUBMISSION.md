@@ -56,6 +56,7 @@ I'm not a hypothetical founder. I run SuperBee, a certified B Corp eco brand, so
 *(471 chars)*
 
 ### Notes for judges (the longer, honest version, for the README or follow-up questions)
+- **Two classes of stamp, one passport:** a verified purchase (WooCommerce order, real impact line, premium look, 5 points) and a presence stamp (place QR or parcel card, 1 point). Milestones count points; the values are two constants.
 - **Built and working:** places with QR, stamp art and counter cards; self-serve setup at `/join`; three claim doors (place QR, printed parcel card, verified WooCommerce order); a Solana proof for every claim with on-chain once-only enforcement; soulbound milestone NFTs with four levelling tiers and an individual character per wallet; a glass-style passport; a shareable passport image with one-tap posting; a map of joined places; eco rules with customer reporting and review.
 - **WooCommerce** was tested end to end on a local staging shop (completed order, signed webhook, QR in the order email, claim, stamp with the real impact line). It is not installed on the live SuperBee shop yet.
 - **Honest limits:** only the verified-order door proves a purchase; QR and card stamps are generic. GPS checks stop casual abuse but can be spoofed. Impact figures are estimates from a hand-built factor table. Self-serve places are not independently vetted: the map's "verified" means claimed and set up on EcoProof. NFTs are on devnet and may not show in every wallet.
