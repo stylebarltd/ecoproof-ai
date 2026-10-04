@@ -7,6 +7,11 @@ Nothing here has been installed on the live shop. Everything below was prepared 
 - **Plugins visible in the REST namespaces:** WooCommerce (+ POS), Stripe, **Advanced Shipment Tracking** (`wc-ast`), **FunnelKit Automations** (`autonami` / `woofunnels`), AffiliateWP, Jetpack, and a custom `superbee/v1` plugin (checkout, products, reviews, accounts).
 - **57 products, English and Thai twins** (two ids per product). Thai orders carry Thai names, so the catalogue maps by **product id** first (`data/superbee-products.json`, regenerate with `npx tsx scripts/superbee-catalogue.ts`), then by English and Thai name rules, then the AI as a last resort. Bundles count as the products inside them (gift baskets, laundry kit, oral-care kit). Raw fabric by the metre and fire starters are deliberately not counted.
 
+## Already prepared (nothing installed)
+- **Install kit** for whoever has the shop admin: `npx tsx scripts/superbee-kit.ts https://ecoproof.superbee.me <ADMIN_TOKEN>` writes `superbee-install-kit/` (git-ignored, contains the webhook secret): step-by-step `README.txt`, webhook settings, snippet A and snippet B. Both snippets are syntax-checked with PHP 8.3.
+- **Wiring check from your computer, without touching the shop:** `npx tsx scripts/woo-selftest.ts https://ecoproof.superbee.me <secret> 44229` sends a signed ping, a wrong-secret request (must be refused) and one fake completed order, then prints the customer link it would produce. It stores one harmless, never-claimed `SELFTEST-...` order.
+- **Impact review:** `superbee-impact-table.md` lists what every product will claim to customers, so the numbers can be approved before launch (regenerate with `npx tsx scripts/superbee-impact-table.ts`).
+
 ## The two things that can go wrong (find out first, 10 minutes in wp-admin)
 1. **Which email is the customer's "order completed" mail?** Look at WooCommerce → Settings → Emails, and at FunnelKit → Automations.
    - A plain WooCommerce email (or the Advanced Shipment Tracking version of it): use **snippet A** (the QR block inside that email).

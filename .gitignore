@@ -45,3 +45,6 @@ ecoproof.db*
 .vercel
 .env*.local
 *.tmp.*
+
+# local install kit for the shop admin (contains the webhook secret)
+/superbee-install-kit/
