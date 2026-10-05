@@ -1,6 +1,5 @@
 // Regenerates the demo QR codes in docs/demo-qr/ (shown in the README). Each one opens a demo place ready to collect.
 // Demo places have no GPS check, so they work from anywhere. Run: npx tsx scripts/demo-qr.ts [baseUrl]
-import fs from "fs";
 import QRCode from "qrcode";
 
 const base = (process.argv[2] ?? "https://ecoproof.superbee.me").replace(/\/$/, "");

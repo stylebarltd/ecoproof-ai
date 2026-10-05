@@ -159,7 +159,8 @@ export default function Join() {
           </div>
           <label className="block text-sm font-semibold">One-line tagline<input className={`${input} mt-1`} value={tagline} maxLength={90} onChange={(e) => setTagline(e.target.value)} placeholder="e.g. Bring your own cup, skip the plastic" /></label>
           <label className="block rounded-2xl border-2 border-dashed border-neutral-300 p-3 text-center text-sm">
-            {logo ? <span className="flex items-center justify-center gap-3">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={logo} alt="" width={56} height={56} className="rounded-full" /> Logo added · tap to change</span> : "🖼️ Upload your logo (optional)"}
+            {logo ? <span className="flex items-center justify-center gap-3">{/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logo} alt="" width={56} height={56} className="rounded-full" /> Logo added · tap to change</span> : "🖼️ Upload your logo (optional)"}
             <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => pickLogo(e.target.files?.[0])} />
           </label>
           {isPhysical(kind) ? (
