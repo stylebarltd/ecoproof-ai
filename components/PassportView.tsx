@@ -73,7 +73,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
         </div>
         <div className="space-y-3">
           {top ? (
-            <div className="mx-auto max-w-[300px]"><BeeCard rank={tierFor(top.milestone)} nft={top} big wallet={!!pass?.wallet} /></div>
+            <div className="mx-auto max-w-[300px]"><BeeCard rank={tierFor(top.milestone)} nft={top} big wallet={!!pass?.wallet} impact={t} /></div>
           ) : (
             <div className="mx-auto max-w-[260px] text-center">
               <BeeCard rank={RANKS[0]} big />
