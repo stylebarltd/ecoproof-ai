@@ -1,16 +1,18 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { rankImage, rankSharePng, type RankKey, type Tier } from "./milestoneRules";
 
 // The Bee Guardian collectible card for share images (next/og), drawn to match components/BeeCard.tsx.
 
 /**
- * The rank's artwork as a data URI, fetched from the static files (the og renderer cannot read public/ on a serverless host).
- * Tries the 512px PNG first, then the full one (WebP is not an option: the og renderer cannot decode it).
- * Null if neither exists: the card then shows the rank name instead.
+ * The rank's artwork as a data URI, read from public/ on disk (next.config.ts traces the files into the share-image routes),
+ * so a share image never depends on the server fetching its own URL. Tries the 512px PNG first, then the full one
+ * (WebP is not an option: the og renderer cannot decode it). Null if neither exists: the card then shows the rank name instead.
  */
-export async function rankArt(key: RankKey, base: string): Promise<string | null> {
+export async function rankArt(key: RankKey): Promise<string | null> {
   for (const path of [rankSharePng(key), rankImage(key)]) {
-    const r = await fetch(new URL(path, base)).catch(() => null);
-    if (r?.ok) return `data:image/png;base64,${Buffer.from(await r.arrayBuffer()).toString("base64")}`;
+    const png = await readFile(join(process.cwd(), "public", path)).catch(() => null);
+    if (png) return `data:image/png;base64,${png.toString("base64")}`;
   }
   return null;
 }

@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const stampImg = place ? `data:image/svg+xml;base64,${Buffer.from(stampSvg(place, { labels: false })).toString("base64")}` : null;
   const [top] = rankNfts(await listNfts(r.user_id)); // the owner's highest Bee Guardian, on the same card frame as the passport
   const rank = top ? tierFor(top.milestone) : RANKS[0];
-  const bee = <BeeCardOg rank={rank} art={await rankArt(rank.key, req.url)} size={square ? 330 : 250} serial={top?.serial} edition={top?.edition} locked={!top} />;
+  const bee = <BeeCardOg rank={rank} art={await rankArt(rank.key)} size={square ? 330 : 250} serial={top?.serial} edition={top?.edition} locked={!top} />;
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: CREAM, borderRadius: 28, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700, color: INK }}>{v}</div>

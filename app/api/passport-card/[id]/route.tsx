@@ -27,7 +27,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const earned = new Set(pass.places.filter((p) => p.earned).map((p) => p.id));
   const show = [...placeRows].sort((a, b) => Number(earned.has(b.id)) - Number(earned.has(a.id))).slice(0, square ? 8 : 6); // earned stamps first
   const rank = tier ?? RANKS[0]; // no NFT yet: the Sentinel, locked
-  const art = await rankArt(rank.key, req.url);
+  const art = await rankArt(rank.key);
   const host = new URL(appUrl()).host;
   const shownHost = host.endsWith(".vercel.app") && host.includes("ecoproof") ? "ecoproof-ai.vercel.app" : host;
   const W = square ? 1080 : 1200, H = square ? 1080 : 630;

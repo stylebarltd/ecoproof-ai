@@ -24,6 +24,5 @@ export async function publicIdFor(userId: string): Promise<string> {
 export async function resolvePublicId(id: string): Promise<string | null> {
   if (looksLikeWallet(id)) return id;
   if (id.startsWith(PREFIX)) return (await query<{ user_id: string }>("SELECT user_id FROM public_passports WHERE public_id=$1", [id]))[0]?.user_id ?? null;
-  if (isDeviceId(id)) return id; // links shared before public ids existed keep working (read-only; the id in them is already out)
   return null;
 }
