@@ -38,19 +38,10 @@ const SCHEMA = [
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (place_id, practice)
   )`,
-  `CREATE TABLE IF NOT EXISTS reviews (
-    id TEXT PRIMARY KEY, place_id TEXT NOT NULL, user_id TEXT NOT NULL,
-    stars INTEGER NOT NULL, confirmed TEXT NOT NULL, byo_cup BOOLEAN NOT NULL DEFAULT false,
-    receipt_fp TEXT NOT NULL, receipt_date TEXT,
-    hash TEXT NOT NULL, signature TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (place_id, user_id)
-  )`,
   `ALTER TABLE pledges ADD COLUMN IF NOT EXISTS owner_confirmed BOOLEAN NOT NULL DEFAULT false`,
   `ALTER TABLE places ADD COLUMN IF NOT EXISTS owner_verified BOOLEAN NOT NULL DEFAULT false`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS receipt_fp TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS claim_address TEXT`,
-  `ALTER TABLE reviews ADD COLUMN IF NOT EXISTS claim_address TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS brand_id TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS order_id TEXT`,
   `ALTER TABLE records ADD COLUMN IF NOT EXISTS place_id TEXT`,
@@ -110,7 +101,6 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,
   `CREATE TABLE IF NOT EXISTS public_passports (public_id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE)`, // share-link ids, so a device id is never published
-  `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
   `ALTER TABLE nft_mints ADD COLUMN IF NOT EXISTS serial INTEGER`, // "Warden #0007": set once, when the NFT is minted, so it never shifts
   `CREATE UNIQUE INDEX IF NOT EXISTS nft_mints_serial ON nft_mints (milestone, serial) WHERE serial IS NOT NULL`,
 ];

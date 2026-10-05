@@ -2,7 +2,7 @@ import { createHash } from "crypto";
 import { Connection, Keypair, SystemProgram, Transaction, TransactionInstruction, sendAndConfirmTransaction } from "@solana/web3.js";
 import { CLUSTER, MEMO_PROGRAM, payerKeypair, RPC } from "./solana";
 
-export type Purpose = "impact" | "review";
+export type Purpose = "impact";
 
 export class AlreadyClaimedError extends Error {
   constructor(public claimAddress: string) { super("This receipt has already been claimed on Solana."); }

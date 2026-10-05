@@ -109,7 +109,7 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
   const [wallets, setWallets] = useState<WalletInfo[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState("");
-  const [result, setResult] = useState<{ address: string; receipts: number; reviews: number } | null>(null);
+  const [result, setResult] = useState<{ address: string; receipts: number } | null>(null);
   const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
@@ -126,9 +126,9 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
     setBusy(w.key); setErr("");
     try {
       const address = await signInWith(w);
-      let linked = { receipts: 0, reviews: 0 };
+      let linked = { receipts: 0 };
       try { linked = await linkDevicePassport(getUserId()); } catch { /* nothing to link, or already linked */ }
-      setResult({ address, receipts: linked.receipts, reviews: linked.reviews });
+      setResult({ address, receipts: linked.receipts });
       onSignedIn(address);
     } catch (e) { setErr(e instanceof Error ? e.message : "Sign-in failed."); }
     setBusy(null);
@@ -137,7 +137,7 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
   const links = typeof window !== "undefined" ? deepLinks(window.location.href) : [];
 
   if (result) {
-    const n = result.receipts + result.reviews;
+    const n = result.receipts;
     return (
       <Sheet onClose={onClose} title="You're connected" subtitle="Your passport now follows your wallet to any device.">
         <div className="mt-5 flex flex-col items-center gap-3 text-center">

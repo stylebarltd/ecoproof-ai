@@ -72,7 +72,7 @@ Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devne
 - **GPS checks can be spoofed.** They stop casual abuse, not a determined cheater.
 - **Self-serve places are not vetted** beyond format limits and three places per owner. The map says so.
 - **Devnet only.** NFTs on devnet may not appear in wallets that don't index it; the passport page and Solana Explorer always show them.
-- The old receipt-photo flow and the receipt-gated review flow were removed in the pivot. The review gating logic is kept in `lib/reviewGate.ts` and is paused until it is pointed at stamps.
+- The old receipt-photo flow and the receipt-gated review flow were removed in the pivot. Reviews come back later, backed by a real purchase (see the roadmap in `SUBMISSION.md`).
 
 ## Project layout
 
@@ -95,7 +95,6 @@ components/BeeCard.tsx · lib/beeCardOg.tsx   Bee Guardian card (page / share im
 public/nft/                   rank artwork (PNG = NFT image; web/ = 512px copies from scripts/nft-webp.ts)
 lib/claim.ts · lib/solana.ts · lib/verify.ts   Solana proofs and verification
 lib/passport.ts · lib/impact.ts · lib/order.ts · lib/proof.ts
-lib/reviewGate.ts             review gating, proof source pluggable (paused)
 scripts/nft-setup.ts          one-time: creates the Merkle tree and the NFT collection
 docs/woocommerce/             shop connection guide and a local staging recipe
 ```
