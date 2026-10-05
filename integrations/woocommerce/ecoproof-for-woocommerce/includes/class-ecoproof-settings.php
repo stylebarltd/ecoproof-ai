@@ -34,7 +34,7 @@ class EcoProof_Settings {
 		$locked   = fn( $key ) => EcoProof_Config::locked( $key ) ? array( 'disabled' => 'disabled' ) : array();
 		$from_cfg = fn( $key, $desc ) => EcoProof_Config::locked( $key )
 			/* translators: %s: constant name */
-			? sprintf( __( 'Set by %s in wp-config.php.', 'ecoproof-for-woocommerce' ), '<code>' . EcoProof_Config::CONSTANTS[ $key ] . '</code>' )
+			? sprintf( __( 'Set by the %s setting in your site\'s configuration (wp-config.php or the server environment). Remove it there to edit this field.', 'ecoproof-for-woocommerce' ), '<code>' . EcoProof_Config::CONSTANTS[ $key ] . '</code>' )
 			: $desc;
 
 		$statuses = array();

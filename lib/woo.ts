@@ -110,8 +110,12 @@ export async function claimOrder(placeId: string, token: string, passportId: str
 }
 
 
-/** Everything a shop owner needs to connect WooCommerce: the webhook settings and the ready-to-paste email snippet (contains the secret). */
+/**
+ * Everything a shop owner needs to connect WooCommerce (contains the secret). The plugin needs only the place id, the secret and
+ * the app URL; the webhook settings and theme snippets are for shops that can't install plugins.
+ */
 export const wooSetup = (place: StampPlace) => ({
+  plugin: { download: `${appUrl()}/downloads/ecoproof-for-woocommerce.zip`, appUrl: appUrl(), placeId: place.id, secret: place.secret },
   webhook: { name: "EcoProof", status: "Active", topic: "Order updated", deliveryUrl: `${appUrl()}/api/woo/webhook/${place.id}`, secret: place.secret, apiVersion: "WP REST API Integration v3" },
   themeSnippet: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }),
   themeSnippetOwnEmail: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }, "own-email"),

@@ -29,7 +29,10 @@ function CardsButton({ id }: { id: string }) {
 }
 
 type MyPlace = PublicPlace & { status?: string; statusNote?: string | null };
-type WooSetup = { webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
+type WooSetup = { plugin: { download: string; appUrl: string; placeId: string; secret: string }; webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
+
+/** The plugin's own default; the URL step is only shown when this app runs somewhere else (staging, local). */
+const PLUGIN_DEFAULT_URL = "https://ecoproof.superbee.me";
 
 function WooOption({ id }: { id: string }) {
   const [setup, setSetup] = useState<WooSetup | null>(null);
@@ -40,21 +43,47 @@ function WooOption({ id }: { id: string }) {
     if (r.ok) setSetup(j); else setMsg(j.error || "Could not load the setup");
   }
   const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => setMsg("Copied"), () => setMsg("Select and copy it by hand"));
+  const field = (label: string, value: string, secret = false) => (
+    <span className="mt-1 flex items-center gap-2 rounded-lg bg-white px-2 py-1.5 ring-1 ring-neutral-300">
+      <span className="shrink-0 text-neutral-600">{label}</span>
+      <code className="min-w-0 flex-1 truncate">{value}</code>
+      <button onClick={() => copy(value)} className="shrink-0 font-bold underline">copy</button>
+      {secret && <span className="sr-only">(keep it private)</span>}
+    </span>
+  );
   return (
     <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
       <p className="font-semibold">A. QR in your order email <span className="font-normal text-neutral-600">(WooCommerce shops)</span></p>
-      <p className="text-xs text-neutral-600">Customers get a personal QR and button in the &ldquo;order completed&rdquo; email. It&apos;s signed per order, so a verified order stamp carries the real impact of what they bought.</p>
+      <p className="text-xs text-neutral-600">Install the free EcoProof plugin. When an order is paid, your customer gets a personal button and QR in their order email. It&apos;s signed per order, so their stamp is a verified purchase with the real impact of what they bought.</p>
       {!setup ? (
         <button onClick={load} className="rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-neutral-300">Show setup steps</button>
       ) : (
-        <ol className="list-decimal space-y-2 pl-4 text-xs">
-          <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
-          <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <button onClick={() => copy(setup.webhook.deliveryUrl)} className="font-bold underline">copy</button></li>
-          <li>Secret: <code className="break-all">{setup.webhook.secret}</code> <button onClick={() => copy(setup.webhook.secret)} className="font-bold underline">copy</button> (keep it private)</li>
-          <li>Paste this into your <b>child theme&apos;s functions.php</b>: <button onClick={() => copy(setup.themeSnippet)} className="font-bold underline">copy snippet</button>
-            <textarea readOnly value={setup.themeSnippet} rows={5} className="mt-1 w-full rounded-lg bg-white p-2 font-mono text-[10px] ring-1 ring-neutral-300" /></li>
-          <li>Only if your order emails come from another plugin (an email customizer, FunnelKit…) and the QR doesn&apos;t show up: use <b>this snippet instead</b>. It sends its own short email when an order is completed. <button onClick={() => copy(setup.themeSnippetOwnEmail)} className="font-bold underline">copy snippet B</button></li>
-        </ol>
+        <>
+          <ol className="list-decimal space-y-2.5 pl-4 text-xs">
+            <li><a href={setup.plugin.download} download className="inline-block rounded-full bg-honey-500 px-3 py-1.5 font-bold text-ink">Download the plugin</a></li>
+            <li>In WordPress: <b>Plugins → Add New → Upload Plugin</b>, choose the file, <b>Install</b>, then <b>Activate</b>.</li>
+            <li>Open <b>WooCommerce → Settings → EcoProof</b> and fill in:
+              {setup.plugin.appUrl !== PLUGIN_DEFAULT_URL && field("EcoProof URL", setup.plugin.appUrl)}
+              {field("Place id", setup.plugin.placeId)}
+              {field("Secret", setup.plugin.secret, true)}
+              <span className="mt-1 block text-neutral-600">Keep the secret private: it signs every order and every claim link.</span>
+            </li>
+            <li>Click <b>Save changes</b>, then <b>Test connection</b>. It should say &ldquo;EcoProof is connected&rdquo;.</li>
+          </ol>
+          <p className="text-xs text-neutral-600">That&apos;s it. The stamp appears in WooCommerce&apos;s <b>Processing order</b> email (sent when an order is paid). Using <b>FunnelKit</b>? It shows below the Order Summary block automatically. Other email builders: add the <code>[ecoproof_stamp]</code> shortcode, or switch on the separate stamp email in the plugin settings.</p>
+          <details className="text-xs text-neutral-600">
+            <summary className="cursor-pointer font-semibold">Can&apos;t install plugins? Set it up by hand</summary>
+            <ol className="mt-2 list-decimal space-y-2 pl-4">
+              <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
+              <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <button onClick={() => copy(setup.webhook.deliveryUrl)} className="font-bold underline">copy</button></li>
+              <li>Secret: the one above.</li>
+              <li>Paste this into your <b>child theme&apos;s functions.php</b>: <button onClick={() => copy(setup.themeSnippet)} className="font-bold underline">copy snippet</button>
+                <textarea readOnly value={setup.themeSnippet} rows={5} className="mt-1 w-full rounded-lg bg-white p-2 font-mono text-[10px] ring-1 ring-neutral-300" /></li>
+              <li>If your order emails come from another plugin and the QR doesn&apos;t show up, use this snippet instead: it sends its own short email. <button onClick={() => copy(setup.themeSnippetOwnEmail)} className="font-bold underline">copy snippet B</button></li>
+            </ol>
+            <p className="mt-2">This way only reacts to <b>completed</b> orders. The plugin also handles paid (processing) orders, refunds and retries.</p>
+          </details>
+        </>
       )}
       {msg && <p className="text-xs text-sage-800">{msg}</p>}
     </div>
@@ -169,7 +198,7 @@ export default function Join() {
               <p className="text-xs text-neutral-600">Do this while you&apos;re at your place. It puts you on the map, and stamps are only given to people who are there (GPS check, always on).</p>
             </div>
           ) : (
-            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. After you create it you choose how customers get their stamp: a QR in your order email (WooCommerce), printed QR cards in the parcel (any channel, e.g. Amazon), or both.</p>
+            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. After you create it you choose how customers get their stamp: a QR in your order email (WooCommerce, with our free plugin), printed QR cards in the parcel (any channel, e.g. Amazon), or both.</p>
           )}
           <div className="space-y-2 rounded-2xl bg-white p-3 text-sm ring-1 ring-neutral-300">
             <p className="font-semibold">EcoProof is only for eco places</p>
