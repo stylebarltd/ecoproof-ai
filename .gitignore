@@ -48,3 +48,6 @@ ecoproof.db*
 
 # local install kit for the shop admin (contains the webhook secret)
 /superbee-install-kit/
+
+# WooCommerce plugin build
+integrations/woocommerce/*.zip
