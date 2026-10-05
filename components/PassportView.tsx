@@ -7,14 +7,13 @@ import InstallPrompt from "@/components/InstallPrompt";
 import AccountChip from "@/components/AccountChip";
 import SharePassport from "@/components/SharePassport";
 import { LogoLockup } from "@/components/Logo";
-import { artSvg } from "@/lib/nftArt";
-import { milestoneLabel, tierFor } from "@/lib/milestoneRules";
+import BeeCard from "@/components/BeeCard";
+import { milestoneLabel, RANKS, tierFor } from "@/lib/milestoneRules";
 import { POINTS_PRESENCE, POINTS_VERIFIED } from "@/lib/stampClasses";
-import { explorerAsset, explorerTx, progress, rankNfts } from "@/lib/passportView";
+import { explorerTx, progress, rankNfts } from "@/lib/passportView";
 import type { Passport } from "@/lib/passport";
 
 const short = (sig: string) => `${sig.slice(0, 5)}…${sig.slice(-5)}`;
-const dataUri = (svg: string) => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 
 function SolanaMark({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -31,6 +30,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
   const stamps = pass?.totals.receipts ?? 0;
   const nfts = rankNfts(pass?.nfts ?? []);
   const [top, ...rest] = nfts;
+  const locked = RANKS.filter((r) => !nfts.some((n) => n.rank === r.key)); // ranks not earned yet, shown as silhouettes
   const points = pass?.points ?? 0;
   const prog = progress(points, pass?.nextMilestone ?? 1); // ranks are reached by points: a verified purchase is worth more than a presence stamp
   const slots = Math.max(0, 8 - (pass?.places.length ?? 0));
@@ -55,7 +55,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
       {owner && stamps === 0 && (
         <Link href="/about" className="glass flex items-center gap-3 rounded-2xl px-4 py-3 ring-2 ring-honey-400/70">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-honey-500 text-ink"><CircleHelp size={20} strokeWidth={2.6} /></span>
-          <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof works</span><span className="block text-[11.5px] text-sage-900">Stamps, Eco Warrior NFTs and how to collect them, in one minute.</span></span>
+          <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof works</span><span className="block text-[11.5px] text-sage-900">Stamps, Bee Guardian NFTs and how to collect them, in one minute.</span></span>
         </Link>
       )}
       {owner && (
@@ -65,29 +65,27 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
       )}
       {scanning && <QrScanner onClose={() => setScanning(false)} />}
 
-      {/* 1. Hero: earned Eco Warrior NFTs, highest tier largest */}
+      {/* 1. Hero: earned Bee Guardian NFTs, highest rank largest; ranks still to earn as silhouettes */}
       <Glass className="p-4">
         <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="text-[17px]">Eco Warriors</h2>
+          <h2 className="text-[17px]">Bee Guardians</h2>
           <span className="text-[11px] font-semibold uppercase tracking-wider text-honey-700">Soulbound</span>
         </div>
-        {top ? (
-          <div className="space-y-3">
-            <NftTile n={top} big wallet={!!pass?.wallet} />
-            {rest.length > 0 && (
-              <div className="grid grid-cols-3 gap-2.5">
-                {rest.map((n) => <NftTile key={n.id} n={n} wallet={!!pass?.wallet} />)}
-              </div>
-            )}
+        <div className="space-y-3">
+          {top ? (
+            <div className="mx-auto max-w-[300px]"><BeeCard rank={tierFor(top.milestone)} nft={top} big wallet={!!pass?.wallet} /></div>
+          ) : (
+            <div className="mx-auto max-w-[260px] text-center">
+              <BeeCard rank={RANKS[0]} big />
+              <p className="mt-2 font-heading text-base">Your Sentinel is waiting</p>
+              <p className="text-xs text-sage-900">Collect your first stamp to unlock it. <Link href="/about#customers" className="font-bold underline">How do I collect one?</Link></p>
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-2.5 min-[420px]:grid-cols-4">
+            {rest.map((n) => <BeeCard key={n.id} rank={tierFor(n.milestone)} nft={n} wallet={!!pass?.wallet} />)}
+            {(top ? locked : locked.slice(1)).map((r) => <BeeCard key={r.key} rank={r} />)}
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-2 py-2 text-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={dataUri(artSvg({ milestone: 1, proofs: 1, plasticItems: 0, co2Kg: 0, brand: "" }))} alt="Seedling, locked" width={180} height={180} className="rounded-3xl opacity-40 grayscale" />
-            <p className="font-heading text-base">Your Seedling is waiting</p>
-            <p className="text-xs text-sage-900">Collect your first stamp to unlock it. <Link href="/about#customers" className="font-bold underline">How do I collect one?</Link></p>
-          </div>
-        )}
+        </div>
         {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} points={points} tier={top ? tierFor(top.milestone).name : null} /></div>}
       </Glass>
 
@@ -199,24 +197,4 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
       </p>
     </div>
   );
-}
-
-function NftTile({ n, big, wallet }: { n: Passport["nfts"][number]; big?: boolean; wallet: boolean }) {
-  const minted = n.status === "minted" && n.assetId;
-  const body = (
-    <div>
-      <div className={`overflow-hidden rounded-3xl ring-2 ${big ? "ring-honey-400 shadow-[0_10px_34px_rgba(232,163,23,0.45)]" : "ring-white/80 shadow-md"}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={n.imageUrl} alt={`Eco ${n.tier}, ${milestoneLabel(n.milestone)}`} width={512} height={512} className={`aspect-square w-full object-cover ${minted ? "" : "opacity-70"}`} />
-      </div>
-      <div className={`mt-1.5 text-center leading-tight ${big ? "" : "px-0.5"}`}>
-        <div className={`font-heading ${big ? "text-lg" : "text-[13px]"}`}>{n.tier}</div>
-        <div className={`${big ? "text-xs" : "text-[10px]"} font-semibold text-sage-900`}>
-          {milestoneLabel(n.milestone)}
-        </div>
-        <div className={`${big ? "text-xs" : "text-[10px]"} text-honey-700 font-bold`}>{minted ? "View on Solana ↗" : wallet ? "Minting…" : "Sign in to claim"}</div>
-      </div>
-    </div>
-  );
-  return minted ? <a href={explorerAsset(n.assetId!)} target="_blank" rel="noreferrer" className="block">{body}</a> : body;
 }

@@ -1,0 +1,41 @@
+import { rankImage, rankSharePng, type RankKey, type Tier } from "./milestoneRules";
+
+// The Bee Guardian collectible card for share images (next/og), drawn to match components/BeeCard.tsx.
+
+/**
+ * The rank's artwork as a data URI, fetched from the static files (the og renderer cannot read public/ on a serverless host).
+ * Tries the 512px PNG first, then the full one (WebP is not an option: the og renderer cannot decode it).
+ * Null if neither exists: the card then shows the rank name instead.
+ */
+export async function rankArt(key: RankKey, base: string): Promise<string | null> {
+  for (const path of [rankSharePng(key), rankImage(key)]) {
+    const r = await fetch(new URL(path, base)).catch(() => null);
+    if (r?.ok) return `data:image/png;base64,${Buffer.from(await r.arrayBuffer()).toString("base64")}`;
+  }
+  return null;
+}
+
+export function BeeCardOg({ rank, art, size, serial, edition, locked }: { rank: Tier; art: string | null; size: number; serial?: number; edition?: number; locked?: boolean }) {
+  const k = size / 360;
+  const label = serial ? `${rank.key === "paragon" && edition ? `Ed. ${edition} · ` : ""}#${String(serial).padStart(4, "0")}` : "";
+  return (
+    <div style={{ display: "flex", padding: 4 * k, borderRadius: 30 * k, background: "linear-gradient(135deg,#f7d27a,#a86f00 22%,#f0b93e 38%,#9be7d8 50%,#c9a0ff 58%,#f0b93e 70%,#7a5200 86%,#f7d27a)", boxShadow: "0 16px 40px rgba(0,0,0,0.35)" }}>
+      <div style={{ display: "flex", flexDirection: "column", width: size, padding: 16 * k, borderRadius: 26 * k, color: "#f6f1e4", background: "radial-gradient(circle at 50% 40%, rgba(247,210,122,0.30), rgba(247,210,122,0) 62%), linear-gradient(160deg,#1d2416,#2c361f 55%,#14180e)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 18 * k, fontWeight: 800, color: "#f7d27a", letterSpacing: 1 }}>
+          <div style={{ display: "flex" }}>{`TIER ${rank.tier}`}</div>
+          <div style={{ display: "flex", color: "#dcebc4" }}>{label}</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: size - 32 * k, height: size - 32 * k }}>
+          {art ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={art} width={size - 40 * k} height={size - 40 * k} alt="" style={{ opacity: locked ? 0.3 : 1 }} />
+          ) : (
+            <div style={{ display: "flex", fontSize: 54 * k, fontWeight: 800, color: "#f7d27a" }}>{rank.name}</div>
+          )}
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", fontSize: 34 * k, fontWeight: 800 }}>{rank.name}</div>
+        <div style={{ display: "flex", justifyContent: "center", fontSize: 17 * k, fontWeight: 700, color: "#f7d27a" }}>{locked ? `Unlocks at ${rank.at} point${rank.at === 1 ? "" : "s"}` : "Soulbound Bee Guardian · on Solana"}</div>
+      </div>
+    </div>
+  );
+}

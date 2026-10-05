@@ -15,7 +15,7 @@ const BASE: Step[] = [
   { key: "save", label: "Saving it to your passport" },
   { key: "passport", label: "Updating your progress" },
 ];
-const NFT_STEP: Step = { key: "nft", label: "Minting your Eco Warrior NFT", hint: "A soulbound NFT, just for you. A few more seconds." };
+const NFT_STEP: Step = { key: "nft", label: "Minting your Bee Guardian NFT", hint: "A soulbound NFT, just for you. A few more seconds." };
 
 function position(): Promise<{ lat: number; lng: number }> {
   return new Promise((res, rej) => {
@@ -135,7 +135,7 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
             <p className="font-heading text-xl">Stamp collected! 🎉</p>
           )}
           <p className="text-sm text-neutral-600"><b className="text-ink">+{done.stamp.points} point{done.stamp.points === 1 ? "" : "s"}</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
-          {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Eco Warrior NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : "(on its way: connect a wallet to receive "+(newNfts.length > 1 ? "them" : "it")+")"}</p>}
+          {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Bee Guardian NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : "(on its way: connect a wallet to receive "+(newNfts.length > 1 ? "them" : "it")+")"}</p>}
           {done.stamp.claimUrl && <a className="block text-xs text-sage-700 underline" href={done.stamp.claimUrl} target="_blank" rel="noreferrer">See the proof on Solana ↗</a>}
           <Link href="/" className="block rounded-full bg-sage-500 py-3 font-bold text-cream">View my passport</Link>
         </div>

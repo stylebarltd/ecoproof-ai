@@ -12,7 +12,7 @@ const umi = umiClient();
 const collection = generateSigner(umi);
 await createCollection(umi, {
   collection,
-  name: "EcoProof Eco Warriors",
+  name: "EcoProof Bee Guardians",
   uri: `${appUrl()}/api/nft/collection`,
   plugins: [
     { type: "BubblegumV2" },

@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { Check, Camera, Coffee, Flag, Gift, Heart, MapPin, Package, QrCode, Share2, ShieldCheck, Smartphone, Store, Wallet } from "lucide-react";
-import { artSvg } from "@/lib/nftArt";
+import { RANKS, rankWebp } from "@/lib/milestoneRules";
 import { POINTS_PRESENCE, POINTS_VERIFIED } from "@/lib/stampClasses";
 import InviteShop from "@/components/InviteShop";
 
 export const metadata = {
   title: "How EcoProof works",
-  description: "Collect eco stamps, earn soulbound Eco Warrior NFTs, and prove it on Solana. A guide for customers and for shops.",
+  description: "Collect eco stamps, earn soulbound Bee Guardian NFTs, and prove it on Solana. A guide for customers and for shops.",
 };
-
-const art = (milestone: number) => `data:image/svg+xml;utf8,${encodeURIComponent(artSvg({ milestone, proofs: milestone, plasticItems: 0, co2Kg: 0, brand: "", seed: `about-${milestone}` }))}`;
 
 const Panel = ({ id, className = "", children }: { id?: string; className?: string; children: React.ReactNode }) => (
   <section id={id} className={`glass scroll-mt-24 rounded-[28px] p-5 ${className}`}>{children}</section>
@@ -50,7 +48,7 @@ export default function About() {
         <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-honey-700">Welcome to EcoProof</p>
         <h1 className="mt-1 text-[30px] leading-[1.05]">&ldquo;I&apos;m eco, and I have proof.&rdquo;</h1>
         <p className="mx-auto mt-3 max-w-sm text-[14.5px] leading-relaxed text-ink/90">
-          EcoProof turns your real eco-friendly choices into <b>stamps</b> in a personal eco passport. Every stamp is proven on the Solana blockchain, and collecting enough of them unlocks a collectible <b>Eco Warrior NFT</b> that only you can own.
+          EcoProof turns your real eco-friendly choices into <b>stamps</b> in a personal eco passport. Every stamp is proven on the Solana blockchain, and collecting enough of them unlocks a collectible <b>Bee Guardian NFT</b> that only you can own.
         </p>
         <div className="mt-4 flex justify-center gap-2">
           <Link href="/" className="rounded-full bg-honey-500 px-4 py-2.5 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">My passport</Link>
@@ -71,7 +69,7 @@ export default function About() {
         <P>Lots of people choose reusable, plastic-free and local, but they have nothing to show for it. And brands doing the real work get drowned out by ones that only <i>claim</i> to be green.</P>
         <P>EcoProof connects the two. A customer scans a QR code or taps a link after an eco choice, and a stamp from that shop, café or brand lands in their passport. The stamp is recorded on Solana, so it can&apos;t be edited or used twice. People share their passport because it looks good and it&apos;s true, and that sharing is the most credible marketing a sustainable brand can get.</P>
         <ul className="mt-4 grid grid-cols-3 gap-2 text-center text-[11.5px] font-bold leading-tight">
-          {[[QrCode, "Scan", "a QR or tap a link"], [Gift, "Collect", "a stamp in your passport"], [ShieldCheck, "Unlock", "an Eco Warrior NFT"]].map(([Icon, t, s]) => {
+          {[[QrCode, "Scan", "a QR or tap a link"], [Gift, "Collect", "a stamp in your passport"], [ShieldCheck, "Unlock", "an Bee Guardian NFT"]].map(([Icon, t, s]) => {
             const I = Icon as typeof QrCode;
             return <li key={t as string} className="rounded-2xl bg-white/50 px-2 py-3 ring-1 ring-white/70"><I size={22} strokeWidth={2.4} className="mx-auto mb-1 text-sage-700" />{t as string}<span className="mt-0.5 block text-[10.5px] font-semibold text-ink/70">{s as string}</span></li>;
           })}
@@ -82,7 +80,7 @@ export default function About() {
       <Panel id="customers">
         <div className="mb-1 flex items-center gap-2"><Smartphone size={20} className="text-sage-700" /><H2>For customers</H2></div>
         <H3>1. Your eco passport</H3>
-        <P>The first screen of the app is your passport: your Eco Warrior NFTs, the stamps you&apos;ve collected, your progress to the next rank, and a trail of proofs. You don&apos;t need an account or a wallet to start. Your passport lives on your device until you connect a wallet (see below).</P>
+        <P>The first screen of the app is your passport: your Bee Guardian NFTs, the stamps you&apos;ve collected, your progress to the next rank, and a trail of proofs. You don&apos;t need an account or a wallet to start. Your passport lives on your device until you connect a wallet (see below).</P>
 
         <H3>2. Collect a stamp</H3>
         <P>There are three ways, and they all end the same way, with a stamp and a proof on Solana:</P>
@@ -126,17 +124,21 @@ export default function About() {
       <Panel id="points">
         <H2>Points and ranks</H2>
         <P>Ranks are reached by <b>points</b>, not by how many times you scan: a verified purchase is worth {POINTS_VERIFIED}, a presence stamp {POINTS_PRESENCE}. Every stamp records a proof on Solana, but only reaching a rank mints an NFT.</P>
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          {[[1, "Seedling", "1 point"], [3, "Sprout", "3 points"], [10, "Guardian", "10 points"], [25, "Legend", "25 points, then every 50"]].map(([m, name, pts]) => (
-            <div key={m as number} className="text-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={art(m as number)} alt={`${name} Eco Warrior`} width={512} height={512} className="aspect-square w-full rounded-3xl ring-2 ring-white/80 shadow-md" />
-              <p className="mt-1.5 font-heading text-[15px] leading-none">{name as string}</p>
-              <p className="text-[11px] font-semibold text-ink/70">{pts as string}</p>
+        <div className="mt-4 grid grid-cols-2 gap-3 min-[420px]:grid-cols-3">
+          {RANKS.map((r) => (
+            <div key={r.key} className="text-center">
+              <div className="bee-edge rounded-[22px] p-[2px]">
+                <div className="rounded-[20px] bg-[linear-gradient(160deg,#1d2416,#2c361f_55%,#14180e)] p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={rankWebp(r.key)} alt={`${r.name} Bee Guardian`} width={512} height={512} loading="lazy" className="aspect-square w-full object-contain" />
+                </div>
+              </div>
+              <p className="mt-1.5 font-heading text-[15px] leading-none">{r.name}</p>
+              <p className="text-[11px] font-semibold text-ink/70">Tier {r.tier} · {r.key === "paragon" ? "50 points, then every 50" : `${r.at} point${r.at === 1 ? "" : "s"}`}</p>
             </div>
           ))}
         </div>
-        <P>The Eco Warriors are <b>soulbound</b>: they are minted to your wallet and can&apos;t be sold or transferred. They can only be earned. Each one is drawn from your wallet address, so your warrior looks like you and grows up as you level. One verified purchase is worth 5 points, so it can unlock the first two ranks at once.</P>
+        <P>The Bee Guardians are <b>soulbound</b>: they are minted to your wallet and can&apos;t be sold or transferred. They can only be earned. Each rank is a different guardian, from Sentinel to Paragon, and every 50 points past Paragon mints another Paragon edition. One verified purchase is worth 5 points, so it can unlock the first two ranks at once.</P>
       </Panel>
 
       {/* Owners */}
@@ -198,7 +200,7 @@ export default function About() {
       {/* FAQ */}
       <Panel id="faq" className="space-y-2">
         <H2>Questions</H2>
-        <Faq q="Do I need a wallet?">No, you can collect stamps without one. You need a wallet (Phantom or Solflare) to receive your Eco Warrior NFTs and to keep your passport on other devices.</Faq>
+        <Faq q="Do I need a wallet?">No, you can collect stamps without one. You need a wallet (Phantom or Solflare) to receive your Bee Guardian NFTs and to keep your passport on other devices.</Faq>
         <Faq q="Does it cost anything?">No. EcoProof is free, connecting a wallet costs nothing, and you never pay a network fee.</Faq>
         <Faq q="I can't collect a stamp from my passport. Why?">At real places a stamp is collected by scanning the place&apos;s QR code, so it can only be done there. Tap <b>Scan a QR to collect a stamp</b> or use your camera. The demo places can be tapped.</Faq>
         <Faq q="It says I already collected a stamp today.">A place gives one stamp per person per day. Come back tomorrow. Parcel cards and orders work once each.</Faq>

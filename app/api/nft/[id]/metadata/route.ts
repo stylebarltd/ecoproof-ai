@@ -1,24 +1,30 @@
 import { query } from "@/lib/db";
-import { appUrl, milestoneLabel, tierFor } from "@/lib/nft";
+import { appUrl } from "@/lib/nft";
+import { editionOf, nftName, rankImage, tierFor } from "@/lib/milestoneRules";
+import type { NftStats } from "@/lib/milestones";
 
-/** Metaplex-standard JSON for a milestone NFT. */
+/** Metaplex-standard JSON for a milestone NFT. The on-chain leaf points here, so changes to it reach NFTs already minted. */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const r = (await query<{ stats: string; milestone: number }>("SELECT stats, milestone FROM nft_mints WHERE id=$1", [id]))[0];
   if (!r) return Response.json({ error: "not found" }, { status: 404 });
-  const tier = tierFor(r.milestone);
-  const image = `${appUrl()}/api/nft/${id}/image`;
+  const rank = tierFor(r.milestone);
+  const stats = JSON.parse(r.stats) as Partial<NftStats>;
+  const image = `${appUrl()}${rankImage(rank.key)}`;
   return Response.json({
-    name: `Eco ${tier.name} · ${milestoneLabel(r.milestone)}`,
+    name: nftName(rank),
     symbol: "ECOPROOF",
-    description: `Soulbound EcoProof AI eco-warrior badge for reaching ${milestoneLabel(r.milestone)} in the EcoProof passport (verified purchases count for more than presence stamps). Every stamp is anchored on Solana.`,
+    description: "A soulbound EcoProof Bee Guardian. Earned by proving real eco purchases. Protects the planet.",
     image,
     external_url: appUrl(),
     attributes: [
-      { trait_type: "Tier", value: tier.name },
-      { trait_type: "Points", value: r.milestone },
-      { trait_type: "Soulbound", value: "true" },
+      { trait_type: "Rank", value: rank.name },
+      { trait_type: "Tier", value: rank.tier },
+      { trait_type: "Points at mint", value: stats.proofs ?? r.milestone },
+      { trait_type: "Milestone", value: r.milestone },
+      ...(rank.key === "paragon" ? [{ trait_type: "Edition", value: editionOf(r.milestone) }] : []),
+      { trait_type: "Soulbound", value: true },
     ],
-    properties: { files: [{ uri: image, type: "image/svg+xml" }], category: "image" },
-  });
+    properties: { files: [{ uri: image, type: "image/png" }], category: "image" },
+  }, { headers: { "Cache-Control": "public, max-age=300" } });
 }

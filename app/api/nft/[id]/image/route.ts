@@ -1,11 +1,17 @@
 import { query } from "@/lib/db";
-import { artSvg, type NftStats } from "@/lib/nftArt";
+import { rankImage, tierFor } from "@/lib/milestoneRules";
+import { rankPlaceholderSvg } from "@/lib/rankArt";
 
-// The artwork is a pure function of the milestone and the owner's wallet, so it is regenerated on demand; nothing external is involved.
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+const present = new Set<string>(); // ranks whose file was found, so the check runs once per server instance
+
+/** The NFT's artwork: a redirect to its rank's static PNG, or a plain placeholder card if that file is missing. */
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const r = (await query<{ stats: string; milestone: number; wallet: string | null; owner_key: string }>("SELECT stats, milestone, wallet, owner_key FROM nft_mints WHERE id=$1", [id]))[0];
+  const r = (await query<{ milestone: number }>("SELECT milestone FROM nft_mints WHERE id=$1", [id]))[0];
   if (!r) return new Response("not found", { status: 404 });
-  const svg = artSvg({ ...(JSON.parse(r.stats) as NftStats), milestone: r.milestone, seed: r.wallet ?? r.owner_key }) // the owner's wallet picks the character;
-  return new Response(svg, { headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=31536000, immutable" } });
+  const rank = tierFor(r.milestone);
+  const png = new URL(rankImage(rank.key), req.url);
+  const ok = present.has(rank.key) || (await fetch(png, { method: "HEAD" }).then((x) => x.ok, () => false));
+  if (ok) { present.add(rank.key); return Response.redirect(png, 307); }
+  return new Response(rankPlaceholderSvg(rank), { headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=60" } });
 }

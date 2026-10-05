@@ -151,7 +151,7 @@ function WalletSheet({ onClose, onSignedIn }: { onClose: () => void; onSignedIn:
   }
 
   return (
-    <Sheet onClose={onClose} title="Connect your wallet" subtitle="Keep your passport and Eco Warrior NFTs on every device.">
+    <Sheet onClose={onClose} title="Connect your wallet" subtitle="Keep your passport and Bee Guardian NFTs on every device.">
       <div className="mt-4 space-y-2.5">
         {wallets.length > 0 ? (
           wallets.map((w) => <WalletRow key={w.key} id={w.key} name={w.name} sub="Detected in this browser" busy={busy === w.key} disabled={!!busy} onClick={() => go(w)} />)

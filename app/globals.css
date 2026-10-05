@@ -90,3 +90,13 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 .anim-fade { animation: fade-in 0.2s ease both; }
 .anim-pop { animation: pop-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
 @media (prefers-reduced-motion: reduce) { .anim-sheet, .anim-fade, .anim-pop { animation: none; } }
+
+/* Bee Guardian collectible cards: a gold edge with a slow holographic sheen. */
+.bee-edge {
+  background: linear-gradient(135deg, #f7d27a, #a86f00 22%, #f0b93e 38%, #9be7d8 50%, #c9a0ff 58%, #f0b93e 70%, #7a5200 86%, #f7d27a);
+  background-size: 220% 220%;
+  animation: bee-sheen 7s ease-in-out infinite alternate;
+}
+.bee-edge-glow { box-shadow: 0 12px 36px rgba(232, 163, 23, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.25); }
+@keyframes bee-sheen { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { .bee-edge { animation: none; } }

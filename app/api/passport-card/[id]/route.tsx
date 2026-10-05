@@ -1,8 +1,9 @@
 import { ImageResponse } from "next/og";
 import { getPassport } from "@/lib/passport";
-import { artSvg } from "@/lib/nftArt";
+import { resolvePublicId } from "@/lib/publicId";
+import { BeeCardOg, rankArt } from "@/lib/beeCardOg";
 import { stampSvg } from "@/lib/stampPlaces";
-import { tierFor } from "@/lib/nft";
+import { RANKS, tierFor } from "@/lib/milestoneRules";
 import { progress, rankNfts } from "@/lib/passportView";
 import { query } from "@/lib/db";
 import { appUrl } from "@/lib/nft";
@@ -13,9 +14,10 @@ const uri = (svg: string) => `data:image/svg+xml;base64,${Buffer.from(svg).toStr
 
 /** Share image of a passport: top NFT, tier, stamp collection and numbers. ?format=square (1080x1080) or wide (1200x630, link previews). */
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const id = decodeURIComponent((await params).id);
+  const owner = await resolvePublicId(decodeURIComponent((await params).id));
+  if (!owner) return new Response("Not found", { status: 404 });
   const square = new URL(req.url).searchParams.get("format") === "square";
-  const pass = await getPassport(id);
+  const pass = await getPassport(owner);
   const stamps = pass.totals.receipts;
   const points = pass.points; // ranks are reached by points
   const [top] = rankNfts(pass.nfts);
@@ -24,13 +26,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const placeRows = await query<{ id: string; name: string; kind: string; colour: string | null; image: string | null }>("SELECT id,name,kind,colour,image FROM stamp_places ORDER BY created_at, name");
   const earned = new Set(pass.places.filter((p) => p.earned).map((p) => p.id));
   const show = [...placeRows].sort((a, b) => Number(earned.has(b.id)) - Number(earned.has(a.id))).slice(0, square ? 8 : 6); // earned stamps first
-  const artMilestone = top?.milestone ?? 1;
-  const art = uri(artSvg({ milestone: artMilestone, proofs: points, plasticItems: 0, co2Kg: 0, brand: "", seed: pass.wallet ?? id }, { labels: false })); // text is drawn below: the SVG rasteriser has no fonts on Vercel
-  const legend = tier?.key === "legend";
+  const rank = tier ?? RANKS[0]; // no NFT yet: the Sentinel, locked
+  const art = await rankArt(rank.key, req.url);
   const host = new URL(appUrl()).host;
   const shownHost = host.endsWith(".vercel.app") && host.includes("ecoproof") ? "ecoproof-ai.vercel.app" : host;
   const W = square ? 1080 : 1200, H = square ? 1080 : 630;
-  const artSize = square ? 400 : 360;
+  const artSize = square ? 340 : 300; // the card adds a header and footer around the artwork
   const stampSize = square ? 92 : 72;
 
   const stampsRow = (
@@ -47,7 +48,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         <div style={{ display: "flex",  fontSize: square ? 120 : 110, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{points}</div>
         <div style={{ display: "flex",  fontSize: square ? 46 : 36, fontWeight: 700, color: HONEY_L }}>{points === 1 ? "point" : "points"}</div>
       </div>
-      <div style={{ display: "flex",  fontSize: square ? 40 : 32, fontWeight: 700, color: CREAM }}>{tier ? `Eco ${tier.name}` : "Collecting my first stamp"}</div>
+      <div style={{ display: "flex",  fontSize: square ? 40 : 32, fontWeight: 700, color: CREAM }}>{tier ? `${tier.name} Bee Guardian` : "Collecting my first stamp"}</div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: square ? "center" : "flex-start", gap: 8, marginTop: 4 }}>
         <div style={{ display: "flex",  fontSize: square ? 28 : 24, color: "#dcebc4" }}>{`${prog.text} · ${stamps} stamp${stamps === 1 ? "" : "s"}${pass.stampsByClass.verified ? `, ${pass.stampsByClass.verified} verified purchase${pass.stampsByClass.verified === 1 ? "" : "s"}` : ""}`}</div>
         <div style={{ display: "flex", width: square ? 480 : 420, height: 18, borderRadius: 999, background: "rgba(255,255,255,0.28)" }}>
@@ -57,18 +58,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     </div>
   );
 
-  const k = artSize / 512;
-  const txt = { display: "flex", position: "absolute", alignItems: "center", justifyContent: "center", fontWeight: 800 } as const;
-  const artTile = (
-    <div style={{ display: "flex", padding: 6, borderRadius: square ? 54 : 46, background: "rgba(255,255,255,0.9)" }}>
-      <div style={{ display: "flex", position: "relative", width: artSize, height: artSize, borderRadius: square ? 48 : 40, overflow: "hidden" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={art} width={artSize} height={artSize} alt="" />
-        <div style={{ ...txt, left: 86 * k, top: 452 * k, width: 340 * k, height: 42 * k, fontSize: 22 * k, color: legend ? HONEY_L : "#272e1b" }}>{`${tier?.name ?? "Seedling"} · ${artMilestone === 1 ? "First stamp" : `${artMilestone} stamps`}`}</div>
-        {artMilestone >= 50 ? <div style={{ ...txt, left: 56 * k, top: 68 * k, width: 72 * k, height: 72 * k, fontSize: (artMilestone >= 100 ? 24 : 28) * k, color: HONEY_L, fontWeight: 900 }}>{String(artMilestone)}</div> : null}
-      </div>
-    </div>
-  );
+  const artTile = <BeeCardOg rank={rank} art={art} size={artSize} serial={top?.serial} edition={top?.edition} locked={!top} />;
 
   return new ImageResponse(
     (

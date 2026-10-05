@@ -1,6 +1,8 @@
 import { query, type RecordRow } from "./db";
 import { addressUrl, payerAddress } from "./solana";
 import { identityGroup } from "./users";
+import { publicIdFor } from "./publicId";
+import { stampDay } from "./stampPlaces";
 import { looksLikeWallet } from "./session";
 import { listNfts, type Nft } from "./milestones";
 import { nextMilestone } from "./nft";
@@ -9,6 +11,8 @@ import { pointsFor, stampClass, type StampClass } from "./stampClasses";
 export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Passport = {
   userId: string;
+  /** The id for share links (never the device id, which acts as the anonymous passport's password). */
+  publicId: string;
   wallet: string | null;
   totals: Totals;
   anchored: number;
@@ -30,7 +34,17 @@ export async function getPassport(userId: string): Promise<Passport> {
   const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id = ANY($1) ORDER BY created_at DESC", [ids]);
   const rev = await query<{ byo_cup: boolean; created_at: string }>("SELECT byo_cup, created_at FROM reviews WHERE user_id = ANY($1)", [ids]);
   const cups = rev.filter((r) => r.byo_cup);
-  const points = rows.reduce((n, r) => n + pointsFor(r.source), 0); // milestones count points, not stamps
+  // Milestones count points, not stamps. A place QR gives one stamp per person per day; stamps that devices collected before they
+  // were linked to the same wallet would otherwise add up, so only the first QR stamp per place per day earns points.
+  const seen = new Set<string>();
+  const points = rows.reduce((n, r) => {
+    if (r.source === "qr" && r.place_id) {
+      const key = `${r.place_id}:${stampDay(new Date(r.created_at))}`;
+      if (seen.has(key)) return n;
+      seen.add(key);
+    }
+    return n + pointsFor(r.source);
+  }, 0);
   const totals: Totals = { byoCups: cups.length, reviews: rev.length, receipts: rows.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
   for (const r of rows) {
     totals.co2Kg += r.co2_kg ?? 0;
@@ -45,6 +59,7 @@ export async function getPassport(userId: string): Promise<Passport> {
   totals.co2Kg = Math.round(totals.co2Kg * 100) / 100;
   return {
     userId,
+    publicId: await publicIdFor(looksLikeWallet(ids[0]) ? ids[0] : userId),
     wallet: looksLikeWallet(ids[0]) ? ids[0] : null,
     totals,
     places: (await query<{ id: string; name: string; impact_note: string | null; status: string }>("SELECT id,name,impact_note,status FROM stamp_places ORDER BY created_at, name")).filter((pl) => pl.status === "active" || rows.some((r) => r.place_id === pl.id)).map((pl) => { // hide paused places unless this passport has stamps from them
@@ -67,3 +82,6 @@ export async function getPassport(userId: string): Promise<Passport> {
     })),
   };
 }
+
+/** A passport as shown to anyone holding a share link: addressed by its public id, with the device id removed. */
+export const publicPassport = (p: Passport): Passport => ({ ...p, userId: p.publicId });

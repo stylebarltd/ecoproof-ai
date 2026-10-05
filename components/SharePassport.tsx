@@ -22,7 +22,7 @@ export default function SharePassport({ passportId, stamps, points, tier }: Prop
   const [loadErr, setLoadErr] = useState(false);
   const [msg, setMsg] = useState("");
   const link = typeof window === "undefined" ? "" : `${location.origin}/u/${enc(passportId)}`;
-  const defaultCaption = `I collected ${points} eco point${points === 1 ? "" : "s"} from ${stamps} stamp${stamps === 1 ? "" : "s"}${tier ? ` and earned my Eco ${tier} NFT` : ""} with EcoProof 🌱🐝 Every stamp is verified on Solana. #EcoProof #PlasticFree #Solana`;
+  const defaultCaption = `I collected ${points} eco point${points === 1 ? "" : "s"} from ${stamps} stamp${stamps === 1 ? "" : "s"}${tier ? ` and earned my ${tier} Bee Guardian NFT` : ""} with EcoProof 🌱🐝 Every stamp is verified on Solana. #EcoProof #PlasticFree #Solana`;
   const [caption, setCaption] = useState(defaultCaption);
   const started = useRef(false);
 

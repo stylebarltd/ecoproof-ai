@@ -22,10 +22,11 @@ export default function Home() {
   }, [load]);
 
   // A signed-in wallet's passport is addressed by the wallet; the API resolves it from the session cookie.
+  // Share links use the passport's public id: the device id must never leave this device in a link.
   return (
     <>
       <Splash ready={loaded} />
-      <PassportView pass={pass} passportId={pass?.wallet ?? userId} owner onAccountChange={() => { if (userId) load(userId); }} />
+      <PassportView pass={pass} passportId={pass?.publicId ?? ""} owner onAccountChange={() => { if (userId) load(userId); }} />
     </>
   );
 }
