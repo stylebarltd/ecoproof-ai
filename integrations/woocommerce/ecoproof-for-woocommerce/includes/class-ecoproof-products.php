@@ -11,6 +11,10 @@
  * Estimates run in the background (Action Scheduler), when a product is saved with new details and from
  * "Estimate all products" on the settings page, so saving a product never waits for the AI.
  *
+ * Translations: a product in another language follows its main-language product (WPML and Polylang are recognised; any
+ * other setup can say which product is the main one with the `ecoproof_main_product_id` filter). It isn't estimated itself;
+ * orders for it use the main product's numbers, which are edited on the main product.
+ *
  * @package EcoProof_WooCommerce
  */
 
@@ -63,6 +67,24 @@ class EcoProof_Products {
 		);
 	}
 
+	/**
+	 * The product whose numbers this one uses: itself, or for a translation its main-language product.
+	 * Filter `ecoproof_main_product_id` ( $main_id, WC_Product $product ) for translation setups other than WPML and Polylang.
+	 */
+	public static function main_id( WC_Product $product ) {
+		$id   = $product->get_id();
+		$main = $id;
+		if ( has_filter( 'wpml_object_id' ) ) {
+			$found = apply_filters( 'wpml_object_id', $id, 'product', true, apply_filters( 'wpml_default_language', null ) );
+			$main  = $found ? (int) $found : $id;
+		} elseif ( function_exists( 'pll_get_post' ) && function_exists( 'pll_default_language' ) ) {
+			$found = pll_get_post( $id, pll_default_language() );
+			$main  = $found ? (int) $found : $id;
+		}
+		$main = (int) apply_filters( 'ecoproof_main_product_id', $main, $product );
+		return $main > 0 && $main !== $id && wc_get_product( $main ) ? $main : $id;
+	}
+
 	/** The stored impact, or an empty array (unset meta comes back as '', and (array) '' is not empty). */
 	private static function impact_of( $product ) {
 		$impact = $product ? $product->get_meta( self::META_IMPACT ) : '';
@@ -112,6 +134,18 @@ class EcoProof_Products {
 		if ( ! $product || ! EcoProof_Config::connected() || $product->get_parent_id() ) {
 			return;
 		}
+		$main = self::main_id( $product );
+		if ( $main !== $product->get_id() ) { // a translation: follow the main product, and make sure that one is estimated
+			$reply = self::request( array( 'action' => 'follow', 'productId' => $product->get_id(), 'name' => self::details( $product )['name'], 'mainProductId' => $main ), 15 );
+			if ( is_wp_error( $reply ) ) {
+				throw new Exception( esc_html( $reply->get_error_message() ) );
+			}
+			self::store( $product, array( 'follows' => $main ), '' );
+			if ( ! self::impact_of( wc_get_product( $main ) ) ) {
+				self::queue( $main );
+			}
+			return;
+		}
 		$details = self::details( $product );
 		$reply   = self::request( array( 'action' => 'estimate', 'product' => $details, 'force' => (bool) $force ) );
 		if ( is_wp_error( $reply ) ) {
@@ -136,6 +170,10 @@ class EcoProof_Products {
 	public static function panel() {
 		global $post;
 		$product = wc_get_product( $post->ID );
+		if ( $product && EcoProof_Config::connected() && self::main_id( $product ) !== $product->get_id() ) {
+			self::follower_panel( $product, wc_get_product( self::main_id( $product ) ) );
+			return;
+		}
 		$impact  = self::impact_of( $product );
 		$ai      = isset( $impact['ai'] ) && is_array( $impact['ai'] ) ? $impact['ai'] : null;
 		$shop    = isset( $impact['shop'] ) && is_array( $impact['shop'] ) ? $impact['shop'] : null;
@@ -223,9 +261,37 @@ class EcoProof_Products {
 		<?php
 	}
 
+	/** A translation's tab: the main product's numbers, read-only, with a link to edit them there. */
+	private static function follower_panel( WC_Product $product, WC_Product $main ) {
+		$impact  = self::impact_of( $main );
+		$numbers = ! empty( $impact['shop'] ) ? $impact['shop'] : ( $impact['ai'] ?? null );
+		?>
+		<div id="ecoproof_product_data" class="panel woocommerce_options_panel" style="padding:0 12px 12px">
+			<p>
+				<?php
+				printf(
+					/* translators: %s: link to the main-language product */
+					esc_html__( 'This is a translation. It uses the numbers of %s, the product in your main language. Edit them there.', 'ecoproof-for-woocommerce' ),
+					'<a href="' . esc_url( get_edit_post_link( $main->get_id() ) ) . '">' . esc_html( $main->get_name() ) . '</a>'
+				);
+				?>
+			</p>
+			<p><strong><?php echo $numbers ? esc_html( ! empty( $impact['shop'] ) ? __( 'Confirmed', 'ecoproof-for-woocommerce' ) : __( 'AI estimate, not confirmed yet', 'ecoproof-for-woocommerce' ) ) : esc_html__( 'Not estimated yet', 'ecoproof-for-woocommerce' ); ?></strong>
+			<?php if ( $numbers ) : ?><br><?php echo esc_html( self::summary( $numbers ) ); ?><?php endif; ?></p>
+		</div>
+		<?php
+	}
+
 	/** Saving the product: confirm/withdraw the shop's numbers, and queue an estimate when it's new or its details changed. */
 	public static function save( WC_Product $product ) {
 		if ( ! EcoProof_Config::connected() || ! isset( $_POST['ecoproof_product_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['ecoproof_product_nonce'] ) ), 'ecoproof_product' ) ) {
+			return;
+		}
+		$main = self::main_id( $product );
+		if ( $main !== $product->get_id() ) {
+			if ( (int) ( self::impact_of( $product )['follows'] ?? 0 ) !== $main ) {
+				self::queue( $product->get_id() );
+			}
 			return;
 		}
 		$impact     = self::impact_of( $product );
@@ -279,6 +345,11 @@ class EcoProof_Products {
 		}
 		$product = wc_get_product( $post_id );
 		$impact  = self::impact_of( $product );
+		if ( ! empty( $impact['follows'] ) && ( $main = wc_get_product( (int) $impact['follows'] ) ) ) {
+			/* translators: %s: main-language product name */
+			echo '<span style="color:#666">' . esc_html( sprintf( __( 'Uses %s', 'ecoproof-for-woocommerce' ), $main->get_name() ) ) . '</span><br>';
+			$impact = self::impact_of( $main );
+		}
 		$numbers = ! empty( $impact['shop'] ) ? $impact['shop'] : ( $impact['ai'] ?? null );
 		if ( ! $numbers ) {
 			echo '<span style="color:#888">' . esc_html__( 'Not estimated yet', 'ecoproof-for-woocommerce' ) . '</span>';
@@ -308,6 +379,10 @@ class EcoProof_Products {
 		foreach ( $ids as $id ) {
 			$impact = get_post_meta( $id, self::META_IMPACT, true );
 			$impact = is_array( $impact ) ? $impact : array();
+			if ( ! empty( $impact['follows'] ) ) {
+				$impact = get_post_meta( (int) $impact['follows'], self::META_IMPACT, true );
+				$impact = is_array( $impact ) ? $impact : array();
+			}
 			if ( ! empty( $impact['shop'] ) ) {
 				++$confirmed;
 			}

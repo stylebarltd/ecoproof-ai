@@ -5,7 +5,7 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 
 Every paid order earns the customer a verified eco stamp in their EcoProof passport, proven on Solana.
@@ -18,6 +18,7 @@ What each product replaces:
 
 * EcoProof's AI estimates what one unit of each product replaces, from its name, descriptions and attributes (pack size, number of washes, sizes in a set), with a one-line reason you can check. Only public product details are sent, never prices or customer data.
 * Review it on the product (Product data > EcoProof): confirm it, correct the numbers, or mark the product as not an eco product. Until you confirm, customers see the numbers as an estimate.
+* Multilingual shops: a translated product uses the numbers of the product in your main language, so you review each product once. WPML and Polylang are recognised automatically; for other setups, see `ecoproof_main_product_id` below.
 * "Estimate all products" (WooCommerce > Settings > EcoProof) estimates the whole catalogue in the background; the Products list shows each product's numbers and whether they're confirmed. A product is estimated again when its details change.
 
 Where the customer sees it (each can be switched on or off):
@@ -45,11 +46,15 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 == Developers ==
 
 * `ecoproof_stamp_html` filter: change the stamp block's HTML.
+* `ecoproof_main_product_id` filter ( $main_id, WC_Product $product ): which product a translation takes its numbers from, for translation setups other than WPML and Polylang.
 * `ecoproof_shortcode_order_id` filter: tell the shortcode which order an email builder is rendering.
 * `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof by another address than customers do (local development).
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
+
+= 1.2.0 =
+* Translations use the numbers of the product in the main language (WPML, Polylang, or the `ecoproof_main_product_id` filter).
 
 = 1.1.0 =
 * What each product replaces: AI estimates per product, reviewed and confirmed by the shop (Product data > EcoProof), "Estimate all products", and an EcoProof column in the Products list.

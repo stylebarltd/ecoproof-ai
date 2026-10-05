@@ -17,6 +17,8 @@ export type ProductNumbers = { category: Category; replaces: Replaces[]; co2PerU
 export type AiEstimate = ProductNumbers & { reason: string; confidence: number; model: string };
 export type ProductImpact = {
   productId: number; name: string;
+  /** A translation follows its main-language product: it has no numbers of its own, `effective` comes from the main product. */
+  follows: number | null;
   ai: AiEstimate | null; shop: ProductNumbers | null; confirmedAt: string | null;
   /** What orders use: the shop's confirmed numbers, else the AI estimate. */
   effective: (ProductNumbers & { source: "shop" | "ai" }) | null;
@@ -120,25 +122,40 @@ export async function estimate(p: ProductDetails): Promise<AiEstimate> {
   return { ...numbers, reason: clean(j.reason, 240), confidence: Math.max(0, Math.min(1, Number(j.confidence) || 0)), model: res.model };
 }
 
-type Row = { product_id: string; name: string; details_hash: string; ai: string | null; shop: string | null; confirmed_at: string | null };
+type Row = { product_id: string; name: string; details_hash: string; ai: string | null; shop: string | null; confirmed_at: string | null; follows: string | null };
+const COLS = "product_id, name, details_hash, ai, shop, confirmed_at, follows";
 const toImpact = (r: Row): ProductImpact => {
   const ai = r.ai ? (JSON.parse(r.ai) as AiEstimate) : null;
   const shop = r.shop ? (JSON.parse(r.shop) as ProductNumbers) : null;
   return {
-    productId: Number(r.product_id), name: r.name, ai, shop, confirmedAt: r.confirmed_at ? new Date(r.confirmed_at).toISOString() : null,
+    productId: Number(r.product_id), name: r.name, follows: r.follows ? Number(r.follows) : null, ai, shop, confirmedAt: r.confirmed_at ? new Date(r.confirmed_at).toISOString() : null,
     effective: shop ? { ...shop, source: "shop" } : ai ? { category: ai.category, replaces: ai.replaces, co2PerUnit: ai.co2PerUnit, excluded: ai.excluded, source: "ai" } : null,
   };
 };
 
 export async function getProductImpact(placeId: string, productId: number): Promise<ProductImpact | null> {
-  const r = (await query<Row>("SELECT product_id, name, details_hash, ai, shop, confirmed_at FROM product_impacts WHERE place_id=$1 AND product_id=$2", [placeId, String(productId)]))[0];
-  return r ? toImpact(r) : null;
+  return (await getProductImpacts(placeId, [productId])).get(productId) ?? null;
 }
 
+/** Stored impacts by product id. A translation gets its main product's numbers as `effective`. */
 export async function getProductImpacts(placeId: string, productIds: number[]): Promise<Map<number, ProductImpact>> {
   if (!productIds.length) return new Map();
-  const rows = await query<Row>("SELECT product_id, name, details_hash, ai, shop, confirmed_at FROM product_impacts WHERE place_id=$1 AND product_id = ANY($2)", [placeId, productIds.map(String)]);
-  return new Map(rows.map((r) => [Number(r.product_id), toImpact(r)]));
+  const rows = await query<Row>(`SELECT ${COLS} FROM product_impacts WHERE place_id=$1 AND product_id = ANY($2)`, [placeId, productIds.map(String)]);
+  const out = new Map(rows.map((r) => [Number(r.product_id), toImpact(r)]));
+  const mains = [...new Set(rows.filter((r) => r.follows).map((r) => r.follows!))].filter((id) => !out.has(Number(id)));
+  if (mains.length) for (const r of await query<Row>(`SELECT ${COLS} FROM product_impacts WHERE place_id=$1 AND product_id = ANY($2)`, [placeId, mains])) out.set(Number(r.product_id), toImpact(r));
+  for (const impact of out.values()) if (impact.follows) impact.effective = out.get(impact.follows)?.effective ?? null;
+  return out;
+}
+
+/** A translation follows its main-language product: it drops numbers of its own and uses the main product's from now on. */
+export async function followProduct(placeId: string, productId: number, name: string, mainProductId: number): Promise<ProductImpact> {
+  await query(
+    `INSERT INTO product_impacts (place_id, product_id, name, details_hash, follows) VALUES ($1,$2,$3,'',$4)
+     ON CONFLICT (place_id, product_id) DO UPDATE SET name=EXCLUDED.name, follows=EXCLUDED.follows, ai=NULL, shop=NULL, confirmed_at=NULL, details_hash='', updated_at=now()`,
+    [placeId, String(productId), clean(name, 200), String(mainProductId)],
+  );
+  return (await getProductImpacts(placeId, [productId])).get(productId)!;
 }
 
 /**
@@ -147,13 +164,13 @@ export async function getProductImpacts(placeId: string, productIds: number[]): 
  */
 export async function estimateProduct(placeId: string, p: ProductDetails, force = false): Promise<ProductImpact> {
   const hash = detailsHash(p);
-  const existing = (await query<Row>("SELECT product_id, name, details_hash, ai, shop, confirmed_at FROM product_impacts WHERE place_id=$1 AND product_id=$2", [placeId, String(p.id)]))[0];
-  if (existing && existing.ai && existing.details_hash === hash && !force) return toImpact(existing);
+  const existing = (await query<Row>(`SELECT ${COLS} FROM product_impacts WHERE place_id=$1 AND product_id=$2`, [placeId, String(p.id)]))[0];
+  if (existing && existing.ai && !existing.follows && existing.details_hash === hash && !force) return toImpact(existing);
   const ai = await estimate(p);
   const rows = await query<Row>(
     `INSERT INTO product_impacts (place_id, product_id, name, details_hash, ai) VALUES ($1,$2,$3,$4,$5)
-     ON CONFLICT (place_id, product_id) DO UPDATE SET name=EXCLUDED.name, details_hash=EXCLUDED.details_hash, ai=EXCLUDED.ai, updated_at=now()
-     RETURNING product_id, name, details_hash, ai, shop, confirmed_at`,
+     ON CONFLICT (place_id, product_id) DO UPDATE SET name=EXCLUDED.name, details_hash=EXCLUDED.details_hash, ai=EXCLUDED.ai, follows=NULL, updated_at=now()
+     RETURNING ${COLS}`,
     [placeId, String(p.id), clean(p.name, 200), hash, JSON.stringify(ai)],
   );
   return toImpact(rows[0]);
@@ -164,8 +181,8 @@ export async function confirmProduct(placeId: string, productId: number, name: s
   const shop = numbers ? normalise(numbers) : null;
   const rows = await query<Row>(
     `INSERT INTO product_impacts (place_id, product_id, name, details_hash, shop, confirmed_at) VALUES ($1,$2,$3,'',$4,$5)
-     ON CONFLICT (place_id, product_id) DO UPDATE SET shop=EXCLUDED.shop, confirmed_at=EXCLUDED.confirmed_at, updated_at=now()
-     RETURNING product_id, name, details_hash, ai, shop, confirmed_at`,
+     ON CONFLICT (place_id, product_id) DO UPDATE SET shop=EXCLUDED.shop, confirmed_at=EXCLUDED.confirmed_at, follows=NULL, updated_at=now()
+     RETURNING ${COLS}`,
     [placeId, String(productId), clean(name, 200), shop ? JSON.stringify(shop) : null, shop ? new Date().toISOString() : null],
   );
   return toImpact(rows[0]);

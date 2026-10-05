@@ -114,6 +114,7 @@ const SCHEMA = [
     ai TEXT, shop TEXT, confirmed_at TIMESTAMPTZ, updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (place_id, product_id)
   )`, // what one unit of a shop's product replaces: AI estimate (ai) and the shop's confirmed numbers (shop), see lib/productImpact.ts
+  `ALTER TABLE product_impacts ADD COLUMN IF NOT EXISTS follows TEXT`, // a translation follows its main-language product's numbers
   `CREATE TABLE IF NOT EXISTS public_passports (public_id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE)`, // share-link ids, so a device id is never published
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
   `ALTER TABLE nft_mints ADD COLUMN IF NOT EXISTS serial INTEGER`, // "Warden #0007": set once, when the NFT is minted, so it never shifts
