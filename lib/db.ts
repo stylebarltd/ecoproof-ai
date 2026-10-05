@@ -111,6 +111,11 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,
   `CREATE TABLE IF NOT EXISTS public_passports (public_id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE)`, // share-link ids, so a device id is never published
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
+  `ALTER TABLE nft_mints ADD COLUMN IF NOT EXISTS serial INTEGER`, // "Warden #0007": set once, when the NFT is minted, so it never shifts
+  // One-time backfill with the numbers shown before serials were stored (runs only while no serial exists).
+  `UPDATE nft_mints m SET serial = s.n FROM (SELECT id, ROW_NUMBER() OVER (PARTITION BY milestone ORDER BY created_at, id) AS n FROM nft_mints WHERE status <> 'merged') s
+     WHERE m.id = s.id AND NOT EXISTS (SELECT 1 FROM nft_mints WHERE serial IS NOT NULL)`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS nft_mints_serial ON nft_mints (milestone, serial) WHERE serial IS NOT NULL`,
 ];
 
 async function init(p: Pool) {

@@ -8,9 +8,9 @@ import { editionOf, onChainName, rankWebp, type RankKey } from "./milestoneRules
 /** What a passport had when it reached a milestone. Stored with the mint and shown in the NFT metadata. */
 export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticItems: number; co2Kg: number; brand: string };
 
-type MintRow = { serial?: number; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null };
+type MintRow = { serial: number | null; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null };
 
-/** `serial` numbers each rank (and each Paragon edition) in the order it was earned: "Warden #0007". */
+/** `serial` numbers each rank (and each Paragon edition) in the order it was minted: "Warden #0007". 0 until it is minted. */
 export type Nft = { id: string; milestone: number; tier: string; rank: RankKey; tierNumber: number; edition: number; serial: number; webpUrl: string; status: string; assetId: string | null; mintSignature: string | null; freezeSignature: string | null; imageUrl: string; metadataUrl: string; error: string | null };
 const toNft = (r: MintRow): Nft => ({
   id: r.id, milestone: r.milestone, tier: tierFor(r.milestone).name, rank: tierFor(r.milestone).key, tierNumber: tierFor(r.milestone).tier,
@@ -50,8 +50,14 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
   );
   const pending = await query<MintRow>("SELECT * FROM nft_mints WHERE owner_key = ANY($1) AND status='pending' ORDER BY milestone", [group]);
   for (const row of pending) {
-    // claim the row so concurrent calls cannot double-mint
-    const claimed = await query("UPDATE nft_mints SET status='minting', wallet=$2 WHERE id=$1 AND status='pending' RETURNING id", [row.id, wallet]);
+    // Claim the row so concurrent calls cannot double-mint, and give it the next serial of its rank (kept if the mint fails and is retried).
+    // Two servers claiming the same rank at once hit the unique (milestone, serial) index: that call throws and the row stays pending for the next try.
+    const claimed = await query(
+      `UPDATE nft_mints SET status='minting', wallet=$2,
+         serial = COALESCE(serial, (SELECT COALESCE(MAX(serial), 0) + 1 FROM nft_mints WHERE milestone=$3))
+       WHERE id=$1 AND status='pending' RETURNING id`,
+      [row.id, wallet, row.milestone],
+    );
     if (!claimed.length) continue;
     onMint?.(row.milestone);
     try {
@@ -69,7 +75,7 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
 export async function listNfts(passportId: string): Promise<Nft[]> {
   const group = await identityGroup(passportId);
   return (await query<MintRow>(
-    "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY milestone ORDER BY created_at, id) AS serial FROM nft_mints WHERE status <> 'merged') m WHERE owner_key = ANY($1) ORDER BY milestone",
+    "SELECT * FROM nft_mints WHERE owner_key = ANY($1) AND status <> 'merged' ORDER BY milestone",
     [group],
   )).map(toNft);
 }
