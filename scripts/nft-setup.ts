@@ -4,6 +4,7 @@ import { generateSigner } from "@metaplex-foundation/umi";
 import { createTreeV2 } from "@metaplex-foundation/mpl-bubblegum";
 import { createCollection } from "@metaplex-foundation/mpl-core";
 import { ensureFunds, umiClient, appUrl } from "../lib/nft";
+import { COLLECTION_NAME } from "../lib/milestoneRules";
 
 async function main() {
 await ensureFunds(0.3).catch((e) => console.warn("airdrop failed, continuing with current balance:", e.message));
@@ -12,7 +13,7 @@ const umi = umiClient();
 const collection = generateSigner(umi);
 await createCollection(umi, {
   collection,
-  name: "EcoProof Bee Guardians",
+  name: COLLECTION_NAME,
   uri: `${appUrl()}/api/nft/collection`,
   plugins: [
     { type: "BubblegumV2" },

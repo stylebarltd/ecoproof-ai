@@ -1,5 +1,6 @@
 import { query, type RecordRow } from "@/lib/db";
 import { AlreadyClaimedError, claimUrl, claimWithRetry, findClaimSignature } from "@/lib/claim";
+import { proofMemo } from "@/lib/solana";
 import { rateLimited } from "@/lib/ratelimit";
 
 export const maxDuration = 60;
@@ -15,7 +16,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!rec.receipt_fp) return Response.json({ error: "This older record can't be anchored automatically." }, { status: 409 });
 
   try {
-    const r = await claimWithRetry("impact", rec.receipt_fp, `ecoproof:v1:${rec.hash}`);
+    const r = await claimWithRetry("impact", rec.receipt_fp, proofMemo(rec.hash));
     await query("UPDATE records SET signature=$1, claim_address=$2 WHERE id=$3", [r.signature, r.claimAddress, id]);
     return Response.json({ signature: r.signature, claimAddress: r.claimAddress, claimUrl: claimUrl(r.claimAddress) });
   } catch (e) {

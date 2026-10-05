@@ -1,4 +1,4 @@
-import { Connection, Keypair, PublicKey, Transaction, TransactionInstruction, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
 import { createHash } from "crypto";
 import fs from "fs";
@@ -22,21 +22,8 @@ export function payerKeypair(): Keypair {
   return kp;
 }
 
-/** Anchors `ecoproof:v1:<sha256>` on Solana devnet via the Memo program. Returns the tx signature. */
-export async function anchorHash(hash: string, kind = "ecoproof:v1"): Promise<string> {
-  const conn = new Connection(RPC, "confirmed");
-  const kp = payerKeypair();
-  if ((await conn.getBalance(kp.publicKey)) < 0.01 * LAMPORTS_PER_SOL) {
-    const sig = await conn.requestAirdrop(kp.publicKey, LAMPORTS_PER_SOL);
-    await conn.confirmTransaction(sig, "confirmed");
-  }
-  const ix = new TransactionInstruction({
-    keys: [{ pubkey: kp.publicKey, isSigner: true, isWritable: true }],
-    programId: MEMO_PROGRAM,
-    data: Buffer.from(`${kind}:${hash}`, "utf8"),
-  });
-  return sendAndConfirmTransaction(conn, new Transaction().add(ix), [kp]);
-}
+/** The memo written with every proof: readable on Solana Explorer, and what verification compares against. */
+export const proofMemo = (hash: string) => `EcoProof AI proof v1: ${hash}`;
 
 export const explorerUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=${CLUSTER}`;
 

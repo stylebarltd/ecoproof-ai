@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "crypto";
 import { query, type RecordRow } from "./db";
-import { hashRecord } from "./solana";
+import { hashRecord, proofMemo } from "./solana";
 import { hashInput } from "./verify";
 import { AlreadyClaimedError, claimUrl, claimWithRetry } from "./claim";
 import { identityGroup } from "./users";
@@ -65,7 +65,7 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
   let signature: string | null = null;
   let claimAddress: string | null = null;
   try {
-    ({ signature, claimAddress } = await claimWithRetry("impact", fp, `ecoproof:v1:${row.hash}`));
+    ({ signature, claimAddress } = await claimWithRetry("impact", fp, proofMemo(row.hash)));
   } catch (e) {
     if (e instanceof AlreadyClaimedError) throw already(null, e.claimAddress);
     console.error("anchor failed; saving stamp as pending", e); // kept, and /api/records/[id]/anchor can retry it

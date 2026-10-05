@@ -22,7 +22,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   return Response.json({
     name: nftName(rank),
     symbol: "ECOPROOF",
-    description: `A soulbound EcoProof Bee Guardian. Earned by proving real eco purchases. Protects the planet.${proven}`,
+    description: `A soulbound EcoProof AI Bee Guardian. Earned by proving real eco purchases. Protects the planet.${proven}`,
     image,
     external_url: appUrl(),
     attributes: [
