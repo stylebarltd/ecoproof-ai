@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { query, type RecordRow } from "@/lib/db";
 import { getPlace, stampSvg } from "@/lib/stampPlaces";
 import { CHECK_PATH, CREAM, INK, LEAF_PATH, SAGE, TERRA_LIGHT } from "@/lib/brand";
-import { listNfts } from "@/lib/milestones";
+import { listNfts, verifiedImpact } from "@/lib/milestones";
 import { rankNfts } from "@/lib/passportView";
 import { RANKS, tierFor } from "@/lib/milestoneRules";
 import { BeeCardOg, rankArt } from "@/lib/beeCardOg";
@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const stampImg = place ? `data:image/svg+xml;base64,${Buffer.from(stampSvg(place, { labels: false })).toString("base64")}` : null;
   const [top] = rankNfts(await listNfts(r.user_id)); // the owner's highest Bee Guardian, on the same card frame as the passport
   const rank = top ? tierFor(top.milestone) : RANKS[0];
-  const bee = <BeeCardOg rank={rank} art={await rankArt(rank.key)} size={square ? 330 : 250} serial={top?.serial} edition={top?.edition} locked={!top} />;
+  const bee = <BeeCardOg rank={rank} art={await rankArt(rank.key)} size={square ? 330 : 250} serial={top?.serial} edition={top?.edition} locked={!top} impact={await verifiedImpact(r.user_id)} />;
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: CREAM, borderRadius: 28, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700, color: INK }}>{v}</div>

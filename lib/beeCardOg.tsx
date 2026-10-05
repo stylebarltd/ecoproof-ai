@@ -17,7 +17,9 @@ export async function rankArt(key: RankKey): Promise<string | null> {
   return null;
 }
 
-export function BeeCardOg({ rank, art, size, serial, edition, locked }: { rank: Tier; art: string | null; size: number; serial?: number; edition?: number; locked?: boolean }) {
+/** `impact`: the owner's verified-purchase totals, drawn under the rank once there are any. */
+export function BeeCardOg({ rank, art, size, serial, edition, locked, impact }: { rank: Tier; art: string | null; size: number; serial?: number; edition?: number; locked?: boolean; impact?: { plasticItems: number; co2Kg: number } }) {
+  const proven = !locked && impact ? [impact.plasticItems > 0 && `${impact.plasticItems} plastic${impact.plasticItems === 1 ? "" : "s"} avoided`, impact.co2Kg > 0 && `${impact.co2Kg.toFixed(1)} kg CO₂ saved`].filter(Boolean).join(" · ") : "";
   const k = size / 360;
   const label = serial ? `${rank.key === "paragon" && edition ? `Ed. ${edition} · ` : ""}#${String(serial).padStart(4, "0")}` : "";
   return (
@@ -36,6 +38,7 @@ export function BeeCardOg({ rank, art, size, serial, edition, locked }: { rank: 
           )}
         </div>
         <div style={{ display: "flex", justifyContent: "center", fontSize: 34 * k, fontWeight: 800 }}>{rank.name}</div>
+        {proven ? <div style={{ display: "flex", justifyContent: "center", margin: `${4 * k}px 0`, fontSize: 17 * k, fontWeight: 700, color: "#dcebc4" }}>{proven}</div> : null}
         <div style={{ display: "flex", justifyContent: "center", fontSize: 17 * k, fontWeight: 700, color: "#f7d27a" }}>{locked ? `Unlocks at ${rank.at} point${rank.at === 1 ? "" : "s"}` : "Soulbound Bee Guardian · on Solana"}</div>
       </div>
     </div>

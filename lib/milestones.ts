@@ -87,3 +87,18 @@ export async function afterProof(passportId: string, totals: { points: number; p
     return await mintPending(passportId, onMint);
   } catch (e) { console.error("milestone step failed", e); return []; }
 }
+
+export type VerifiedImpact = { purchases: number; plasticItems: number; co2Kg: number };
+
+/**
+ * What a person's verified purchases add up to: only order stamps carry impact (a QR or card stamp doesn't prove what was bought).
+ * Shown on their Bee Guardians, so every one of their NFTs grows with each verified purchase.
+ */
+export async function verifiedImpact(passportId: string): Promise<VerifiedImpact> {
+  const group = await identityGroup(passportId);
+  const [r] = await query<{ n: number; plastic: number | null; co2: number | null }>(
+    "SELECT COUNT(*)::int n, SUM(plastic_items)::int plastic, SUM(co2_kg)::float co2 FROM records WHERE user_id = ANY($1) AND source = 'order'",
+    [group],
+  );
+  return { purchases: r?.n ?? 0, plasticItems: r?.plastic ?? 0, co2Kg: Math.round((r?.co2 ?? 0) * 10) / 10 };
+}

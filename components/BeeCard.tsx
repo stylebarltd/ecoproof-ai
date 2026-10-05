@@ -9,7 +9,8 @@ import type { Nft } from "@/lib/milestones";
  * Earned: the artwork, rank, tier, serial (and Paragon edition), and a Solana link once minted.
  * Locked: a dimmed silhouette of the artwork and the points it unlocks at.
  */
-export default function BeeCard({ rank, nft, big, wallet }: { rank: Tier; nft?: Nft; big?: boolean; wallet?: boolean }) {
+/** `impact`: the owner's verified-purchase totals, shown on the big card once there are any. */
+export default function BeeCard({ rank, nft, big, wallet, impact }: { rank: Tier; nft?: Nft; big?: boolean; wallet?: boolean; impact?: { plasticItems: number; co2Kg: number } }) {
   const [broken, setBroken] = useState(false);
   const locked = !nft;
   const minted = nft?.status === "minted" && nft.assetId;
@@ -40,6 +41,12 @@ export default function BeeCard({ rank, nft, big, wallet }: { rank: Tier; nft?: 
         </div>
         <div className="relative text-center leading-tight">
           <div className={`font-heading ${big ? "text-xl" : "text-[13px]"}`}>{rank.name}</div>
+          {big && !locked && impact && (impact.plasticItems > 0 || impact.co2Kg > 0) && (
+            <div className="my-1.5 flex justify-center gap-1.5 text-[11px] font-semibold">
+              {impact.plasticItems > 0 && <span className="rounded-full bg-white/10 px-2 py-0.5 ring-1 ring-white/20">{impact.plasticItems} plastic{impact.plasticItems === 1 ? "" : "s"} avoided</span>}
+              {impact.co2Kg > 0 && <span className="rounded-full bg-white/10 px-2 py-0.5 ring-1 ring-white/20">{impact.co2Kg.toFixed(1)} kg CO₂ saved</span>}
+            </div>
+          )}
           {locked ? (
             <div className={`${big ? "text-xs" : "text-[10px]"} font-semibold text-[#dcebc4]`}>Unlocks at {rank.at} point{rank.at === 1 ? "" : "s"}</div>
           ) : minted ? (
