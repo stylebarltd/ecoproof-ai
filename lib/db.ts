@@ -109,6 +109,7 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,
+  `CREATE TABLE IF NOT EXISTS public_passports (public_id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE)`, // share-link ids, so a device id is never published
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
 ];
 

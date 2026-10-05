@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getPassport } from "@/lib/passport";
+import { resolvePublicId } from "@/lib/publicId";
 import { artSvg } from "@/lib/nftArt";
 import { stampSvg } from "@/lib/stampPlaces";
 import { tierFor } from "@/lib/nft";
@@ -13,9 +14,11 @@ const uri = (svg: string) => `data:image/svg+xml;base64,${Buffer.from(svg).toStr
 
 /** Share image of a passport: top NFT, tier, stamp collection and numbers. ?format=square (1080x1080) or wide (1200x630, link previews). */
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const id = decodeURIComponent((await params).id);
+  const owner = await resolvePublicId(decodeURIComponent((await params).id));
+  if (!owner) return new Response("Not found", { status: 404 });
   const square = new URL(req.url).searchParams.get("format") === "square";
-  const pass = await getPassport(id);
+  const pass = await getPassport(owner);
+  const id = pass.publicId; // the art seed and anything drawn on the card use the public id, never the device id
   const stamps = pass.totals.receipts;
   const points = pass.points; // ranks are reached by points
   const [top] = rankNfts(pass.nfts);

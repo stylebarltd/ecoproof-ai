@@ -19,6 +19,9 @@ export const hmac = (scope: string, data: string) => createHmac("sha256", secret
 
 const safeEqual = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
+/** An anonymous passport id: a random UUID made on the device (lib/clientUser.ts). Anything shorter or guessable is refused. */
+export const isDeviceId = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
 export function looksLikeWallet(id: string): boolean {
   if (!WALLET_RE.test(id)) return false;
   try { new PublicKey(id); return true; } catch { return false; }
@@ -73,5 +76,5 @@ export function resolveUser(req: Request, claimed: string | null | undefined): s
   if (s) return s.address;
   const c = (claimed ?? "").trim();
   if (c && looksLikeWallet(c)) throw new AuthError("Sign in with that wallet to use its passport.");
-  return c.slice(0, 64);
+  return isDeviceId(c) ? c : "";
 }
