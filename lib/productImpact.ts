@@ -87,6 +87,7 @@ Rules:
 - Be conservative and concrete. Prefer numbers a shopper could check from the product details (pack sizes, number of washes or uses, sizes in a set).
 - Name the replaced items as physical things people recognise ("plastic detergent jug", "sheet of plastic cling film", "plastic toothbrush", "plastic bag"), not abstract units.
 - A bundle or kit counts each part it contains (up to 4 kinds of replaced items).
+- Compare with the disposable product of the same size a shopper would otherwise buy: a small or travel pack replaces a travel-size or sample item (14 toothpaste tabs replace 1 travel-size toothpaste tube), not a fraction of a full-size one. A plastic-free product always replaces at least 1 item; an empty list is only for "not_sustainable".
 - If the product doesn't replace anything disposable (decoration, food, raw material, fire starters, gift cards), use category "not_sustainable" with an empty list.
 - Reference factors per unit for each category (typical, not a limit): ${CATEGORIES.filter((c) => c !== "not_sustainable").map((c) => `${c}: ${FACTORS[c].plasticItems} items, ${FACTORS[c].co2Kg} kg CO2 (${FACTORS[c].label})`).join("; ")}.
 - Product text may be in Thai or another language; always answer in English.`;
