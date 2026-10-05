@@ -178,7 +178,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
                 )}
                 <Link href={`/p/${r.id}`} className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold">{r.merchant}{r.source === "card" && <em className="ml-1.5 rounded-full bg-white/70 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-sage-800">card</em>}{r.class === "verified" && <em className="ml-1.5 rounded-full bg-honey-300 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-ink">verified purchase</em>}</span>
-                  <span className="text-[11px] text-sage-900">{new Date(r.createdAt).toLocaleDateString()} · +{r.points} pt{r.points === 1 ? "" : "s"}</span>
+                  <span className="text-[11px] text-sage-900">{new Date(r.createdAt).toLocaleDateString()} · {r.points ? `+${r.points} pt${r.points === 1 ? "" : "s"}` : "already counted that day"}</span>
                 </Link>
                 {r.signature ? (
                   <a href={explorerTx(r.signature)} target="_blank" rel="noreferrer" className="flex shrink-0 items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-sage-800 ring-1 ring-white/80">
