@@ -15,6 +15,6 @@ for (const [id, p] of rows) {
   md += `| ${p.name} (${id}) | ${what} | ${i.plasticItems} | ${i.co2Kg} kg | ${i.packagingG} g |\n`;
 }
 md += `\n## The per-unit factors behind these numbers\n\n| Category | Plastics | CO₂ | Packaging | Reasoning in the code |\n|---|---:|---:|---:|---|\n`;
-for (const [c, f] of Object.entries(FACTORS)) md += `| ${f.label} | ${f.plasticItems} | ${f.co2Kg} kg | ${f.packagingG} g | |\n`;
+for (const f of Object.values(FACTORS)) md += `| ${f.label} | ${f.plasticItems} | ${f.co2Kg} kg | ${f.packagingG} g | |\n`;
 fs.writeFileSync("docs/woocommerce/superbee-impact-table.md", md);
 console.log(`wrote ${rows.length} products`);
