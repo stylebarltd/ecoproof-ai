@@ -109,6 +109,11 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS auth_nonces (nonce TEXT PRIMARY KEY, used_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE TABLE IF NOT EXISTS user_links (anon_id TEXT PRIMARY KEY, wallet TEXT NOT NULL, linked_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
   `CREATE INDEX IF NOT EXISTS user_links_wallet ON user_links (wallet)`,
+  `CREATE TABLE IF NOT EXISTS product_impacts (
+    place_id TEXT NOT NULL, product_id TEXT NOT NULL, name TEXT NOT NULL, details_hash TEXT NOT NULL,
+    ai TEXT, shop TEXT, confirmed_at TIMESTAMPTZ, updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (place_id, product_id)
+  )`, // what one unit of a shop's product replaces: AI estimate (ai) and the shop's confirmed numbers (shop), see lib/productImpact.ts
   `CREATE TABLE IF NOT EXISTS public_passports (public_id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE)`, // share-link ids, so a device id is never published
   `CREATE UNIQUE INDEX IF NOT EXISTS reviews_receipt_fp ON reviews (receipt_fp) WHERE receipt_fp NOT LIKE 'demo:%'`,
   `ALTER TABLE nft_mints ADD COLUMN IF NOT EXISTS serial INTEGER`, // "Warden #0007": set once, when the NFT is minted, so it never shifts

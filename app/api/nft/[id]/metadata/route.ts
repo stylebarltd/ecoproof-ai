@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import { appUrl } from "@/lib/nft";
+import { replacesText } from "@/lib/impact";
 import { editionOf, nftName, rankImage, tierFor } from "@/lib/milestoneRules";
 import { verifiedImpact, type NftStats } from "@/lib/milestones";
 
@@ -15,9 +16,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const stats = JSON.parse(r.stats) as Partial<NftStats>;
   const image = `${appUrl()}${rankImage(rank.key)}`;
   const impact = await verifiedImpact(r.wallet ?? r.owner_key);
-  const proven = impact.plasticItems > 0 || impact.co2Kg > 0
-    ? ` Its guardian has proven ${[impact.plasticItems > 0 && `${impact.plasticItems} single-use plastic${impact.plasticItems === 1 ? "" : "s"} avoided`, impact.co2Kg > 0 && `${impact.co2Kg} kg of CO₂ saved`].filter(Boolean).join(" and ")} with verified purchases.`
-    : "";
+  const replaced = replacesText(impact.replaces, 3);
+  const proven = (replaced ? ` With verified purchases, its guardian has replaced about ${replaced}.` : "")
+    + (impact.co2Kg > 0 ? ` ${replaced ? "It has" : "With verified purchases, its guardian has"} saved ${impact.co2Kg.toFixed(1)} kg of CO₂.` : "");
   return Response.json({
     name: nftName(rank),
     symbol: "ECOPROOF",
@@ -31,7 +32,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       { trait_type: "Milestone", value: r.milestone },
       ...(rank.key === "paragon" ? [{ trait_type: "Edition", value: editionOf(r.milestone) }] : []),
       { trait_type: "Verified purchases", value: impact.purchases },
-      { trait_type: "Single-use plastics avoided", value: impact.plasticItems },
+      { trait_type: "Single-use items replaced", value: impact.plasticItems },
+      ...(impact.replaces.length ? [{ trait_type: "Replaced", value: replacesText(impact.replaces, 4) }] : []),
       { trait_type: "CO₂ saved (kg)", value: impact.co2Kg },
       { trait_type: "Soulbound", value: true },
     ],

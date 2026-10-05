@@ -43,21 +43,27 @@ class EcoProof_Stamp {
 	}
 
 	/**
-	 * "Your order avoids about 3 single-use plastics and 1.2 kg of CO₂." from EcoProof's estimate for this
-	 * order (stored when the order was sent), or '' when there is none.
+	 * "Your order replaces about 7 plastic detergent jugs and saves about 3 kg of CO₂." from the numbers EcoProof
+	 * sent back for this order (stored when the order was sent), or '' when there are none.
 	 */
 	public static function impact_sentence( WC_Order $order ) {
-		$impact  = (array) $order->get_meta( EcoProof_Orders::META_IMPACT );
-		$plastic = (int) ( $impact['plastic_items'] ?? 0 );
-		$co2     = (float) ( $impact['co2_kg'] ?? 0 );
-		$co2_txt = wc_format_decimal( $co2, 1 );
+		$impact   = (array) $order->get_meta( EcoProof_Orders::META_IMPACT );
+		$replaces = (string) ( $impact['replaces'] ?? '' );
+		$plastic  = (int) ( $impact['plastic_items'] ?? 0 );
+		$co2      = (float) ( $impact['co2_kg'] ?? 0 );
+		$co2_txt  = wc_format_decimal( $co2, 1 );
+		// What the products replace, by name: the shop's confirmed numbers or EcoProof's estimate for each product.
+		if ( '' !== $replaces && $co2 > 0 ) {
+			/* translators: 1: what the order replaces, e.g. "7 plastic detergent jugs", 2: kilograms of CO2 */
+			return sprintf( __( 'Your order replaces about %1$s. It saves about %2$s kg of CO₂.', 'ecoproof-for-woocommerce' ), $replaces, $co2_txt );
+		}
+		if ( '' !== $replaces ) {
+			/* translators: %s: what the order replaces, e.g. "7 plastic detergent jugs" */
+			return sprintf( __( 'Your order replaces about %s.', 'ecoproof-for-woocommerce' ), $replaces );
+		}
 		if ( $plastic > 0 && $co2 > 0 ) {
 			/* translators: 1: number of single-use plastic items, 2: kilograms of CO2 */
 			return sprintf( _n( 'Your order avoids about %1$d single-use plastic and %2$s kg of CO₂.', 'Your order avoids about %1$d single-use plastics and %2$s kg of CO₂.', $plastic, 'ecoproof-for-woocommerce' ), $plastic, $co2_txt );
-		}
-		if ( $plastic > 0 ) {
-			/* translators: %d: number of single-use plastic items */
-			return sprintf( _n( 'Your order avoids about %d single-use plastic.', 'Your order avoids about %d single-use plastics.', $plastic, 'ecoproof-for-woocommerce' ), $plastic );
 		}
 		if ( $co2 > 0 ) {
 			/* translators: %s: kilograms of CO2 */

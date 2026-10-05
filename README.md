@@ -117,7 +117,8 @@ npm run dev                  # http://localhost:3000
 | `APP_URL` | Public base URL. It goes into NFT metadata and claim links, so set it wherever the app is public. |
 | `SESSION_SECRET` | 32+ characters, signs wallet-sign-in sessions (required in production). |
 | `ADMIN_TOKEN` | Enables our own place setup and card generation endpoints (`x-admin-token` header). Leave unset to disable them. |
-| `ANTHROPIC_API_KEY` | Classifies products the catalogue doesn't know. Optional: without it unknown products count as "not sustainable". |
+| `ANTHROPIC_API_KEY` | Estimates what each shop product replaces (WooCommerce plugin, `lib/productImpact.ts`) and classifies products the catalogue doesn't know. Optional: without it unknown products count as "not sustainable". |
+| `PRODUCT_IMPACT_MODEL` | Optional, defaults to `claude-opus-5-5`. |
 
 Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -p 5433:5432 postgres:16-alpine`, then `DATABASE_URL=postgres://postgres:pg@localhost:5433/ecoproof`.
 

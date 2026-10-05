@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { replacesSummary, type LineItem, type Replaces } from "./impact";
 import { query } from "./db";
 import { identityGroup } from "./users";
 import { looksLikeWallet } from "./session";
@@ -88,7 +89,7 @@ export async function afterProof(passportId: string, totals: { points: number; p
   } catch (e) { console.error("milestone step failed", e); return []; }
 }
 
-export type VerifiedImpact = { purchases: number; plasticItems: number; co2Kg: number };
+export type VerifiedImpact = { purchases: number; plasticItems: number; co2Kg: number; replaces: Replaces[] };
 
 /**
  * What a person's verified purchases add up to: only order stamps carry impact (a QR or card stamp doesn't prove what was bought).
@@ -96,9 +97,14 @@ export type VerifiedImpact = { purchases: number; plasticItems: number; co2Kg: n
  */
 export async function verifiedImpact(passportId: string): Promise<VerifiedImpact> {
   const group = await identityGroup(passportId);
-  const [r] = await query<{ n: number; plastic: number | null; co2: number | null }>(
-    "SELECT COUNT(*)::int n, SUM(plastic_items)::int plastic, SUM(co2_kg)::float co2 FROM records WHERE user_id = ANY($1) AND source = 'order'",
+  const rows = await query<{ items: string; plastic_items: number | null; co2_kg: number | null }>(
+    "SELECT items, plastic_items, co2_kg FROM records WHERE user_id = ANY($1) AND source = 'order'",
     [group],
   );
-  return { purchases: r?.n ?? 0, plasticItems: r?.plastic ?? 0, co2Kg: Math.round((r?.co2 ?? 0) * 10) / 10 };
+  return {
+    purchases: rows.length,
+    plasticItems: rows.reduce((n, r) => n + (r.plastic_items ?? 0), 0),
+    co2Kg: Math.round(rows.reduce((n, r) => n + (r.co2_kg ?? 0), 0) * 10) / 10,
+    replaces: replacesSummary(rows.flatMap((r) => JSON.parse(r.items || "[]") as LineItem[])), // what the orders' products replace, added up
+  };
 }

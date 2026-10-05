@@ -155,6 +155,17 @@ class EcoProof_Settings {
 	public static function output() {
 		WC_Admin_Settings::output_fields( self::fields() );
 		if ( EcoProof_Config::connected() ) {
+			$c   = EcoProof_Products::counts();
+			$all = wp_nonce_url( admin_url( 'admin-post.php?action=ecoproof_estimate_all' ), 'ecoproof_estimate_all' );
+			echo '<h2>' . esc_html__( 'What your products replace', 'ecoproof-for-woocommerce' ) . '</h2>';
+			echo '<p>' . esc_html__( 'EcoProof\'s AI estimates what one unit of each product replaces (for example "7 plastic detergent jugs") from its name, description and attributes. Review each one on the product (Product data > EcoProof): confirm it or correct it. Until you confirm, customers see it as an estimate.', 'ecoproof-for-woocommerce' ) . '</p>';
+			/* translators: 1: products, 2: estimated, 3: confirmed */
+			echo '<p><strong>' . esc_html( sprintf( __( '%1$d products · %2$d estimated · %3$d confirmed', 'ecoproof-for-woocommerce' ), $c['products'], $c['estimated'], $c['confirmed'] ) ) . '</strong> · <a href="' . esc_url( admin_url( 'edit.php?post_type=product' ) ) . '">' . esc_html__( 'Review in the Products list', 'ecoproof-for-woocommerce' ) . '</a></p>';
+			echo '<p><a class="button" href="' . esc_url( $all ) . '">' . esc_html__( 'Estimate all products', 'ecoproof-for-woocommerce' ) . '</a> ';
+			esc_html_e( 'Runs in the background, a few seconds per product. Products already estimated are only redone when their details changed.', 'ecoproof-for-woocommerce' );
+			echo '</p>';
+		}
+		if ( EcoProof_Config::connected() ) {
 			$url = wp_nonce_url( admin_url( 'admin-post.php?action=ecoproof_test' ), 'ecoproof_test' );
 			echo '<p><a class="button" href="' . esc_url( $url ) . '">' . esc_html__( 'Test connection', 'ecoproof-for-woocommerce' ) . '</a> ';
 			esc_html_e( 'Sends a signed test message to EcoProof (save your changes first).', 'ecoproof-for-woocommerce' );
