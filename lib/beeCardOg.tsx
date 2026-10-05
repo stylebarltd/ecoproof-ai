@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { rankImage, rankSharePng, type RankKey, type Tier } from "./milestoneRules";
+import { impactParts, type Replaces } from "./impact";
 
 // The Bee Guardian collectible card for share images (next/og), drawn to match components/BeeCard.tsx.
 
@@ -18,8 +19,8 @@ export async function rankArt(key: RankKey): Promise<string | null> {
 }
 
 /** `impact`: the owner's verified-purchase totals, drawn under the rank once there are any. */
-export function BeeCardOg({ rank, art, size, serial, edition, locked, impact }: { rank: Tier; art: string | null; size: number; serial?: number; edition?: number; locked?: boolean; impact?: { plasticItems: number; co2Kg: number } }) {
-  const proven = !locked && impact ? [impact.plasticItems > 0 && `${impact.plasticItems} plastic${impact.plasticItems === 1 ? "" : "s"} avoided`, impact.co2Kg > 0 && `${impact.co2Kg.toFixed(1)} kg CO₂ saved`].filter(Boolean).join(" · ") : "";
+export function BeeCardOg({ rank, art, size, serial, edition, locked, impact }: { rank: Tier; art: string | null; size: number; serial?: number; edition?: number; locked?: boolean; impact?: { plasticItems: number; co2Kg: number; replaces?: Replaces[] } }) {
+  const proven = !locked && impact ? impactParts(impact, 1) : []; // one kind of item on the card, it is small
   const k = size / 360;
   const label = serial ? `${rank.key === "paragon" && edition ? `Ed. ${edition} · ` : ""}#${String(serial).padStart(4, "0")}` : "";
   return (
@@ -38,7 +39,11 @@ export function BeeCardOg({ rank, art, size, serial, edition, locked, impact }: 
           )}
         </div>
         <div style={{ display: "flex", justifyContent: "center", fontSize: 34 * k, fontWeight: 800 }}>{rank.name}</div>
-        {proven ? <div style={{ display: "flex", justifyContent: "center", margin: `${4 * k}px 0`, fontSize: 17 * k, fontWeight: 700, color: "#dcebc4" }}>{proven}</div> : null}
+        {proven.length ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: `${4 * k}px 0`, fontSize: 17 * k, lineHeight: 1.3, fontWeight: 700, color: "#dcebc4" }}>
+            {proven.map((line) => <div key={line} style={{ display: "flex", justifyContent: "center", textAlign: "center" }}>{line}</div>)}
+          </div>
+        ) : null}
         <div style={{ display: "flex", justifyContent: "center", fontSize: 17 * k, fontWeight: 700, color: "#f7d27a" }}>{locked ? `Unlocks at ${rank.at} point${rank.at === 1 ? "" : "s"}` : "Soulbound Bee Guardian · on Solana"}</div>
       </div>
     </div>

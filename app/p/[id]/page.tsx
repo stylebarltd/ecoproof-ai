@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { plasticsAvoided } from "@/lib/impact";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { query, type RecordRow } from "@/lib/db";
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const rec = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!rec) return {};
-  const title = rec.place_id ? `Eco stamp collected at ${rec.merchant} | EcoProof` : `${rec.co2_kg} kg CO₂ saved · ${rec.plastic_items} plastics avoided | EcoProof`;
+  const title = rec.place_id ? `Eco stamp collected at ${rec.merchant} | EcoProof` : `${rec.co2_kg} kg CO₂ saved · ${plasticsAvoided(rec.plastic_items)} | EcoProof`;
   const description = `Verified environmental impact${rec.signature ? ", anchored on Solana" : ""}. Make your impact visible with EcoProof AI.`;
   const image = `/api/card/${id}`;
   return {
@@ -48,7 +49,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
         <AnchorRetry id={rec.id} />
       )}
       <div className="grid grid-cols-3 gap-2 text-center">
-        {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "plastics avoided"], [`${t.pk ?? 0}g`, "packaging cut"]].map(([v, l]) => (
+        {[[`${(t.co2 ?? 0).toFixed(1)}kg`, "CO₂ saved"], [String(t.pl ?? 0), "single-use plastics avoided"], [`${t.pk ?? 0}g`, "packaging cut"]].map(([v, l]) => (
           <div key={l} className="rounded-2xl bg-neutral-100 p-3"><div className="font-heading text-xl">{v}</div><div className="text-xs text-neutral-600">{l}</div></div>
         ))}
       </div>

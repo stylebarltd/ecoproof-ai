@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { query } from "./db";
 import { appUrl } from "./nft";
-import { computeImpact, type Impact, type LineItem } from "./impact";
+import { computeImpact, plasticsAvoided, replacesSummary, replacesText, type Impact, type LineItem } from "./impact";
 import { matchItems } from "./order";
 import { ClaimError, claimStamp, type StampResult } from "./stamp";
 import { getPlace, type StampPlace } from "./stampPlaces";
@@ -49,17 +49,24 @@ export function parseWoo(payload: unknown): WooOrder | null {
   return { orderId, status: o.status, items };
 }
 
-export function impactLine(i: Impact): string {
+/** The verified stamp's line: what the order replaces ("Replaces about 7 plastic detergent jugs · 3 kg CO₂ saved"). */
+export function impactLine(i: Impact, items: LineItem[] = []): string {
   const parts: string[] = [];
-  if (i.plasticItems > 0) parts.push(`${i.plasticItems} single-use plastic${i.plasticItems === 1 ? "" : "s"} avoided`);
-  if (i.co2Kg > 0) parts.push(`${i.co2Kg} kg CO₂ saved`);
+  const replaces = replacesText(replacesSummary(items), 3);
+  if (replaces) parts.push(`Replaces about ${replaces}`);
+  else if (i.plasticItems > 0) parts.push(plasticsAvoided(i.plasticItems));
+  if (i.co2Kg > 0) parts.push(`${Math.round(i.co2Kg * 10) / 10} kg CO₂ saved`);
   return parts.join(" · ") || "Plastic-free order";
 }
 
 /** Paid orders: "processing" (paid, not yet shipped) and "completed" (shipped). The stamp is sent when the order is paid. */
 export const PAID_STATUSES = ["processing", "completed"];
 
-export type IngestResult = { result: "stored" | "voided" | "ignored" | "already-claimed"; impact?: { plasticItems: number; co2Kg: number; line: string } };
+/**
+ * `impact.replaces`: "7 plastic detergent jugs and 300 disposable dryer sheets" ("" when nothing). `impact.estimate`: some of the
+ * order's numbers are AI estimates the shop hasn't confirmed yet.
+ */
+export type IngestResult = { result: "stored" | "voided" | "ignored" | "already-claimed"; impact?: { plasticItems: number; co2Kg: number; line: string; replaces: string; estimate: boolean } };
 
 /**
  * Stores (or refreshes, while unclaimed) the impact of a paid order. A refund/cancel voids an unclaimed order.
@@ -79,9 +86,15 @@ export async function ingestOrder(placeId: string, w: WooOrder): Promise<IngestR
   await query(
     `INSERT INTO woo_orders (place_id, order_id, items, impact, line) VALUES ($1,$2,$3,$4,$5)
      ON CONFLICT (place_id, order_id) DO UPDATE SET status='valid', items=EXCLUDED.items, impact=EXCLUDED.impact, line=EXCLUDED.line, updated_at=now()`,
-    [placeId, w.orderId, JSON.stringify(items), JSON.stringify(impact), impactLine(impact)],
+    [placeId, w.orderId, JSON.stringify(items), JSON.stringify(impact), impactLine(impact, items)],
   );
-  return { result: "stored", impact: { plasticItems: impact.plasticItems, co2Kg: Math.round(impact.co2Kg * 10) / 10, line: impactLine(impact) } };
+  return {
+    result: "stored",
+    impact: {
+      plasticItems: impact.plasticItems, co2Kg: Math.round(impact.co2Kg * 10) / 10, line: impactLine(impact, items),
+      replaces: replacesText(replacesSummary(items), 3), estimate: items.some((i) => i.impactSource !== "shop" && i.category !== "not_sustainable"),
+    },
+  };
 }
 
 type OrderRow = { place_id: string; order_id: string; status: string; items: string; impact: string; line: string; claimed_at: string | null };

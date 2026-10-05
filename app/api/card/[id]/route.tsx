@@ -52,7 +52,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
               </div>
             ) : (
             <div style={{ display: "flex", gap: 24 }}>
-              {stat(String(r.plastic_items), "plastic avoided")}
+              {stat(String(r.plastic_items), "single-use plastics avoided")}
               {stat(`${r.co2_kg}kg`, "CO₂ saved")}
               {stat(`${r.packaging_g}g`, "packaging cut")}
             </div>

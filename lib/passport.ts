@@ -1,4 +1,5 @@
 import { query, type RecordRow } from "./db";
+import { replacesSummary, type LineItem, type Replaces } from "./impact";
 import { addressUrl, payerAddress } from "./solana";
 import { identityGroup } from "./users";
 import { publicIdFor } from "./publicId";
@@ -23,7 +24,10 @@ export type Passport = {
   points: number;
   stampsByClass: { verified: number; presence: number };
   /** Verified purchase stamps, newest first, with the order's real impact. */
-  verifiedStamps: { id: string; placeId: string | null; placeName: string; imageUrl: string | null; impactNote: string | null; plasticItems: number; co2Kg: number; createdAt: string }[];
+  /** `basis`: "shop" when the shop confirmed every counted product's numbers, "estimate" when any are estimates, null when nothing counts. */
+  verifiedStamps: { id: string; placeId: string | null; placeName: string; imageUrl: string | null; impactNote: string | null; plasticItems: number; co2Kg: number; basis: "shop" | "estimate" | null; createdAt: string }[];
+  /** What the verified purchases replace, added up per kind of item, biggest first. */
+  replaces: Replaces[];
   nextMilestone: number;
   registryUrl: string | null;
   records: { id: string; placeId: string | null; source: string | null; class: StampClass; points: number; impactNote: string | null; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
@@ -59,7 +63,14 @@ export async function getPassport(userId: string): Promise<Passport> {
   totals.plasticItems += cups.length;
   totals.packagingG += cups.length * 15;
   totals.co2Kg = Math.round(totals.co2Kg * 100) / 100;
+  const itemsOf = (r: RecordRow) => { try { return JSON.parse(r.items || "[]") as LineItem[]; } catch { return []; } };
+  const verified = stamps.filter((r) => stampClass(r.source) === "verified");
+  const basisOf = (items: LineItem[]) => {
+    const counted = items.filter((it) => it.category !== "not_sustainable");
+    return !counted.length ? null : counted.every((it) => it.impactSource === "shop") ? ("shop" as const) : ("estimate" as const);
+  };
   return {
+    replaces: replacesSummary(verified.flatMap(itemsOf)),
     userId,
     publicId: await publicIdFor(looksLikeWallet(ids[0]) ? ids[0] : userId),
     wallet: looksLikeWallet(ids[0]) ? ids[0] : null,
@@ -74,7 +85,7 @@ export async function getPassport(userId: string): Promise<Passport> {
     stampsByClass: { verified: stamps.filter((r) => stampClass(r.source) === "verified").length, presence: stamps.filter((r) => stampClass(r.source) === "presence").length },
     verifiedStamps: stamps.filter((r) => stampClass(r.source) === "verified").slice(0, 12).map((r) => ({
       id: r.id, placeId: r.place_id ?? null, placeName: r.merchant, imageUrl: r.place_id ? `/api/stamp-places/${r.place_id}/stamp` : null,
-      impactNote: r.impact_note ?? null, plasticItems: r.plastic_items ?? 0, co2Kg: r.co2_kg ?? 0, createdAt: new Date(r.created_at).toISOString(),
+      impactNote: r.impact_note ?? null, basis: basisOf(itemsOf(r)), plasticItems: r.plastic_items ?? 0, co2Kg: r.co2_kg ?? 0, createdAt: new Date(r.created_at).toISOString(),
     })),
     nextMilestone: nextMilestone(points),
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),

@@ -34,6 +34,15 @@ Shops send order emails in different ways, so each of these can be switched on o
 
 `[ecoproof_stamp part="url"]` gives only the link (for a button), `part="qr"` the QR image URL.
 
+## What each product replaces
+
+EcoProof's AI estimates what ONE unit of each product replaces ("7 plastic detergent jugs", "300 disposable dryer sheets") and the
+CO2 it saves, with a one-line reason, from the product's public details: name, descriptions, attributes, categories, weight.
+The shop reviews it on the product (Product data > EcoProof): confirm, correct, or mark as not an eco product. Orders use these
+numbers; products without them fall back to the category estimates in `lib/impact.ts`. Unconfirmed numbers are shown as an
+estimate. Every number is capped (1,000 of one kind, 2,000 in total, 30 kg CO2 per unit). Code: `lib/productImpact.ts`,
+`app/api/woo/products/[place]`, and `includes/class-ecoproof-products.php` in the plugin.
+
 ## What is sent
 
 The order id, status, product ids, names and quantities: nothing else (no customer details, no prices). The request uses

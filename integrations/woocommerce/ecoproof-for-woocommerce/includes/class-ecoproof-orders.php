@@ -115,6 +115,7 @@ class EcoProof_Orders {
 				array(
 					'plastic_items' => max( 0, (int) ( $result['impact']['plasticItems'] ?? 0 ) ),
 					'co2_kg'        => max( 0, (float) ( $result['impact']['co2Kg'] ?? 0 ) ),
+					'replaces'      => sanitize_text_field( (string) ( $result['impact']['replaces'] ?? '' ) ), // "7 plastic detergent jugs and 300 disposable dryer sheets"
 				)
 			);
 			$order->save();
@@ -133,10 +134,15 @@ class EcoProof_Orders {
 
 	/** A signed POST of a raw body to the shop's EcoProof webhook. Also used by the settings page's connection test. */
 	public static function post( $body ) {
+		return self::signed_post( '/api/woo/webhook/', $body, 8 );
+	}
+
+	/** A signed POST to one of EcoProof's shop endpoints (<path><place>). The signature is the same as the webhook's. */
+	public static function signed_post( $path, $body, $timeout ) {
 		return wp_remote_post(
-			EcoProof_Config::api_url() . '/api/woo/webhook/' . rawurlencode( EcoProof_Config::place() ),
+			EcoProof_Config::api_url() . $path . rawurlencode( EcoProof_Config::place() ),
 			array(
-				'timeout' => 8,
+				'timeout' => $timeout,
 				'headers' => array(
 					'Content-Type'           => 'application/json',
 					'X-WC-Webhook-Signature' => base64_encode( hash_hmac( 'sha256', $body, EcoProof_Config::secret(), true ) ),

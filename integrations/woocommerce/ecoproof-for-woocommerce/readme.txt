@@ -5,14 +5,20 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 
 Every paid order earns the customer a verified eco stamp in their EcoProof passport, proven on Solana.
 
 == Description ==
 
-When an order is paid, the plugin tells EcoProof which products were bought, and the customer gets a "Collect your eco stamp" button and QR code. Collecting it adds the order's real impact (single-use plastics avoided, CO2 saved) to their EcoProof passport. Stamps add up to soulbound Bee Guardian NFTs.
+When an order is paid, the plugin tells EcoProof which products were bought, and the customer gets a "Collect your eco stamp" button and QR code. Collecting it adds the order's real impact to their EcoProof passport, for example "replaces about 7 plastic detergent jugs and saves 3 kg of CO2". Stamps add up to soulbound Bee Guardian NFTs.
+
+What each product replaces:
+
+* EcoProof's AI estimates what one unit of each product replaces, from its name, descriptions and attributes (pack size, number of washes, sizes in a set), with a one-line reason you can check. Only public product details are sent, never prices or customer data.
+* Review it on the product (Product data > EcoProof): confirm it, correct the numbers, or mark the product as not an eco product. Until you confirm, customers see the numbers as an estimate.
+* "Estimate all products" (WooCommerce > Settings > EcoProof) estimates the whole catalogue in the background; the Products list shows each product's numbers and whether they're confirmed. A product is estimated again when its details change.
 
 Where the customer sees it (each can be switched on or off):
 
@@ -44,6 +50,10 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
+
+= 1.1.0 =
+* What each product replaces: AI estimates per product, reviewed and confirmed by the shop (Product data > EcoProof), "Estimate all products", and an EcoProof column in the Products list.
+* The order email names what the order replaces ("Your order replaces about 7 plastic detergent jugs").
 
 = 1.0.0 =
 * First release.
