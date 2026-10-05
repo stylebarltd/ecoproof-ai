@@ -25,6 +25,9 @@ export function payerKeypair(): Keypair {
 /** The memo written with every proof: readable on Solana Explorer, and what verification compares against. */
 export const proofMemo = (hash: string) => `EcoProof AI proof v1: ${hash}`;
 
+/** Every memo a valid proof of this hash can carry: the current one, and `ecoproof:v1:<hash>` written by proofs made before it. */
+export const proofMemos = (hash: string) => [proofMemo(hash), `ecoproof:v1:${hash}`];
+
 export const explorerUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=${CLUSTER}`;
 
 /** Reads a confirmed tx from devnet and returns its memo text, slot and block time. */
