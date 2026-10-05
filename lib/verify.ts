@@ -1,5 +1,5 @@
 import type { RecordRow } from "./db";
-import { hashRecord, readMemo } from "./solana";
+import { hashRecord, proofMemo, readMemo } from "./solana";
 import { claimAddressOf, claimUrl, isClaimed } from "./claim";
 
 /** The exact object that is hashed at creation time. Key order matters. */
@@ -19,7 +19,7 @@ export function hashInput(r: RecordRow) {
 export type Verification = {
   dataIntact: boolean; // recomputed hash matches the stored hash
   anchored: boolean; // a tx signature exists
-  onChainMatch: boolean; // memo on Solana equals ecoproof:v1:<hash>
+  onChainMatch: boolean; // memo on Solana equals proofMemo(<hash>)
   recomputedHash: string;
   storedHash: string;
   claimed: boolean | null; // receipt claim account exists on Solana (null for older records without one)
@@ -52,7 +52,7 @@ export async function verifyRecord(r: RecordRow): Promise<Verification> {
     v.slot = chain.slot;
     if (chain.blockTime) v.blockTime = new Date(chain.blockTime * 1000).toISOString();
     // Compare the on-chain memo to a hash recomputed from the data, not the stored hash.
-    v.onChainMatch = chain.memo === `ecoproof:v1:${recomputedHash}`;
+    v.onChainMatch = chain.memo === proofMemo(recomputedHash);
   } catch (e) {
     v.error = e instanceof Error ? e.message : "RPC error";
   }

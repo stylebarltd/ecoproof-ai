@@ -28,6 +28,8 @@ export const rankImage = (key: RankKey) => `/nft/${key}.png`;
 export const rankWebp = (key: RankKey) => `/nft/web/${key}.webp`;
 /** 512px PNG for share images: the og renderer cannot decode WebP. */
 export const rankSharePng = (key: RankKey) => `/nft/web/${key}.png`;
-export const nftName = (t: Tier) => `${t.name} Bee Guardian · EcoProof`;
+/** The Metaplex Core collection every Bee Guardian belongs to (set once by scripts/nft-setup.ts). */
+export const COLLECTION_NAME = "EcoProof AI Bee Guardians";
+export const nftName = (t: Tier) => `${t.name} Bee Guardian · EcoProof AI`;
 /** The name stored on-chain. Bubblegum allows 32 bytes and "·" is 2 bytes in UTF-8, which pushes three ranks to 33, so the chain gets a plain hyphen. */
 export const onChainName = (t: Tier) => `${t.name} Bee Guardian - EcoProof`;

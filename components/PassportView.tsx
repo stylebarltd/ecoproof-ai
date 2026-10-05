@@ -87,6 +87,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
             {(top ? locked : locked.slice(1)).map((r) => <BeeCard key={r.key} rank={r} />)}
           </div>
         </div>
+        {pass?.collectionUrl && <a href={pass.collectionUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline">The EcoProof AI Bee Guardians collection on Solana ↗</a>}
         {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} points={points} tier={top ? tierFor(top.milestone).name : null} /></div>}
       </Glass>
 
@@ -190,7 +191,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
               </li>
             ))}
           </ul>
-          {pass.registryUrl && <a href={pass.registryUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline">All EcoProof proofs on Solana ↗</a>}
+          {pass.registryUrl && <a href={pass.registryUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline">All EcoProof AI proofs on Solana ↗</a>}
         </Glass>
       )}
 

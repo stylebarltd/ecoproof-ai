@@ -6,7 +6,7 @@ import { publicIdFor } from "./publicId";
 import { stampDay } from "./stampPlaces";
 import { looksLikeWallet } from "./session";
 import { listNfts, type Nft } from "./milestones";
-import { nextMilestone } from "./nft";
+import { nextMilestone, nftConfig } from "./nft";
 import { pointsFor, stampClass, type StampClass } from "./stampClasses";
 
 export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
@@ -30,6 +30,8 @@ export type Passport = {
   replaces: Replaces[];
   nextMilestone: number;
   registryUrl: string | null;
+  /** The Bee Guardians collection on Solana Explorer, or null when NFTs are not set up. */
+  collectionUrl: string | null;
   records: { id: string; placeId: string | null; source: string | null; class: StampClass; points: number; impactNote: string | null; merchant: string; co2Kg: number; plasticItems: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
 
@@ -89,6 +91,7 @@ export async function getPassport(userId: string): Promise<Passport> {
     })),
     nextMilestone: nextMilestone(points),
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
+    collectionUrl: (() => { const c = nftConfig()?.collection; return c ? addressUrl(c) : null; })(),
     records: rows.slice(0, 20).map((r) => ({
       id: r.id, placeId: r.place_id ?? null, source: r.source ?? null, class: stampClass(r.source), points: counted.has(r.id) ? pointsFor(r.source) : 0, impactNote: r.impact_note ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
       verified: !!r.signature, signature: r.signature, createdAt: new Date(r.created_at).toISOString(),
