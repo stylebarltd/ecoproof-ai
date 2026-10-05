@@ -56,7 +56,7 @@ export async function signInWith(wallet: WalletInfo): Promise<string> {
 }
 
 export async function linkDevicePassport(anonUserId: string) {
-  return post("/api/auth/link", { anonUserId }) as Promise<{ linked: boolean; receipts: number; reviews: number }>;
+  return post("/api/auth/link", { anonUserId }) as Promise<{ linked: boolean; receipts: number }>;
 }
 
 export async function signOut() {

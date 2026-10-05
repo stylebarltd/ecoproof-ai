@@ -28,7 +28,6 @@ export async function POST(req: Request) {
   }
 
   const [r] = await query<{ n: number }>("SELECT COUNT(*)::int n FROM records WHERE user_id=$1", [anon]);
-  const [v] = await query<{ n: number }>("SELECT COUNT(*)::int n FROM reviews WHERE user_id=$1", [anon]);
   await mintPending(s.address).catch((e) => console.error("mint after link failed", e)); // NFTs earned before a wallet existed
-  return Response.json({ linked: true, receipts: r?.n ?? 0, reviews: v?.n ?? 0, alreadyLinked: !!existing });
+  return Response.json({ linked: true, receipts: r?.n ?? 0, alreadyLinked: !!existing });
 }

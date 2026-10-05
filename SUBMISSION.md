@@ -61,7 +61,7 @@ I'm not a hypothetical founder. I run SuperBee, a certified B Corp eco brand, so
 - **WooCommerce** was tested end to end on a local staging shop (completed order, signed webhook, QR in the order email, claim, stamp with the real impact line). It is not installed on the live SuperBee shop yet.
 - **Honest limits:** only the verified-order door proves a purchase; QR and card stamps are generic. GPS checks stop casual abuse but can be spoofed. Impact figures are estimates from a hand-built factor table. Self-serve places are not independently vetted: the map's "verified" means claimed and set up on EcoProof. NFTs are on devnet and may not show in every wallet.
 - **Removed on purpose:** an earlier version scanned receipt photos with AI. We replaced it because the proof should come from the shop, not from a customer photo.
-- **Roadmap:** marketplace order emails (Amazon, Shopee, Lazada) with DKIM verification; Shopify; owner dashboard and editing; on-chain brand certification (for example B Corp); independent vetting of places; mainnet.
+- **Roadmap:** marketplace order emails (Amazon, Shopee, Lazada) with DKIM verification; Shopify; owner dashboard and editing; rate your purchase (online shop or local coffee shop, backed by the order or stamp); on-chain brand certification (for example B Corp); independent vetting of places; mainnet.
 
 ---
 
@@ -105,5 +105,6 @@ I'm not a hypothetical founder. I run SuperBee, a certified B Corp eco brand, so
 1. Roll out the WooCommerce door on the live SuperBee shop, then Shopify
 2. Marketplace order emails (Amazon, Shopee, Lazada) with DKIM verification
 3. Owner dashboard: edit places, see stamp counts, manage cards
-4. Independent vetting of places, abuse tools
-5. Mainnet
+4. Rate your purchase: review the online shop or local coffee shop you bought from, backed by the order or stamp that proves it (one review per purchase, anchored on Solana)
+5. Independent vetting of places, abuse tools
+6. Mainnet

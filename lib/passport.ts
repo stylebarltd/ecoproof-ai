@@ -9,7 +9,7 @@ import { listNfts, type Nft } from "./milestones";
 import { nextMilestone, nftConfig } from "./nft";
 import { pointsFor, stampClass, type StampClass } from "./stampClasses";
 
-export type Totals = { byoCups: number; reviews: number; receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
+export type Totals = { receipts: number; co2Kg: number; plasticItems: number; packagingG: number; sustainableItems: number };
 export type Passport = {
   userId: string;
   /** The id for share links (never the device id, which acts as the anonymous passport's password). */
@@ -38,8 +38,6 @@ export type Passport = {
 export async function getPassport(userId: string): Promise<Passport> {
   const ids = await identityGroup(userId);
   const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id = ANY($1) ORDER BY created_at DESC", [ids]);
-  const rev = await query<{ byo_cup: boolean; created_at: string }>("SELECT byo_cup, created_at FROM reviews WHERE user_id = ANY($1)", [ids]);
-  const cups = rev.filter((r) => r.byo_cup);
   // A place QR gives one stamp per person per day. Devices that collected stamps before they were linked to the same wallet
   // would otherwise double up, so only the first QR stamp per place per day counts. Every number shown (points, stamp counts,
   // the per-place ×N bubble) uses only the stamps that count; the proof list still shows every record (a duplicate earns 0 points).
@@ -53,17 +51,13 @@ export async function getPassport(userId: string): Promise<Passport> {
   }).reverse();
   const counted = new Set(stamps.map((r) => r.id));
   const points = stamps.reduce((n, r) => n + pointsFor(r.source), 0);
-  const totals: Totals = { byoCups: cups.length, reviews: rev.length, receipts: stamps.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
+  const totals: Totals = { receipts: stamps.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
   for (const r of stamps) {
     totals.co2Kg += r.co2_kg ?? 0;
     totals.plasticItems += r.plastic_items ?? 0;
     totals.packagingG += r.packaging_g ?? 0;
     totals.sustainableItems += r.sustainable_items ?? 0;
   }
-  // Each bring-your-own-cup visit avoids one disposable cup (~15 g, ~0.1 kg CO2).
-  totals.co2Kg += cups.length * 0.1;
-  totals.plasticItems += cups.length;
-  totals.packagingG += cups.length * 15;
   totals.co2Kg = Math.round(totals.co2Kg * 100) / 100;
   const itemsOf = (r: RecordRow) => { try { return JSON.parse(r.items || "[]") as LineItem[]; } catch { return []; } };
   const verified = stamps.filter((r) => stampClass(r.source) === "verified");
