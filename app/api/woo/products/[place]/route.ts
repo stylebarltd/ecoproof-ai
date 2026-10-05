@@ -1,7 +1,7 @@
 import { getPlace } from "@/lib/stampPlaces";
 import { verifyWebhook } from "@/lib/woo";
 import { rateLimited } from "@/lib/ratelimit";
-import { confirmProduct, estimateProduct, getProductImpacts, type ProductDetails } from "@/lib/productImpact";
+import { confirmProduct, estimateProduct, followProduct, getProductImpacts, type ProductDetails } from "@/lib/productImpact";
 
 export const maxDuration = 60;
 
@@ -10,6 +10,7 @@ export const maxDuration = 60;
  * HMAC-SHA256 of the raw body with the place's secret). Only public product details arrive: no prices, no customer data.
  *   { action: "estimate", product: ProductDetails, force?: true }  -> the product's impact (AI estimate made if needed)
  *   { action: "confirm", productId, name, numbers | null }         -> the shop confirms or corrects (null: back to the estimate)
+ *   { action: "follow", productId, name, mainProductId }           -> a translation uses its main-language product's numbers
  *   { action: "get", productIds: number[] }                        -> stored impacts
  */
 export async function POST(req: Request, { params }: { params: Promise<{ place: string }> }) {
@@ -30,6 +31,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ place: 
     if (!Number.isInteger(productId) || productId <= 0) return Response.json({ error: "productId required" }, { status: 400 });
     const numbers = b.numbers && typeof b.numbers === "object" ? (b.numbers as Record<string, unknown>) : null;
     return Response.json({ impact: await confirmProduct(place.id, productId, String(b.name ?? ""), numbers && { category: numbers.category, replaces: numbers.replaces, co2PerUnit: numbers.co2PerUnit, excluded: numbers.excluded }) });
+  }
+
+  if (b.action === "follow") {
+    const productId = Number(b.productId), mainProductId = Number(b.mainProductId);
+    if (![productId, mainProductId].every((n) => Number.isInteger(n) && n > 0) || productId === mainProductId) return Response.json({ error: "productId and a different mainProductId required" }, { status: 400 });
+    return Response.json({ impact: await followProduct(place.id, productId, String(b.name ?? ""), mainProductId) });
   }
 
   if (b.action === "estimate") {

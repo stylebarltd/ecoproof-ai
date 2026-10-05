@@ -10,7 +10,7 @@ Nothing here has been installed on the live shop. Everything below was prepared 
 ## Already prepared (nothing installed)
 - **Install kit** for whoever has the shop admin: `npx tsx scripts/superbee-kit.ts https://ecoproof.superbee.me <ADMIN_TOKEN>` writes `superbee-install-kit/` (git-ignored, contains the webhook secret): step-by-step `README.txt`, webhook settings, snippet A and snippet B. Both snippets are syntax-checked with PHP 8.3.
 - **Wiring check from your computer, without touching the shop:** `npx tsx scripts/woo-selftest.ts https://ecoproof.superbee.me <secret> 44229` sends a signed ping, a wrong-secret request (must be refused) and one fake completed order, then prints the customer link it would produce. It stores one harmless, never-claimed `SELFTEST-...` order.
-- **Impact review:** `superbee-impact-table.md` lists what every product will claim to customers, so the numbers can be approved before launch (regenerate with `npx tsx scripts/superbee-impact-table.ts`).
+- **Impact review:** done in wp-admin with the EcoProof plugin (1.1+): "Estimate all products" on WooCommerce > Settings > EcoProof, then review and confirm each product (Product data > EcoProof, or the EcoProof column in the Products list). Thai products follow their English original.
 
 ## The two things that can go wrong (find out first, 10 minutes in wp-admin)
 1. **Which email is the customer's "order completed" mail?** Look at WooCommerce → Settings → Emails, and at FunnelKit → Automations.
