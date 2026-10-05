@@ -24,6 +24,7 @@ class EcoProof_Orders {
 	const RETRY_HOOK   = 'ecoproof_send_order';
 	const MAX_ATTEMPTS = 6;
 	const META_SENT    = '_ecoproof_sent_status';
+	const META_IMPACT  = '_ecoproof_impact';
 
 	/** Statuses that void an uncollected stamp. */
 	const VOID_STATUSES = array( 'refunded', 'cancelled', 'failed' );
@@ -107,6 +108,17 @@ class EcoProof_Orders {
 
 		$outcome = is_array( $result ) && isset( $result['result'] ) ? (string) $result['result'] : 'ok';
 		self::log( sprintf( 'Order %d (%s): %s', $order->get_id(), $status, $outcome ) );
+		// EcoProof's estimate of what the order avoids, for the stamp block ("Your order avoids about ...").
+		if ( 'stored' === $outcome && isset( $result['impact'] ) && is_array( $result['impact'] ) ) {
+			$order->update_meta_data(
+				self::META_IMPACT,
+				array(
+					'plastic_items' => max( 0, (int) ( $result['impact']['plasticItems'] ?? 0 ) ),
+					'co2_kg'        => max( 0, (float) ( $result['impact']['co2Kg'] ?? 0 ) ),
+				)
+			);
+			$order->save();
+		}
 		if ( $order->get_meta( self::META_SENT ) !== $status ) {
 			$order->update_meta_data( self::META_SENT, $status );
 			if ( 'stored' === $outcome ) {

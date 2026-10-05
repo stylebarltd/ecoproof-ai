@@ -17,7 +17,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ place: 
   const order = parseWoo(payload);
   if (!order) return Response.json({ ok: true, result: "ignored" });
   try {
-    return Response.json({ ok: true, order: order.orderId, result: await ingestOrder(place.id, order) });
+    return Response.json({ ok: true, order: order.orderId, ...(await ingestOrder(place.id, order)) }); // impact: totals only, no customer data
   } catch (e) {
     console.error("woo ingest failed", e); // 500 so WooCommerce retries
     return Response.json({ error: "Could not process the order" }, { status: 500 });
