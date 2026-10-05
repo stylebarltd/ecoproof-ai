@@ -42,7 +42,7 @@ export async function mintSoulbound({ owner, name, uri }: MintInput): Promise<Mi
 
   const minted = await mintV2(umi, {
     leafOwner, merkleTree, coreCollection,
-    metadata: { name, uri, sellerFeeBasisPoints: 0, collection: some(coreCollection), creators: [] },
+    metadata: { name, symbol: "ECOPROOF", uri, sellerFeeBasisPoints: 0, collection: some(coreCollection), creators: [] }, // symbol on chain too: Explorer shows that one, not the JSON metadata's
   }).sendAndConfirm(umi, { confirm: { commitment: "finalized" } });
   const mintSignature = base58.deserialize(minted.signature)[0];
 
