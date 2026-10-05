@@ -4,7 +4,7 @@ Live app: https://ecoproof.superbee.me
 Code: https://github.com/stylebarltd/ecoproof-ai
 Chain: Solana devnet (proofs and soulbound compressed NFTs)
 
-Tagline: **"I'm eco — and I have proof."** EcoProof turns a scan into a stamp in an eco passport, every stamp is proven on Solana, and enough stamps unlock a soulbound Eco Warrior NFT. Brands get new customers through the proof their customers share.
+Tagline: **"I'm eco — and I have proof."** EcoProof turns a scan into a stamp in an eco passport, every stamp is proven on Solana, and enough stamps unlock a soulbound Bee Guardian NFT. Brands get new customers through the proof their customers share.
 
 ---
 
@@ -13,14 +13,14 @@ Tagline: **"I'm eco — and I have proof."** EcoProof turns a scan into a stamp 
 Chain: **Solana**. Category: **Consumer / Climate**. Mobile-focused: **yes**, a mobile-first PWA built around scanning, tapping links, mobile wallets and sharing.
 
 ### Brief description (≤500 chars)
-"I'm eco — and I have proof." EcoProof turns your real sustainable purchases into a shareable eco passport. Scan a QR or tap a link after an eco purchase and collect a stamp from that brand or café, each one anchored on Solana so it can't be edited or reused. Hit milestones and mint a soulbound eco-warrior NFT. Show the world you actually walk the talk. And because customers love showing it off, brands get real, verified social proof that brings new ones in.
+"I'm eco — and I have proof." EcoProof turns your real sustainable purchases into a shareable eco passport. Scan a QR or tap a link after an eco purchase and collect a stamp from that brand or café, each one anchored on Solana so it can't be edited or reused. Hit milestones and mint a soulbound Bee Guardian NFT. Show the world you actually walk the talk. And because customers love showing it off, brands get real, verified social proof that brings new ones in.
 
 *(462 chars)*
 
 ### What are you building and who is it for? (≤1000 chars)
 Lots of people think of themselves as eco-conscious but have nothing to show for it. EcoProof gives them proof.
 
-After a sustainable purchase you scan a QR or tap a link, and a "stamp" lands in your personal eco passport — each one anchored on Solana, so it's tamper-proof and can only be used once. Stamps come from anywhere: an online order, a card in your parcel, a café counter. Collect enough and you mint a soulbound "eco warrior" NFT. Your passport fills with real brand stamps and badges, and becomes a gorgeous card you share on social: "I'm eco, and here's the proof."
+After a sustainable purchase you scan a QR or tap a link, and a "stamp" lands in your personal eco passport — each one anchored on Solana, so it's tamper-proof and can only be used once. Stamps come from anywhere: an online order, a card in your parcel, a café counter. Collect enough and you mint a soulbound Bee Guardian NFT, from Sentinel up to Paragon. Your passport fills with real brand stamps and badges, and becomes a gorgeous card you share on social: "I'm eco, and here's the proof."
 
 It's for conscious shoppers who want their values to be visible and rewarded. And it's for sustainable brands — like our showcase brand SuperBee, a certified B Corp — because customers proudly broadcasting verified stamps is the most credible marketing there is. Customers want the status; brands get the growth. That's the engine.
 
@@ -36,12 +36,12 @@ Why now: Solana means we can anchor every stamp and mint collectible rewards (co
 *(853 chars)*
 
 ### What technologies are you using or integrating with? (≤400 chars)
-Next.js (App Router), React and Tailwind on Vercel. Solana anchors every stamp as an on-chain proof and mints soulbound compressed NFTs via Metaplex Bubblegum. Code-drawn generative SVG gives each wallet its own eco warrior. Anthropic's Claude API maps unknown products to impact. PostgreSQL (Neon) for passports and stamps. WooCommerce webhooks for brand onboarding. Dynamic share cards via next/og.
+Next.js (App Router), React and Tailwind on Vercel. Solana anchors every stamp as an on-chain proof and mints soulbound compressed NFTs via Metaplex Bubblegum. Five Bee Guardian ranks, each with its own artwork, served as standard Metaplex metadata. Anthropic's Claude API maps unknown products to impact. PostgreSQL (Neon) for passports and stamps. WooCommerce webhooks for brand onboarding. Dynamic share cards via next/og.
 
 *(400 chars)*
 
 ### How does your product use these chains? (Solana, ≤500 chars)
-Solana is the trust layer. Every valid claim writes a proof on-chain, so each stamp is a tamper-proof, publicly verifiable record, and a claim account on Solana makes each code or order usable only once. At milestones we mint soulbound compressed NFTs (Metaplex Bubblegum) as eco-warrior badges, costing fractions of a cent so it scales to every customer. Solana does the proving, not the paying.
+Solana is the trust layer. Every valid claim writes a proof on-chain, so each stamp is a tamper-proof, publicly verifiable record, and a claim account on Solana makes each code or order usable only once. At milestones we mint soulbound compressed NFTs (Metaplex Bubblegum) as Bee Guardian badges, costing fractions of a cent so it scales to every customer. Solana does the proving, not the paying.
 
 *(396 chars)*
 
@@ -76,11 +76,11 @@ I'm not a hypothetical founder. I run SuperBee, a certified B Corp eco brand, so
 | Time | On screen | Say |
 |---|---|---|
 | 0:00 | Open the app: the logo splash fades into the passport | "Sustainable brands can't easily show that real people chose them. EcoProof turns every scan into a stamp, and every stamp is proven on Solana." |
-| 0:10 | Passport hero: Seedling NFT, stamp collection (2 stamps), progress "2 stamps, 1 to Sprout" | "This is my eco passport. Two stamps, and one more unlocks my next Eco Warrior." |
+| 0:10 | Passport hero: Sentinel NFT, stamp collection (2 stamps), progress "2 points · 1 to Warden" | "This is my eco passport. Two stamps, and one more unlocks my next Bee Guardian." |
 | 0:20 | Scan the Demo Restaurant QR (or open the link) → the claim page → **Collect stamp** | "A restaurant puts this QR on the counter. I scan it." |
 | 0:28 | The checklist runs: checking, writing the proof to Solana, saving, updating progress, minting your NFT | "Right now it's writing a proof to Solana, saving it to my passport, and since this is my third stamp, minting a collectible." |
-| 0:50 | Done: "Stamp collected", Sprout NFT; tap *See the proof on Solana* → Explorer | "Every stamp has a public, timestamped proof. And that scan can never be reused, because Solana won't create the same claim account twice." |
-| 1:05 | Passport: Sprout is now the hero (larger), Seedling beside it; tap the NFT → Explorer | "My new Sprout is soulbound: I can't sell it, I can only earn it. Higher tiers look different, so it visibly levels up." |
+| 0:50 | Done: "Stamp collected", Warden NFT; tap *See the proof on Solana* → Explorer | "Every stamp has a public, timestamped proof. And that scan can never be reused, because Solana won't create the same claim account twice." |
+| 1:05 | Passport: Warden is now the hero (larger), Sentinel beside it, higher ranks as silhouettes; tap the NFT → Explorer | "My new Warden is soulbound: I can't sell it, I can only earn it. Every rank is a different Bee Guardian, so it visibly levels up." |
 | 1:15 | Tap **Share my passport** → the image with the NFT, stamps and numbers | "This image is what I post. It links back to my live passport, so every share brings the brand new customers." |
 | 1:25 | The SuperBee order-completed email → tap **Collect my stamp** → claim page "Your order: 110 single-use plastics avoided" | "For online shops it works from the order email. This one is a real WooCommerce order, so the stamp carries the order's real impact. Only this door proves the order happened." |
 | 1:40 | Collect → the stamp appears in the proof trail tagged *verified order* | "Cards in a parcel work too, on Amazon or Shopee, with no shop code, but those are generic stamps." |

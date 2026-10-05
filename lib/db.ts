@@ -67,7 +67,7 @@ const SCHEMA = [
   `CREATE UNIQUE INDEX IF NOT EXISTS records_receipt_fp ON records (receipt_fp) WHERE receipt_fp IS NOT NULL`,
   `CREATE TABLE IF NOT EXISTS nft_mints (
     id TEXT PRIMARY KEY, owner_key TEXT NOT NULL, milestone INTEGER NOT NULL,
-    status TEXT NOT NULL DEFAULT 'pending', -- pending | minting | minted
+    status TEXT NOT NULL DEFAULT 'pending', -- pending | minting | minted | merged (a linked device's duplicate of a milestone the wallet already has)
     stats TEXT NOT NULL, svg TEXT, wallet TEXT, asset_id TEXT, mint_signature TEXT, freeze_signature TEXT, error TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(), minted_at TIMESTAMPTZ,
     UNIQUE (owner_key, milestone)

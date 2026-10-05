@@ -3,13 +3,18 @@ import { query } from "./db";
 import { identityGroup } from "./users";
 import { looksLikeWallet } from "./session";
 import { appUrl, mintSoulbound, nftConfig, reachedMilestones, tierFor } from "./nft";
-import { artSvg, type NftStats } from "./nftArt";
+import { editionOf, onChainName, rankWebp, type RankKey } from "./milestoneRules";
 
-type MintRow = { id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null };
+/** What a passport had when it reached a milestone. Stored with the mint and shown in the NFT metadata. */
+export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticItems: number; co2Kg: number; brand: string };
 
-export type Nft = { id: string; milestone: number; tier: string; status: string; assetId: string | null; mintSignature: string | null; freezeSignature: string | null; imageUrl: string; metadataUrl: string; error: string | null };
+type MintRow = { serial?: number; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null };
+
+/** `serial` numbers each rank (and each Paragon edition) in the order it was earned: "Warden #0007". */
+export type Nft = { id: string; milestone: number; tier: string; rank: RankKey; tierNumber: number; edition: number; serial: number; webpUrl: string; status: string; assetId: string | null; mintSignature: string | null; freezeSignature: string | null; imageUrl: string; metadataUrl: string; error: string | null };
 const toNft = (r: MintRow): Nft => ({
-  id: r.id, milestone: r.milestone, tier: tierFor(r.milestone).name, status: r.status, assetId: r.asset_id,
+  id: r.id, milestone: r.milestone, tier: tierFor(r.milestone).name, rank: tierFor(r.milestone).key, tierNumber: tierFor(r.milestone).tier,
+  edition: editionOf(r.milestone), serial: Number(r.serial ?? 0), webpUrl: rankWebp(tierFor(r.milestone).key), status: r.status, assetId: r.asset_id,
   mintSignature: r.mint_signature, freezeSignature: r.freeze_signature,
   imageUrl: `${appUrl()}/api/nft/${r.id}/image`, metadataUrl: `${appUrl()}/api/nft/${r.id}/metadata`, error: r.error,
 });
@@ -36,6 +41,13 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
   const group = await identityGroup(passportId);
   const wallet = looksLikeWallet(group[0]) ? group[0] : null;
   if (!wallet || !nftConfig()) return listNfts(passportId);
+  // Devices that earned a milestone before they were linked each hold a row for it; the wallet gets one NFT per milestone, the rest are merged.
+  await query(
+    `UPDATE nft_mints m SET status='merged' WHERE owner_key = ANY($1) AND status='pending'
+       AND EXISTS (SELECT 1 FROM nft_mints o WHERE o.owner_key = ANY($1) AND o.milestone = m.milestone AND o.status <> 'merged'
+                   AND (o.status IN ('minting','minted') OR (o.created_at, o.id) < (m.created_at, m.id)))`,
+    [group],
+  );
   const pending = await query<MintRow>("SELECT * FROM nft_mints WHERE owner_key = ANY($1) AND status='pending' ORDER BY milestone", [group]);
   for (const row of pending) {
     // claim the row so concurrent calls cannot double-mint
@@ -43,9 +55,8 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
     if (!claimed.length) continue;
     onMint?.(row.milestone);
     try {
-      const stats = JSON.parse(row.stats) as NftStats;
-      await query("UPDATE nft_mints SET svg=$2 WHERE id=$1", [row.id, artSvg({ ...stats, seed: wallet })]);
-      const out = await serial(() => mintSoulbound({ owner: wallet, name: `Eco ${tierFor(row.milestone).name} · ${row.milestone === 1 ? "1 stamp" : `${row.milestone} stamps`}`.slice(0, 32), uri: `${appUrl()}/api/nft/${row.id}/metadata` }));
+      // The artwork is a static file per rank, referenced from the metadata JSON: nothing is generated here, so artwork can never fail a mint.
+      const out = await serial(() => mintSoulbound({ owner: wallet, name: onChainName(tierFor(row.milestone)), uri: `${appUrl()}/api/nft/${row.id}/metadata` }));
       await query("UPDATE nft_mints SET status='minted', asset_id=$2, mint_signature=$3, freeze_signature=$4, error=NULL, minted_at=now() WHERE id=$1", [row.id, out.assetId, out.mintSignature, out.freezeSignature]);
     } catch (e) {
       console.error("nft mint failed", e);
@@ -57,7 +68,10 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
 
 export async function listNfts(passportId: string): Promise<Nft[]> {
   const group = await identityGroup(passportId);
-  return (await query<MintRow>("SELECT * FROM nft_mints WHERE owner_key = ANY($1) ORDER BY milestone", [group])).map(toNft);
+  return (await query<MintRow>(
+    "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY milestone ORDER BY created_at, id) AS serial FROM nft_mints WHERE status <> 'merged') m WHERE owner_key = ANY($1) ORDER BY milestone",
+    [group],
+  )).map(toNft);
 }
 
 /** After any valid proof: record the milestones the passport has now reached and mint those it can. A failed mint never fails the claim. */
