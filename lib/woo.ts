@@ -7,7 +7,7 @@ import { ClaimError, claimStamp, type StampResult } from "./stamp";
 import { getPlace, type StampPlace } from "./stampPlaces";
 import { wooSnippet } from "./wooSnippet";
 
-// Premium door: WooCommerce's built-in webhook sends the completed order here; the shop's order email carries a signed link
+// Premium door: the shop sends each paid order here (WooCommerce's webhook, or the shop's own plugin in the same signed format); the shop's order email carries a signed link
 // (and QR) to claim it. Only this door proves a real order happened, so only its stamp carries a real impact line.
 // The brand secret (stamp_places.secret) both authenticates webhooks (X-WC-Webhook-Signature) and signs the claim links.
 
@@ -56,7 +56,10 @@ export function impactLine(i: Impact): string {
   return parts.join(" · ") || "Plastic-free order";
 }
 
-/** Stores (or refreshes, while unclaimed) the impact of a completed order. A refund/cancel voids an unclaimed order. */
+/** Paid orders: "processing" (paid, not yet shipped) and "completed" (shipped). The stamp is sent when the order is paid. */
+export const PAID_STATUSES = ["processing", "completed"];
+
+/** Stores (or refreshes, while unclaimed) the impact of a paid order. A refund/cancel voids an unclaimed order. */
 export async function ingestOrder(placeId: string, w: WooOrder): Promise<"stored" | "voided" | "ignored" | "already-claimed"> {
   const existing = (await query<{ claimed_at: string | null }>("SELECT claimed_at FROM woo_orders WHERE place_id=$1 AND order_id=$2", [placeId, w.orderId]))[0];
   if (existing?.claimed_at) return "already-claimed";
@@ -64,7 +67,7 @@ export async function ingestOrder(placeId: string, w: WooOrder): Promise<"stored
     if (existing) await query("UPDATE woo_orders SET status='void', updated_at=now() WHERE place_id=$1 AND order_id=$2", [placeId, w.orderId]);
     return existing ? "voided" : "ignored";
   }
-  if (w.status !== "completed" || !w.items.length) return "ignored";
+  if (!PAID_STATUSES.includes(w.status) || !w.items.length) return "ignored";
   const matched = await matchItems({ brandId: placeId, orderId: w.orderId, items: w.items });
   const items: LineItem[] = matched.map(({ source: _s, ...li }) => li);
   const impact = computeImpact(items);

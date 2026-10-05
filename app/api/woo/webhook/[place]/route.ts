@@ -3,7 +3,7 @@ import { getPlace } from "@/lib/stampPlaces";
 
 /**
  * WooCommerce's built-in webhook (Settings > Advanced > Webhooks, topic "Order updated") delivers orders here.
- * Authenticated by X-WC-Webhook-Signature = base64(HMAC-SHA256(raw body, brand secret)). Only completed orders become claimable.
+ * Authenticated by X-WC-Webhook-Signature = base64(HMAC-SHA256(raw body, brand secret)). Only paid orders (processing or completed) become claimable.
  * Replies 200 for anything valid-but-irrelevant: Woo disables a webhook after repeated non-2xx replies.
  */
 export async function POST(req: Request, { params }: { params: Promise<{ place: string }> }) {
