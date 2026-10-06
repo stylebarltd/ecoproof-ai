@@ -64,7 +64,30 @@ The timeline was very short. I came up with the idea at the ideathon on Friday a
 
 ---
 
-## Demo script (about 2 minutes, phone screen recording)
+## Demo video script (Loom, under 2 minutes, phone screen recording)
+
+Goal: one user, one loop (scan, stamp, proof). Simple words, no jargon. The main flow is a verified online order, because it is the one door that proves a purchase and shows real impact.
+
+**Before recording**
+- Fresh browser profile and a wallet connected in the app, with no stamps, so the order alone unlocks the first Bee Guardian live (a verified order is 5 points).
+- Have the order-completed email from the shop ready on a second screen, with its QR. Keep Solana Explorer open in a second tab.
+- The paying wallet `7mczVi8f1MX8Z61q2ezdMcku3N2XpG1fHHbDz136rWnt` needs devnet SOL.
+- Add one real number in your voice if you have it (places signed up, stamps collected).
+
+| Time | On screen | Say |
+|---|---|---|
+| 0:00 | You, or the logo, then the empty passport | "I'm Lutz. I run SuperBee, a certified B Corp eco brand, and I'm building EcoProof full-time. People care about eco choices, but they have nothing to show for them, and nobody can check." |
+| 0:12 | The order-completed email with the QR | "I just bought from an online eco shop. In the order email there's a QR code." |
+| 0:20 | Scan the QR, then the claim page: "Your order: 110 single-use plastics avoided", then **Collect stamp** | "It knows my real order and what it saved. I tap Collect." |
+| 0:30 | The checklist runs: proof on Solana, saving, minting | "It's writing the proof to Solana and saving it to my passport. Because this stamp is a verified purchase, it also unlocks my first Bee Guardian." (Keep talking through the 10 to 15 seconds.) |
+| 0:55 | "Stamp collected", the NFT, then **Verify on-chain** to Explorer | "Every stamp has a public, timestamped proof, and an order can't be used twice." |
+| 1:10 | Passport with the NFT as hero, then **Share my passport** | "I can't buy this Bee Guardian, I can only earn it. And this card is what I share, so my friends find the shops I chose." |
+| 1:25 | `/join` form, then the generated counter card | "A café joins in a minute: logo, tagline, and the app makes their QR." |
+| 1:40 | Map or logo | "It's in beta, starting in Chiang Mai with eco cafés and the SuperBee resale points, on Solana devnet. EcoProof: scan, collect, unlock." |
+
+Left out on purpose: parcel cards and café QR stamps as a main flow. Mention them only if a judge asks, using the longer version below.
+
+### Longer backup version (about 2 minutes, with the order-email door)
 
 **Before recording**
 - Use a fresh browser profile and a wallet with no stamps. Connect it on the app, so NFTs mint to it.
