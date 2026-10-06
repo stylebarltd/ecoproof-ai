@@ -17,8 +17,9 @@ and secret, save, click **Test connection**. The place id and secret come from:
 curl -H "x-admin-token: $ADMIN_TOKEN" https://<app>/api/stamp-places/<place>/woo
 ```
 
-The connection can also be set in `wp-config.php` (`ECOPROOF_PLACE`, `ECOPROOF_SECRET`, optional `ECOPROOF_URL`), which keeps the
-secret out of the database. `ECOPROOF_API_URL` is only for local development, where the shop's server reaches EcoProof by another
+The connection can also be set in `wp-config.php` (`ECOPROOF_PLACE`, `ECOPROOF_SECRET`), which keeps the
+secret out of the database. The EcoProof URL is fixed to `https://ecoproof.superbee.me` and has no settings field; for local development
+override it with `define( 'ECOPROOF_URL', ... )` in `wp-config.php`. `ECOPROOF_API_URL` is only for local development, where the shop's server reaches EcoProof by another
 address than customers do (DDEV: `http://host.docker.internal:3000`).
 
 ## Where the customer sees the stamp

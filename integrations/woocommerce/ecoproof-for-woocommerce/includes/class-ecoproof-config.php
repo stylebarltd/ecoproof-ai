@@ -4,9 +4,12 @@
  *
  * Every setting is saved in wp-admin (WooCommerce > Settings > EcoProof), and
  * the connection settings can instead be defined as constants in
- * wp-config.php (ECOPROOF_URL, ECOPROOF_PLACE, ECOPROOF_SECRET,
- * ECOPROOF_API_URL). A constant always wins and its field is locked in the
- * settings page, so a secret can live outside the database.
+ * wp-config.php (ECOPROOF_PLACE, ECOPROOF_SECRET, ECOPROOF_API_URL). A
+ * constant always wins and its field is locked in the settings page, so a
+ * secret can live outside the database.
+ *
+ * The EcoProof URL has no settings field: it is the hosted service, and only
+ * a wp-config.php constant (ECOPROOF_URL, for local development) overrides it.
  *
  * @package EcoProof_WooCommerce
  */
@@ -42,6 +45,9 @@ class EcoProof_Config {
 	public static function get( $key ) {
 		if ( isset( self::CONSTANTS[ $key ] ) && defined( self::CONSTANTS[ $key ] ) && '' !== (string) constant( self::CONSTANTS[ $key ] ) ) {
 			return constant( self::CONSTANTS[ $key ] );
+		}
+		if ( 'url' === $key ) {
+			return self::DEFAULTS['url'];
 		}
 		return get_option( self::OPTION_PREFIX . $key, self::DEFAULTS[ $key ] );
 	}
