@@ -52,3 +52,6 @@ ecoproof.db*
 # WooCommerce plugin build
 integrations/woocommerce/*.zip
 /public/downloads/ecoproof-for-woocommerce.zip
+
+# private hackathon submission text, kept local only
+SUBMISSION.md

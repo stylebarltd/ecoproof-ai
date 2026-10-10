@@ -41,13 +41,13 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 
     define( 'ECOPROOF_PLACE', 'your-place-id' );
     define( 'ECOPROOF_SECRET', '...' );
-    define( 'ECOPROOF_URL', 'https://ecoproof.superbee.me' ); // optional
 
 == Developers ==
 
 * `ecoproof_stamp_html` filter: change the stamp block's HTML.
 * `ecoproof_main_product_id` filter ( $main_id, WC_Product $product ): which product a translation takes its numbers from, for translation setups other than WPML and Polylang.
 * `ecoproof_shortcode_order_id` filter: tell the shortcode which order an email builder is rendering.
+* `ECOPROOF_URL` constant: point the plugin at another EcoProof server (local development). There is no settings field; the default is https://ecoproof.superbee.me.
 * `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof by another address than customers do (local development).
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 

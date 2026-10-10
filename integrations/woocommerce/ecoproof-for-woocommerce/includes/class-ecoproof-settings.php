@@ -2,7 +2,7 @@
 /**
  * WooCommerce > Settings > EcoProof.
  *
- * Connection (EcoProof URL, place id, secret), which statuses mean "paid",
+ * Connection (place id, secret), which statuses mean "paid",
  * and where the stamp shows. Fields set by a wp-config.php constant are
  * locked. "Test connection" sends a signed ping, so a wrong secret or place
  * shows up here instead of in a customer's inbox.
@@ -54,15 +54,6 @@ class EcoProof_Settings {
 				'type'  => 'title',
 				'desc'  => __( 'Your shop\'s place on EcoProof. You get the place id and secret from EcoProof when your shop joins.', 'ecoproof-for-woocommerce' ),
 				'id'    => 'ecoproof_connection',
-			),
-			array(
-				'title'             => __( 'EcoProof URL', 'ecoproof-for-woocommerce' ),
-				'id'                => $p . 'url',
-				'type'              => 'url',
-				'default'           => EcoProof_Config::DEFAULTS['url'],
-				'value'             => EcoProof_Config::get( 'url' ),
-				'desc'              => $from_cfg( 'url', '' ),
-				'custom_attributes' => $locked( 'url' ),
 			),
 			array(
 				'title'             => __( 'Place id', 'ecoproof-for-woocommerce' ),
