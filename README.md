@@ -72,7 +72,7 @@ Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devne
 - **GPS checks can be spoofed.** They stop casual abuse, not a determined cheater.
 - **Self-serve places are not vetted** beyond format limits and three places per owner. The map says so.
 - **Devnet only.** NFTs on devnet may not appear in wallets that don't index it; the passport page and Solana Explorer always show them.
-- The old receipt-photo flow and the receipt-gated review flow were removed in the pivot. Reviews come back later, backed by a real purchase (see the roadmap in `SUBMISSION.md`).
+- The old receipt-photo flow and the receipt-gated review flow were removed in the pivot. Reviews come back later, backed by a real purchase.
 
 ## Project layout
 
@@ -124,7 +124,3 @@ Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -
 ## Connecting a WooCommerce shop
 
 See [docs/woocommerce/README.md](./docs/woocommerce/README.md) (webhook + a snippet that adds the QR to the order-completed email only) [STAGING.md](./docs/woocommerce/STAGING.md) (a local throw-away shop for testing before anything touches a live one) and [SUPERBEE_ROLLOUT.md](./docs/woocommerce/SUPERBEE_ROLLOUT.md) (the plan for connecting SuperBee).
-
-## More
-
-Submission text and the demo script are in [SUBMISSION.md](./SUBMISSION.md).
