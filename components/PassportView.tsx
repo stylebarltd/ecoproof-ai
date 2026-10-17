@@ -11,7 +11,7 @@ import BeeCard from "@/components/BeeCard";
 import { impactParts } from "@/lib/impact";
 import { milestoneLabel, RANKS, tierFor } from "@/lib/milestoneRules";
 import { POINTS_PRESENCE, POINTS_VERIFIED } from "@/lib/stampClasses";
-import { explorerTx, progress, rankNfts } from "@/lib/passportView";
+import { explorerTx, nftState, progress, rankNfts } from "@/lib/passportView";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import type { Passport } from "@/lib/passport";
 
@@ -33,6 +33,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
   const nfts = rankNfts(pass?.nfts ?? []);
   const [top, ...rest] = nfts;
   const locked = RANKS.filter((r) => !nfts.some((n) => n.rank === r.key)); // ranks not earned yet, shown as silhouettes
+  const toClaim = nfts.filter((n) => nftState(n, !!pass?.wallet) === "waiting").length;
   const points = pass?.points ?? 0;
   const prog = progress(points, pass?.nextMilestone ?? 1); // ranks are reached by points: a verified purchase is worth more than a presence stamp
   const slots = Math.max(0, 8 - (pass?.places.length ?? 0));
@@ -102,6 +103,11 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
           <div className="lg:hidden">{smallRanks}</div>
           <p className="hidden text-center lg:block"><span className="font-heading text-[40px] leading-none">{points}</span> <span className="text-sm font-semibold text-sage-900">eco point{points === 1 ? "" : "s"}</span></p>
         </div>
+        {owner && nfts.length > 0 && (
+          <Link href="/collection" className={`lift mt-3 flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold ${toClaim ? "bg-honey-500 text-ink shadow-[0_6px_20px_rgba(232,163,23,0.35)] ring-1 ring-white/60" : "glass"}`}>
+            <span>{toClaim ? `${toClaim} waiting to claim · connect a wallet` : "My Bee Guardians on Solana"}</span><span aria-hidden>→</span>
+          </Link>
+        )}
         {pass?.collectionUrl && <a href={pass.collectionUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline lg:hidden">The EcoProof AI Bee Guardians collection on Solana ↗</a>}
         {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} points={points} tier={top ? tierFor(top.milestone).name : null} /></div>}
       </Glass>

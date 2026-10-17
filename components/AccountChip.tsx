@@ -2,12 +2,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Check, ChevronRight, Copy, Loader2, LogOut, ShieldCheck, Smartphone, Store, UserRound, Wallet, X } from "lucide-react";
+import { Check, ChevronRight, Copy, Gem, Loader2, LogOut, ShieldCheck, Smartphone, Store, UserRound, Wallet, X } from "lucide-react";
 import { deepLinks, detectWallets, isMobile, linkDevicePassport, shortAddress, signInWith, type WalletInfo } from "@/lib/wallet";
 import { accountLabel, continueWithGoogle, currentAccount, deleteAccount, signOut, signOutEverywhere, takeGoogleReturn, type Account } from "@/lib/account";
 import { getUserId } from "@/lib/clientUser";
 import { clearPending, finishLogin, pendingLogin, pollLogin, startDeeplinkSignIn } from "@/lib/walletLogin";
 import { LogoTile } from "@/components/Logo";
+import { useAccountChange } from "@/lib/desktop";
 
 /** Header chip: "Sign in" when signed out; the wallet or the person's name (with the account menu) when signed in. */
 export default function AccountChip({ onChange }: { onChange: () => void }) {
@@ -29,6 +30,10 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
     };
     init();
   }, [onChange]);
+
+  // Another part of the page signed in or connected a wallet (e.g. the collection page): show the new account here too.
+  const refresh = useCallback(() => { currentAccount().then(setAccount, () => {}); }, []);
+  useAccountChange(refresh);
 
   const doneRef = useRef(done);
   useEffect(() => { doneRef.current = done; }); // keeps the latest callback without restarting the polling effect on every parent render
@@ -73,6 +78,11 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
       )}
     </>
   );
+}
+
+/** The wallet sheet on its own, for pages that ask for a wallet: "connect" adds one to the signed-in account, otherwise it signs in with one. */
+export function WalletSheet({ connect, onClose, onSignedIn }: { connect: boolean; onClose: () => void; onSignedIn: () => void }) {
+  return <SignInSheet google={false} connect={connect} onClose={onClose} onSignedIn={onSignedIn} />;
 }
 
 /** Bottom sheet in the passport's glass style. Rendered on <body>: the desktop top bar is frosted glass, and `backdrop-filter` would trap a fixed overlay inside it. */
@@ -278,6 +288,9 @@ function Menu({ account, initialErr = "", onClose, onConnectWallet, onSignedOut 
           <Store size={16} strokeWidth={2.5} /> My shop{account.shops > 1 ? ` · ${account.shops} places` : ""}
         </Link>
       )}
+      <Link href="/collection" onClick={onClose} className={`glass lift ${account.shops > 0 ? "mt-2.5" : "mt-4"} flex items-center justify-center gap-2 rounded-full py-2.5 text-sm font-bold`}>
+        <Gem size={16} strokeWidth={2.5} className="text-honey-700" /> My Bee Guardians
+      </Link>
       <h3 className="mt-4 px-1 text-[12px] font-bold uppercase tracking-wide text-sage-900">Ways to sign in</h3>
       <ul className="mt-2 space-y-2">
         <Method

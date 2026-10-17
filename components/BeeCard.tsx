@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { rankWebp, type Tier } from "@/lib/milestoneRules";
-import { explorerAsset } from "@/lib/passportView";
+import { explorerAsset, nftState } from "@/lib/passportView";
 import type { Nft } from "@/lib/milestones";
 import { impactParts, type Replaces } from "@/lib/impact";
 
@@ -15,7 +15,8 @@ export default function BeeCard({ rank, nft, big, wallet, impact, note }: { rank
   const proven = impact ? impactParts(impact) : [];
   const [broken, setBroken] = useState(false);
   const locked = !nft;
-  const minted = nft?.status === "minted" && nft.assetId;
+  const state = nft ? nftState(nft, !!wallet) : null;
+  const minted = state === "onchain";
   const serial = nft?.serial ? `#${String(nft.serial).padStart(4, "0")}` : null;
 
   const card = (
@@ -55,7 +56,7 @@ export default function BeeCard({ rank, nft, big, wallet, impact, note }: { rank
           ) : minted ? (
             <div className={`${big ? "text-xs" : "text-[10px]"} font-bold text-[#f7d27a]`}>{big ? "Soulbound · view on Solana ↗" : "View on Solana ↗"}</div>
           ) : (
-            <div className={`${big ? "text-xs" : "text-[10px]"} font-bold text-[#f7d27a]`}>{big ? "Soulbound · " : ""}{wallet ? "minting…" : big ? "connect a wallet to claim" : "Connect wallet"}</div>
+            <div className={`${big ? "text-xs" : "text-[10px]"} font-bold text-[#f7d27a]`}>{big ? "Soulbound · " : ""}{state === "waiting" ? (big ? "connect a wallet to claim" : "Connect wallet") : state === "retrying" ? (big ? "mint failed, retrying" : "Retrying") : "minting…"}</div>
           )}
         </div>
       </div>

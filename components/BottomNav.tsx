@@ -11,7 +11,7 @@ export default function BottomNav() {
       {icon}{label}
     </Link>
   );
-  const passport = path === "/" || path.startsWith("/p/");
+  const passport = path === "/" || path.startsWith("/p/") || path.startsWith("/collection");
   return (
     <nav className="fixed inset-x-0 bottom-0 z-[2000] mx-auto flex max-w-md border-t border-neutral-200 bg-cream md:max-w-2xl md:rounded-t-2xl md:border-x lg:hidden">
       {tab("/", <LeafMark size={24} stroke="currentColor" strokeWidth={2.5} />, "Passport", passport)}

@@ -9,15 +9,17 @@ import { editionOf, onChainName, rankWebp, type RankKey } from "./milestoneRules
 /** What a passport had when it reached a milestone. Stored with the mint and shown in the NFT metadata. */
 export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticItems: number; co2Kg: number; brand: string };
 
-type MintRow = { serial: number | null; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null };
+type MintRow = { serial: number | null; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null; created_at: string; minted_at: string | null };
 
 /** `serial` numbers each rank (and each Paragon edition) in the order it was minted: "Warden #0007". 0 until it is minted. */
-export type Nft = { id: string; milestone: number; tier: string; rank: RankKey; tierNumber: number; edition: number; serial: number; webpUrl: string; status: string; assetId: string | null; mintSignature: string | null; freezeSignature: string | null; imageUrl: string; metadataUrl: string; error: string | null };
+/** `wallet`: where it was (or is being) minted to. `createdAt`: when it was unlocked. */
+export type Nft = { id: string; milestone: number; tier: string; rank: RankKey; tierNumber: number; edition: number; serial: number; webpUrl: string; status: string; assetId: string | null; mintSignature: string | null; freezeSignature: string | null; imageUrl: string; metadataUrl: string; error: string | null; wallet: string | null; createdAt: string; mintedAt: string | null };
 const toNft = (r: MintRow): Nft => ({
   id: r.id, milestone: r.milestone, tier: tierFor(r.milestone).name, rank: tierFor(r.milestone).key, tierNumber: tierFor(r.milestone).tier,
   edition: editionOf(r.milestone), serial: Number(r.serial ?? 0), webpUrl: rankWebp(tierFor(r.milestone).key), status: r.status, assetId: r.asset_id,
   mintSignature: r.mint_signature, freezeSignature: r.freeze_signature,
   imageUrl: `${appUrl()}/api/nft/${r.id}/image`, metadataUrl: `${appUrl()}/api/nft/${r.id}/metadata`, error: r.error,
+  wallet: r.wallet, createdAt: new Date(r.created_at).toISOString(), mintedAt: r.minted_at ? new Date(r.minted_at).toISOString() : null,
 });
 
 // Mints touch one Merkle tree and read the rightmost proof, so they run one at a time (per server instance).

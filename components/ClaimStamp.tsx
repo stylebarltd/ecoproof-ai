@@ -21,7 +21,7 @@ const BASE: Step[] = [
 /** The claim result only carries the basics of a new NFT; enough for its card. */
 function unlocked(n: { milestone: number; status: string; id: string }): Nft {
   const t = tierFor(n.milestone);
-  return { id: n.id, milestone: n.milestone, tier: t.name, rank: t.key, tierNumber: t.tier, edition: editionOf(n.milestone), serial: 0, webpUrl: rankWebp(t.key), status: n.status, assetId: null, mintSignature: null, freezeSignature: null, imageUrl: "", metadataUrl: "", error: null };
+  return { id: n.id, milestone: n.milestone, tier: t.name, rank: t.key, tierNumber: t.tier, edition: editionOf(n.milestone), serial: 0, webpUrl: rankWebp(t.key), status: n.status, assetId: null, mintSignature: null, freezeSignature: null, imageUrl: "", metadataUrl: "", error: null, wallet: null, createdAt: new Date().toISOString(), mintedAt: null };
 }
 
 const NFT_STEP: Step = { key: "nft", label: "Minting your Bee Guardian NFT", hint: "A soulbound NFT, just for you. A few more seconds." };
@@ -157,7 +157,7 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
             <p className="font-heading text-xl lg:text-3xl">Stamp collected! 🎉</p>
           )}
           <p className="text-sm text-neutral-600 lg:text-base"><b className="text-ink">+{done.stamp.points} point{done.stamp.points === 1 ? "" : "s"}</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
-          {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Bee Guardian NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : "(on its way: connect a wallet to receive "+(newNfts.length > 1 ? "them" : "it")+")"}</p>}
+          {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Bee Guardian NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : <>(saved for you: <Link href="/collection" className="underline">claim {newNfts.length > 1 ? "them" : "it"} to a wallet</Link>)</>}</p>}
           {done.stamp.claimUrl && <a className="block text-xs text-sage-700 underline" href={done.stamp.claimUrl} target="_blank" rel="noreferrer">See the proof on Solana ↗</a>}
           <Link href="/" className="lift block rounded-full bg-sage-500 py-3 font-bold text-cream lg:py-4 lg:text-lg">View my passport</Link>
         </div>

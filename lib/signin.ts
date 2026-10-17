@@ -1,6 +1,8 @@
 import { isAPIError } from "better-auth/api";
+import { after } from "next/server";
 import { auth } from "./auth";
 import { query } from "./db";
+import { mintPending } from "./milestones";
 import { buildMessage, newNonce, nonceValid, parseMessage, verifySignature } from "./siws";
 
 /** The sign-in message the wallet will sign (bound to our domain, with a fresh nonce). */
@@ -30,6 +32,8 @@ export type WalletSignIn = { ok: true; cookies: string[] } | { ok: false; status
 export async function walletSignIn(headers: Headers, address: string): Promise<WalletSignIn> {
   try {
     const r = await auth().api.walletSession({ body: { address }, headers, returnHeaders: true });
+    // Bee Guardians the account unlocked before it had a wallet are minted to it now, after the response (minting takes a while).
+    after(() => mintPending(address).then(() => {}, (e) => console.error("mint after wallet sign-in failed", e)));
     return { ok: true, cookies: r.headers.getSetCookie() };
   } catch (e) {
     if (isAPIError(e)) return { ok: false, status: e.statusCode, error: e.message };
