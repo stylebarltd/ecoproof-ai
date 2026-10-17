@@ -124,7 +124,7 @@ Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -
 
 ### Database changes
 
-The schema lives in `lib/schema.ts` (Drizzle). To change it, edit that file, run `npm run db:generate`, and review and commit the new SQL file in `drizzle/`. Vercel runs `npm run db:migrate` before every build (`vercel.json`), so a production deploy migrates production. Preview deploys use `PREVIEW_DATABASE_URL` (set for Preview only in Vercel) and never the production database; without it a preview build fails. `npm run db:check` checks the migration files are consistent.
+The schema lives in `lib/schema.ts` (Drizzle). To change it, edit that file, run `npm run db:generate`, and review and commit the new SQL file in `drizzle/`. Vercel runs `npm run db:migrate` before every build (`vercel.json`), so a production deploy migrates production. Preview deploys use `PREVIEW_DATABASE_DATABASE_URL` (from the `ecoproof-preview` Neon store, connected to Preview only with the prefix `PREVIEW_DATABASE`) and never the production database; without it a preview build fails. `npm run db:check` checks the migration files are consistent.
 
 ## Connecting a WooCommerce shop
 
