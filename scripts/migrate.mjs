@@ -3,10 +3,13 @@
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { databaseUrl } from "../lib/databaseUrl.mjs";
 
-const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL; // the direct connection: Neon's pooler doesn't suit DDL
-if (!url) {
-  console.error("db:migrate: DATABASE_URL is not set");
+let url;
+try {
+  url = databaseUrl({ direct: true });
+} catch (e) {
+  console.error(`db:migrate: ${e.message}`);
   process.exit(1);
 }
 const client = new pg.Client({ connectionString: url });

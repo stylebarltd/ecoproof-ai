@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { databaseUrl } from "./databaseUrl.mjs";
 
 const g = globalThis as unknown as { _pool?: Pool; _ready?: Promise<unknown> };
 
@@ -12,8 +13,7 @@ export type RecordRow = {
 
 function pool() {
   if (!g._pool) {
-    if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
-    g._pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3 });
+    g._pool = new Pool({ connectionString: databaseUrl(), max: 3 });
   }
   return g._pool;
 }

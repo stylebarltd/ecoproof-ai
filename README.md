@@ -110,7 +110,7 @@ npm run dev                  # http://localhost:3000
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables come from `npm run db:migrate`; the demo places are added automatically. Migrations use `DATABASE_URL_UNPOOLED` instead when it is set. |
+| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables come from `npm run db:migrate`; the demo places are added automatically. Migrations connect to the same database without Neon's pooler. |
 | `SOLANA_SECRET_KEY` | Base58 secret key of a **devnet** wallet that pays for proofs and NFT mints. Locally a key is generated in `.payer.json` if unset. It needs devnet SOL (faucet.solana.com). |
 | `SOLANA_RPC_URL` | Optional, defaults to public devnet. |
 | `NFT_TREE_ADDRESS`, `NFT_COLLECTION_ADDRESS` | Output of `npx tsx scripts/nft-setup.ts` (run once, with the same wallet as `SOLANA_SECRET_KEY`). Without them stamps still work, NFTs stay pending. |
@@ -124,7 +124,7 @@ Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -
 
 ### Database changes
 
-The schema lives in `lib/schema.ts` (Drizzle). To change it, edit that file, run `npm run db:generate`, and review and commit the new SQL file in `drizzle/`. Vercel runs `npm run db:migrate` before every build (`vercel.json`), so a preview deploy migrates the preview database and a production deploy migrates production. `npm run db:check` checks the migration files are consistent.
+The schema lives in `lib/schema.ts` (Drizzle). To change it, edit that file, run `npm run db:generate`, and review and commit the new SQL file in `drizzle/`. Vercel runs `npm run db:migrate` before every build (`vercel.json`), so a production deploy migrates production. Preview deploys use `PREVIEW_DATABASE_URL` (set for Preview only in Vercel) and never the production database; without it a preview build fails. `npm run db:check` checks the migration files are consistent.
 
 ## Connecting a WooCommerce shop
 
