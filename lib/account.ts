@@ -13,9 +13,11 @@ export type Account = {
   methods: string[];
   /** Whether the site offers Google sign-in. */
   google: boolean;
+  /** Places they run (owner or staff). */
+  shops: number;
 };
 
-const SIGNED_OUT: Account = { signedIn: false, address: null, name: null, email: null, image: null, methods: [], google: false };
+const SIGNED_OUT: Account = { signedIn: false, address: null, name: null, email: null, image: null, methods: [], google: false, shops: 0 };
 
 export async function currentAccount(): Promise<Account> {
   const r = await fetch("/api/auth/me", { cache: "no-store" });

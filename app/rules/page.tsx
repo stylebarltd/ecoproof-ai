@@ -19,7 +19,7 @@ export default function Rules() {
       <ul className="list-disc space-y-1.5 pl-5">
         <li>When {REVIEW_THRESHOLD} different customers who have a stamp there report a place within {REPORT_WINDOW_DAYS} days, it is <b>paused</b>: hidden from the map and no new stamps, until we have looked at it.</li>
         <li>We then either restore the place or remove it. Stamps already collected stay in passports and their Solana proofs are untouched.</li>
-        <li>One report per person per place every {REPORT_WINDOW_DAYS} days. Owners can&apos;t report their own place. Your report is never shown to the place.</li>
+        <li>One report per person per place every {REPORT_WINDOW_DAYS} days. Owners and staff can&apos;t report their own place. Your report is never shown to the place.</li>
       </ul>
       <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Reports are reviewed by people, and we can get it wrong. If your place was paused and you think that&apos;s a mistake, contact us and we&apos;ll look again.</p>
       <Link href="/map" className="inline-block rounded-full bg-sage-500 px-4 py-2 font-bold text-cream">Back to the map</Link>

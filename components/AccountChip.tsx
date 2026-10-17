@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Check, ChevronRight, Copy, Loader2, LogOut, ShieldCheck, Smartphone, UserRound, Wallet, X } from "lucide-react";
+import Link from "next/link";
+import { Check, ChevronRight, Copy, Loader2, LogOut, ShieldCheck, Smartphone, Store, UserRound, Wallet, X } from "lucide-react";
 import { deepLinks, detectWallets, isMobile, linkDevicePassport, shortAddress, signInWith, type WalletInfo } from "@/lib/wallet";
 import { accountLabel, continueWithGoogle, currentAccount, deleteAccount, signOut, signOutEverywhere, takeGoogleReturn, type Account } from "@/lib/account";
 import { getUserId } from "@/lib/clientUser";
@@ -271,6 +272,11 @@ function Menu({ account, initialErr = "", onClose, onConnectWallet, onSignedOut 
           {account.name && <span className="block">{account.name}</span>}
           {account.email && <span className="block text-xs text-sage-900">{account.email}</span>}
         </p>
+      )}
+      {account.shops > 0 && (
+        <Link href="/shop" onClick={onClose} className="lift mt-4 flex items-center justify-center gap-2 rounded-full bg-sage-500 py-2.5 text-sm font-bold text-cream">
+          <Store size={16} strokeWidth={2.5} /> My shop{account.shops > 1 ? ` · ${account.shops} places` : ""}
+        </Link>
       )}
       <h3 className="mt-4 px-1 text-[12px] font-bold uppercase tracking-wide text-sage-900">Ways to sign in</h3>
       <ul className="mt-2 space-y-2">

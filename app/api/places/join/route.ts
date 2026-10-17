@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   if (physical && !validLoc) return Response.json({ error: "Add your location so customers can find you and stamps can be checked at your place." }, { status: 400 });
   const hasLoc = physical && validLoc;
 
-  const [{ n }] = await query<{ n: number }>("SELECT COUNT(*)::int n FROM stamp_places WHERE owner = ANY($1)", [s.keys]);
+  const [{ n }] = await query<{ n: number }>("SELECT COUNT(DISTINCT place_id)::int n FROM place_members WHERE member_key = ANY($1) AND role='owner'", [s.keys]);
   if (n >= MAX_PLACES_PER_OWNER) return Response.json({ error: `You can set up up to ${MAX_PLACES_PER_OWNER} places for now.` }, { status: 409 });
 
   const id = `${slug(name)}-${randomBytes(2).toString("hex")}`;
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     `INSERT INTO stamp_places (id,name,kind,tagline,image,colour,lat,lng,gps_radius_m,secret,owner,rules_accepted_at,status_note) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,now(),$12) RETURNING *`,
     [id, name, kind, tagline || null, logo, kindOf(kind)!.colour, hasLoc ? lat : null, hasLoc ? lng : null, hasLoc ? GPS_RADIUS_M : null, randomBytes(24).toString("hex"), s.key, `Accepted eco rules ${RULES_VERSION}`],
   );
+  await query("INSERT INTO place_members (place_id, member_key, role, added_by) VALUES ($1,$2,'owner','join')", [id, s.key]);
   if (hasLoc) await query("INSERT INTO stamp_place_locations (place_id,name,lat,lng) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING", [id, name, lat, lng]);
   return Response.json({ place: toPublic(rows[0]), onMap: hasLoc }, { status: 201 });
 }

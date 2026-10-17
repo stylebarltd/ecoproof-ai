@@ -1,12 +1,13 @@
-import { getSession } from "@/lib/session";
+import { memberOf } from "@/lib/members";
 import { getPlace } from "@/lib/stampPlaces";
 import { wooSetup } from "@/lib/woo";
 
-/** The signed-in owner's WooCommerce setup (webhook settings + email snippet) for one of their own online shops. */
+/** WooCommerce setup (webhook settings + email snippet) for an online shop. Owners only: it contains the shop's secret. */
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const s = await getSession(req);
-  if (!s) return Response.json({ error: "Sign in first" }, { status: 401 });
-  const place = await getPlace((await params).id);
-  if (!place || !s.keys.includes(place.owner ?? "") || place.kind !== "online") return Response.json({ error: "Not your online shop" }, { status: 404 });
+  const id = (await params).id;
+  const m = await memberOf(req, id, "owner");
+  if (m instanceof Response) return m;
+  const place = await getPlace(id);
+  if (!place || place.kind !== "online") return Response.json({ error: "Not an online shop" }, { status: 404 });
   return Response.json(wooSetup(place));
 }

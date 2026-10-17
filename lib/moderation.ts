@@ -16,7 +16,8 @@ export async function reportPlace(placeId: string, passportId: string, reason: s
   const place = (await query<{ id: string; status: PlaceStatus; owner: string | null }>("SELECT id, status, owner FROM stamp_places WHERE id=$1", [placeId]))[0];
   if (!place) throw new ReportError("Unknown place", 404);
   const group = await identityGroup(passportId);
-  if (place.owner && group.includes(place.owner)) throw new ReportError("You can't report your own place.", 403);
+  const runsIt = await query("SELECT 1 FROM place_members WHERE place_id=$1 AND member_key = ANY($2) LIMIT 1", [placeId, group]);
+  if ((place.owner && group.includes(place.owner)) || runsIt.length) throw new ReportError("You can't report your own place.", 403);
   const person = group[0];
 
   const recent = await query("SELECT 1 FROM place_reports WHERE place_id=$1 AND reporter = ANY($2) AND created_at > now() - ($3 || ' days')::interval", [placeId, group, String(REPORT_WINDOW_DAYS)]);

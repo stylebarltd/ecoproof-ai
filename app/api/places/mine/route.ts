@@ -1,11 +1,11 @@
-import { query } from "@/lib/db";
+import { myPlaces } from "@/lib/members";
 import { getSession } from "@/lib/session";
-import { toPublic, type StampPlace } from "@/lib/stampPlaces";
+import { toPublic } from "@/lib/stampPlaces";
 
-/** The signed-in owner's self-serve places (with their claim links and QR). */
+/** The places the signed-in person runs, as owner or staff (with their claim links and QR). */
 export async function GET(req: Request) {
   const s = await getSession(req);
   if (!s) return Response.json({ error: "Sign in first" }, { status: 401 });
-  const rows = await query<StampPlace>("SELECT * FROM stamp_places WHERE owner = ANY($1) ORDER BY created_at", [s.keys]);
-  return Response.json({ places: rows.map((r) => ({ ...toPublic(r), status: r.status, statusNote: r.status === "active" ? null : r.status_note })) });
+  const rows = await myPlaces(s.keys);
+  return Response.json({ places: rows.map((r) => ({ ...toPublic(r), role: r.role, status: r.status, statusNote: r.status === "active" ? null : r.status_note })) });
 }

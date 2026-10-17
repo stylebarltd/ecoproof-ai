@@ -15,6 +15,13 @@
       "when": 1792270235198,
       "tag": "0001_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792271623359,
+      "tag": "0002_shop_members",
+      "breakpoints": true
     }
   ]
 }

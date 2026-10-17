@@ -1,4 +1,5 @@
 import { googleEnabled } from "@/lib/auth";
+import { query } from "@/lib/db";
 import { clearLegacyCookie, getSession } from "@/lib/session";
 import { walletSignIn, withCookies } from "@/lib/signin";
 
@@ -8,6 +9,8 @@ export async function GET(req: Request) {
   const body = {
     signedIn: !!s, address: s?.wallet ?? null, key: s?.key ?? null, name: s?.name ?? null, email: s?.email ?? null, image: s?.image ?? null,
     methods: s?.methods ?? [], google: googleEnabled(),
+    /** How many places they run (owner or staff), for the "My shop" link. */
+    shops: s ? (await query<{ n: number }>("SELECT COUNT(DISTINCT place_id)::int n FROM place_members WHERE member_key = ANY($1)", [s.keys]))[0].n : 0,
   };
   if (s && !s.userId && s.wallet) {
     // The old cookie proves a wallet sign-in within the last 30 days: give that wallet its account session and retire the cookie.

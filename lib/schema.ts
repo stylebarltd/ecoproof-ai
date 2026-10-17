@@ -225,3 +225,27 @@ export const authVerification = pgTable("auth_verification", {
   createdAt: at("created_at").defaultNow().notNull(),
   updatedAt: at("updated_at").defaultNow().notNull(),
 }, (t) => [index("auth_verification_identifier").on(t.identifier)]);
+
+// Who runs a place. member_key is a passport id (a wallet, or "u_" + account id), like everywhere else: any id of the signed-in
+// account counts. stamp_places.owner stays as the place's current main owner (shown to admins).
+
+/** role: owner (everything, including the shop secret and the team) | staff (QR codes, printed cards, customer activity). */
+export const placeMembers = pgTable("place_members", {
+  placeId: text("place_id").notNull(),
+  memberKey: text("member_key").notNull(),
+  role: text().notNull(),
+  addedAt: at("added_at").defaultNow().notNull(),
+  addedBy: text("added_by"),
+}, (t) => [primaryKey({ columns: [t.placeId, t.memberKey], name: "place_members_pkey" }), index("place_members_key").on(t.memberKey)]);
+
+/** Invite links. Only the hash of the token is stored. role: staff | owner (accepting an owner invite hands the place over). */
+export const placeInvites = pgTable("place_invites", {
+  tokenHash: text("token_hash").primaryKey(),
+  placeId: text("place_id").notNull(),
+  role: text().notNull(),
+  createdBy: text("created_by").notNull(),
+  createdAt: at("created_at").defaultNow().notNull(),
+  expiresAt: at("expires_at").notNull(),
+  acceptedAt: at("accepted_at"),
+  acceptedBy: text("accepted_by"),
+}, (t) => [index("place_invites_place").on(t.placeId)]);
