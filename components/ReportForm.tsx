@@ -24,14 +24,14 @@ export default function ReportForm({ place }: { place: PublicPlace }) {
   }
 
   if (done) return (
-    <div className="space-y-3 pt-8 text-center">
+    <div className="space-y-3 pt-8 text-center lg:mx-auto lg:max-w-[720px]">
       <h1 className="text-2xl">Thank you</h1>
       <p className="text-sm text-neutral-600">We&apos;ve received your report about {place.name}. A person will look at it. The place isn&apos;t told who reported it.</p>
       <Link href="/map" className="inline-block rounded-full bg-sage-500 px-4 py-2 font-bold text-cream">Back to the map</Link>
     </div>
   );
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:mx-auto lg:max-w-[720px]">
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={place.imageUrl} alt="" width={56} height={56} />

@@ -21,7 +21,7 @@ export default function ReportsAdmin({ token, initial }: { token: string; initia
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:mx-auto lg:max-w-[720px]">
       <h1 className="text-[22px]">Reports</h1>
       {msg && <p className="rounded-xl bg-terra-100 p-2 text-sm">{msg}</p>}
       {items.length === 0 && <p className="text-sm text-neutral-600">No open reports, nothing paused.</p>}

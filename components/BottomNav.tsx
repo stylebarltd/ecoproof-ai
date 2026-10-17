@@ -13,7 +13,7 @@ export default function BottomNav() {
   );
   const passport = path === "/" || path.startsWith("/p/");
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-[2000] mx-auto flex max-w-md border-t border-neutral-200 bg-cream">
+    <nav className="fixed inset-x-0 bottom-0 z-[2000] mx-auto flex max-w-md border-t border-neutral-200 bg-cream md:max-w-2xl md:rounded-t-2xl md:border-x lg:hidden">
       {tab("/", <LeafMark size={24} stroke="currentColor" strokeWidth={2.5} />, "Passport", passport)}
       {tab("/map", <MapPin size={24} strokeWidth={2.5} />, "Map", path.startsWith("/map"))}
       {tab("/about", <CircleHelp size={24} strokeWidth={2.5} />, "How it works", path.startsWith("/about") || path.startsWith("/rules"))}

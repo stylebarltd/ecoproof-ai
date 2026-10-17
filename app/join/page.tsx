@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AccountChip from "@/components/AccountChip";
 import { currentAddress } from "@/lib/wallet";
+import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { PLACE_KINDS, isPhysical } from "@/lib/placeKinds";
 import { rulesFor } from "@/lib/ecoRules";
 import { prepareLogo } from "@/lib/clientLogo";
@@ -117,6 +118,7 @@ function PlaceCard({ p }: { p: MyPlace }) {
       {notice}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={p.qrUrl} alt={`QR code to collect a ${p.name} stamp`} width={180} height={180} className="mx-auto" />
+      <p className="hidden text-xs text-neutral-500 lg:block">Try it: scan this QR with your phone&apos;s camera to see what customers see.</p>
       <div className="grid grid-cols-2 gap-2 text-sm font-semibold">
         <Link href={`/place/${p.id}`} className="rounded-full bg-honey-500 py-2.5 text-ink">Print counter card</Link>
         <Link href={`/c/${p.id}`} className="rounded-full border-[1.5px] border-neutral-300 py-2.5">Preview stamp page</Link>
@@ -144,6 +146,8 @@ export default function Join() {
     if (a) { const r = await fetch("/api/places/mine"); if (r.ok) setMine((await r.json()).places); } else setMine([]);
   }, []);
   useEffect(() => { const init = async () => { await refresh(); }; init(); }, [refresh]);
+  const desktop = useDesktop();
+  useAccountChange(refresh);
 
   async function pickLogo(f: File | undefined) {
     if (!f) return;
@@ -164,15 +168,15 @@ export default function Join() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:mx-auto lg:max-w-[720px]">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-[22px] leading-tight">Run a place?</h1>
-        <AccountChip onChange={refresh} />
+        <h1 className="text-[22px] leading-tight lg:text-[30px]">Run a place?</h1>
+        {!desktop && <AccountChip onChange={refresh} />}
       </div>
       <p className="text-sm text-neutral-700">Give your customers an eco stamp. Add your logo and a one-liner, and we generate your QR. Every stamp is anchored on Solana, and your place appears on the EcoProof map.</p>
 
       {address === undefined ? null : !address ? (
-        <p className="rounded-2xl bg-cream p-4 text-sm">Connect your wallet to set up a place. It&apos;s a free signature, no fee, no funds move.</p>
+        <p className="rounded-2xl bg-cream p-4 text-sm">Connect your wallet to set up a place. It&apos;s a free signature, no fee, no funds move.<span className="hidden lg:inline"> Use <b>Connect wallet</b> at the top right.</span></p>
       ) : created ? (
         <>
           <p className="rounded-xl bg-sage-200 p-3 text-sm font-semibold text-sage-900">🎉 {created.place.name} is set up{created.onMap ? " and on the map" : ""}. Put the QR where customers can scan it.</p>

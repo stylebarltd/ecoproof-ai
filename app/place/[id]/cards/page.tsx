@@ -25,7 +25,7 @@ export default async function CardSheet({ params, searchParams }: { params: Prom
   const cards = await Promise.all(rows.map(async (r) => ({ code: r.code, qr: await QRCode.toDataURL(cardUrl(r.code), { margin: 1, width: 220, errorCorrectionLevel: "M", color: { dark: "#272e1b", light: "#ffffff" } }) })));
 
   return (
-    <div>
+    <div className="lg:mx-auto lg:max-w-[720px]">
       <style>{`@media print { nav, .no-print { display: none !important; } body { background: #fff !important; } main { max-width: none !important; padding: 0 !important; } .card { break-inside: avoid; } } .sheet { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }`}</style>
       <div className="no-print mb-4 flex items-center justify-between gap-3">
         <p className="text-sm text-neutral-600">{cards.length} card{cards.length > 1 ? "s" : ""} for {p.name} · each works once</p>

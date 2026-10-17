@@ -3,6 +3,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { Camera, Check, Loader2 } from "lucide-react";
 import QrScanner from "@/components/QrScanner";
+import BeeCard from "@/components/BeeCard";
+import { editionOf, rankWebp, tierFor } from "@/lib/milestoneRules";
+import type { Nft } from "@/lib/milestones";
 import { getUserId } from "@/lib/clientUser";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
@@ -15,6 +18,12 @@ const BASE: Step[] = [
   { key: "save", label: "Saving it to your passport" },
   { key: "passport", label: "Updating your progress" },
 ];
+/** The claim result only carries the basics of a new NFT; enough for its card. */
+function unlocked(n: { milestone: number; status: string; id: string }): Nft {
+  const t = tierFor(n.milestone);
+  return { id: n.id, milestone: n.milestone, tier: t.name, rank: t.key, tierNumber: t.tier, edition: editionOf(n.milestone), serial: 0, webpUrl: rankWebp(t.key), status: n.status, assetId: null, mintSignature: null, freezeSignature: null, imageUrl: "", metadataUrl: "", error: null };
+}
+
 const NFT_STEP: Step = { key: "nft", label: "Minting your Bee Guardian NFT", hint: "A soulbound NFT, just for you. A few more seconds." };
 
 function position(): Promise<{ lat: number; lng: number }> {
@@ -74,13 +83,23 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
   const idx = (k: string | null) => steps.findIndex((s) => s.key === k);
   const before = done ? done.passport.points - done.stamp.points : 0;
   const newNfts = done ? done.nfts.filter((n) => n.milestone > before && n.milestone <= done.passport.points) : []; // ranks this stamp unlocked (a verified purchase can unlock several)
+  const hero = [...newNfts].sort((a, b) => b.milestone - a.milestone)[0]; // the highest rank this stamp unlocked, shown big beside the stamp on desktop
+  // Desktop: one centred glass card over the passport gradient; wider when a Bee Guardian sits beside the stamp.
   return (
-    <div className="flex flex-col items-center gap-5 pt-6 text-center">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={place.imageUrl} alt={`${place.name} stamp`} width={176} height={176} className={busy && !done ? "animate-pulse" : ""} />
+    <div className={`flex flex-col items-center gap-5 pt-6 text-center lg-glass lg:mx-auto lg:mt-4 lg:gap-6 lg:rounded-[36px] lg:p-10 ${hero ? "lg:max-w-[920px]" : "lg:max-w-[640px]"}`}>
+      <div className="flex items-center justify-center lg:gap-12">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={place.imageUrl} alt={`${place.name} stamp`} width={176} height={176} className={`${busy && !done ? "animate-pulse" : ""} ${done ? "lg-anim-pop" : ""} lg:h-[240px] lg:w-[240px]`} />
+        {hero && (
+          <div className="lg-anim-pop hidden w-[250px] lg:block">
+            <BeeCard rank={tierFor(hero.milestone)} nft={unlocked(hero)} big note={hero.status === "minted" ? "Soulbound · minted to your wallet" : "Soulbound · connect a wallet to claim"} />
+            <p className="mt-2 font-heading text-[17px] text-honey-700">New Bee Guardian unlocked!</p>
+          </div>
+        )}
+      </div>
       <div>
-        <h1 className="text-2xl">{place.name}</h1>
-        {place.tagline && <p className="mt-1 text-sm text-neutral-600">{place.tagline}</p>}
+        <h1 className="text-2xl lg:text-[34px] lg:leading-tight">{place.name}</h1>
+        {place.tagline && <p className="mt-1 text-sm text-neutral-600 lg:text-base">{place.tagline}</p>}
         {orderLine && <p className="mt-2 inline-block rounded-full bg-honey-300 px-3 py-1 text-xs font-bold text-ink">Your order: {orderLine}</p>}
       </div>
       {!done ? (
@@ -89,16 +108,19 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
             <div className="w-full space-y-2.5">
               {canTap ? (
                 <>
-                  <button onClick={claim} className="w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">{!cardCode && !orderToken && !viaQr && place.demo ? "Collect stamp (demo)" : "Collect stamp"}</button>
-                  {!cardCode && !orderToken && !viaQr && place.demo && <p className="text-xs text-neutral-500">This is a demo place, so you can collect it by tapping. At real places you scan the QR code on the counter.</p>}
+                  <button onClick={claim} className="lift w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream lg:py-4 lg:text-lg">{!cardCode && !orderToken && !viaQr && place.demo ? "Collect stamp (demo)" : "Collect stamp"}</button>
+                  {!cardCode && !orderToken && !viaQr && place.demo && <p className="text-xs text-neutral-500 lg:text-sage-900">This is a demo place, so you can collect it by tapping. At real places you scan the QR code on the counter.</p>}
                 </>
               ) : (
                 <p className="rounded-2xl bg-cream p-3 text-sm text-neutral-700">To collect a stamp here, <b>scan the QR code</b> {place.kind === "online" ? "on your parcel card" : "at the counter"}. Stamps can&apos;t be collected from this page.</p>
               )}
               {!orderToken && !cardCode && !viaQr && (
-                <button onClick={() => setScanning(true)} className={`flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-bold ${canTap ? "border-[1.5px] border-neutral-300 bg-white text-ink" : "bg-terra-500 text-cream"}`}>
+                <div>
+                <button onClick={() => setScanning(true)} className={`lift flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-bold ${canTap ? "border-[1.5px] border-neutral-300 bg-white text-ink" : "bg-terra-500 text-cream"}`}>
                   <Camera size={17} strokeWidth={2.5} /> Scan the QR code at {place.kind === "online" ? "your parcel" : "the counter"}
                 </button>
+                <p className="mt-2.5 hidden text-xs text-sage-900 lg:block">On a computer? Scan the QR with your phone&apos;s camera instead: the stamp lands in that phone&apos;s passport.</p>
+                </div>
               )}
             </div>
           )}
@@ -120,24 +142,24 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
             </ol>
           )}
           {err && <p className="rounded-xl bg-terra-100 p-3 text-sm text-terra-800">{err}</p>}
-          {!busy && <p className="text-[11px]"><Link href={`/report/${place.id}`} className="text-neutral-400 underline">Not eco? Report this place</Link></p>}
-          {!busy && <p className="text-xs text-neutral-500">{orderToken ? "Verified order: this stamp carries its real impact. One stamp per order, anchored on Solana." : cardCode ? "This card works once. Each stamp is anchored on Solana." : "One stamp per day. Each stamp is anchored on Solana."}</p>}
+          {!busy && <p className="text-[11px]"><Link href={`/report/${place.id}`} className="text-neutral-400 underline lg:text-sage-800">Not eco? Report this place</Link></p>}
+          {!busy && <p className="text-xs text-neutral-500 lg:text-sage-900">{orderToken ? "Verified order: this stamp carries its real impact. One stamp per order, anchored on Solana." : cardCode ? "This card works once. Each stamp is anchored on Solana." : "One stamp per day. Each stamp is anchored on Solana."}</p>}
         </>
       ) : (
-        <div className={`w-full space-y-3 rounded-[28px] bg-white p-5 ${done.stamp.stampClass === "verified" ? "ring-2 ring-honey-400 shadow-[0_10px_34px_rgba(232,163,23,0.35)]" : "ring-1 ring-sage-300"}`}>
+        <div className={`w-full space-y-3 rounded-[28px] bg-white p-5 lg:mx-auto lg:max-w-[560px] lg:space-y-4 lg:p-7 ${done.stamp.stampClass === "verified" ? "ring-2 ring-honey-400 shadow-[0_10px_34px_rgba(232,163,23,0.35)]" : "ring-1 ring-sage-300"}`}>
           {done.stamp.stampClass === "verified" ? (
             <>
               <span className="inline-flex items-center gap-1 rounded-full bg-honey-300 px-3 py-1 text-xs font-extrabold text-ink"><Check size={14} strokeWidth={3.2} /> Verified purchase</span>
-              <p className="font-heading text-xl">Stamp collected! ✨</p>
-              {done.stamp.impactNote && <p className="rounded-xl bg-honey-300/40 p-2.5 text-sm font-semibold text-ink">{done.stamp.impactNote}</p>}
+              <p className="font-heading text-xl lg:text-3xl">Stamp collected! ✨</p>
+              {done.stamp.impactNote && <p className="rounded-xl bg-honey-300/40 p-2.5 text-sm font-semibold text-ink lg:p-4 lg:text-xl lg:leading-snug">{done.stamp.impactNote}</p>}
             </>
           ) : (
-            <p className="font-heading text-xl">Stamp collected! 🎉</p>
+            <p className="font-heading text-xl lg:text-3xl">Stamp collected! 🎉</p>
           )}
-          <p className="text-sm text-neutral-600"><b className="text-ink">+{done.stamp.points} point{done.stamp.points === 1 ? "" : "s"}</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
+          <p className="text-sm text-neutral-600 lg:text-base"><b className="text-ink">+{done.stamp.points} point{done.stamp.points === 1 ? "" : "s"}</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
           {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Bee Guardian NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : "(on its way: connect a wallet to receive "+(newNfts.length > 1 ? "them" : "it")+")"}</p>}
           {done.stamp.claimUrl && <a className="block text-xs text-sage-700 underline" href={done.stamp.claimUrl} target="_blank" rel="noreferrer">See the proof on Solana ↗</a>}
-          <Link href="/" className="block rounded-full bg-sage-500 py-3 font-bold text-cream">View my passport</Link>
+          <Link href="/" className="lift block rounded-full bg-sage-500 py-3 font-bold text-cream lg:py-4 lg:text-lg">View my passport</Link>
         </div>
       )}
     </div>

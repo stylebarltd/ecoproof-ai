@@ -5,7 +5,7 @@ export const metadata = { title: "Eco rules | EcoProof" };
 
 export default function Rules() {
   return (
-    <div className="space-y-4 text-sm leading-relaxed">
+    <div className="space-y-4 text-sm leading-relaxed lg:mx-auto lg:max-w-[720px]">
       <h1 className="text-[22px] leading-tight">Eco rules for places</h1>
       <p>EcoProof is for places that really are eco. A place can only join if it agrees to these rules:</p>
       <ul className="list-disc space-y-1.5 pl-5">{CORE_RULES.map((r) => <li key={r}>{r}</li>)}</ul>

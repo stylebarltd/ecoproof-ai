@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Caprasimo, Figtree } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import TopNav from "@/components/TopNav";
 
 const caprasimo = Caprasimo({ weight: "400", subsets: ["latin"], variable: "--font-caprasimo", display: "swap" });
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
@@ -20,7 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${caprasimo.variable} ${figtree.variable}`}>
       <body className="min-h-screen bg-sage-100 text-ink antialiased">
-        <main className="mx-auto max-w-md px-5 pt-5 pb-24">{children}</main>
+        <TopNav />
+        {/* Phones: one narrow column above the bottom tabs. Tablet: a little wider. Desktop: a 1280px container under the top navbar. */}
+        <main className="mx-auto max-w-md px-5 pt-5 pb-24 md:max-w-2xl md:px-8 lg:max-w-[1280px] lg:px-10 lg:pt-8 lg:pb-16">{children}</main>
         <BottomNav />
       </body>
     </html>

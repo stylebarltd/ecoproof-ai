@@ -34,7 +34,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
   const qr = proof ? await QRCode.toDataURL(proof, { margin: 1, width: 160 }) : "";
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 lg:mx-auto lg:max-w-[720px]">
       <div className="flex items-center justify-between"><LogoLockup size={32} /><span className="text-xs uppercase tracking-wider text-neutral-600">Impact passport</span></div>
       {proof ? (
         <a href={proof} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-sage-300">
@@ -62,6 +62,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
           <p className="font-semibold text-ink">{rec.signature ? "Verified on Solana" : "Not yet anchored"}</p>
           <p className="break-all">sha256 {rec.hash}</p>
           {proof && <a className="text-sage-700 underline" href={proof} target="_blank">View transaction</a>}
+          {qr && <p className="mt-1 hidden text-[11px] text-neutral-500 lg:block">Scan the QR with your phone to open the proof there.</p>}
         </div>
       </div>
       <ShareButtons id={rec.id} co2={rec.co2_kg} plastics={rec.plastic_items} />

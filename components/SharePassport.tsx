@@ -58,16 +58,16 @@ export default function SharePassport({ passportId, stamps, points, tier }: Prop
     copy(full, "Image saved and caption copied. Open Instagram, pick the image and paste the caption.");
   };
 
-  const chip = "flex flex-col items-center justify-center gap-1 rounded-2xl bg-white/70 px-2 py-3 text-[12px] font-bold text-ink ring-1 ring-white/80 active:scale-[0.98]";
+  const chip = "flex flex-col items-center justify-center gap-1 rounded-2xl bg-white/70 px-2 py-3 text-[12px] font-bold text-ink ring-1 ring-white/80 active:scale-[0.98] transition hover:bg-white hover:ring-honey-400";
   return (
     <>
-      <button onClick={() => { setCaption(defaultCaption); setOpen(true); }} className="flex w-full items-center justify-center gap-2 rounded-full bg-honey-500 py-3 font-heading text-[15px] text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">
+      <button onClick={() => { setCaption(defaultCaption); setOpen(true); }} className="lift flex w-full items-center justify-center gap-2 rounded-full bg-honey-500 py-3 font-heading text-[15px] text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">
         <Share2 size={17} strokeWidth={2.5} /> Share my passport
       </button>
 
       {open && (
-        <div className="anim-fade fixed inset-0 z-[4000] flex items-end bg-ink/50 backdrop-blur-sm" onClick={() => setOpen(false)}>
-          <div className="anim-sheet mx-auto max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-neutral-100 p-4 pb-8 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="anim-fade fixed inset-0 z-[4000] flex items-end bg-ink/50 backdrop-blur-sm lg:items-center lg:p-6" onClick={() => setOpen(false)}>
+          <div className="anim-sheet mx-auto max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-neutral-100 p-4 pb-8 text-ink shadow-2xl lg:rounded-[28px] lg:p-6" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-lg">Share your passport</h2>
               <button onClick={() => setOpen(false)} aria-label="Close" className="rounded-full bg-white p-1.5"><X size={18} /></button>

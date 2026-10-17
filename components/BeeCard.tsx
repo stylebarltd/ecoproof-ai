@@ -10,8 +10,8 @@ import { impactParts, type Replaces } from "@/lib/impact";
  * Earned: the artwork, rank, tier, serial (and Paragon edition), and a Solana link once minted.
  * Locked: a dimmed silhouette of the artwork and the points it unlocks at.
  */
-/** `impact`: the owner's verified-purchase totals, shown on the big card once there are any. */
-export default function BeeCard({ rank, nft, big, wallet, impact }: { rank: Tier; nft?: Nft; big?: boolean; wallet?: boolean; impact?: { plasticItems: number; co2Kg: number; replaces?: Replaces[] } }) {
+/** `impact`: the owner's verified-purchase totals, shown on the big card once there are any. `note` replaces the status line. */
+export default function BeeCard({ rank, nft, big, wallet, impact, note }: { rank: Tier; nft?: Nft; big?: boolean; wallet?: boolean; impact?: { plasticItems: number; co2Kg: number; replaces?: Replaces[] }; note?: string }) {
   const proven = impact ? impactParts(impact) : [];
   const [broken, setBroken] = useState(false);
   const locked = !nft;
@@ -48,7 +48,9 @@ export default function BeeCard({ rank, nft, big, wallet, impact }: { rank: Tier
               {proven.map((line) => <div key={line}>{line}</div>)}
             </div>
           )}
-          {locked ? (
+          {note ? (
+            <div className={`${big ? "text-xs" : "text-[10px]"} font-bold text-[#f7d27a]`}>{note}</div>
+          ) : locked ? (
             <div className={`${big ? "text-xs" : "text-[10px]"} font-semibold text-[#dcebc4]`}>Unlocks at {rank.at} point{rank.at === 1 ? "" : "s"}</div>
           ) : minted ? (
             <div className={`${big ? "text-xs" : "text-[10px]"} font-bold text-[#f7d27a]`}>{big ? "Soulbound · view on Solana ↗" : "View on Solana ↗"}</div>

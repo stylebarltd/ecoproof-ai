@@ -44,7 +44,7 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
     <>
       <button
         onClick={() => setOpen(address ? "menu" : "sheet")}
-        className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-ink active:scale-[0.98]"
+        className="glass lift flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-ink active:scale-[0.98] lg:px-4 lg:py-2 lg:text-[13px]"
       >
         {waiting ? <Loader2 size={14} className="animate-spin text-honey-700" /> : address ? <ShieldCheck size={14} strokeWidth={2.5} className="text-sage-700" /> : <Wallet size={14} strokeWidth={2.5} />}
         {waiting ? "Waiting for wallet…" : address ? shortAddress(address) : "Connect wallet"}
@@ -63,8 +63,8 @@ function Sheet({ onClose, title, subtitle, children }: { onClose: () => void; ti
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
   return (
-    <div className="anim-fade fixed inset-0 z-[3000] flex items-end bg-ink/45 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-label={title}>
-      <div className="anim-sheet passport-bg mx-auto w-full max-w-md rounded-t-[32px] border-t border-white/70 p-5 pb-8 text-ink shadow-[0_-12px_40px_rgba(39,46,27,0.25)]" onClick={(e) => e.stopPropagation()}>
+    <div className="anim-fade fixed inset-0 z-[3000] flex items-end bg-ink/45 backdrop-blur-sm lg:items-center lg:p-6" onClick={onClose} role="dialog" aria-modal="true" aria-label={title}>
+      <div className="anim-sheet passport-bg mx-auto w-full max-w-md rounded-t-[32px] border-t border-white/70 p-5 pb-8 lg:rounded-[32px] lg:border lg:p-6 text-ink shadow-[0_-12px_40px_rgba(39,46,27,0.25)]" onClick={(e) => e.stopPropagation()}>
         <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-sage-700/25" aria-hidden />
         <div className="flex items-start gap-3">
           <LogoTile size={40} />
@@ -91,7 +91,7 @@ function WalletLogo({ id, size = 44 }: { id: string; size?: number }) {
 }
 
 function WalletRow({ id, name, sub, busy, disabled, onClick, href }: { id: string; name: string; sub: string; busy?: boolean; disabled?: boolean; onClick?: () => void; href?: string }) {
-  const cls = "glass glass-strong flex w-full items-center gap-3 rounded-2xl p-3 text-left transition active:scale-[0.99] disabled:opacity-60";
+  const cls = "glass glass-strong lift flex w-full items-center gap-3 rounded-2xl p-3 text-left transition active:scale-[0.99] disabled:opacity-60";
   const inner = (
     <>
       <WalletLogo id={id} />

@@ -40,7 +40,7 @@ function Faq({ q, children }: { q: string; children: React.ReactNode }) {
 
 export default function About() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:mx-auto lg:max-w-[720px]">
       <div className="passport-bg fixed inset-0 -z-10" aria-hidden />
 
       {/* Hero */}
