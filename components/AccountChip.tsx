@@ -237,6 +237,7 @@ function SignInSheet({ google, connect, initialErr = "", onClose, onSignedIn }: 
 
       {err && <p className="mt-3 rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
       <button onClick={onClose} className="mt-3 w-full text-xs font-bold text-sage-900 underline">{connect ? "Not now" : "Continue without signing in"}</button>
+      <p className="mt-2 text-center text-[11px] text-sage-900">What we keep and why: <a href="/privacy" className="font-bold underline">Privacy</a></p>
     </Sheet>
   );
 }

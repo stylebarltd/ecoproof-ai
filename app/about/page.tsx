@@ -207,16 +207,16 @@ export default function About() {
         <Faq q="It says I already collected a stamp today.">A place gives one stamp per person per day. Come back tomorrow. Parcel cards and orders work once each.</Faq>
         <Faq q="Why does it ask for my location?">Places set up by their owners check that you are really there. Your location is used for that check only.</Faq>
         <Faq q="The camera doesn't open inside my wallet app.">Wallet apps often block the camera in their built-in browser. Open EcoProof in Safari or Chrome instead, or point your phone&apos;s own camera app at the QR code. Connecting your wallet from Safari or Chrome works too: the wallet app opens and brings you back.</Faq>
-        <Faq q="What data do you keep?">Your passport (a device ID or your wallet address) and your stamps. For online orders we keep only the order number and the products and quantities, never names, emails, addresses or prices.</Faq>
-        <Faq q="What if I lose my phone?">If you connected a wallet, sign in with it on the new device and your passport is back. A passport that was never linked to a wallet stays on the old device.</Faq>
-        <Faq q="I run a shop. How do I join?">Open <Link href="/join" className="font-bold underline">Run a place?</Link>, connect your wallet and follow the steps. Read the <Link href="/rules" className="font-bold underline">eco rules</Link> first.</Faq>
+        <Faq q="What data do you keep?">Your passport (a device ID, or your account: Google name and email, or wallet address) and your stamps. For online orders we keep only the order number and the products and quantities, never names, emails, addresses or prices. The details are in our <Link href="/privacy" className="font-bold underline">privacy page</Link>.</Faq>
+        <Faq q="What if I lose my phone?">If you signed in (with Google or a wallet), sign in the same way on the new device and your passport is back. A passport that was never signed in stays on the old device.</Faq>
+        <Faq q="I run a shop. How do I join?">Open <Link href="/join" className="font-bold underline">Run a place?</Link>, sign in and follow the steps. Read the <Link href="/rules" className="font-bold underline">eco rules</Link> first.</Faq>
       </Panel>
 
       <div className="flex flex-wrap justify-center gap-2 pb-2">
         <Link href="/" className="rounded-full bg-honey-500 px-5 py-3 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">Go to my passport</Link>
         <Link href="/join" className="glass rounded-full px-5 py-3 text-[14px] font-bold">Set up my place</Link>
       </div>
-      <p className="pb-2 text-center text-[11px] text-ink/60"><Check size={11} className="mr-1 inline" /><Camera size={11} className="mr-1 inline" /><Wallet size={11} className="mr-1 inline" />Every stamp is anchored on Solana.</p>
+      <p className="pb-2 text-center text-[11px] text-ink/60"><Check size={11} className="mr-1 inline" /><Camera size={11} className="mr-1 inline" /><Wallet size={11} className="mr-1 inline" />Every stamp is anchored on Solana. · <Link href="/privacy" className="underline">Privacy</Link></p>
     </div>
   );
 }
