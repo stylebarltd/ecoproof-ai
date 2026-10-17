@@ -1,7 +1,9 @@
 import { Pool } from "pg";
+import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseUrl } from "./databaseUrl.mjs";
+import * as schema from "./schema";
 
-const g = globalThis as unknown as { _pool?: Pool; _ready?: Promise<unknown> };
+const g = globalThis as unknown as { _pool?: Pool; _orm?: NodePgDatabase<typeof schema>; _ready?: Promise<unknown> };
 
 export type RecordRow = {
   id: string; user_id: string; merchant: string; items: string;
@@ -17,6 +19,9 @@ function pool() {
   }
   return g._pool;
 }
+
+/** Drizzle on the same pool, for code that uses the typed schema (the sign-in tables, through Better Auth). */
+export const orm = () => (g._orm ??= drizzle(pool(), { schema }));
 
 /** Tables come from the migrations in drizzle/ (`npm run db:migrate`), never from here. This only seeds the map's places. */
 async function init(p: Pool) {

@@ -1,7 +1,7 @@
 import { query } from "@/lib/db";
 import { rateLimited } from "@/lib/ratelimit";
 import { buildMessage, newNonce } from "@/lib/siws";
-import { looksLikeWallet } from "@/lib/session";
+import { looksLikeWallet } from "@/lib/ids";
 
 /** Step 1 of sign-in: the server composes the exact message the wallet will sign. */
 export async function POST(req: Request) {

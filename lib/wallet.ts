@@ -59,13 +59,4 @@ export async function linkDevicePassport(anonUserId: string) {
   return post("/api/auth/link", { anonUserId }) as Promise<{ linked: boolean; receipts: number }>;
 }
 
-export async function signOut() {
-  await fetch("/api/auth/logout", { method: "POST" });
-}
-
-export async function currentAddress(): Promise<string | null> {
-  const r = await fetch("/api/auth/me", { cache: "no-store" });
-  return r.ok ? (await r.json()).address : null;
-}
-
 export const shortAddress = (a: string) => `${a.slice(0, 4)}…${a.slice(-4)}`;

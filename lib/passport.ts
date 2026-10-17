@@ -4,7 +4,7 @@ import { addressUrl, payerAddress } from "./solana";
 import { identityGroup } from "./users";
 import { publicIdFor } from "./publicId";
 import { stampDay } from "./stampPlaces";
-import { looksLikeWallet } from "./session";
+import { looksLikeWallet } from "./ids";
 import { listNfts, type Nft } from "./milestones";
 import { nextMilestone, nftConfig } from "./nft";
 import { pointsFor, stampClass, type StampClass } from "./stampClasses";

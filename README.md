@@ -115,7 +115,8 @@ npm run dev                  # http://localhost:3000
 | `SOLANA_RPC_URL` | Optional, defaults to public devnet. |
 | `NFT_TREE_ADDRESS`, `NFT_COLLECTION_ADDRESS` | Output of `npx tsx scripts/nft-setup.ts` (run once, with the same wallet as `SOLANA_SECRET_KEY`). Without them stamps still work, NFTs stay pending. |
 | `APP_URL` | Public base URL. It goes into NFT metadata and claim links, so set it wherever the app is public. |
-| `SESSION_SECRET` | 32+ characters, signs wallet-sign-in sessions (required in production). |
+| `SESSION_SECRET` | 32+ characters, signs sign-in sessions (required in production). |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional. Turn on "Continue with Google" (an OAuth client from Google Cloud). Its authorised redirect URIs are `<site>/api/account/callback/google` for each address the site runs on. Without them, sign-in is wallet only. |
 | `ADMIN_TOKEN` | Enables our own place setup and card generation endpoints (`x-admin-token` header). Leave unset to disable them. |
 | `ANTHROPIC_API_KEY` | Estimates what each shop product replaces (WooCommerce plugin, `lib/productImpact.ts`) and classifies products the catalogue doesn't know. Optional: without it unknown products count as "not sustainable". |
 | `PRODUCT_IMPACT_MODEL` | Optional, defaults to `claude-opus-5-5`. |

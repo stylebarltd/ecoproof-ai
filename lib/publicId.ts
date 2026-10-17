@@ -1,15 +1,17 @@
 import { query } from "./db";
-import { hmac, isDeviceId, looksLikeWallet } from "./session";
+import { isAccountKey, isDeviceId, looksLikeWallet } from "./ids";
+import { hmac } from "./secret";
 
 // A device id is the only thing that lets someone act as an anonymous passport, so it must never appear in a link.
-// Shared passports are addressed by a public id derived from it instead. Wallet addresses are public already and are used as-is.
+// Shared passports are addressed by a public id derived from it instead. Account ids ("u_…") are not secret but are kept out of links
+// the same way. Wallet addresses are public already and are used as-is.
 
 const PREFIX = "pp_";
 
 /** The id to put in share links for this passport. Stored so the public page can find the passport again. */
 export async function publicIdFor(userId: string): Promise<string> {
   if (looksLikeWallet(userId)) return userId;
-  if (!isDeviceId(userId)) return userId; // not a real passport (nothing can be collected with it): nothing to hide, nothing stored
+  if (!isDeviceId(userId) && !isAccountKey(userId)) return userId; // not a real passport (nothing can be collected with it): nothing to hide, nothing stored
   const publicId = PREFIX + hmac("passport-public", userId).slice(0, 22);
   // The stored id wins, so share links already handed out keep working even if the secret behind the derivation changes.
   const rows = await query<{ public_id: string }>(

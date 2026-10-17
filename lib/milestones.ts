@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { replacesSummary, type LineItem, type Replaces } from "./impact";
 import { query } from "./db";
 import { identityGroup } from "./users";
-import { looksLikeWallet } from "./session";
+import { looksLikeWallet } from "./ids";
 import { appUrl, mintSoulbound, nftConfig, reachedMilestones, tierFor } from "./nft";
 import { editionOf, onChainName, rankWebp, type RankKey } from "./milestoneRules";
 

@@ -172,3 +172,56 @@ export const publicPassports = pgTable("public_passports", {
   publicId: text("public_id").primaryKey(),
   userId: text("user_id").notNull().unique("public_passports_user_id_key"),
 });
+
+// Accounts and sessions, managed by Better Auth (lib/auth.ts). The keys are the field names Better Auth uses.
+// A person's passport id is their wallet when the account has one, else "u_" + auth_user.id (lib/ids.ts).
+
+export const authUser = pgTable("auth_user", {
+  id: text().primaryKey(),
+  name: text().notNull(),
+  email: text().notNull().unique("auth_user_email_key"), // a placeholder for wallet-only accounts (lib/solanaAuth.ts)
+  emailVerified: boolean("email_verified").default(false).notNull(),
+  image: text(),
+  createdAt: at("created_at").defaultNow().notNull(),
+  updatedAt: at("updated_at").defaultNow().notNull(),
+});
+
+export const authSession = pgTable("auth_session", {
+  id: text().primaryKey(),
+  expiresAt: at("expires_at").notNull(),
+  token: text().notNull().unique("auth_session_token_key"),
+  createdAt: at("created_at").defaultNow().notNull(),
+  updatedAt: at("updated_at").defaultNow().notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: text("user_id").notNull().references(() => authUser.id, { onDelete: "cascade" }),
+}, (t) => [index("auth_session_user").on(t.userId)]);
+
+/** One row per sign-in method of an account: providerId "solana" (accountId = the wallet address) or "google". */
+export const authAccount = pgTable("auth_account", {
+  id: text().primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: text("user_id").notNull().references(() => authUser.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: at("access_token_expires_at"),
+  refreshTokenExpiresAt: at("refresh_token_expires_at"),
+  scope: text(),
+  password: text(),
+  createdAt: at("created_at").defaultNow().notNull(),
+  updatedAt: at("updated_at").defaultNow().notNull(),
+}, (t) => [
+  index("auth_account_user").on(t.userId),
+  uniqueIndex("auth_account_provider").on(t.providerId, t.accountId), // a wallet (or Google login) belongs to one account only
+]);
+
+export const authVerification = pgTable("auth_verification", {
+  id: text().primaryKey(),
+  identifier: text().notNull(),
+  value: text().notNull(),
+  expiresAt: at("expires_at").notNull(),
+  createdAt: at("created_at").defaultNow().notNull(),
+  updatedAt: at("updated_at").defaultNow().notNull(),
+}, (t) => [index("auth_verification_identifier").on(t.identifier)]);

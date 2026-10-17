@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { cookies } from "next/headers";
-import { COOKIE, sessionFromToken } from "@/lib/session";
+import { headers } from "next/headers";
+import { getSession } from "@/lib/session";
 import QRCode from "qrcode";
 import { query } from "@/lib/db";
 import { cardUrl } from "@/lib/cards";
@@ -16,8 +16,8 @@ export default async function CardSheet({ params, searchParams }: { params: Prom
   const { batch, token } = await searchParams;
   const place = await getPlace(id);
   const isAdmin = !!process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN;
-  const session = sessionFromToken((await cookies()).get(COOKIE)?.value);
-  if (!isAdmin && !(place?.owner && session?.address === place.owner)) notFound(); // admin token, or the place's owner signed in
+  const session = await getSession(await headers());
+  if (!isAdmin && !(place?.owner && session?.keys.includes(place.owner))) notFound(); // admin token, or the place's owner signed in
   if (!place || !batch) notFound();
   const p = toPublic(place);
   const rows = await query<{ code: string }>("SELECT code FROM claim_cards WHERE place_id=$1 AND batch=$2 ORDER BY created_at, code", [id, batch]);

@@ -80,7 +80,7 @@ export default function About() {
       <Panel id="customers">
         <div className="mb-1 flex items-center gap-2"><Smartphone size={20} className="text-sage-700" /><H2>For customers</H2></div>
         <H3>1. Your eco passport</H3>
-        <P>The first screen of the app is your passport: your Bee Guardian NFTs, the stamps you&apos;ve collected, your progress to the next rank, and a trail of proofs. You don&apos;t need an account or a wallet to start. Your passport lives on your device until you connect a wallet (see below).</P>
+        <P>The first screen of the app is your passport: your Bee Guardian NFTs, the stamps you&apos;ve collected, your progress to the next rank, and a trail of proofs. You don&apos;t need an account or a wallet to start. Your passport lives on your device until you sign in (see below).</P>
 
         <H3>2. Collect a stamp</H3>
         <P>There are three ways, and they all end the same way, with a stamp and a proof on Solana:</P>
@@ -109,8 +109,9 @@ export default function About() {
         </div>
         <P>Both kinds live in the same passport.</P>
 
-        <H3>4. Connect a wallet to keep your NFTs</H3>
-        <P>You can collect stamps without a wallet. To <b>receive your NFTs</b> and keep your passport on every device, tap <b>Connect wallet</b>. Phantom and Solflare both work. You only sign a short free message: no fee, no funds move, and we never see your keys. On a phone, the wallet app opens, you approve, and it brings you back. Anything you collected before connecting is added to your wallet passport.</P>
+        <H3>4. Sign in to keep your passport and NFTs</H3>
+        <P>You can collect stamps without signing in. To keep your passport on every device, tap <b>Sign in</b> and choose Google or a Solana wallet (Phantom and Solflare both work). With a wallet you only sign a short free message: no fee, no funds move, and we never see your keys. On a phone, the wallet app opens, you approve, and it brings you back. Anything you collected before signing in is added to your passport.</P>
+        <P>To <b>receive your NFTs</b> you need a wallet. Signed in with Google? Your Bee Guardians wait in your passport until you connect one from the account menu, and then they&apos;re minted to it.</P>
 
         <H3>5. Share it, find places, report problems</H3>
         <ul className="mt-1 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
@@ -151,7 +152,7 @@ export default function About() {
 
         <H3>Set up a shop or café in a few minutes</H3>
         <Steps items={[
-          { title: "Connect your wallet.", body: <>It&apos;s how you sign in as the owner. Free signature, no funds.</> },
+          { title: "Sign in.", body: <>With Google or a Solana wallet. It&apos;s how you sign in as the owner, and it&apos;s free.</> },
           { title: "Open Set up a place.", body: <>Go to <Link href="/join" className="font-bold underline">Run a place?</Link> from the map. Enter your name, whether you&apos;re a shop, café, restaurant, market stall or online shop, a one-line tagline, and upload your logo.</> },
           { title: "Add your location.", body: <>Physical places share their location while standing in the shop. It puts you on the map, and stamps are only given to people who are really there (a GPS check, always on).</> },
           { title: "Print your QR.", body: <>You get your stamp, your QR code and a print-ready counter card. Put it where customers can scan it. One stamp per customer per day.</> },

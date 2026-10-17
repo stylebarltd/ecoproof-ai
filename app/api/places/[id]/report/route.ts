@@ -8,7 +8,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (rateLimited(ip, 15)) return Response.json({ error: "Too many requests, try again later" }, { status: 429 });
   const b = (await req.json().catch(() => ({}))) as { reason?: unknown; details?: unknown; userId?: unknown };
   let reporter: string;
-  try { reporter = resolveUser(req, String(b.userId ?? "")); }
+  try { reporter = await resolveUser(req, String(b.userId ?? "")); }
   catch (e) { if (e instanceof AuthError) return Response.json({ error: e.message }, { status: 401 }); throw e; }
   if (!reporter || reporter.length > 64) return Response.json({ error: "userId required" }, { status: 400 });
   try {

@@ -1,6 +1,6 @@
 import { rateLimited } from "@/lib/ratelimit";
 import { stepLogin } from "@/lib/dlServer";
-import { sessionHeader } from "@/lib/signin";
+import { walletSignIn, withCookies } from "@/lib/signin";
 
 /** Called by /wallet/callback with the wallet's answer. On success it also signs in the browser it runs in. */
 export async function POST(req: Request) {
@@ -12,5 +12,7 @@ export async function POST(req: Request) {
   const r = await stepLogin(b.sid, new URLSearchParams(b.params ?? {}), { host: req.headers.get("host") ?? url.host, origin: url.origin });
   const { fresh, ...body } = r;
   // The session is issued only by the call that verified the wallet's signature, never by repeating a request with the same sid.
-  return Response.json(body, { headers: { "Cache-Control": "no-store", ...(fresh && r.done ? { "Set-Cookie": sessionHeader(r.done.address) } : {}) } });
+  if (!(fresh && r.done)) return Response.json(body, { headers: { "Cache-Control": "no-store" } });
+  const s = await walletSignIn(req.headers, r.done.address);
+  return s.ok ? withCookies(body, s.cookies) : Response.json({ error: s.error }, { status: s.status });
 }

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AccountChip from "@/components/AccountChip";
-import { currentAddress } from "@/lib/wallet";
+import { currentAccount } from "@/lib/account";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { PLACE_KINDS, isPhysical } from "@/lib/placeKinds";
 import { rulesFor } from "@/lib/ecoRules";
@@ -128,7 +128,7 @@ function PlaceCard({ p }: { p: MyPlace }) {
 }
 
 export default function Join() {
-  const [address, setAddress] = useState<string | null | undefined>(undefined);
+  const [signedIn, setSignedIn] = useState<boolean | undefined>(undefined);
   const [mine, setMine] = useState<MyPlace[]>([]);
   const [name, setName] = useState("");
   const [kind, setKind] = useState("shop");
@@ -141,8 +141,8 @@ export default function Join() {
   const [created, setCreated] = useState<{ place: PublicPlace; onMap: boolean } | null>(null);
 
   const refresh = useCallback(async () => {
-    const a = await currentAddress().catch(() => null);
-    setAddress(a);
+    const a = (await currentAccount().catch(() => null))?.signedIn ?? false;
+    setSignedIn(a);
     if (a) { const r = await fetch("/api/places/mine"); if (r.ok) setMine((await r.json()).places); } else setMine([]);
   }, []);
   useEffect(() => { const init = async () => { await refresh(); }; init(); }, [refresh]);
@@ -175,8 +175,8 @@ export default function Join() {
       </div>
       <p className="text-sm text-neutral-700">Give your customers an eco stamp. Add your logo and a one-liner, and we generate your QR. Every stamp is anchored on Solana, and your place appears on the EcoProof map.</p>
 
-      {address === undefined ? null : !address ? (
-        <p className="rounded-2xl bg-cream p-4 text-sm">Connect your wallet to set up a place. It&apos;s a free signature, no fee, no funds move.<span className="hidden lg:inline"> Use <b>Connect wallet</b> at the top right.</span></p>
+      {signedIn === undefined ? null : !signedIn ? (
+        <p className="rounded-2xl bg-cream p-4 text-sm">Sign in to set up a place, with Google or a Solana wallet. It&apos;s free.<span className="hidden lg:inline"> Use <b>Sign in</b> at the top right.</span></p>
       ) : created ? (
         <>
           <p className="rounded-xl bg-sage-200 p-3 text-sm font-semibold text-sage-900">🎉 {created.place.name} is set up{created.onMap ? " and on the map" : ""}. Put the QR where customers can scan it.</p>
@@ -215,7 +215,7 @@ export default function Join() {
         </div>
       )}
 
-      {address && !created && mine.length > 0 && (
+      {signedIn && !created && mine.length > 0 && (
         <section className="space-y-3 pt-2">
           <h2 className="text-[15px]">Your places</h2>
           {mine.map((p) => <PlaceCard key={p.id} p={p} />)}

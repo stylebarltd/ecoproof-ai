@@ -1,6 +1,6 @@
 import { rateLimited } from "@/lib/ratelimit";
 import { pollLogin } from "@/lib/dlServer";
-import { sessionHeader } from "@/lib/signin";
+import { walletSignIn, withCookies } from "@/lib/signin";
 
 /** The installed app (which started the sign-in) collects its session here once the wallet has signed. */
 export async function POST(req: Request) {
@@ -9,5 +9,7 @@ export async function POST(req: Request) {
   const b = (await req.json().catch(() => ({}))) as { sid?: string; claim?: string };
   if (!b.sid || !b.claim) return Response.json({ error: "sid and claim required" }, { status: 400 });
   const r = await pollLogin(b.sid, b.claim);
-  return Response.json(r, { headers: { "Cache-Control": "no-store", ...("address" in r ? { "Set-Cookie": sessionHeader(r.address) } : {}) } });
+  if (!("address" in r)) return Response.json(r, { headers: { "Cache-Control": "no-store" } });
+  const s = await walletSignIn(req.headers, r.address);
+  return s.ok ? withCookies(r, s.cookies) : Response.json({ error: s.error }, { status: s.status });
 }

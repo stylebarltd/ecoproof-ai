@@ -1,5 +1,10 @@
-import { sessionCookie } from "@/lib/session";
+import { auth } from "@/lib/auth";
+import { clearLegacyCookie } from "@/lib/session";
+import { withCookies } from "@/lib/signin";
 
-export async function POST() {
-  return Response.json({ ok: true }, { headers: { "Set-Cookie": sessionCookie("", 0) } });
+/** Signs out on this device: ends the account session (if any) and clears a session cookie from before accounts. */
+export async function POST(req: Request) {
+  let cookies: string[] = [];
+  try { cookies = (await auth().api.signOut({ headers: req.headers, returnHeaders: true })).headers.getSetCookie(); } catch { /* no account session */ }
+  return withCookies({ ok: true }, [...cookies, clearLegacyCookie()]);
 }

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Copy, Download, Share2, X } from "lucide-react";
 import { FacebookIcon, InstagramIcon, TelegramIcon, WhatsAppIcon, XIcon } from "@/components/BrandIcons";
 
@@ -65,7 +66,8 @@ export default function SharePassport({ passportId, stamps, points, tier }: Prop
         <Share2 size={17} strokeWidth={2.5} /> Share my passport
       </button>
 
-      {open && (
+      {/* On <body>: the button sits in a frosted-glass panel, and `backdrop-filter` would trap a fixed overlay inside it. */}
+      {open && createPortal(
         <div className="anim-fade fixed inset-0 z-[4000] flex items-end bg-ink/50 backdrop-blur-sm lg:items-center lg:p-6" onClick={() => setOpen(false)}>
           <div className="anim-sheet mx-auto max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-[28px] bg-neutral-100 p-4 pb-8 text-ink shadow-2xl lg:rounded-[28px] lg:p-6" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between">
@@ -100,7 +102,8 @@ export default function SharePassport({ passportId, stamps, points, tier }: Prop
             <p className="mt-2 text-center text-[11px] text-neutral-500">Telegram, X, Facebook and WhatsApp show your image as a link preview. For Instagram the image is attached.</p>
             {msg && <p className="mt-2 rounded-xl bg-sage-100 p-2 text-center text-xs text-sage-900">{msg}</p>}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

@@ -3,8 +3,8 @@ import { getSession } from "@/lib/session";
 
 export async function GET(req: Request) {
   const sp = new URL(req.url).searchParams;
-  const session = getSession(req);
-  const userId = session ? session.address : sp.get("userId"); // signed-in wallet wins; anyone may read a public passport by id
+  const session = await getSession(req);
+  const userId = session ? session.key : sp.get("userId"); // signed-in person wins; anyone may read a public passport by id
   if (!userId || userId.length > 64) return Response.json({ error: "userId required" }, { status: 400 });
   return Response.json(await getPassport(userId));
 }

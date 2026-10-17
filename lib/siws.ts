@@ -1,7 +1,8 @@
 import nacl from "tweetnacl";
 import bs58 from "bs58";
 import { randomBytes } from "crypto";
-import { hmac, looksLikeWallet } from "./session";
+import { looksLikeWallet } from "./ids";
+import { hmac } from "./secret";
 
 const NONCE_TTL_MS = 10 * 60 * 1000;
 
