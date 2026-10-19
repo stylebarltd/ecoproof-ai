@@ -18,6 +18,7 @@ export default function Rules() {
       <h2 id="stars" className="scroll-mt-20 pt-2 text-[17px]">Eco stars</h2>
       <p>Cafés, restaurants and hotels get up to five eco stars. The owner answers a checklist of practices a visitor can see for themselves, such as real cups for dine-in or no plastic water bottles. Each practice is worth points, out of 100.</p>
       <p>Some practices don&apos;t exist at every place, like takeaway at a café that has none. Those can be marked not applicable: they are left out, and the score is worked out from the practices that do apply. Eco shops and online shops are listed without stars.</p>
+      <p>The owner&apos;s answers only count once they are published. Publishing is a public declaration: a fingerprint of the answers is written to the Solana blockchain, so what was declared, and when, can never be changed quietly. An owner can publish a new declaration at most once a day; earlier ones stay on record on the place&apos;s page.</p>
       <ul className="list-disc space-y-1 pl-5">
         {SCALE.map((s) => <li key={s.stars}><b>{s.stars ? `${s.stars} star${s.stars === 1 ? "" : "s"}` : s.label}</b>: {s.min} to {s.max} points</li>)}
       </ul>

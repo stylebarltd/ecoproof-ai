@@ -294,7 +294,7 @@ export default function ShopDashboard({ id }: { id: string }) {
             <span className="min-w-0 flex-1">
               <span className="block text-[17px] font-heading leading-tight">Eco practices</span>
               {place.stars ? (
-                <span className="mt-0.5 flex items-center gap-2 text-[12px] text-sage-900"><Stars stars={place.stars.stars} size={14} /> {place.stars.answered ? `${place.stars.score} of 100 points` : "Fill in your checklist to get stars"}</span>
+                <span className="mt-0.5 flex items-center gap-2 text-[12px] text-sage-900"><Stars stars={place.stars.stars} size={14} /> {place.stars.answered ? `${place.stars.score} of 100 points` : "Fill in and publish your checklist to get stars"}</span>
               ) : <span className="block text-[12px] text-sage-900">Your place type and address</span>}
             </span>
             <ChevronRight size={20} strokeWidth={2.5} className="shrink-0 text-sage-700" />

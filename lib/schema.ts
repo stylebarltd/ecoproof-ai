@@ -267,6 +267,25 @@ export const placePractices = pgTable("place_practices", {
   check("place_practices_status", sql`${t.status} IN ('yes', 'no', 'not_applicable')`),
 ]);
 
+/** What an owner published: a frozen copy of the place type and answers, hashed and written to Solana as a memo (lib/declarations.ts).
+ *  place_practices is the owner's draft; only the latest declaration is public. Rows are never updated except to add the proof. */
+export const practiceDeclarations = pgTable("practice_declarations", {
+  id: text().primaryKey(),
+  placeId: text("place_id").notNull(),
+  version: integer().notNull(),
+  kind: text().notNull(),
+  alsoCafe: boolean("also_cafe").notNull(),
+  answers: text().notNull(), // JSON { [practiceId]: status }, keys sorted
+  checklistHash: text("checklist_hash").notNull(), // sha256 of the checklist answered (data/practices.json for this type)
+  score: integer().notNull(),
+  stars: integer().notNull(),
+  declaredBy: text("declared_by").notNull(),
+  createdAt: at("created_at").notNull(),
+  hash: text().notNull(),
+  signature: text(), // null while the proof is pending
+  claimAddress: text("claim_address"),
+}, (t) => [unique("practice_declarations_version").on(t.placeId, t.version)]);
+
 /** "Not true" reports from visitors about one practice. No UI yet (step 2); a confirmed report will remove that practice's points. */
 export const practiceReports = pgTable("practice_reports", {
   id: serial().primaryKey(),

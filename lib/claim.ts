@@ -2,7 +2,8 @@ import { createHash } from "crypto";
 import { Connection, Keypair, SystemProgram, Transaction, TransactionInstruction, sendAndConfirmTransaction } from "@solana/web3.js";
 import { CLUSTER, MEMO_PROGRAM, payerKeypair, RPC } from "./solana";
 
-export type Purpose = "impact";
+// impact: a receipt or order (fingerprint = the purchase). declaration: an owner's published eco practices (fingerprint = its id).
+export type Purpose = "impact" | "declaration";
 
 export class AlreadyClaimedError extends Error {
   constructor(public claimAddress: string) { super("This receipt has already been claimed on Solana."); }

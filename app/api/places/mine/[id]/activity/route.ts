@@ -1,5 +1,5 @@
 import { memberOf } from "@/lib/members";
-import { answersFor, starsOf } from "@/lib/placePractices";
+import { publishedStars } from "@/lib/placePractices";
 import { shopActivity } from "@/lib/shopActivity";
 import { getPlace, toPublic } from "@/lib/stampPlaces";
 
@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     {
       place: {
         ...toPublic(place), status: place.status, statusNote: place.status === "active" ? null : place.status_note,
-        stars: starsOf(place.kind, place.also_cafe, (await answersFor([id])).get(id) ?? {}),
+        stars: (await publishedStars([place])).get(id) ?? null, // what the public sees
       },
       role: m.role, activity: await shopActivity(id, days) },
     { headers: { "Cache-Control": "no-store" } },

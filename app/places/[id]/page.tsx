@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, MapPin } from "lucide-react";
+import { Check, ExternalLink, Link2, MapPin } from "lucide-react";
+import AnchorPending from "@/components/AnchorPending";
 import Stars from "@/components/Stars";
+import VerifyButton from "@/components/VerifyButton";
+import { declarationsOf, publishedAnswers, toDeclaration } from "@/lib/declarations";
 import { kindOf } from "@/lib/placeKinds";
 import { checklist, rating } from "@/lib/practices";
-import { answersFor } from "@/lib/placePractices";
 import { getPlace, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
 export const dynamic = "force-dynamic";
@@ -17,12 +19,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: visible(place) ? `${place.name} | EcoProof` : "Place | EcoProof" };
 }
 
-/** A place's public page: its stars, and the eco practices its owner says it keeps, in plain words and grouped. */
+/** A place's public page: its stars, and the eco practices its owner declared (the latest published declaration), with its Solana proof. */
 export default async function PlacePage({ params }: { params: Promise<{ id: string }> }) {
   const place = await getPlace((await params).id);
   if (!visible(place)) notFound();
   const p = toPublic(place);
-  const answers = (await answersFor([place.id])).get(place.id) ?? {};
+  const history = await declarationsOf(place.id);
+  const answers = publishedAnswers(place, history[0]);
+  const current = history[0] && history[0].kind === place.kind && history[0].also_cafe === place.also_cafe ? toDeclaration(history[0]) : null;
+  const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
   const groups = checklist(place.kind, place.also_cafe);
   const r = rating(place.kind, place.also_cafe, answers);
   const kept = groups?.map((g) => ({ ...g, items: g.items.filter((i) => answers[i.id] === "yes") })).filter((g) => g.items.length) ?? [];
@@ -78,7 +83,37 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               ))}
             </div>
           ) : (
-            <p className="glass rounded-[24px] p-4 text-sm">{answered ? "None of the practices on our checklist yet." : "The owner hasn't filled in the eco checklist yet."}</p>
+            <p className="glass rounded-[24px] p-4 text-sm">{answered ? "None of the practices on our checklist yet." : "The owner hasn't published the eco checklist yet."}</p>
+          )}
+        </section>
+      )}
+
+      {current && (
+        <section className="glass space-y-3 rounded-[24px] p-4 lg:p-5">
+          <h2 className="flex items-center gap-1.5 text-[17px]"><Link2 size={17} strokeWidth={2.5} /> Declared on the blockchain</h2>
+          <p className="text-[13px] leading-snug">
+            {place.name} published these practices on {fmt(current.createdAt)} (declaration {current.version}). A fingerprint of the answers was written to Solana,
+            so nobody, not even EcoProof, can change what was declared without it showing.
+          </p>
+          {current.pending ? <AnchorPending id={current.id} /> : (
+            <>
+              <a href={current.txUrl!} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12.5px] font-bold text-sage-800 underline">See the transaction on Solana Explorer <ExternalLink size={12} /></a>
+              <VerifyButton id={current.id} kind="declaration" />
+            </>
+          )}
+          {history.length > 1 && (
+            <details className="text-[12.5px]">
+              <summary className="cursor-pointer font-bold text-sage-800">Earlier declarations ({history.length - 1})</summary>
+              <ul className="mt-2 space-y-1.5">
+                {history.slice(1).map(toDeclaration).map((d) => (
+                  <li key={d.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <span>Declaration {d.version} · {fmt(d.createdAt)} · {kindOf(d.kind)?.label ?? d.kind}</span>
+                    <Stars stars={d.stars} size={12} />
+                    {d.txUrl ? <a href={d.txUrl} target="_blank" rel="noreferrer" className="underline">proof</a> : <span className="text-sage-900">proof pending</span>}
+                  </li>
+                ))}
+              </ul>
+            </details>
           )}
         </section>
       )}

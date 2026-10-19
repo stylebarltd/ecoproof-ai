@@ -1,6 +1,6 @@
 // The star engine. Pure functions over data/practices.json (passed in, so tests can load the file themselves): which practices a
 // place is asked about, its score out of 100, its stars, and the easiest way to the next star. Nothing here is stored; stars are
-// always computed from the owner's answers (table place_practices).
+// always computed from the answers an owner published (lib/declarations.ts).
 
 export type Status = "yes" | "no" | "not_applicable";
 export type Practice = { id: string; label: string; points: number; notApplicableAllowed?: boolean };

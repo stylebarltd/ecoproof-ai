@@ -1,6 +1,6 @@
 import { query } from "./db";
 import { appUrl } from "./nft";
-import { answersFor, starsOf, type PlaceStars } from "./placePractices";
+import { publishedStars, type PlaceStars } from "./placePractices";
 
 export type StampPlace = {
   id: string; name: string; kind: string; tagline: string | null; impact_note: string | null; image: string | null; colour: string | null;
@@ -53,7 +53,7 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${name} stamp"><circle cx="128" cy="128" r="124" fill="${c}"/>${ring}<circle cx="128" cy="128" r="100" fill="none" stroke="#f5ead8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>${inner}${opts.labels === false ? "" : `<text x="128" y="206" text-anchor="middle" font-family="Figtree,system-ui,sans-serif" font-size="22" font-weight="800" fill="#f5ead8">${name}</text>`}</svg>`;
 }
 
-/** stars: null for kinds without stars (eco shops). */
+/** stars: null for kinds without stars (eco shops); from the place's published declaration. */
 export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number; stars: PlaceStars | null };
 
 /** Places that have actually joined EcoProof and have a physical location, one entry per location. "Verified" on the map means
@@ -62,9 +62,9 @@ export async function listMapPlaces(): Promise<MapPlace[]> {
   const rows = await query<{ id: string; name: string; kind: string; also_cafe: boolean; tagline: string | null; demo: boolean; lid: number; lname: string | null; lat: number; lng: number }>(
     "SELECT p.id, p.name, p.kind, p.also_cafe, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' AND p.kind <> 'online_shop' ORDER BY p.created_at, l.id",
   );
-  const answers = await answersFor([...new Set(rows.map((r) => r.id))]);
+  const stars = await publishedStars(rows);
   return rows.map((r) => ({
     demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`,
-    lat: r.lat, lng: r.lng, stars: starsOf(r.kind, r.also_cafe, answers.get(r.id) ?? {}),
+    lat: r.lat, lng: r.lng, stars: stars.get(r.id) ?? null,
   }));
 }

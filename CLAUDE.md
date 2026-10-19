@@ -47,10 +47,16 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   `/places/<id>`, star pins + filters on `/map`. Kinds: cafe, restaurant, hotel, eco_shop,
   online_shop (`lib/placeKinds.ts`); only cafe/restaurant/hotel have stars. Keep practice ids
   stable: answers are stored by id.
+- Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
+  most once a day, refused if unchanged) freezes it into `practice_declarations` (versions, never
+  edited) and writes its SHA-256 to Solana (memo + claim account keyed on its id,
+  `lib/declarations.ts`). Map, place page and dashboard read only the latest declaration, and only
+  if it matches the place's current type. Pending proofs are written on view
+  (`/api/declarations/<id>/anchor`); demo places get a seeded declaration.
 
 ### v2 plans, not built yet
 - Stars steps 2 to 5: customer True/Not true reports (`practice_reports` table exists, no
-  UI), eco shop receipt scanning, places on Solana, certification.
+  UI; reports should point at a declaration), eco shop receipt scanning, certification.
 
 ## Stack
 Next.js 16 (App Router; read `node_modules/next/dist/docs/` first, see AGENTS.md) ·

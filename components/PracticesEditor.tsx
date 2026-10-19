@@ -1,19 +1,25 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Check, ExternalLink, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, Link2, Loader2, Sparkles } from "lucide-react";
 import AccountChip from "@/components/AccountChip";
+import PublishSheet from "@/components/PublishSheet";
 import Stars from "@/components/Stars";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { PLACE_KINDS, isPhysical, kindOf } from "@/lib/placeKinds";
 import { PRACTICES, checklist, nextStar, rating, type Answers, type Status } from "@/lib/practices";
+import type { Declaration } from "@/lib/declarations";
 import type { Role } from "@/lib/members";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
 // The owner's eco checklist: place type, address, and Yes / No / Not applicable per practice (data/practices.json), with the stars
 // they earn updating live, and the easiest practices to reach the next star. Staff see it read-only.
+// Saving keeps a private draft. Publishing (after a warning) makes it public and writes its fingerprint to Solana (lib/declarations.ts).
 
-type Setup = { place: PublicPlace; role: Role; kind: string; alsoCafe: boolean; address: string | null; answers: Answers };
+type Setup = {
+  place: PublicPlace; role: Role; kind: string; alsoCafe: boolean; address: string | null; answers: Answers;
+  published: Declaration | null; publishedMatchesType: boolean; unpublishedChanges: boolean; publishedToday: boolean;
+};
 
 const CHOICES: { status: Status; label: string; on: string }[] = [
   { status: "yes", label: "Yes", on: "bg-sage-500 text-cream" },
@@ -51,6 +57,7 @@ export default function PracticesEditor({ id }: { id: string }) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null); // JSON of what is saved, to tell unsaved changes apart
   const [err, setErr] = useState("");
+  const [publishing, setPublishing] = useState(false); // the warning sheet is open
   const desktop = useDesktop();
 
   const apply = (s: Setup) => {
@@ -73,8 +80,10 @@ export default function PracticesEditor({ id }: { id: string }) {
   const canEdit = setup?.role === "owner";
   const open = groups ? groups.flatMap((g) => g.items).filter((p) => !answers[p.id]).length : 0;
 
-  async function save() {
+  /** Saves the draft; returns false (and shows why) if it couldn't. */
+  async function save(): Promise<boolean> {
     setSaving(true); setErr("");
+    let ok = false;
     try {
       // Only answers for the current checklist are sent; others stay stored for if the type is switched back.
       const ids = new Set(groups?.flatMap((g) => g.items.map((p) => p.id)) ?? []);
@@ -85,8 +94,25 @@ export default function PracticesEditor({ id }: { id: string }) {
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Couldn't save.");
       apply({ ...setup!, ...j });
+      ok = true;
     } catch (e) { setErr(e instanceof Error ? e.message : "Couldn't save."); }
     setSaving(false);
+    return ok;
+  }
+
+  /** Saves unsaved changes first, then publishes. Resolves to an error message for the sheet, or null when done. */
+  async function publish(): Promise<string | null> {
+    if (dirty && !(await save())) return "Couldn't save your changes first. Check the message at the bottom of the page.";
+    const r = await fetch(`/api/places/mine/${id}/practices/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: true }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) return j.error || "Couldn't publish.";
+    apply({ ...setup!, ...j }); setPublishing(false);
+    return null;
+  }
+
+  async function retryProof(declId: string) {
+    const r = await fetch(`/api/declarations/${declId}/anchor`, { method: "POST" });
+    if (r.ok) await load(); else setErr((await r.json().catch(() => ({}))).error || "Solana is slow right now. Try again in a moment.");
   }
 
   const header = (
@@ -111,7 +137,7 @@ export default function PracticesEditor({ id }: { id: string }) {
 
   const preview = live && (
     <section className="glass rounded-[28px] p-4 lg:p-5" aria-live="polite">
-      <p className="text-[11.5px] font-bold uppercase tracking-wide text-sage-900">Your rating {dirty && canEdit ? "· not saved yet" : ""}</p>
+      <p className="text-[11.5px] font-bold uppercase tracking-wide text-sage-900">Your draft rating {dirty && canEdit ? "· not saved yet" : ""}</p>
       <div className="mt-1.5 flex items-center justify-between gap-3">
         <Stars stars={live.stars} size={desktop ? 26 : 22} />
         <span className="text-right"><span className="block font-heading text-[22px] leading-none">{live.stars ? `${live.stars} star${live.stars === 1 ? "" : "s"}` : live.label}</span><span className="text-[11.5px] text-sage-900">{live.score} of 100 points</span></span>
@@ -136,12 +162,38 @@ export default function PracticesEditor({ id }: { id: string }) {
     </section>
   );
 
+  const pub = setup.published;
+  const status = live && (
+    <section className="glass rounded-[28px] p-4 lg:p-5">
+      <p className="flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-wide text-sage-900"><Link2 size={13} strokeWidth={2.6} /> What the public sees</p>
+      {pub && setup.publishedMatchesType ? (
+        <>
+          <div className="mt-1.5 flex items-center justify-between gap-3">
+            <Stars stars={pub.stars} size={18} />
+            <span className="text-right text-[12px] text-sage-900">Declaration {pub.version} · {new Date(pub.createdAt).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</span>
+          </div>
+          {pub.txUrl ? (
+            <a href={pub.txUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-[12px] font-bold text-sage-800 underline">Proof on Solana <ExternalLink size={11} /></a>
+          ) : (
+            <p className="mt-2 text-[12px] text-sage-900">Proof on Solana pending. {canEdit && <button onClick={() => retryProof(pub.id)} className="font-bold underline">Write it now</button>}</p>
+          )}
+        </>
+      ) : (
+        <p className="mt-1.5 text-[13px] leading-snug">{pub ? `Your last declaration was for a different place type, so visitors see no stars. Publish again for a ${kindOf(setup.kind)?.label.toLowerCase()}.` : "Nothing published yet. Visitors see your place as Listed, without stars, until you publish."}</p>
+      )}
+      {canEdit && (setup.unpublishedChanges || dirty) && (
+        <p className="mt-2 rounded-xl bg-honey-300/50 p-2 text-[12px] leading-snug">{setup.publishedToday ? "You published today. You can publish these changes tomorrow." : "Your draft differs from what is published. Publish it to make it public."}</p>
+      )}
+    </section>
+  );
+  const canPublish = canEdit && !!live && (setup.unpublishedChanges || dirty) && !setup.publishedToday;
+
   return (
     <div className="space-y-4 pb-24 lg:space-y-6 lg:pb-8">
       {header}
       <div>
         <h1 className="text-[24px] leading-tight lg:text-[30px]">Eco practices and stars</h1>
-        <p className="mt-1 text-[13px] text-sage-900">Tick what your place really does. Visitors see it on your public page, and can report anything that isn&apos;t true.</p>
+        <p className="mt-1 text-[13px] text-sage-900">Tick what your place really does. Save as often as you like: your draft stays private. When it&apos;s right, publish it. Then visitors see it on your public page, its fingerprint is written to the Solana blockchain for good, and visitors can report anything that isn&apos;t true.</p>
       </div>
       {!canEdit && <p className="rounded-2xl bg-cream p-3 text-sm">Only the owner can change these. You&apos;re staff, so this is read-only.</p>}
 
@@ -168,6 +220,7 @@ export default function PracticesEditor({ id }: { id: string }) {
             )}
           </section>
 
+          {!desktop && status}
           {!desktop && preview}
 
           {groups ? groups.map((g) => (
@@ -191,16 +244,20 @@ export default function PracticesEditor({ id }: { id: string }) {
             </section>
           )}
         </div>
-        {desktop && <div className="sticky top-24">{preview}</div>}
+        {desktop && <div className="sticky top-24 space-y-4">{status}{preview}</div>}
       </div>
 
       {canEdit && (
         <div className="fixed inset-x-0 bottom-[4.5rem] z-40 px-5 md:px-8 lg:sticky lg:bottom-4 lg:px-0">
           <div className="mx-auto flex max-w-[720px] items-center gap-3 rounded-full bg-white/90 p-1.5 pl-4 shadow-[0_8px_30px_rgba(39,46,27,0.18)] ring-1 ring-sage-900/10 backdrop-blur lg:mx-0 lg:max-w-none">
-            <span className="min-w-0 flex-1 truncate text-[12.5px] font-semibold text-sage-900">{err ? <span className="text-terra-800">{err}</span> : dirty ? "You have unsaved changes" : <span className="flex items-center gap-1"><Check size={14} strokeWidth={2.6} /> Saved</span>}</span>
-            <button onClick={save} disabled={saving || !dirty} className="rounded-full bg-terra-500 px-5 py-2.5 text-sm font-bold text-cream disabled:opacity-50">{saving ? "Saving…" : "Save"}</button>
+            <span className="min-w-0 flex-1 truncate text-[12.5px] font-semibold text-sage-900">{err ? <span className="text-terra-800">{err}</span> : dirty ? "You have unsaved changes" : live && setup.unpublishedChanges ? "Draft saved, not public yet" : <span className="flex items-center gap-1"><Check size={14} strokeWidth={2.6} /> {live ? "Saved and published" : "Saved"}</span>}</span>
+            <button onClick={save} disabled={saving || !dirty} className={`rounded-full px-5 py-2.5 text-sm font-bold disabled:opacity-50 ${live ? "border-[1.5px] border-sage-900/20 bg-white" : "bg-terra-500 text-cream"}`}>{saving ? "Saving…" : live ? "Save draft" : "Save"}</button>
+            {live && <button onClick={() => { setErr(""); setPublishing(true); }} disabled={saving || !canPublish} title={setup.publishedToday ? "You can publish again tomorrow" : undefined} className="rounded-full bg-terra-500 px-5 py-2.5 text-sm font-bold text-cream disabled:opacity-50">Publish…</button>}
           </div>
         </div>
+      )}
+      {publishing && live && (
+        <PublishSheet placeName={setup.place.name} rating={live} open={open} unsaved={dirty} version={(pub?.version ?? 0) + 1} onClose={() => setPublishing(false)} onPublish={publish} />
       )}
     </div>
   );

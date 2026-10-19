@@ -1,11 +1,13 @@
-// A place's eco practices (table place_practices) and the stars they earn. The checklist itself is data/practices.json.
+// A place's eco practices and the stars they earn. The checklist itself is data/practices.json. The owner's answers in place_practices
+// are a private draft; the public sees only what was published (lib/declarations.ts).
 import { query } from "./db";
+import { differsFromPublished, declarationsOf, latestDeclarations, publishedAnswers, publishedToday, toDeclaration } from "./declarations";
 import { checklist, nextStar, practicesOf, rating, type Answers, type Status } from "./practices";
 import { isKind, isPhysical } from "./placeKinds";
 
 const STATUSES: Status[] = ["yes", "no", "not_applicable"];
 
-/** Answers per place, for many places at once (the map). */
+/** Draft answers per place (the owner's checklist), for many places at once. */
 export async function answersFor(placeIds: string[]): Promise<Map<string, Answers>> {
   const out = new Map<string, Answers>();
   if (!placeIds.length) return out;
@@ -24,12 +26,24 @@ export function starsOf(kind: string, alsoCafe: boolean, answers: Answers): Plac
   return { score: r.score, stars: r.stars, label: r.label, answered: Object.keys(answers).filter((id) => ids.has(id)).length };
 }
 
-/** Everything the owner's checklist screen needs. */
+/** Public stars per place, from each place's latest published declaration. */
+export async function publishedStars(places: { id: string; kind: string; also_cafe: boolean }[]): Promise<Map<string, PlaceStars | null>> {
+  const latest = await latestDeclarations([...new Set(places.map((p) => p.id))]);
+  return new Map(places.map((p) => [p.id, starsOf(p.kind, p.also_cafe, publishedAnswers(p, latest.get(p.id)))]));
+}
+
+/** Everything the owner's checklist screen needs: the draft, and what is published. */
 export async function practiceSetup(place: { id: string; kind: string; also_cafe: boolean; address: string | null }) {
   const answers = (await answersFor([place.id])).get(place.id) ?? {};
+  const history = await declarationsOf(place.id);
+  const last = history[0];
   return {
     kind: place.kind, alsoCafe: place.also_cafe, address: place.address, answers,
     rating: rating(place.kind, place.also_cafe, answers), next: nextStar(place.kind, place.also_cafe, answers),
+    published: last ? toDeclaration(last) : null,
+    publishedMatchesType: !!last && last.kind === place.kind && last.also_cafe === place.also_cafe,
+    unpublishedChanges: differsFromPublished(place, answers, last),
+    publishedToday: publishedToday(last),
   };
 }
 

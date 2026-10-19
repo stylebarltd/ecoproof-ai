@@ -29,6 +29,13 @@
       "when": 1792424763875,
       "tag": "0003_practices",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792429067446,
+      "tag": "0004_declarations",
+      "breakpoints": true
     }
   ]
 }
