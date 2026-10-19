@@ -3,6 +3,7 @@ import { claimCard } from "@/lib/cards";
 import { claimOrder } from "@/lib/woo";
 import { afterProof } from "@/lib/milestones";
 import { getPassport } from "@/lib/passport";
+import { progressResponse, wantsProgress } from "@/lib/progress";
 import { rateLimited } from "@/lib/ratelimit";
 import { AuthError, resolveUser } from "@/lib/session";
 
@@ -43,19 +44,9 @@ export async function POST(req: Request) {
     return { status: 500, body: { error: "Something went wrong. Please try again." } };
   };
 
-  if (!(req.headers.get("accept") ?? "").includes("application/x-ndjson")) {
+  if (!wantsProgress(req)) {
     try { return Response.json(await run(() => {}), { status: 201 }); }
     catch (e) { const f = fail(e); return Response.json(f.body, { status: f.status }); }
   }
-
-  const enc = new TextEncoder();
-  const stream = new ReadableStream({
-    async start(controller) {
-      const emit = (e: Record<string, unknown>) => controller.enqueue(enc.encode(JSON.stringify(e) + "\n"));
-      try { emit({ done: await run(emit) }); }
-      catch (e) { const f = fail(e); emit({ error: f.body.error, status: f.status, ...f.body }); }
-      controller.close();
-    },
-  });
-  return new Response(stream, { headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store", "X-Accel-Buffering": "no" } });
+  return progressResponse(run, fail);
 }

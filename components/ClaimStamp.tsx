@@ -2,15 +2,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Camera, Check, Loader2 } from "lucide-react";
+import ProgressSteps, { type ProgressStep as Step } from "@/components/ProgressSteps";
 import QrScanner from "@/components/QrScanner";
 import BeeCard from "@/components/BeeCard";
 import { editionOf, rankWebp, tierFor } from "@/lib/milestoneRules";
 import type { Nft } from "@/lib/milestones";
 import { getUserId } from "@/lib/clientUser";
+import { readProgress } from "@/lib/progress";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
 type Result = { stamp: { signature: string | null; claimUrl: string | null; impactNote: string | null; stampClass: "verified" | "presence"; points: number }; passport: { stamps: number; points: number; nextMilestone: number }; nfts: { milestone: number; tier: string; status: string; id: string }[] };
-type Step = { key: string; label: string; hint?: string };
 
 const BASE: Step[] = [
   { key: "verify", label: "Checking your stamp" },
@@ -55,32 +56,14 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
       }
       const body = orderToken ? { placeId: place.id, orderToken, userId: getUserId() } : cardCode ? { cardCode, userId: getUserId() } : { placeId: place.id, userId: getUserId(), ...geo };
       const r = await fetch("/api/claims", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" }, body: JSON.stringify(body) });
-      if (!r.ok || !r.body) throw new Error((await r.json().catch(() => ({}))).error || "Could not collect the stamp");
-
       // Live progress: the server sends one JSON line per step, then {done} or {error}.
-      const reader = r.body.getReader();
-      const dec = new TextDecoder();
-      let buf = "";
-      let result: Result | null = null;
-      for (;;) {
-        const { value, done: end } = await reader.read();
-        buf += dec.decode(value, { stream: !end });
-        const lines = buf.split("\n"); buf = lines.pop() ?? "";
-        for (const line of lines.filter(Boolean)) {
-          const ev = JSON.parse(line);
-          if (ev.step) { if (ev.step === "nft") setSteps([...BASE, NFT_STEP]); setCurrent(ev.step); }
-          else if (ev.error) throw new Error(ev.error);
-          else if (ev.done) result = ev.done;
-        }
-        if (end) break;
-      }
-      if (!result) throw new Error("The connection dropped. Check your passport: your stamp may already be saved.");
+      const result = await readProgress<Result>(r, (step) => { if (step === "nft") setSteps([...BASE, NFT_STEP]); setCurrent(step); })
+        .catch((e: Error) => { throw e.message.startsWith("The connection dropped") ? new Error("The connection dropped. Check your passport: your stamp may already be saved.") : e; });
       setDone(result);
     } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
     setBusy(false);
   }
 
-  const idx = (k: string | null) => steps.findIndex((s) => s.key === k);
   const before = done ? done.passport.points - done.stamp.points : 0;
   const newNfts = done ? done.nfts.filter((n) => n.milestone > before && n.milestone <= done.passport.points) : []; // ranks this stamp unlocked (a verified purchase can unlock several)
   const hero = [...newNfts].sort((a, b) => b.milestone - a.milestone)[0]; // the highest rank this stamp unlocked, shown big beside the stamp on desktop
@@ -126,20 +109,9 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
           )}
           {scanning && <QrScanner onClose={() => setScanning(false)} onPath={(p) => { if (p === location.pathname) { setScanning(false); claim(); return true; } return false; }} />}
           {busy && (
-            <ol className="w-full space-y-2.5 rounded-[28px] bg-white p-4 text-left ring-1 ring-sage-300" aria-live="polite">
-              {locating && <li className="flex items-center gap-3 text-sm font-semibold"><Loader2 size={18} className="animate-spin text-terra-500" /> Checking you&apos;re at {place.name}…</li>}
-              {!locating && steps.map((s, i) => {
-                const state = current === null ? (i === 0 ? "active" : "todo") : i < idx(current) ? "done" : i === idx(current) ? "active" : "todo";
-                return (
-                  <li key={s.key} className={`flex items-start gap-3 text-sm ${state === "todo" ? "text-neutral-400" : "text-ink"}`}>
-                    <span className="mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center">
-                      {state === "done" ? <Check size={18} strokeWidth={3} className="text-sage-600" /> : state === "active" ? <Loader2 size={18} className="animate-spin text-terra-500" /> : <span className="h-2.5 w-2.5 rounded-full bg-neutral-300" />}
-                    </span>
-                    <span><span className={state === "active" ? "font-semibold" : ""}>{s.label}{state === "active" ? "…" : ""}</span>{state === "active" && s.hint && <span className="mt-0.5 block text-xs text-neutral-500">{s.hint}</span>}</span>
-                  </li>
-                );
-              })}
-            </ol>
+            <div className="w-full space-y-2.5 rounded-[28px] bg-white p-4 text-left ring-1 ring-sage-300">
+              {locating ? <p className="flex items-center gap-3 text-sm font-semibold"><Loader2 size={18} className="animate-spin text-terra-500" /> Checking you&apos;re at {place.name}…</p> : <ProgressSteps steps={steps} current={current} />}
+            </div>
           )}
           {err && <p className="rounded-xl bg-terra-100 p-3 text-sm text-terra-800">{err}</p>}
           {!busy && <p className="text-[11px]"><Link href={`/report/${place.id}`} className="text-neutral-400 underline lg:text-sage-800">Not eco? Report this place</Link></p>}

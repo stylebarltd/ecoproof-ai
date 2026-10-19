@@ -105,14 +105,18 @@ export class DeclarationError extends Error {
   constructor(message: string, public status = 400) { super(message); }
 }
 
+export type PublishStep = "check" | "seal" | "anchor";
+
 /** Publishes the saved draft as a new declaration and anchors it. If Solana is down the declaration still counts and its proof
- *  stays pending until anchorDeclaration succeeds. */
-export async function publish(place: { id: string; kind: string; also_cafe: boolean }, draft: Answers, by: string): Promise<DeclarationRow> {
+ *  stays pending until anchorDeclaration succeeds. onStep reports progress for the owner's screen. */
+export async function publish(place: { id: string; kind: string; also_cafe: boolean }, draft: Answers, by: string, onStep?: (s: PublishStep) => void): Promise<DeclarationRow> {
+  onStep?.("check");
   if (!checklist(place.kind, place.also_cafe)) throw new DeclarationError("Only cafés, restaurants and hotels have an eco checklist to publish.");
   const last = (await latestDeclarations([place.id])).get(place.id);
   if (!differsFromPublished(place, draft, last)) throw new DeclarationError("Nothing has changed since your last published declaration.", 409);
   if (publishedToday(last)) throw new DeclarationError("You've already published today. You can publish your changes again tomorrow.", 429);
 
+  onStep?.("seal");
   const d = buildDeclaration(place, draft, (last?.version ?? 0) + 1, by);
   try {
     await insertDeclaration(d);
@@ -120,6 +124,7 @@ export async function publish(place: { id: string; kind: string; also_cafe: bool
     if ((e as { code?: string }).code === "23505") throw new DeclarationError("This was just published from another screen. Reload the page.", 409);
     throw e;
   }
+  onStep?.("anchor");
   return anchorDeclaration(d);
 }
 

@@ -6,6 +6,7 @@ import AccountChip from "@/components/AccountChip";
 import PublishSheet from "@/components/PublishSheet";
 import Stars from "@/components/Stars";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
+import { readProgress } from "@/lib/progress";
 import { PLACE_KINDS, isPhysical, kindOf } from "@/lib/placeKinds";
 import { PRACTICES, checklist, nextStar, rating, type Answers, type Status } from "@/lib/practices";
 import type { Declaration } from "@/lib/declarations";
@@ -100,19 +101,27 @@ export default function PracticesEditor({ id }: { id: string }) {
     return ok;
   }
 
-  /** Saves unsaved changes first, then publishes. Resolves to an error message for the sheet, or null when done. */
-  async function publish(): Promise<string | null> {
-    if (dirty && !(await save())) return "Couldn't save your changes first. Check the message at the bottom of the page.";
-    const r = await fetch(`/api/places/mine/${id}/practices/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: true }) });
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok) return j.error || "Couldn't publish.";
-    apply({ ...setup!, ...j }); setPublishing(false);
-    return null;
+  /** Saves unsaved changes first, then publishes with live progress (as a stamp claim does). Throws with a message for the sheet. */
+  async function publish(onStep: (step: string) => void): Promise<Declaration> {
+    if (dirty) {
+      onStep("save");
+      if (!(await save())) throw new Error("Couldn't save your changes first. Check the message at the bottom of the page.");
+    }
+    const r = await fetch(`/api/places/mine/${id}/practices/publish`, {
+      method: "POST", headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" }, body: JSON.stringify({ confirm: true }),
+    });
+    const res = await readProgress<{ declaration: Declaration; setup: Omit<Setup, "place" | "role"> }>(r, onStep)
+      .catch((e: Error) => { throw e.message.startsWith("The connection dropped") ? new Error("The connection dropped. Reload the page to see whether it was published.") : e; });
+    apply({ ...setup!, ...res.setup });
+    return res.declaration;
   }
 
-  async function retryProof(declId: string) {
+  /** Writes a pending proof to Solana now. Returns the declaration, or null (with a message) if Solana is still slow. */
+  async function retryProof(declId: string): Promise<Declaration | null> {
     const r = await fetch(`/api/declarations/${declId}/anchor`, { method: "POST" });
-    if (r.ok) await load(); else setErr((await r.json().catch(() => ({}))).error || "Solana is slow right now. Try again in a moment.");
+    if (!r.ok) { setErr((await r.json().catch(() => ({}))).error || "Solana is slow right now. Try again in a moment."); return null; }
+    await load();
+    return r.json();
   }
 
   const header = (
@@ -257,7 +266,7 @@ export default function PracticesEditor({ id }: { id: string }) {
         </div>
       )}
       {publishing && live && (
-        <PublishSheet placeName={setup.place.name} rating={live} open={open} unsaved={dirty} version={(pub?.version ?? 0) + 1} onClose={() => setPublishing(false)} onPublish={publish} />
+        <PublishSheet placeId={id} placeName={setup.place.name} rating={live} open={open} unsaved={dirty} version={(pub?.version ?? 0) + 1} onClose={() => setPublishing(false)} onPublish={publish} onRetryProof={retryProof} />
       )}
     </div>
   );
