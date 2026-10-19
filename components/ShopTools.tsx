@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { PublicPlace } from "@/lib/stampPlaces";
+import type { PlaceStars } from "@/lib/placePractices";
 
 // The ways a place gives out stamps: its counter QR, printed cards for parcels, and the WooCommerce connection.
 // Used on /join (right after setting up a place) and in the shop dashboard (/shop/[id]).
@@ -24,7 +25,7 @@ export function CardsButton({ id }: { id: string }) {
   );
 }
 
-export type MyPlace = PublicPlace & { status?: string; statusNote?: string | null; role?: "owner" | "staff" };
+export type MyPlace = PublicPlace & { status?: string; statusNote?: string | null; role?: "owner" | "staff"; stars?: PlaceStars | null };
 type WooSetup = { plugin: { download: string; appUrl: string; placeId: string; secret: string }; webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
 
 /** The plugin's own default; the URL step is only shown when this app runs somewhere else (staging, local). */
@@ -89,7 +90,7 @@ export function WooOption({ id }: { id: string }) {
 /** Staff see everything except the WooCommerce setup, which holds the shop's secret. */
 export function PlaceCard({ p }: { p: MyPlace }) {
   const notice = p.status && p.status !== "active" ? <p className="rounded-xl bg-terra-100 p-2.5 text-xs text-terra-800">{p.status === "suspended" ? "This place was removed from EcoProof." : "This place is paused while we review reports."} {p.statusNote}</p> : null;
-  if (p.kind === "online") {
+  if (p.kind === "online_shop") {
     return (
       <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
         {/* eslint-disable-next-line @next/next/no-img-element */}

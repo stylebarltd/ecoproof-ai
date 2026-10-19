@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CORE_RULES, REPORT_WINDOW_DAYS, REVIEW_THRESHOLD } from "@/lib/ecoRules";
+import { SCALE } from "@/lib/practices";
 
 export const metadata = { title: "Eco rules | EcoProof" };
 
@@ -13,6 +14,13 @@ export default function Rules() {
 
       <h2 className="pt-2 text-[17px]">Who checks?</h2>
       <p>Joining is a promise: owners confirm the rules when they set up their place. We don&apos;t inspect places in person yet, so we rely on customers to tell us when a place doesn&apos;t keep it. &ldquo;Verified&rdquo; on the map means <b>claimed and set up on EcoProof</b>, not independently audited. Real vetting is on our roadmap.</p>
+
+      <h2 id="stars" className="scroll-mt-20 pt-2 text-[17px]">Eco stars</h2>
+      <p>Cafés, restaurants and hotels get up to five eco stars. The owner answers a checklist of practices a visitor can see for themselves, such as real cups for dine-in or no plastic water bottles. Each practice is worth points, out of 100.</p>
+      <p>Some practices don&apos;t exist at every place, like takeaway at a café that has none. Those can be marked not applicable: they are left out, and the score is worked out from the practices that do apply. Eco shops and online shops are listed without stars.</p>
+      <ul className="list-disc space-y-1 pl-5">
+        {SCALE.map((s) => <li key={s.stars}><b>{s.stars ? `${s.stars} star${s.stars === 1 ? "" : "s"}` : s.label}</b>: {s.min} to {s.max} points</li>)}
+      </ul>
 
       <h2 className="pt-2 text-[17px]">Report a place</h2>
       <p>If a place doesn&apos;t keep these rules, open it on the map and tap <b>Report this place</b>. You choose a reason and can add a note. Reports from people who have collected a stamp at the place count most, because they have been there.</p>

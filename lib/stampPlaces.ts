@@ -1,10 +1,11 @@
 import { query } from "./db";
 import { appUrl } from "./nft";
+import { answersFor, starsOf, type PlaceStars } from "./placePractices";
 
 export type StampPlace = {
   id: string; name: string; kind: string; tagline: string | null; impact_note: string | null; image: string | null; colour: string | null;
   lat: number | null; lng: number | null; gps_radius_m: number | null; secret: string; owner: string | null;
-  status: string; status_note: string | null; rules_accepted_at: string | null; demo: boolean;
+  status: string; status_note: string | null; rules_accepted_at: string | null; demo: boolean; address: string | null; also_cafe: boolean;
 };
 export type PublicPlace = { id: string; name: string; kind: string; tagline: string | null; impactNote: string | null; imageUrl: string; claimUrl: string; qrUrl: string; requiresGps: boolean; demo: boolean };
 
@@ -40,8 +41,10 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
   const ring = Array.from({ length: 36 }, (_, i) => { const a = (i / 36) * Math.PI * 2; return `<circle cx="${(128 + 116 * Math.cos(a)).toFixed(1)}" cy="${(128 + 116 * Math.sin(a)).toFixed(1)}" r="6" fill="#f5ead8"/>`; }).join("");
   const glyph = p.kind === "restaurant"
     ? `<circle cx="128" cy="112" r="44" fill="#f5ead8"/><circle cx="128" cy="112" r="30" fill="none" stroke="${c}" stroke-width="5"/><path d="M70 74v34a8 8 0 0 0 8 8v30M78 74v30M86 74v34a8 8 0 0 1-8 8M186 74c-12 8-14 30-8 42h8v28M186 74v70" fill="none" stroke="#f5ead8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`
-    : p.kind === "online"
+    : p.kind === "online_shop"
     ? `<path d="M128 70l50 20v52l-50 20-50-20V90z" fill="#f5ead8"/><path d="M78 90l50 20 50-20M128 110v52" fill="none" stroke="${c}" stroke-width="7" stroke-linejoin="round"/><path d="M103 80l50 20" stroke="${c}" stroke-width="7"/>`
+    : p.kind === "hotel"
+    ? `<path d="M70 150V86M70 124h116v26M186 124v-12a18 18 0 0 0-18-18h-50v30" fill="none" stroke="#f5ead8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="94" cy="108" r="12" fill="#f5ead8"/>`
     : p.kind === "cafe"
     ? `<path d="M84 100h72v34a30 30 0 0 1-30 30h-12a30 30 0 0 1-30-30z" fill="#f5ead8"/><path d="M156 108h12a14 14 0 0 1 0 28h-14" fill="none" stroke="#f5ead8" stroke-width="9" stroke-linecap="round"/><path d="M104 76q-8-12 0-22M128 76q-8-12 0-22" fill="none" stroke="#f5ead8" stroke-width="7" stroke-linecap="round"/>`
     : `<path d="M128 74l38 22v44l-38 22-38-22V96z" fill="#f5ead8"/><path d="M128 100c-14 0-22 10-22 22 0 13 9 22 22 22 12 0 22-9 22-21 0-14-10-23-22-23z" fill="${c}"/>`;
@@ -50,13 +53,18 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${name} stamp"><circle cx="128" cy="128" r="124" fill="${c}"/>${ring}<circle cx="128" cy="128" r="100" fill="none" stroke="#f5ead8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>${inner}${opts.labels === false ? "" : `<text x="128" y="206" text-anchor="middle" font-family="Figtree,system-ui,sans-serif" font-size="22" font-weight="800" fill="#f5ead8">${name}</text>`}</svg>`;
 }
 
-export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number };
+/** stars: null for kinds without stars (eco shops). */
+export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number; stars: PlaceStars | null };
 
 /** Places that have actually joined EcoProof and have a physical location, one entry per location. "Verified" on the map means
  *  claimed and set up on EcoProof (a real owner or partner created it); independent vetting is roadmap. */
 export async function listMapPlaces(): Promise<MapPlace[]> {
-  const rows = await query<{ id: string; name: string; kind: string; tagline: string | null; demo: boolean; lid: number; lname: string | null; lat: number; lng: number }>(
-    "SELECT p.id, p.name, p.kind, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' AND p.kind <> 'online' ORDER BY p.created_at, l.id",
+  const rows = await query<{ id: string; name: string; kind: string; also_cafe: boolean; tagline: string | null; demo: boolean; lid: number; lname: string | null; lat: number; lng: number }>(
+    "SELECT p.id, p.name, p.kind, p.also_cafe, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' AND p.kind <> 'online_shop' ORDER BY p.created_at, l.id",
   );
-  return rows.map((r) => ({ demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, lat: r.lat, lng: r.lng }));
+  const answers = await answersFor([...new Set(rows.map((r) => r.id))]);
+  return rows.map((r) => ({
+    demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`,
+    lat: r.lat, lng: r.lng, stars: starsOf(r.kind, r.also_cafe, answers.get(r.id) ?? {}),
+  }));
 }

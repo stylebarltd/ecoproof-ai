@@ -40,7 +40,7 @@ async function init(p: Pool) {
 /** Launch-partner places (our own place-setup). Upserted on cold start so edits to the JSON take effect; secrets are kept. */
 async function seedStampPlaces(p: Pool) {
   const { randomBytes } = await import("crypto");
-  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; image?: string; demo?: boolean; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null; locations?: { name?: string; lat: number; lng: number }[] }[];
+  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; image?: string; demo?: boolean; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null; locations?: { name?: string; lat: number; lng: number }[]; practices?: Record<string, string> }[];
   for (const x of list) {
     await p.query(
       `INSERT INTO stamp_places (id,name,kind,tagline,impact_note,colour,lat,lng,gps_radius_m,secret,image,demo) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
@@ -49,6 +49,9 @@ async function seedStampPlaces(p: Pool) {
     );
     await p.query("DELETE FROM stamp_place_locations WHERE place_id=$1", [x.id]); // the data file is the source of truth for seeded places (an online shop has no pin)
     for (const l of x.locations ?? []) await p.query("INSERT INTO stamp_place_locations (place_id,name,lat,lng) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING", [x.id, l.name ?? null, l.lat, l.lng]);
+    // Demo answers to the practice checklist, only where none are stored yet: what an owner changes later is kept.
+    const ans = Object.entries(x.practices ?? {});
+    if (ans.length) await p.query("INSERT INTO place_practices (place_id,practice_id,status) SELECT $1, a.id, a.status FROM unnest($2::text[], $3::text[]) AS a(id, status) ON CONFLICT DO NOTHING", [x.id, ans.map((a) => a[0]), ans.map((a) => a[1])]);
   }
 }
 

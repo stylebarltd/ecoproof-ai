@@ -41,8 +41,16 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   a wallet connected later receives what was waiting); PDPA privacy page `/privacy`;
   desktop layouts.
 
+- Eco stars (step 1): `data/practices.json` is the only source of place types, practices,
+  points and the star scale; never hard-code them. Engine `lib/stars.ts` (pure, `npm test`),
+  answers in `place_practices`, owner checklist `/shop/<id>/practices`, public page
+  `/places/<id>`, star pins + filters on `/map`. Kinds: cafe, restaurant, hotel, eco_shop,
+  online_shop (`lib/placeKinds.ts`); only cafe/restaurant/hotel have stars. Keep practice ids
+  stable: answers are stored by id.
+
 ### v2 plans, not built yet
-- Business star ratings / certification. Nothing else is planned yet.
+- Stars steps 2 to 5: customer True/Not true reports (`practice_reports` table exists, no
+  UI), eco shop receipt scanning, places on Solana, certification.
 
 ## Stack
 Next.js 16 (App Router; read `node_modules/next/dist/docs/` first, see AGENTS.md) ·
@@ -57,6 +65,7 @@ cp .env.example .env.local     # fill in the values
 npm run dev                    # http://localhost:3000
 npm run build
 npm run lint
+npm test                       # star engine tests (node --test, no extra deps)
 npm run db:generate            # v2: new migration from lib/schema.ts
 npm run db:migrate             # v2: apply migrations (reads .env.local)
 npx tsx scripts/nft-setup.ts   # one-time: Merkle tree + NFT collection

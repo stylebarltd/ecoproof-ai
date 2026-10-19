@@ -1,10 +1,11 @@
-// Place kinds, shared by server and client. Physical kinds have a location (map pin, GPS check); "online" does not.
+// Place kinds, shared by server and client. Physical kinds have a location (map pin, GPS check); "online_shop" does not.
+// The ids match the place types in data/practices.json, which says which kinds have a practice checklist and stars.
 export const PLACE_KINDS = [
-  { id: "shop", label: "Shop", plural: "Shops", colour: "#e8a317", physical: true },
   { id: "cafe", label: "Café", plural: "Cafés", colour: "#8c491a", physical: true },
   { id: "restaurant", label: "Restaurant", plural: "Restaurants", colour: "#b2622d", physical: true },
-  { id: "market", label: "Market stall", plural: "Markets", colour: "#56633f", physical: true },
-  { id: "online", label: "Online shop", plural: "Online shops", colour: "#3d6b8c", physical: false },
+  { id: "hotel", label: "Hotel / resort", plural: "Hotels", colour: "#6b3f22", physical: true },
+  { id: "eco_shop", label: "Eco shop", plural: "Eco shops", colour: "#e8a317", physical: true },
+  { id: "online_shop", label: "Online shop", plural: "Online shops", colour: "#3d6b8c", physical: false },
 ] as const;
 export type PlaceKind = (typeof PLACE_KINDS)[number]["id"];
 export const kindOf = (id: string) => PLACE_KINDS.find((k) => k.id === id);

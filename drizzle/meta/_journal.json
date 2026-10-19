@@ -22,6 +22,13 @@
       "when": 1792271623359,
       "tag": "0002_shop_members",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792424763875,
+      "tag": "0003_practices",
+      "breakpoints": true
     }
   ]
 }

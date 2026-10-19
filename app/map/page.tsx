@@ -2,8 +2,9 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { BadgeCheck, LocateFixed, MapPin } from "lucide-react";
+import { BadgeCheck, LocateFixed, MapPin, Star } from "lucide-react";
 import StampPlaceSheet from "@/components/StampPlaceSheet";
+import Stars from "@/components/Stars";
 import { kindOf, PLACE_KINDS } from "@/lib/placeKinds";
 import type { MapPlace } from "@/lib/stampPlaces";
 
@@ -26,6 +27,7 @@ export default function MapPage() {
   const [loaded, setLoaded] = useState(false);
   const [sel, setSel] = useState<string | null>(null);
   const [kind, setKind] = useState<string | null>(null);
+  const [minStars, setMinStars] = useState(0); // 0 = any; above 0 hides places without stars (eco shops)
   const [focus, setFocus] = useState<MapPlace | null>(null);
   const deepLinked = useRef(false);
   const [here, setHere] = useState<Here | null>(null); // desktop list: distances, only once the browser shares a location
@@ -53,7 +55,7 @@ export default function MapPage() {
   }, []);
   useEffect(() => { if (sel) document.getElementById(`place-${sel}`)?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, [sel]); // a marker click finds its row
 
-  const shown = places.filter((p) => !kind || p.kind === kind);
+  const shown = places.filter((p) => (!kind || p.kind === kind) && (!minStars || (p.stars?.stars ?? 0) >= minStars));
   const listed = here ? [...shown].sort((a, b) => km(here, a) - km(here, b)) : shown;
   const selected = places.find((p) => key(p) === sel) ?? null;
   const chip = (on: boolean) => `shrink-0 rounded-full px-[11px] py-1.5 text-[11px] font-semibold ${on ? "bg-sage-500 text-cream" : "border-[1.5px] border-neutral-300 text-ink"}`;
@@ -74,8 +76,13 @@ export default function MapPage() {
           <button className={chip(!kind)} onClick={() => setKind(null)}>All</button>
           {KINDS.map((k) => <button key={k.id} className={chip(kind === k.id)} onClick={() => setKind(kind === k.id ? null : k.id)}>{k.plural}</button>)}
         </div>
+        <div className="no-scrollbar -mx-5 flex items-center gap-1.5 overflow-x-auto px-5 md:-mx-8 md:px-8 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0" role="group" aria-label="Minimum eco stars">
+          <span className="flex shrink-0 items-center gap-1 pr-0.5 text-[11px] font-bold text-sage-900"><Star size={12} strokeWidth={2.5} className="fill-honey-500 text-honey-500" /> Stars</span>
+          {[0, 1, 2, 3, 4, 5].map((n) => <button key={n} className={chip(minStars === n)} onClick={() => setMinStars(n)} aria-pressed={minStars === n}>{n === 0 ? "Any" : n === 5 ? "5★" : `${n}★+`}</button>)}
+        </div>
         <div className="flex flex-wrap gap-x-3.5 gap-y-1 text-xs text-neutral-700">
           {KINDS.map((k) => <span key={k.id} className="flex items-center gap-1.5">{dot(k.colour)} {k.label.toLowerCase()}</span>)}
+          <span className="flex items-center gap-1.5"><span className="rounded-full bg-ink px-1 text-[10px] font-extrabold leading-4 text-honey-500">4★</span> eco stars</span>
         </div>
         <p className="text-[11px] leading-snug text-neutral-500 lg:text-sage-900">Verified = claimed and set up on EcoProof by its owner. Independent vetting is on our roadmap. <Link href="/rules" className="underline">Eco rules and reporting</Link></p>
         {/* Desktop place list: picking a row centres it on the map, picking a marker highlights its row */}
@@ -95,6 +102,7 @@ export default function MapPage() {
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5"><span className="truncate font-heading text-[15px] leading-tight">{p.name}</span>{p.demo ? <span className="shrink-0 rounded-full bg-white px-1.5 py-0.5 text-[9px] font-bold uppercase text-sage-800">demo</span> : <BadgeCheck size={15} strokeWidth={2.5} className="shrink-0 text-sage-700" aria-label="Verified" />}</span>
                       <span className="flex items-center gap-1.5 truncate text-[11.5px] text-sage-900">{dot(kindOf(p.kind)?.colour ?? "#e8a317")}{kindOf(p.kind)?.label ?? "Place"}{p.locationName && p.locationName !== p.name ? ` · ${p.locationName}` : ""}</span>
+                      {p.stars && <Stars stars={p.stars.stars} label={p.stars.label} size={12} showLabel className="mt-0.5" />}
                     </span>
                     {here && <span className="shrink-0 text-[11.5px] font-bold text-sage-800">{fmtKm(km(here, p))}</span>}
                   </button>

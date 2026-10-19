@@ -1,4 +1,4 @@
-import { boolean, doublePrecision, index, integer, pgTable, primaryKey, serial, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
+import { boolean, check, doublePrecision, index, integer, pgTable, primaryKey, serial, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 // The database schema. Change it here, then run `npm run db:generate` to write a migration into drizzle/ and review the SQL.
@@ -51,7 +51,7 @@ export const pledges = pgTable("pledges", {
 export const stampPlaces = pgTable("stamp_places", {
   id: text().primaryKey(),
   name: text().notNull(),
-  kind: text().default("shop").notNull(),
+  kind: text().default("eco_shop").notNull(), // lib/placeKinds.ts
   tagline: text(),
   impactNote: text("impact_note"),
   image: text(),
@@ -67,7 +67,12 @@ export const stampPlaces = pgTable("stamp_places", {
   statusAt: at("status_at"),
   rulesAcceptedAt: at("rules_accepted_at"), // owner accepted the eco rules when joining
   demo: boolean().default(false).notNull(), // demo places can be collected by tapping, others only by scanning their QR
-}, (t) => [index("stamp_places_owner").on(t.owner).where(sql`(owner IS NOT NULL)`)]);
+  address: text(),
+  alsoCafe: boolean("also_cafe").default(false).notNull(), // a restaurant that is a café too: its checklist adds the café's serving practices
+}, (t) => [
+  index("stamp_places_owner").on(t.owner).where(sql`(owner IS NOT NULL)`),
+  check("stamp_places_kind", sql`${t.kind} IN ('cafe', 'restaurant', 'hotel', 'eco_shop', 'online_shop')`),
+]);
 
 export const stampPlaceLocations = pgTable("stamp_place_locations", {
   id: serial().primaryKey(),
@@ -249,3 +254,27 @@ export const placeInvites = pgTable("place_invites", {
   acceptedAt: at("accepted_at"),
   acceptedBy: text("accepted_by"),
 }, (t) => [index("place_invites_place").on(t.placeId)]);
+
+// Eco practices and stars. Which practices exist, and their points, live in data/practices.json (ids are stable); this keeps the
+// owner's answer per practice. Stars are computed from it (lib/stars.ts), never stored.
+export const placePractices = pgTable("place_practices", {
+  placeId: text("place_id").notNull(),
+  practiceId: text("practice_id").notNull(),
+  status: text().notNull(), // yes | no | not_applicable
+  updatedAt: at("updated_at").defaultNow().notNull(),
+}, (t) => [
+  primaryKey({ columns: [t.placeId, t.practiceId], name: "place_practices_pkey" }),
+  check("place_practices_status", sql`${t.status} IN ('yes', 'no', 'not_applicable')`),
+]);
+
+/** "Not true" reports from visitors about one practice. No UI yet (step 2); a confirmed report will remove that practice's points. */
+export const practiceReports = pgTable("practice_reports", {
+  id: serial().primaryKey(),
+  placeId: text("place_id").notNull(),
+  practiceId: text("practice_id").notNull(),
+  reporter: text().notNull(), // passport key
+  note: text(),
+  createdAt: at("created_at").defaultNow().notNull(),
+  status: text().default("open").notNull(), // open | confirmed | rejected
+  resolvedAt: at("resolved_at"),
+}, (t) => [index("practice_reports_place").on(t.placeId, t.practiceId)]);

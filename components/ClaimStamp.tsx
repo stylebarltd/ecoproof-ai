@@ -112,12 +112,12 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
                   {!cardCode && !orderToken && !viaQr && place.demo && <p className="text-xs text-neutral-500 lg:text-sage-900">This is a demo place, so you can collect it by tapping. At real places you scan the QR code on the counter.</p>}
                 </>
               ) : (
-                <p className="rounded-2xl bg-cream p-3 text-sm text-neutral-700">To collect a stamp here, <b>scan the QR code</b> {place.kind === "online" ? "on your parcel card" : "at the counter"}. Stamps can&apos;t be collected from this page.</p>
+                <p className="rounded-2xl bg-cream p-3 text-sm text-neutral-700">To collect a stamp here, <b>scan the QR code</b> {place.kind === "online_shop" ? "on your parcel card" : "at the counter"}. Stamps can&apos;t be collected from this page.</p>
               )}
               {!orderToken && !cardCode && !viaQr && (
                 <div>
                 <button onClick={() => setScanning(true)} className={`lift flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-bold ${canTap ? "border-[1.5px] border-neutral-300 bg-white text-ink" : "bg-terra-500 text-cream"}`}>
-                  <Camera size={17} strokeWidth={2.5} /> Scan the QR code at {place.kind === "online" ? "your parcel" : "the counter"}
+                  <Camera size={17} strokeWidth={2.5} /> Scan the QR code at {place.kind === "online_shop" ? "your parcel" : "the counter"}
                 </button>
                 <p className="mt-2.5 hidden text-xs text-sage-900 lg:block">On a computer? Scan the QR with your phone&apos;s camera instead: the stamp lands in that phone&apos;s passport.</p>
                 </div>

@@ -8,6 +8,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const m = await memberOf(req, id, "owner");
   if (m instanceof Response) return m;
   const place = await getPlace(id);
-  if (!place || place.kind !== "online") return Response.json({ error: "Not an online shop" }, { status: 404 });
+  if (!place || place.kind !== "online_shop") return Response.json({ error: "Not an online shop" }, { status: 404 });
   return Response.json(wooSetup(place));
 }

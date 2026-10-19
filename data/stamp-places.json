@@ -2,7 +2,7 @@
   {
     "id": "superbee",
     "name": "SuperBee",
-    "kind": "shop",
+    "kind": "eco_shop",
     "colour": "#e8a317",
     "tagline": "Plastic-free home goods, handmade in Chiang Mai",
     "impactNote": null,
@@ -42,7 +42,27 @@
         "lng": 98.9687
       }
     ],
-    "demo": true
+    "demo": true,
+    "practices": {
+      "cafe_dinein_reusable": "yes",
+      "cafe_no_plastic_water_bottles": "yes",
+      "cafe_no_plastic_straws": "yes",
+      "cafe_free_water": "yes",
+      "cafe_bulk_condiments": "yes",
+      "cafe_plant_milk": "yes",
+      "cafe_metal_spoons": "yes",
+      "cafe_takeaway_cups": "yes",
+      "cafe_takeaway_food_pack": "yes",
+      "cafe_no_plastic_bags": "yes",
+      "cafe_byo_cup_discount": "yes",
+      "cafe_byo_container": "yes",
+      "cafe_cutlery_on_request": "yes",
+      "cafe_cup_deposit": "no",
+      "cafe_no_receipt": "yes",
+      "cafe_recycling_bins": "yes",
+      "cafe_restroom_soap": "yes",
+      "cafe_coffee_grounds": "yes"
+    }
   },
   {
     "id": "demo-restaurant",
@@ -61,7 +81,27 @@
         "lng": 98.9655
       }
     ],
-    "demo": true
+    "demo": true,
+    "practices": {
+      "rest_real_tableware": "yes",
+      "rest_no_plastic_water_bottles": "yes",
+      "rest_sauces_glass": "no",
+      "rest_no_plastic_straws": "yes",
+      "rest_cutlery_unwrapped": "yes",
+      "rest_no_wet_wipes": "no",
+      "rest_free_water": "yes",
+      "rest_no_plastic_tablecloth": "yes",
+      "rest_plant_dishes": "yes",
+      "rest_takeaway_pack": "no",
+      "rest_no_plastic_bags": "no",
+      "rest_no_sauce_bags": "no",
+      "rest_byo_container": "no",
+      "rest_delivery_no_cutlery": "no",
+      "rest_leftovers_pack": "no",
+      "rest_recycling_bins": "yes",
+      "rest_restroom_soap": "no",
+      "rest_no_receipt": "no"
+    }
   },
   {
     "id": "demo-coffee",
@@ -80,6 +120,68 @@
         "lng": 98.993
       }
     ],
-    "demo": true
+    "demo": true,
+    "practices": {
+      "cafe_dinein_reusable": "yes",
+      "cafe_no_plastic_water_bottles": "yes",
+      "cafe_no_plastic_straws": "yes",
+      "cafe_free_water": "yes",
+      "cafe_bulk_condiments": "yes",
+      "cafe_plant_milk": "yes",
+      "cafe_metal_spoons": "yes",
+      "cafe_takeaway_cups": "no",
+      "cafe_takeaway_food_pack": "no",
+      "cafe_no_plastic_bags": "no",
+      "cafe_byo_cup_discount": "yes",
+      "cafe_byo_container": "no",
+      "cafe_cutlery_on_request": "no",
+      "cafe_cup_deposit": "no",
+      "cafe_no_receipt": "no",
+      "cafe_recycling_bins": "yes",
+      "cafe_restroom_soap": "no",
+      "cafe_coffee_grounds": "yes"
+    }
+  },
+  {
+    "id": "demo-hotel",
+    "name": "Demo Riverside Resort",
+    "kind": "hotel",
+    "colour": "#6b3f22",
+    "tagline": "Refill stations, bar soap and glass bottles in every room",
+    "impactNote": null,
+    "lat": 18.7905,
+    "lng": 99.0045,
+    "gpsRadiusM": null,
+    "locations": [
+      {
+        "name": "Demo Riverside Resort",
+        "lat": 18.7905,
+        "lng": 99.0045
+      }
+    ],
+    "demo": true,
+    "practices": {
+      "hotel_refill_toiletries": "yes",
+      "hotel_no_plastic_water_bottles": "yes",
+      "hotel_amenities_on_request": "yes",
+      "hotel_minibar_glass": "yes",
+      "hotel_linen_reuse": "yes",
+      "hotel_toothpaste": "yes",
+      "hotel_glasses_unwrapped": "yes",
+      "hotel_coffee_tea": "yes",
+      "hotel_slippers": "yes",
+      "hotel_laundry_bag": "yes",
+      "hotel_no_portion_packs": "yes",
+      "hotel_real_tableware": "yes",
+      "hotel_no_plastic_straws": "yes",
+      "hotel_pool_bar_glasses": "not_applicable",
+      "hotel_refill_stations": "yes",
+      "hotel_spa_refill": "no",
+      "hotel_recycling_public": "no",
+      "hotel_bikes_shuttle": "no",
+      "hotel_key_cards": "no",
+      "hotel_shop_no_bags": "no",
+      "hotel_eco_card": "no"
+    }
   }
 ]

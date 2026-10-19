@@ -1,0 +1,121 @@
+{
+  "version": "2026-10-17",
+  "country": "TH",
+  "stars": {
+    "scale": [
+      { "min": 0, "max": 19, "stars": 0, "label": "Listed" },
+      { "min": 20, "max": 39, "stars": 1 },
+      { "min": 40, "max": 59, "stars": 2 },
+      { "min": 60, "max": 74, "stars": 3 },
+      { "min": 75, "max": 89, "stars": 4 },
+      { "min": 90, "max": 100, "stars": 5 }
+    ],
+    "notes": "Points out of 100 per place type. Items marked not applicable by the owner are removed and the score is normalised to 100 from the remaining items. Confirmed 'Not true' reports remove that item's points. Only visitor-checkable practices count for stars."
+  },
+  "placeTypes": {
+    "cafe": {
+      "label": "Café / coffee shop",
+      "hasStars": true,
+      "groups": [
+        { "id": "serving", "label": "Serving", "items": [
+          { "id": "cafe_dinein_reusable", "label": "Ceramic or glass for dine-in, no disposable cups", "points": 12 },
+          { "id": "cafe_no_plastic_water_bottles", "label": "No water served or sold in single-use plastic bottles", "points": 12 },
+          { "id": "cafe_no_plastic_straws", "label": "No plastic straws (coconut leaf, rice, bamboo, glass, steel, or none)", "points": 9 },
+          { "id": "cafe_free_water", "label": "Free drinking water in a jug, glass or refill station", "points": 7 },
+          { "id": "cafe_bulk_condiments", "label": "Sugar, milk and syrups in bulk, no sachets or capsules", "points": 5 },
+          { "id": "cafe_plant_milk", "label": "Offers plant milk", "points": 3 },
+          { "id": "cafe_metal_spoons", "label": "Metal spoons, no plastic stirrers", "points": 2 }
+        ]},
+        { "id": "takeaway", "label": "Takeaway", "items": [
+          { "id": "cafe_takeaway_cups", "label": "Plastic-free takeaway cups and lids, no plastic sealing film", "points": 9, "notApplicableAllowed": true },
+          { "id": "cafe_takeaway_food_pack", "label": "Plastic-free food packaging (paper, banana leaf), no styrofoam", "points": 9, "notApplicableAllowed": true },
+          { "id": "cafe_no_plastic_bags", "label": "No plastic carry bags", "points": 7, "notApplicableAllowed": true },
+          { "id": "cafe_byo_cup_discount", "label": "Bring your own cup welcome, with a discount", "points": 7 },
+          { "id": "cafe_byo_container", "label": "Your own container welcome", "points": 4, "notApplicableAllowed": true },
+          { "id": "cafe_cutlery_on_request", "label": "Napkins and cutlery only on request, never plastic", "points": 4, "notApplicableAllowed": true },
+          { "id": "cafe_cup_deposit", "label": "Cup deposit or return scheme", "points": 2 },
+          { "id": "cafe_no_receipt", "label": "No paper receipt unless asked", "points": 1 }
+        ]},
+        { "id": "around", "label": "Around the café", "items": [
+          { "id": "cafe_recycling_bins", "label": "Recycling bins for customers", "points": 3 },
+          { "id": "cafe_restroom_soap", "label": "Hand soap bar or refill dispenser in the restroom", "points": 2, "notApplicableAllowed": true },
+          { "id": "cafe_coffee_grounds", "label": "Coffee grounds free for customers to take", "points": 2 }
+        ]}
+      ]
+    },
+    "restaurant": {
+      "label": "Restaurant",
+      "hasStars": true,
+      "groups": [
+        { "id": "dinein", "label": "Dine-in", "items": [
+          { "id": "rest_real_tableware", "label": "Real plates, bowls, glasses and cutlery, no foam or plastic tableware", "points": 12 },
+          { "id": "rest_no_plastic_water_bottles", "label": "No water served or sold in single-use plastic bottles", "points": 12 },
+          { "id": "rest_sauces_glass", "label": "Sauces in glass jars or bottles (ketchup, mustard, chilli, fish sauce), no sachets", "points": 7 },
+          { "id": "rest_no_plastic_straws", "label": "No plastic straws (coconut leaf, rice, bamboo, glass, steel, or none)", "points": 7 },
+          { "id": "rest_cutlery_unwrapped", "label": "Cutlery not wrapped in plastic bags (bare, in a holder, or in cloth or paper)", "points": 6 },
+          { "id": "rest_no_wet_wipes", "label": "No packaged wet wipes in plastic, cloth towels or none", "points": 6 },
+          { "id": "rest_free_water", "label": "Free drinking water in a jug or glass", "points": 6 },
+          { "id": "rest_no_plastic_tablecloth", "label": "No plastic tablecloths or plastic film on tables", "points": 3 },
+          { "id": "rest_plant_dishes", "label": "Vegetarian or plant-based dishes on the menu", "points": 3 }
+        ]},
+        { "id": "takeaway", "label": "Takeaway and delivery", "items": [
+          { "id": "rest_takeaway_pack", "label": "Plastic-free takeaway packaging (paper, banana leaf), no styrofoam", "points": 11, "notApplicableAllowed": true },
+          { "id": "rest_no_plastic_bags", "label": "No plastic carry bags", "points": 6, "notApplicableAllowed": true },
+          { "id": "rest_no_sauce_bags", "label": "No plastic sauce bags with takeaway", "points": 5, "notApplicableAllowed": true },
+          { "id": "rest_byo_container", "label": "Your own container welcome", "points": 4, "notApplicableAllowed": true },
+          { "id": "rest_delivery_no_cutlery", "label": "Delivery without cutlery by default, never plastic", "points": 4, "notApplicableAllowed": true },
+          { "id": "rest_leftovers_pack", "label": "Leftovers packed in a plastic-free container", "points": 3 }
+        ]},
+        { "id": "around", "label": "Around the restaurant", "items": [
+          { "id": "rest_recycling_bins", "label": "Recycling bins for customers", "points": 2 },
+          { "id": "rest_restroom_soap", "label": "Hand soap bar or refill dispenser in the restroom", "points": 2, "notApplicableAllowed": true },
+          { "id": "rest_no_receipt", "label": "No paper receipt unless asked", "points": 1 }
+        ]}
+      ]
+    },
+    "hotel": {
+      "label": "Hotel / resort",
+      "hasStars": true,
+      "notes": "Hotels and resorts share this list. A hotel restaurant open to the public can be listed separately as a restaurant.",
+      "groups": [
+        { "id": "room", "label": "In the room", "items": [
+          { "id": "hotel_refill_toiletries", "label": "Soap, shampoo and shower gel in refillable dispensers or as bars, no mini bottles", "points": 12 },
+          { "id": "hotel_no_plastic_water_bottles", "label": "No plastic water bottles: refillable glass bottles or a water dispenser on each floor", "points": 12 },
+          { "id": "hotel_amenities_on_request", "label": "Toothbrush, comb, razor and shower cap only on request, plastic-free (bamboo, wood)", "points": 8 },
+          { "id": "hotel_minibar_glass", "label": "Minibar with glass bottles or cans, no plastic bottles", "points": 5, "notApplicableAllowed": true },
+          { "id": "hotel_linen_reuse", "label": "Guests choose towel and linen reuse", "points": 5 },
+          { "id": "hotel_toothpaste", "label": "Toothpaste tabs or toothpaste in a glass jar, no mini tubes", "points": 3 },
+          { "id": "hotel_glasses_unwrapped", "label": "Glasses not wrapped in plastic film", "points": 3 },
+          { "id": "hotel_coffee_tea", "label": "Coffee and tea without capsules or plastic sachets", "points": 3, "notApplicableAllowed": true },
+          { "id": "hotel_slippers", "label": "Washable or natural-fibre slippers, not in plastic bags", "points": 3, "notApplicableAllowed": true },
+          { "id": "hotel_laundry_bag", "label": "Laundry bag of cloth or paper, not plastic", "points": 2, "notApplicableAllowed": true }
+        ]},
+        { "id": "dining", "label": "Breakfast and dining", "items": [
+          { "id": "hotel_no_portion_packs", "label": "Breakfast without single-portion packs: butter, jam, honey and sauces in jars or bowls", "points": 8, "notApplicableAllowed": true },
+          { "id": "hotel_real_tableware", "label": "Real plates, glasses and cutlery, no plastic", "points": 6, "notApplicableAllowed": true },
+          { "id": "hotel_no_plastic_straws", "label": "No plastic straws", "points": 4 }
+        ]},
+        { "id": "grounds", "label": "Pool, spa and grounds", "items": [
+          { "id": "hotel_pool_bar_glasses", "label": "Pool or beach bar with real glasses or reusable cups", "points": 5, "notApplicableAllowed": true },
+          { "id": "hotel_refill_stations", "label": "Free water refill stations in lobby, pool and gym", "points": 5 },
+          { "id": "hotel_spa_refill", "label": "Spa products in refillable dispensers, no single-use packs", "points": 4, "notApplicableAllowed": true },
+          { "id": "hotel_recycling_public", "label": "Recycling bins in public areas", "points": 3 },
+          { "id": "hotel_bikes_shuttle", "label": "Bikes for guests, or a free shuttle", "points": 3 },
+          { "id": "hotel_key_cards", "label": "Wooden or reusable key cards", "points": 2 },
+          { "id": "hotel_shop_no_bags", "label": "Hotel shop without plastic bags", "points": 2, "notApplicableAllowed": true },
+          { "id": "hotel_eco_card", "label": "Card in the room explaining the hotel's eco practices", "points": 2 }
+        ]}
+      ]
+    },
+    "eco_shop": {
+      "label": "Eco shop",
+      "hasStars": false,
+      "notes": "Map entry only. Purchases verified by receipt scan: GPS within ~100 m of registered location, shop name on receipt matches, receipt dated today, receipt fingerprint (shop + receipt no. + date/time + total) blocks reuse. AI extracts line items and calculates CO2/plastic saved; unreadable receipts give a stamp without impact."
+    },
+    "online_shop": {
+      "label": "Online shop",
+      "hasStars": false,
+      "notes": "Existing order webhook + signed claim link/QR in the order email."
+    }
+  }
+}

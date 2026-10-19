@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { hasStars } from "@/lib/practices";
 import { useCallback, useEffect, useState } from "react";
 import AccountChip from "@/components/AccountChip";
 import { currentAccount } from "@/lib/account";
@@ -16,7 +17,7 @@ export default function Join() {
   const [signedIn, setSignedIn] = useState<boolean | undefined>(undefined);
   const [mine, setMine] = useState<MyPlace[]>([]);
   const [name, setName] = useState("");
-  const [kind, setKind] = useState("shop");
+  const [kind, setKind] = useState("cafe");
   const [tagline, setTagline] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
   const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(null);
@@ -66,6 +67,9 @@ export default function Join() {
         <>
           <p className="rounded-xl bg-sage-200 p-3 text-sm font-semibold text-sage-900">🎉 {created.place.name} is set up{created.onMap ? " and on the map" : ""}. Put the QR where customers can scan it.</p>
           <PlaceCard p={created.place} />
+          {hasStars(created.place.kind) && (
+            <Link href={`/shop/${created.place.id}/practices`} className="block w-full rounded-full bg-terra-500 py-2.5 text-center text-sm font-bold text-cream">Next: tick your eco practices to earn stars</Link>
+          )}
           <Link href={`/shop/${created.place.id}`} className="block w-full rounded-full bg-sage-500 py-2.5 text-center text-sm font-bold text-cream">Open its dashboard</Link>
           <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setRules(false); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
         </>
