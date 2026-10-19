@@ -33,9 +33,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 
 ### Built on `v2`, not live yet
 - Drizzle migrations (`drizzle/`, `lib/schema.ts`); Vercel build runs `db:migrate` first.
-- Accounts via Better Auth: Solana wallet or Google (`lib/auth.ts`). The Google button
-  only appears when `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` are set; Google OAuth
-  setup is still pending (Pola's to-do).
+- Accounts via Better Auth: Solana wallet, Google or Facebook (`lib/auth.ts`). Each social
+  button only appears when its `*_CLIENT_ID`/`*_CLIENT_SECRET` are set. Google keys are set
+  locally and on Preview; the Facebook (Meta) app is still Pola's to-do. Facebook isn't a
+  trusted provider (unverified emails), so it never auto-joins an account by email.
 - Shop owners and staff with a "My shop" dashboard; NFT claiming ("My Bee Guardians",
   a wallet connected later receives what was waiting); PDPA privacy page `/privacy`;
   desktop layouts.

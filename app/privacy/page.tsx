@@ -8,7 +8,7 @@ export const metadata = {
 const PRIVACY_EMAIL = "privacy@superbee.me";
 const UPDATED = "18 October 2026";
 
-const H2 = ({ children }: { children: React.ReactNode }) => <h2 className="pt-2 text-[17px]">{children}</h2>;
+const H2 = ({ id, children }: { id?: string; children: React.ReactNode }) => <h2 id={id} className="scroll-mt-20 pt-2 text-[17px]">{children}</h2>;
 const Mail = () => <a href={`mailto:${PRIVACY_EMAIL}`} className="font-bold underline">{PRIVACY_EMAIL}</a>;
 
 export default function Privacy() {
@@ -25,7 +25,7 @@ export default function Privacy() {
         <p className="font-semibold">The short version</p>
         <ul className="list-disc space-y-1 pl-5">
           <li>You can collect stamps without an account. Then we only know a random ID stored in your browser.</li>
-          <li>Signing in with Google gives us your name, email and profile picture. Signing in with a wallet gives us only its public address.</li>
+          <li>Signing in with Google or Facebook gives us your name, email and profile picture. Signing in with a wallet gives us only its public address.</li>
           <li>Your location is used once, to check you are at a place when you collect its stamp. We don&apos;t store it.</li>
           <li>Each stamp&apos;s proof on Solana is a fingerprint (a hash): it contains no name, email or location.</li>
           <li>No ads, no tracking or analytics tools, and we never sell your data.</li>
@@ -49,7 +49,8 @@ export default function Privacy() {
           sends nothing to us.
         </li>
         <li>
-          <b>Your account, if you sign in.</b> With Google: your name, email address, profile picture and Google account ID. With a Solana
+          <b>Your account, if you sign in.</b> With Google or Facebook: your name, email address (if the account has one), profile picture and
+          account ID there. With a Solana
           wallet: its public address (you sign a free message to prove it is yours; we never see your keys). While you are signed in we keep a
           session with your IP address and browser type, so you can see and end sessions and we can spot misuse.
         </li>
@@ -67,7 +68,7 @@ export default function Privacy() {
       <p>
         Under the PDPA we rely on: providing the service you asked for (your passport, stamps, account and shop), our legitimate interest in
         keeping it fair and secure (the location check, duplicate and misuse checks), and your consent where we ask for it (sharing your
-        location, signing in with Google). You can withdraw consent at any time; it doesn&apos;t affect what was done before.
+        location, signing in with Google or Facebook). You can withdraw consent at any time; it doesn&apos;t affect what was done before.
       </p>
 
       <H2>What is public on the blockchain</H2>
@@ -88,7 +89,7 @@ export default function Privacy() {
       <H2>Who else handles your data</H2>
       <ul className="list-disc space-y-1.5 pl-5">
         <li><b>Vercel</b> runs the website, and <b>Neon</b> runs our database. Both store data in the United States.</li>
-        <li><b>Google</b>, only if you choose to sign in with Google.</li>
+        <li><b>Google</b> or <b>Meta</b> (Facebook), only if you choose to sign in with them.</li>
         <li><b>Anthropic</b> (AI) estimates what a shop&apos;s products replace, from product names and descriptions. No customer data is sent.</li>
         <li><b>Solana</b> network nodes receive the proofs and NFTs described above.</li>
         <li><b>OpenStreetMap</b> supplies the map images. Your browser loads them directly, so OpenStreetMap sees your IP address.</li>
@@ -115,7 +116,8 @@ export default function Privacy() {
         <li>Shop details: until the place is removed. Reports: as long as needed to review them.</li>
       </ul>
 
-      <H2>Your rights</H2>
+      {/* Meta asks for a data deletion instructions URL for Facebook sign-in: /privacy#your-rights */}
+      <H2 id="your-rights">Your rights</H2>
       <p>
         Under the PDPA you can ask to see a copy of your data, correct it, delete it, receive it in a usable format, object to or limit how we
         use it, and withdraw consent. You can delete your account yourself from the account menu (<b>Delete account</b>). For anything else,

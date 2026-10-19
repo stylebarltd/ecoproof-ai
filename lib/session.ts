@@ -22,10 +22,10 @@ export type Session = {
   /** The account (Better Auth user id). Null for a session from before accounts, until it is upgraded (app/api/auth/me). */
   userId: string | null;
   name: string | null;
-  /** A real email (Google); wallet-only accounts have none. */
+  /** A real email (Google, Facebook); wallet-only accounts have none. */
   email: string | null;
   image: string | null;
-  /** How this account can sign in: "solana", "google". */
+  /** How this account can sign in: "solana", "google", "facebook". */
   methods: string[];
 };
 

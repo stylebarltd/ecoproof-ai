@@ -3,7 +3,7 @@ import { PublicKey } from "@solana/web3.js";
 // The ids a passport can be keyed by. Records keep whichever id they were collected under (their proof hash covers it):
 //   a device id   random UUID made on the phone; works like a password for an anonymous passport, never published
 //   a wallet      Solana address; public
-//   an account    "u_" + the account's id, for accounts without a wallet (signed in with Google)
+//   an account    "u_" + the account's id, for accounts without a wallet (signed in with Google or Facebook)
 
 const WALLET_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 

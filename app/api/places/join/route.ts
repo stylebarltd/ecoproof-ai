@@ -17,7 +17,7 @@ function validLogo(dataUrl: string): boolean {
 }
 
 /**
- * Self-serve place setup. The owner signs in (wallet or Google), then submits name, kind, one-line tagline and a logo.
+ * Self-serve place setup. The owner signs in (wallet, Google or Facebook), then submits name, kind, one-line tagline and a logo.
  * The place appears on the map straight away as "claimed and set up" (not independently vetted). Physical places always get the GPS check.
  */
 export async function POST(req: Request) {

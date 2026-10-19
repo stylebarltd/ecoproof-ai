@@ -197,7 +197,7 @@ export const authSession = pgTable("auth_session", {
   userId: text("user_id").notNull().references(() => authUser.id, { onDelete: "cascade" }),
 }, (t) => [index("auth_session_user").on(t.userId)]);
 
-/** One row per sign-in method of an account: providerId "solana" (accountId = the wallet address) or "google". */
+/** One row per sign-in method of an account: providerId "solana" (accountId = the wallet address) "google" or "facebook". */
 export const authAccount = pgTable("auth_account", {
   id: text().primaryKey(),
   accountId: text("account_id").notNull(),
@@ -214,7 +214,7 @@ export const authAccount = pgTable("auth_account", {
   updatedAt: at("updated_at").defaultNow().notNull(),
 }, (t) => [
   index("auth_account_user").on(t.userId),
-  uniqueIndex("auth_account_provider").on(t.providerId, t.accountId), // a wallet (or Google login) belongs to one account only
+  uniqueIndex("auth_account_provider").on(t.providerId, t.accountId), // a wallet (or Google or Facebook login) belongs to one account only
 ]);
 
 export const authVerification = pgTable("auth_verification", {

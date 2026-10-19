@@ -53,7 +53,7 @@ export default function AcceptInvite({ params }: { params: Promise<{ token: stri
             <button onClick={accept} disabled={busy} className="lift w-full rounded-full bg-honey-500 py-3 font-heading text-[15px] text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] disabled:opacity-60">{busy ? "Joining…" : invite.role === "owner" ? "Accept and take over" : "Accept and join"}</button>
           ) : (
             <div className="glass space-y-3 rounded-[22px] p-4">
-              <p className="text-sm font-semibold">Sign in first, with Google or a Solana wallet.</p>
+              <p className="text-sm font-semibold">Sign in first, with Google, Facebook or a Solana wallet.</p>
               <div className="flex justify-center"><AccountChip onChange={load} /></div>
             </div>
           )}

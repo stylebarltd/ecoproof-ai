@@ -110,8 +110,8 @@ export default function About() {
         <P>Both kinds live in the same passport.</P>
 
         <H3>4. Sign in to keep your passport and NFTs</H3>
-        <P>You can collect stamps without signing in. To keep your passport on every device, tap <b>Sign in</b> and choose Google or a Solana wallet (Phantom and Solflare both work). With a wallet you only sign a short free message: no fee, no funds move, and we never see your keys. On a phone, the wallet app opens, you approve, and it brings you back. Anything you collected before signing in is added to your passport.</P>
-        <P>To <b>receive your NFTs</b> you need a wallet. Signed in with Google? Your Bee Guardians wait in your passport until you connect one from the account menu, and then they&apos;re minted to it.</P>
+        <P>You can collect stamps without signing in. To keep your passport on every device, tap <b>Sign in</b> and choose Google, Facebook or a Solana wallet (Phantom and Solflare both work). With a wallet you only sign a short free message: no fee, no funds move, and we never see your keys. On a phone, the wallet app opens, you approve, and it brings you back. Anything you collected before signing in is added to your passport.</P>
+        <P>To <b>receive your NFTs</b> you need a wallet. Signed in with Google or Facebook? Your Bee Guardians wait in your passport until you connect one from the account menu, and then they&apos;re minted to it.</P>
 
         <H3>5. Share it, find places, report problems</H3>
         <ul className="mt-1 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
@@ -152,7 +152,7 @@ export default function About() {
 
         <H3>Set up a shop or café in a few minutes</H3>
         <Steps items={[
-          { title: "Sign in.", body: <>With Google or a Solana wallet. It&apos;s how you sign in as the owner, and it&apos;s free.</> },
+          { title: "Sign in.", body: <>With Google, Facebook or a Solana wallet. It&apos;s how you sign in as the owner, and it&apos;s free.</> },
           { title: "Open Set up a place.", body: <>Go to <Link href="/join" className="font-bold underline">Run a place?</Link> from the map. Enter your name, whether you&apos;re a shop, café, restaurant, market stall or online shop, a one-line tagline, and upload your logo.</> },
           { title: "Add your location.", body: <>Physical places share their location while standing in the shop. It puts you on the map, and stamps are only given to people who are really there (a GPS check, always on).</> },
           { title: "Print your QR.", body: <>You get your stamp, your QR code and a print-ready counter card. Put it where customers can scan it. One stamp per customer per day.</> },
@@ -207,8 +207,8 @@ export default function About() {
         <Faq q="It says I already collected a stamp today.">A place gives one stamp per person per day. Come back tomorrow. Parcel cards and orders work once each.</Faq>
         <Faq q="Why does it ask for my location?">Places set up by their owners check that you are really there. Your location is used for that check only.</Faq>
         <Faq q="The camera doesn't open inside my wallet app.">Wallet apps often block the camera in their built-in browser. Open EcoProof in Safari or Chrome instead, or point your phone&apos;s own camera app at the QR code. Connecting your wallet from Safari or Chrome works too: the wallet app opens and brings you back.</Faq>
-        <Faq q="What data do you keep?">Your passport (a device ID, or your account: Google name and email, or wallet address) and your stamps. For online orders we keep only the order number and the products and quantities, never names, emails, addresses or prices. The details are in our <Link href="/privacy" className="font-bold underline">privacy page</Link>.</Faq>
-        <Faq q="What if I lose my phone?">If you signed in (with Google or a wallet), sign in the same way on the new device and your passport is back. A passport that was never signed in stays on the old device.</Faq>
+        <Faq q="What data do you keep?">Your passport (a device ID, or your account: Google or Facebook name and email, or wallet address) and your stamps. For online orders we keep only the order number and the products and quantities, never names, emails, addresses or prices. The details are in our <Link href="/privacy" className="font-bold underline">privacy page</Link>.</Faq>
+        <Faq q="What if I lose my phone?">If you signed in (with Google, Facebook or a wallet), sign in the same way on the new device and your passport is back. A passport that was never signed in stays on the old device.</Faq>
         <Faq q="I run a shop. How do I join?">Open <Link href="/join" className="font-bold underline">Run a place?</Link>, sign in and follow the steps. Read the <Link href="/rules" className="font-bold underline">eco rules</Link> first.</Faq>
       </Panel>
 

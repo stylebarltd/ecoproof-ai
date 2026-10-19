@@ -13,13 +13,15 @@ export const SOLANA_PROVIDER = "solana";
 
 /** Better Auth wants a unique email per user. Wallet-only accounts get one that can never receive mail. */
 const placeholderEmail = (address: string) => `wallet-${createHash("sha256").update(address).digest("hex").slice(0, 32)}@wallet.ecoproof.invalid`;
-export const isPlaceholderEmail = (email: string) => email.endsWith("@wallet.ecoproof.invalid");
+/** For a Facebook account without an email: Better Auth needs one per user. */
+export const socialPlaceholderEmail = (provider: string, id: string) => `${provider}-${createHash("sha256").update(id).digest("hex").slice(0, 32)}@social.ecoproof.invalid`;
+export const isPlaceholderEmail = (email: string) => email.endsWith(".ecoproof.invalid");
 
 export const solanaWallet = () => ({
   id: "solana-wallet",
   endpoints: {
     /**
-     * A verified wallet signs in. Signed in already (e.g. with Google): the wallet is added to that account instead.
+     * A verified wallet signs in. Signed in already (e.g. with Google or Facebook): the wallet is added to that account instead.
      * A wallet that belongs to a different account is refused rather than silently switching accounts.
      */
     walletSession: createAuthEndpoint.serverOnly({ method: "POST", body: z.object({ address: z.string() }) }, async (ctx) => {

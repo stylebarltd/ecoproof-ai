@@ -1,23 +1,26 @@
-// Browser side of accounts: who is signed in, Google sign-in (Better Auth, under /api/account), signing out, deleting the account.
+// Browser side of accounts: who is signed in, Google and Facebook sign-in (Better Auth, under /api/account), signing out, deleting the account.
 // Wallet sign-in lives in lib/wallet.ts and lib/walletLogin.ts.
+
+export type Social = "google" | "facebook";
+export const SOCIAL_NAME: Record<Social, string> = { google: "Google", facebook: "Facebook" };
 
 export type Account = {
   signedIn: boolean;
   /** The account's wallet, if it has one. */
   address: string | null;
   name: string | null;
-  /** A real email (Google); null for wallet-only accounts. */
+  /** A real email (Google, Facebook); null for wallet-only accounts. */
   email: string | null;
   image: string | null;
-  /** Sign-in methods on this account: "solana", "google". */
+  /** Sign-in methods on this account: "solana", "google", "facebook". */
   methods: string[];
-  /** Whether the site offers Google sign-in. */
-  google: boolean;
+  /** The social sign-ins the site offers. */
+  social: Social[];
   /** Places they run (owner or staff). */
   shops: number;
 };
 
-const SIGNED_OUT: Account = { signedIn: false, address: null, name: null, email: null, image: null, methods: [], google: false, shops: 0 };
+const SIGNED_OUT: Account = { signedIn: false, address: null, name: null, email: null, image: null, methods: [], social: [], shops: 0 };
 
 export async function currentAccount(): Promise<Account> {
   const r = await fetch("/api/auth/me", { cache: "no-store" });
@@ -35,33 +38,36 @@ async function post(path: string, body: unknown = {}) {
   return j;
 }
 
-// Google sends the person away and back. This flag tells the page they came back from it, so it can attach the device's passport.
+// Google and Facebook send the person away and back. This flag (the provider) tells the page they came back, so it can attach the device's passport.
 const RETURN_KEY = "ecoproof-oauth-return";
 
-/** Sign in with Google, or (signed in already) add Google to this account. Leaves the page. */
-export async function continueWithGoogle(mode: "sign-in" | "link") {
+/** Sign in with Google or Facebook, or (signed in already) add it to this account. Leaves the page. */
+export async function continueWith(provider: Social, mode: "sign-in" | "link") {
   const here = location.pathname + location.search;
-  const j = await post(mode === "link" ? "/api/account/link-social" : "/api/account/sign-in/social", { provider: "google", callbackURL: here, errorCallbackURL: here });
-  if (!j.url) throw new Error("Couldn't start Google sign-in.");
-  try { localStorage.setItem(RETURN_KEY, String(Date.now())); } catch { /* the device passport is attached on the next wallet or Google sign-in */ }
+  const j = await post(mode === "link" ? "/api/account/link-social" : "/api/account/sign-in/social", { provider, callbackURL: here, errorCallbackURL: here });
+  if (!j.url) throw new Error(`Couldn't start ${SOCIAL_NAME[provider]} sign-in.`);
+  try { localStorage.setItem(RETURN_KEY, `${provider}:${Date.now()}`); } catch { /* the device passport is attached on the next sign-in */ }
   location.href = j.url;
 }
 
-/** Just back from Google? Returns the error Google sign-in ended with, if any, and clears the flag. Null when not returning. */
-export function takeGoogleReturn(): { error: string | null } | null {
-  let at: string | null = null;
-  try { at = localStorage.getItem(RETURN_KEY); localStorage.removeItem(RETURN_KEY); } catch { return null; }
+/** Just back from Google or Facebook? Returns the error that sign-in ended with, if any, and clears the flag. Null when not returning. */
+export function takeSocialReturn(): { error: string | null } | null {
+  let flag: string | null = null;
+  try { flag = localStorage.getItem(RETURN_KEY); localStorage.removeItem(RETURN_KEY); } catch { return null; }
+  const [provider, at] = flag?.includes(":") ? flag.split(":") : ["google", flag];
   if (!at || Date.now() - Number(at) > 15 * 60_000) return null;
   const q = new URLSearchParams(location.search);
   const code = q.get("error");
   if (code) { q.delete("error"); q.delete("error_description"); history.replaceState(null, "", location.pathname + (q.size ? `?${q}` : "")); }
-  return { error: code ? googleError(code) : null };
+  return { error: code ? socialError(SOCIAL_NAME[provider as Social] ?? "That", code) : null };
 }
 
-function googleError(code: string) {
-  if (/already_linked|linked_to_another|account_not_linked/i.test(code)) return "That Google account already belongs to another EcoProof account.";
-  if (/access_denied|cancel/i.test(code)) return "Google sign-in was cancelled.";
-  return "Google sign-in didn't complete. Please try again.";
+function socialError(name: string, code: string) {
+  if (/already_linked|linked_to_another/i.test(code)) return `That ${name} account already belongs to another EcoProof account.`;
+  // An unverified email (Facebook) that matches an existing account isn't joined to it automatically.
+  if (/account_not_linked/i.test(code)) return `An EcoProof account already uses that ${name} email. Sign in the way you did before, then connect ${name} from the account menu.`;
+  if (/access_denied|cancel/i.test(code)) return `${name} sign-in was cancelled.`;
+  return `${name} sign-in didn't complete. Please try again.`;
 }
 
 export async function signOut() {

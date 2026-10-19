@@ -4,7 +4,8 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Check, ChevronRight, Copy, Gem, Loader2, LogOut, ShieldCheck, Smartphone, Store, UserRound, Wallet, X } from "lucide-react";
 import { deepLinks, detectWallets, isMobile, linkDevicePassport, shortAddress, signInWith, type WalletInfo } from "@/lib/wallet";
-import { accountLabel, continueWithGoogle, currentAccount, deleteAccount, signOut, signOutEverywhere, takeGoogleReturn, type Account } from "@/lib/account";
+import { accountLabel, continueWith, currentAccount, deleteAccount, signOut, signOutEverywhere, SOCIAL_NAME, takeSocialReturn, type Account, type Social } from "@/lib/account";
+import { FacebookIcon } from "@/components/BrandIcons";
 import { getUserId } from "@/lib/clientUser";
 import { clearPending, finishLogin, pendingLogin, pollLogin, startDeeplinkSignIn } from "@/lib/walletLogin";
 import { LogoTile } from "@/components/Logo";
@@ -15,7 +16,7 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
   const [account, setAccount] = useState<Account | null>(null);
   const [open, setOpen] = useState<"sheet" | "menu" | "connect-wallet" | null>(null);
   const [waiting, setWaiting] = useState(false);
-  const [googleErr, setGoogleErr] = useState("");
+  const [socialErr, setSocialErr] = useState("");
 
   const done = useCallback(async () => { setAccount(await currentAccount().catch(() => null)); onChange(); }, [onChange]);
 
@@ -23,9 +24,9 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
     const init = async () => {
       const a = await currentAccount().catch(() => null);
       setAccount(a);
-      // Back from Google: attach this device's guest passport to the account, or say why it didn't work.
-      const back = takeGoogleReturn();
-      if (back?.error) { setGoogleErr(back.error); setOpen(a?.signedIn ? "menu" : "sheet"); }
+      // Back from Google or Facebook: attach this device's guest passport to the account, or say why it didn't work.
+      const back = takeSocialReturn();
+      if (back?.error) { setSocialErr(back.error); setOpen(a?.signedIn ? "menu" : "sheet"); }
       else if (back && a?.signedIn) { await finishLogin(); onChange(); }
     };
     init();
@@ -61,7 +62,7 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
   }, []);
 
   const signedIn = !!account?.signedIn;
-  const close = () => { setOpen(null); setGoogleErr(""); };
+  const close = () => { setOpen(null); setSocialErr(""); };
   return (
     <>
       <button
@@ -71,10 +72,10 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
         {waiting ? <Loader2 size={14} className="shrink-0 animate-spin text-honey-700" /> : signedIn ? <ShieldCheck size={14} strokeWidth={2.5} className="shrink-0 text-sage-700" /> : <UserRound size={14} strokeWidth={2.5} className="shrink-0" />}
         <span className="truncate">{waiting ? "Waiting for wallet…" : signedIn && account ? accountLabel(account) : "Sign in"}</span>
       </button>
-      {open === "sheet" && <SignInSheet google={!!account?.google} initialErr={googleErr} onClose={close} onSignedIn={() => void done()} />}
-      {open === "connect-wallet" && <SignInSheet google={false} connect onClose={close} onSignedIn={() => void done()} />}
+      {open === "sheet" && <SignInSheet social={account?.social ?? []} initialErr={socialErr} onClose={close} onSignedIn={() => void done()} />}
+      {open === "connect-wallet" && <SignInSheet social={[]} connect onClose={close} onSignedIn={() => void done()} />}
       {open === "menu" && account && (
-        <Menu account={account} initialErr={googleErr} onClose={close} onConnectWallet={() => setOpen("connect-wallet")} onSignedOut={() => { close(); void done(); }} />
+        <Menu account={account} initialErr={socialErr} onClose={close} onConnectWallet={() => setOpen("connect-wallet")} onSignedOut={() => { close(); void done(); }} />
       )}
     </>
   );
@@ -82,7 +83,7 @@ export default function AccountChip({ onChange }: { onChange: () => void }) {
 
 /** The wallet sheet on its own, for pages that ask for a wallet: "connect" adds one to the signed-in account, otherwise it signs in with one. */
 export function WalletSheet({ connect, onClose, onSignedIn }: { connect: boolean; onClose: () => void; onSignedIn: () => void }) {
-  return <SignInSheet google={false} connect={connect} onClose={onClose} onSignedIn={onSignedIn} />;
+  return <SignInSheet social={[]} connect={connect} onClose={onClose} onSignedIn={onSignedIn} />;
 }
 
 /** Bottom sheet in the passport's glass style. Rendered on <body>: the desktop top bar is frosted glass, and `backdrop-filter` would trap a fixed overlay inside it. */
@@ -148,21 +149,32 @@ function WalletRow({ id, name, sub, busy, disabled, onClick, href }: { id: strin
   return href ? <a href={href} target="_blank" rel="noreferrer" className={cls}>{inner}</a> : <button disabled={disabled} onClick={onClick} className={cls}>{inner}</button>;
 }
 
-function GoogleButton({ label, onError }: { label: string; onError: (msg: string) => void }) {
+/** Each provider's mark, and its button as its brand guidelines ask: Google white, Facebook in its blue with the white "f". */
+const SOCIAL_MARK: Record<Social, (size: number) => React.ReactNode> = {
+  google: (size) => <GoogleG size={size} />,
+  facebook: (size) => <FacebookIcon size={size} className="shrink-0 text-[#0866FF]" />,
+};
+const SOCIAL_BUTTON: Record<Social, string> = {
+  google: "bg-white text-ink ring-1 ring-sage-900/15",
+  facebook: "bg-[#0866FF] text-white",
+};
+
+function SocialButton({ provider, onError }: { provider: Social; onError: (msg: string) => void }) {
   const [busy, setBusy] = useState(false);
   return (
     <button
       disabled={busy}
-      onClick={async () => { setBusy(true); try { await continueWithGoogle(label.startsWith("Connect") ? "link" : "sign-in"); } catch (e) { onError(e instanceof Error ? e.message : "Couldn't start Google sign-in."); setBusy(false); } }}
-      className="lift flex w-full items-center justify-center gap-2.5 rounded-full bg-white py-3 text-[15px] font-bold text-ink shadow-[0_4px_14px_rgba(39,46,27,0.12)] ring-1 ring-sage-900/15 transition active:scale-[0.99] disabled:opacity-60"
+      onClick={async () => { setBusy(true); try { await continueWith(provider, "sign-in"); } catch (e) { onError(e instanceof Error ? e.message : `Couldn't start ${SOCIAL_NAME[provider]} sign-in.`); setBusy(false); } }}
+      className={`lift flex w-full items-center justify-center gap-2.5 rounded-full py-3 text-[15px] font-bold shadow-[0_4px_14px_rgba(39,46,27,0.12)] transition active:scale-[0.99] disabled:opacity-60 ${SOCIAL_BUTTON[provider]}`}
     >
-      {busy ? <Loader2 size={20} className="animate-spin text-sage-700" /> : <GoogleG />} {label}
+      {busy ? <Loader2 size={20} className="animate-spin" /> : provider === "facebook" ? <FacebookIcon size={20} className="shrink-0" /> : SOCIAL_MARK[provider](20)}
+      Continue with {SOCIAL_NAME[provider]}
     </button>
   );
 }
 
-/** Sign in (Google or a wallet), or with `connect`: add a wallet to the account that is signed in. */
-function SignInSheet({ google, connect, initialErr = "", onClose, onSignedIn }: { google: boolean; connect?: boolean; initialErr?: string; onClose: () => void; onSignedIn: () => void }) {
+/** Sign in (Google, Facebook or a wallet), or with `connect`: add a wallet to the account that is signed in. */
+function SignInSheet({ social, connect, initialErr = "", onClose, onSignedIn }: { social: Social[]; connect?: boolean; initialErr?: string; onClose: () => void; onSignedIn: () => void }) {
   const [wallets, setWallets] = useState<WalletInfo[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState(initialErr);
@@ -192,6 +204,7 @@ function SignInSheet({ google, connect, initialErr = "", onClose, onSignedIn }: 
   }
 
   const links = typeof window !== "undefined" ? deepLinks(window.location.href) : [];
+  const hasSocial = social.length > 0;
 
   if (result) {
     const n = result.receipts;
@@ -211,15 +224,15 @@ function SignInSheet({ google, connect, initialErr = "", onClose, onSignedIn }: 
     <Sheet
       onClose={onClose}
       title={connect ? "Connect a wallet" : "Save your passport"}
-      subtitle={connect ? "Your Bee Guardian NFTs are sent to it. You can keep signing in with Google too." : "Sign in to keep your passport and Bee Guardians on every device."}
+      subtitle={connect ? "Your Bee Guardian NFTs are sent to it. You can keep signing in the way you do now." : "Sign in to keep your passport and Bee Guardians on every device."}
     >
-      {google && (
+      {hasSocial && (
         <div className="mt-4 space-y-3">
-          <GoogleButton label="Continue with Google" onError={setErr} />
+          {social.map((p) => <SocialButton key={p} provider={p} onError={setErr} />)}
           <p className="flex items-center gap-3 text-[11.5px] font-semibold text-sage-900 before:h-px before:flex-1 before:bg-sage-900/20 after:h-px after:flex-1 after:bg-sage-900/20">or with a Solana wallet</p>
         </div>
       )}
-      <div className={`${google ? "mt-3" : "mt-4"} space-y-2.5`}>
+      <div className={`${hasSocial ? "mt-3" : "mt-4"} space-y-2.5`}>
         {wallets.length > 0 ? (
           wallets.map((w) => <WalletRow key={w.key} id={w.key} name={w.name} sub="Detected in this browser" busy={busy === w.key} disabled={!!busy} onClick={() => go(w)} />)
         ) : mobile ? (
@@ -240,7 +253,7 @@ function SignInSheet({ google, connect, initialErr = "", onClose, onSignedIn }: 
       </div>
 
       <ul className="mt-4 grid grid-cols-3 gap-2 text-center text-[10.5px] font-semibold leading-tight text-sage-900">
-        {[[Check, google ? "Free, no password" : "A free signature"], [ShieldCheck, "Your funds are never touched"], [Smartphone, "Works on any device"]].map(([Icon, text]) => {
+        {[[Check, hasSocial ? "Free, no password" : "A free signature"], [ShieldCheck, "Your funds are never touched"], [Smartphone, "Works on any device"]].map(([Icon, text]) => {
           const I = Icon as typeof Check;
           return <li key={text as string} className="glass rounded-2xl px-1.5 py-2.5"><I size={16} strokeWidth={2.6} className="mx-auto mb-1 text-sage-700" />{text as string}</li>;
         })}
@@ -271,7 +284,6 @@ function Menu({ account, initialErr = "", onClose, onConnectWallet, onSignedOut 
   const [err, setErr] = useState(initialErr);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [busy, setBusy] = useState(false);
-  const hasGoogle = account.methods.includes("google");
   const act = (fn: () => Promise<void>) => async () => { setBusy(true); setErr(""); try { await fn(); onSignedOut(); } catch (e) { setErr(e instanceof Error ? e.message : "Something went wrong."); setBusy(false); } };
   const small = "glass rounded-full px-3 py-1.5 text-xs font-bold";
 
@@ -304,16 +316,20 @@ function Menu({ account, initialErr = "", onClose, onConnectWallet, onSignedOut 
             </button>
           ) : <button onClick={onConnectWallet} className={small}>Connect</button>}
         />
-        {(hasGoogle || account.google) && (
-          <Method
-            icon={<span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-sage-900/15"><GoogleG size={18} /></span>}
-            name="Google"
-            detail={hasGoogle ? "Connected" : "Sign in without a wallet"}
-            action={hasGoogle ? <Check size={18} strokeWidth={2.6} className="mr-1 text-sage-700" /> : (
-              <button onClick={() => continueWithGoogle("link").catch((e) => setErr(e instanceof Error ? e.message : "Couldn't start Google sign-in."))} className={small}>Connect</button>
-            )}
-          />
-        )}
+        {(["google", "facebook"] as const).filter((p) => account.methods.includes(p) || account.social.includes(p)).map((p) => {
+          const has = account.methods.includes(p);
+          return (
+            <Method
+              key={p}
+              icon={<span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-sage-900/15">{SOCIAL_MARK[p](18)}</span>}
+              name={SOCIAL_NAME[p]}
+              detail={has ? "Connected" : "Sign in without a wallet"}
+              action={has ? <Check size={18} strokeWidth={2.6} className="mr-1 text-sage-700" /> : (
+                <button onClick={() => continueWith(p, "link").catch((e) => setErr(e instanceof Error ? e.message : `Couldn't start ${SOCIAL_NAME[p]} sign-in.`))} className={small}>Connect</button>
+              )}
+            />
+          );
+        })}
       </ul>
 
       {err && <p className="mt-3 rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}

@@ -61,7 +61,7 @@ export default function Join() {
       <p className="text-sm text-neutral-700">Give your customers an eco stamp. Add your logo and a one-liner, and we generate your QR. Every stamp is anchored on Solana, and your place appears on the EcoProof map.</p>
 
       {signedIn === undefined ? null : !signedIn ? (
-        <p className="rounded-2xl bg-cream p-4 text-sm">Sign in to set up a place, with Google or a Solana wallet. It&apos;s free.<span className="hidden lg:inline"> Use <b>Sign in</b> at the top right.</span></p>
+        <p className="rounded-2xl bg-cream p-4 text-sm">Sign in to set up a place, with Google, Facebook or a Solana wallet. It&apos;s free.<span className="hidden lg:inline"> Use <b>Sign in</b> at the top right.</span></p>
       ) : created ? (
         <>
           <p className="rounded-xl bg-sage-200 p-3 text-sm font-semibold text-sage-900">🎉 {created.place.name} is set up{created.onMap ? " and on the map" : ""}. Put the QR where customers can scan it.</p>

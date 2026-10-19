@@ -1,4 +1,4 @@
-import { googleEnabled } from "@/lib/auth";
+import { socialEnabled } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { clearLegacyCookie, getSession } from "@/lib/session";
 import { walletSignIn, withCookies } from "@/lib/signin";
@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   const s = await getSession(req);
   const body = {
     signedIn: !!s, address: s?.wallet ?? null, key: s?.key ?? null, name: s?.name ?? null, email: s?.email ?? null, image: s?.image ?? null,
-    methods: s?.methods ?? [], google: googleEnabled(),
+    methods: s?.methods ?? [], social: socialEnabled(),
     /** How many places they run (owner or staff), for the "My shop" link. */
     shops: s ? (await query<{ n: number }>("SELECT COUNT(DISTINCT place_id)::int n FROM place_members WHERE member_key = ANY($1)", [s.keys]))[0].n : 0,
   };
