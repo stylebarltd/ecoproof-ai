@@ -2,12 +2,13 @@ import { query } from "./db";
 import { appUrl } from "./nft";
 import { isShop } from "./placeKinds";
 import { publishedStars, type PlaceStars } from "./placePractices";
+import { shopImpact, type ShopImpact } from "./shops";
 
 export type StampPlace = {
   id: string; name: string; kind: string; tagline: string | null; impact_note: string | null; image: string | null; colour: string | null;
   lat: number | null; lng: number | null; gps_radius_m: number | null; secret: string; owner: string | null;
   status: string; status_note: string | null; rules_accepted_at: string | null; demo: boolean; address: string | null; also_cafe: boolean;
-  sells_online: boolean;
+  sells_online: boolean; website: string | null; ships_from: string | null; ships_from_lat: number | null; ships_from_lng: number | null; ships_to: string | null;
   /** Has at least one location (map pin): customers can visit it. Worked out by PLACE_COLS, not stored. */
   in_store: boolean;
 };
@@ -62,8 +63,8 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${name} stamp"><circle cx="128" cy="128" r="124" fill="${c}"/>${ring}<circle cx="128" cy="128" r="100" fill="none" stroke="#f5ead8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>${inner}${opts.labels === false ? "" : `<text x="128" y="206" text-anchor="middle" font-family="Figtree,system-ui,sans-serif" font-size="22" font-weight="800" fill="#f5ead8">${name}</text>`}</svg>`;
 }
 
-/** stars: null for kinds without stars (eco shops); from the place's published declaration. */
-export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number; stars: PlaceStars | null };
+/** stars: null for kinds without stars (eco shops); from the place's published declaration. impact: eco shops only, instead of stars. */
+export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number; stars: PlaceStars | null; impact: ShopImpact | null };
 
 /** Places that have actually joined EcoProof and have a location (online-only shops have none), one entry per location. "Verified" on the map means
  *  claimed and set up on EcoProof (a real owner or partner created it); independent vetting is roadmap. */
@@ -71,9 +72,10 @@ export async function listMapPlaces(): Promise<MapPlace[]> {
   const rows = await query<{ id: string; name: string; kind: string; also_cafe: boolean; tagline: string | null; demo: boolean; lid: number; lname: string | null; lat: number; lng: number }>(
     "SELECT p.id, p.name, p.kind, p.also_cafe, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' ORDER BY p.created_at, l.id",
   );
-  const stars = await publishedStars(rows);
+  const ids = [...new Set(rows.map((r) => r.id))];
+  const [stars, impact] = await Promise.all([publishedStars(rows), shopImpact(ids.filter((id) => isShop(rows.find((r) => r.id === id)!.kind)))]);
   return rows.map((r) => ({
     demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`,
-    lat: r.lat, lng: r.lng, stars: stars.get(r.id) ?? null,
+    lat: r.lat, lng: r.lng, stars: stars.get(r.id) ?? null, impact: impact.get(r.id) ?? null,
   }));
 }

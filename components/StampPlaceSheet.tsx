@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import ShopImpact from "@/components/ShopImpact";
 import Stars from "@/components/Stars";
 import { kindOf } from "@/lib/placeKinds";
 import type { MapPlace } from "@/lib/stampPlaces";
@@ -16,6 +17,7 @@ export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; o
           <h2 className="truncate text-lg">{place.name}</h2>
           <p className="text-xs text-neutral-600">{kindOf(place.kind)?.label ?? "Place"}{place.locationName && place.locationName !== place.name ? ` · ${place.locationName}` : ""}</p>
           {place.stars && <Stars stars={place.stars.stars} label={place.stars.label} size={15} showLabel className="mt-1" />}
+          {place.impact && <ShopImpact impact={place.impact} compact className="mt-1" />}
           {place.tagline && <p className="mt-1 text-sm text-neutral-700">{place.tagline}</p>}
         </div>
         <button onClick={onClose} aria-label="Close" className="rounded-full text-neutral-600 transition hover:bg-white hover:text-ink lg:px-1.5">✕</button>

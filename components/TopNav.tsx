@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CircleHelp, MapPin, Store } from "lucide-react";
+import { CircleHelp, MapPin, ShoppingBag, Store } from "lucide-react";
 import AccountChip from "@/components/AccountChip";
 import { LeafMark, LogoLockup } from "@/components/Logo";
 import { announceAccountChange, useDesktop } from "@/lib/desktop";
@@ -22,7 +22,8 @@ export default function TopNav() {
         <div className="flex items-center gap-1">
           {link("/", <LeafMark size={18} stroke="currentColor" strokeWidth={2.75} />, "Passport", path === "/" || path.startsWith("/p/") || path.startsWith("/u/") || path.startsWith("/collection"))}
           {link("/map", <MapPin size={17} strokeWidth={2.5} />, "Map", path.startsWith("/map"))}
-          {link("/join", <Store size={17} strokeWidth={2.5} />, "For brands", path.startsWith("/join") || path.startsWith("/place/") || path.startsWith("/shop"))}
+          {link("/shops", <ShoppingBag size={17} strokeWidth={2.5} />, "Shops", path.startsWith("/shops"))}
+          {link("/join", <Store size={17} strokeWidth={2.5} />, "For brands", path.startsWith("/join") || path.startsWith("/place/") || path === "/shop" || path.startsWith("/shop/"))}
           {link("/about", <CircleHelp size={17} strokeWidth={2.5} />, "How it works", path.startsWith("/about") || path.startsWith("/rules"))}
         </div>
         <div className="ml-auto">{desktop && <AccountChip onChange={announceAccountChange} />}</div>

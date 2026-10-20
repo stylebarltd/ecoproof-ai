@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, ExternalLink, Link2, MapPin } from "lucide-react";
+import { Check, ExternalLink, Globe, Link2, MapPin, Truck } from "lucide-react";
 import AnchorPending from "@/components/AnchorPending";
+import ShopImpact from "@/components/ShopImpact";
 import Stars from "@/components/Stars";
 import VerifyButton from "@/components/VerifyButton";
 import { declarationsOf, publishedAnswers, toDeclaration } from "@/lib/declarations";
-import { kindOf } from "@/lib/placeKinds";
+import { isShop, kindOf } from "@/lib/placeKinds";
+import { shopImpact } from "@/lib/shops";
 import { checklist, rating } from "@/lib/practices";
 import { getPlace, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
@@ -27,6 +29,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const history = await declarationsOf(place.id);
   const answers = publishedAnswers(place, history[0]);
   const current = history[0] && history[0].kind === place.kind && history[0].also_cafe === place.also_cafe ? toDeclaration(history[0]) : null;
+  const shop = isShop(place.kind) ? { impact: (await shopImpact([place.id])).get(place.id)!, online: p.online } : null;
   const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
   const groups = checklist(place.kind, place.also_cafe);
   const r = rating(place.kind, place.also_cafe, answers);
@@ -41,7 +44,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <img src={p.imageUrl} alt="" width={88} height={88} className="h-16 w-16 shrink-0 lg:h-[88px] lg:w-[88px]" />
           <div className="min-w-0 flex-1">
             <h1 className="text-[24px] leading-tight lg:text-[32px]">{place.name}</h1>
-            <p className="text-[13px] text-sage-900">{kindOf(place.kind)?.label ?? "Place"}{place.kind === "restaurant" && place.also_cafe ? " and café" : ""}{place.demo ? " · demo place" : ""}</p>
+            <p className="text-[13px] text-sage-900">{kindOf(place.kind)?.label ?? "Place"}{place.kind === "restaurant" && place.also_cafe ? " and café" : ""}{shop ? ` · ${[p.inStore && "in store", p.online && "online"].filter(Boolean).join(" and ")}` : ""}{place.demo ? " · demo place" : ""}</p>
             {place.address && <p className="mt-1 flex items-start gap-1 text-[13px] text-sage-900"><MapPin size={14} strokeWidth={2.5} className="mt-0.5 shrink-0" /> {place.address}</p>}
             {place.tagline && <p className="mt-1.5 text-sm">{place.tagline}</p>}
           </div>
@@ -54,6 +57,19 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               <span><span className="block font-heading text-[18px] leading-none">{r.stars ? `${r.stars} eco star${r.stars === 1 ? "" : "s"}` : r.label}</span><span className="text-[11.5px] text-sage-900">{r.score} of 100 points</span></span>
             </div>
             <Link href="/rules#stars" className="text-xs font-bold text-sage-800 underline">How stars work</Link>
+          </div>
+        )}
+
+        {shop && (
+          <div className="mt-4 rounded-2xl bg-white/60 p-3 lg:p-4">
+            <p className="mb-2 text-[12px] font-bold uppercase tracking-wide text-sage-900">What customers saved here</p>
+            <ShopImpact impact={shop.impact} />
+          </div>
+        )}
+        {shop?.online && (place.website || place.ships_from || place.ships_to) && (
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-sage-900">
+            {(place.ships_from || place.ships_to) && <span className="flex items-center gap-1.5"><Truck size={15} strokeWidth={2.5} /> {place.ships_from ? `Ships from ${place.ships_from}` : "Ships"}{place.ships_to ? ` to ${place.ships_to}` : ""}</span>}
+            {place.website && <a href={place.website} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 font-bold underline"><Globe size={15} strokeWidth={2.5} /> Visit the online shop</a>}
           </div>
         )}
 
@@ -119,7 +135,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       )}
 
       <p className="px-1 text-[12px] leading-relaxed text-sage-900">
-        {groups ? "The owner declares these practices; EcoProof doesn't inspect places in person yet. " : `${kindOf(place.kind)?.plural ?? "These places"} are listed without stars. `}
+        {groups ? "The owner declares these practices; EcoProof doesn't inspect places in person yet. " : "Eco shops don't get stars: they show what their customers saved, from verified purchases. "}
         Something not true? <Link href={`/report/${place.id}`} className="font-bold underline">Report this place</Link>.
       </p>
     </div>

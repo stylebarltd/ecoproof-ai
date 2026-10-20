@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { ArrowLeft, Check, ExternalLink, Globe, Link2, Loader2, MapPin, Sparkles } from "lucide-react";
 import AccountChip from "@/components/AccountChip";
 import PublishSheet from "@/components/PublishSheet";
@@ -17,8 +18,12 @@ import type { PublicPlace } from "@/lib/stampPlaces";
 // they earn updating live, and the easiest practices to reach the next star. Staff see it read-only.
 // Saving keeps a private draft. Publishing (after a warning) makes it public and writes its fingerprint to Solana (lib/declarations.ts).
 
+const PinPicker = dynamic(() => import("@/components/PinPicker"), { ssr: false, loading: () => <div className="h-56 w-full rounded-2xl bg-sage-200" /> });
+
+type Pin = { lat: number; lng: number };
 type Setup = {
   place: PublicPlace; role: Role; kind: string; alsoCafe: boolean; address: string | null; answers: Answers;
+  website: string | null; shipsFrom: string | null; shipsFromPin: Pin | null; shipsTo: string | null;
   published: Declaration | null; publishedMatchesType: boolean; unpublishedChanges: boolean; publishedToday: boolean;
 };
 
@@ -56,6 +61,10 @@ export default function PracticesEditor({ id }: { id: string }) {
   const [address, setAddress] = useState("");
   const [online, setOnline] = useState(false); // an eco shop's online channel
   const [newLoc, setNewLoc] = useState<{ lat: number; lng: number } | null>(null); // a shop location being added, saved with Save
+  const [website, setWebsite] = useState("");
+  const [shipsFrom, setShipsFrom] = useState("");
+  const [shipsPin, setShipsPin] = useState<Pin | null>(null);
+  const [shipsTo, setShipsTo] = useState("");
   const [answers, setAnswers] = useState<Answers>({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null); // JSON of what is saved, to tell unsaved changes apart
@@ -65,7 +74,8 @@ export default function PracticesEditor({ id }: { id: string }) {
 
   const apply = (s: Setup) => {
     setSetup(s); setKind(s.kind); setAlsoCafe(s.alsoCafe); setAddress(s.address ?? ""); setAnswers(s.answers); setOnline(s.place.online); setNewLoc(null);
-    setSaved(JSON.stringify({ kind: s.kind, alsoCafe: s.alsoCafe, address: s.address ?? "", answers: s.answers, online: s.place.online, newLoc: null }));
+    setWebsite(s.website ?? ""); setShipsFrom(s.shipsFrom ?? ""); setShipsPin(s.shipsFromPin); setShipsTo(s.shipsTo ?? "");
+    setSaved(JSON.stringify({ kind: s.kind, alsoCafe: s.alsoCafe, address: s.address ?? "", answers: s.answers, online: s.place.online, newLoc: null, website: s.website ?? "", shipsFrom: s.shipsFrom ?? "", shipsPin: s.shipsFromPin, shipsTo: s.shipsTo ?? "" }));
   };
   const load = useCallback(async () => {
     const r = await fetch(`/api/places/mine/${id}/practices`, { cache: "no-store" });
@@ -79,7 +89,7 @@ export default function PracticesEditor({ id }: { id: string }) {
   const groups = useMemo(() => checklist(kind, alsoCafe), [kind, alsoCafe]);
   const live = useMemo(() => rating(kind, alsoCafe, answers), [kind, alsoCafe, answers]);
   const next = useMemo(() => nextStar(kind, alsoCafe, answers), [kind, alsoCafe, answers]);
-  const dirty = saved !== JSON.stringify({ kind, alsoCafe, address, answers, online, newLoc });
+  const dirty = saved !== JSON.stringify({ kind, alsoCafe, address, answers, online, newLoc, website, shipsFrom, shipsPin, shipsTo });
   const inStore = !!setup?.place.inStore || !!newLoc;
   const canEdit = setup?.role === "owner";
   const open = groups ? groups.flatMap((g) => g.items).filter((p) => !answers[p.id]).length : 0;
@@ -93,7 +103,7 @@ export default function PracticesEditor({ id }: { id: string }) {
       const ids = new Set(groups?.flatMap((g) => g.items.map((p) => p.id)) ?? []);
       const r = await fetch(`/api/places/mine/${id}/practices`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, alsoCafe, address, online, location: newLoc, answers: Object.fromEntries(Object.entries(answers).filter(([k]) => ids.has(k))) }),
+        body: JSON.stringify({ kind, alsoCafe, address, online, location: newLoc, website, shipsFrom, shipsFromPin: shipsPin, shipsTo, answers: Object.fromEntries(Object.entries(answers).filter(([k]) => ids.has(k))) }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Couldn't save.");
@@ -279,6 +289,29 @@ export default function PracticesEditor({ id }: { id: string }) {
                 </span>
                 <input type="checkbox" checked={online} disabled={!canEdit} onChange={(e) => setOnline(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-sage-600" />
               </label>
+              {online && (
+                <div className="space-y-3 rounded-2xl bg-white/60 p-3">
+                  <label className="block">
+                    <span className="text-[13px] font-bold">Website</span>
+                    <input value={website} disabled={!canEdit} onChange={(e) => setWebsite(e.target.value)} maxLength={200} inputMode="url" placeholder="https://yourshop.com" className="mt-1 w-full rounded-xl bg-white/80 px-3 py-2.5 text-sm ring-1 ring-sage-900/15" />
+                  </label>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-[13px] font-bold">Ships from</span>
+                      <input value={shipsFrom} disabled={!canEdit} onChange={(e) => setShipsFrom(e.target.value)} maxLength={80} placeholder="Chiang Mai, Thailand" className="mt-1 w-full rounded-xl bg-white/80 px-3 py-2.5 text-sm ring-1 ring-sage-900/15" />
+                    </label>
+                    <label className="block">
+                      <span className="text-[13px] font-bold">Ships to</span>
+                      <input value={shipsTo} disabled={!canEdit} onChange={(e) => setShipsTo(e.target.value)} maxLength={80} placeholder="All of Thailand" className="mt-1 w-full rounded-xl bg-white/80 px-3 py-2.5 text-sm ring-1 ring-sage-900/15" />
+                    </label>
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold">Where you ship from, on the map</p>
+                    <p className="mb-2 text-[12px] text-sage-900">Tap the map. It isn&apos;t shown as a pin; it lets customers and cafés find the nearest shop.{shipsPin ? "" : " Not set yet."}</p>
+                    <PinPicker pin={shipsPin} onPick={setShipsPin} disabled={!canEdit} />
+                  </div>
+                </div>
+              )}
               {!inStore && !online && <p className="rounded-xl bg-terra-100 p-2.5 text-[12.5px] text-terra-800">Pick at least one channel.</p>}
             </section>
           )}

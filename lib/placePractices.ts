@@ -3,7 +3,7 @@
 import { query } from "./db";
 import { differsFromPublished, declarationsOf, latestDeclarations, publishedAnswers, publishedToday, toDeclaration } from "./declarations";
 import { checklist, nextStar, practicesOf, rating, type Answers, type Status } from "./practices";
-import { GPS_RADIUS_M, isKind, isShop, kindOf } from "./placeKinds";
+import { GPS_RADIUS_M, isKind, isShop, isWebsite, kindOf } from "./placeKinds";
 
 const STATUSES: Status[] = ["yes", "no", "not_applicable"];
 
@@ -33,12 +33,18 @@ export async function publishedStars(places: { id: string; kind: string; also_ca
 }
 
 /** Everything the owner's checklist screen needs: the draft, and what is published. */
-export async function practiceSetup(place: { id: string; kind: string; also_cafe: boolean; address: string | null }) {
+export async function practiceSetup(place: {
+  id: string; kind: string; also_cafe: boolean; address: string | null;
+  website: string | null; ships_from: string | null; ships_from_lat: number | null; ships_from_lng: number | null; ships_to: string | null;
+}) {
   const answers = (await answersFor([place.id])).get(place.id) ?? {};
   const history = await declarationsOf(place.id);
   const last = history[0];
   return {
     kind: place.kind, alsoCafe: place.also_cafe, address: place.address, answers,
+    // An online shop's public details (eco shops only).
+    website: place.website, shipsFrom: place.ships_from, shipsTo: place.ships_to,
+    shipsFromPin: place.ships_from_lat != null && place.ships_from_lng != null ? { lat: place.ships_from_lat, lng: place.ships_from_lng } : null,
     rating: rating(place.kind, place.also_cafe, answers), next: nextStar(place.kind, place.also_cafe, answers),
     published: last ? toDeclaration(last) : null,
     publishedMatchesType: !!last && last.kind === place.kind && last.also_cafe === place.also_cafe,
@@ -54,7 +60,10 @@ export class PracticeError extends Error {}
  *  Answers are checked against the checklist: unknown practices are refused, and N/A only where the practice allows it. */
 export async function savePractices(
   place: { id: string; name: string; kind: string; in_store: boolean; sells_online: boolean },
-  input: { kind?: unknown; alsoCafe?: unknown; address?: unknown; answers?: unknown; online?: unknown; location?: unknown },
+  input: {
+    kind?: unknown; alsoCafe?: unknown; address?: unknown; answers?: unknown; online?: unknown; location?: unknown;
+    website?: unknown; shipsFrom?: unknown; shipsFromPin?: unknown; shipsTo?: unknown;
+  },
 ) {
   const kind = typeof input.kind === "string" ? input.kind : place.kind;
   if (!isKind(kind)) throw new PracticeError("Unknown place type.");
@@ -69,6 +78,14 @@ export async function savePractices(
   const online = isShop(kind) ? (typeof input.online === "boolean" ? input.online : place.sells_online) : place.sells_online;
   if (!inStore && !isShop(kind)) throw new PracticeError(`A ${kindOf(kind)!.label.toLowerCase()} needs a location. Add your shop's location first, from your phone while you're there.`);
   if (isShop(kind) && !inStore && !online) throw new PracticeError("A shop needs at least one channel: your shop, online, or both.");
+
+  // An online shop's public details: website, where it ships from (a label and a pin, for "nearest") and where it ships to.
+  const text = (v: unknown, n: number) => (typeof v === "string" ? v.trim().replace(/\s+/g, " ").slice(0, n) || null : null);
+  const website = text(input.website, 200);
+  if (website && !isWebsite(website)) throw new PracticeError("Enter your website as a full address, like https://superbee.me");
+  const pin = input.shipsFromPin as { lat?: unknown; lng?: unknown } | null | undefined;
+  const pinLat = Number(pin?.lat), pinLng = Number(pin?.lng);
+  const shipsPin = pin && Number.isFinite(pinLat) && Number.isFinite(pinLng) && Math.abs(pinLat) <= 90 && Math.abs(pinLng) <= 180 ? { lat: pinLat, lng: pinLng } : null;
 
   const groups = checklist(kind, alsoCafe);
   const byId = new Map(groups ? practicesOf(groups).map((p) => [p.id, p]) : []);
@@ -86,11 +103,13 @@ export async function savePractices(
   await query(
     `WITH place AS (
        UPDATE stamp_places SET kind=$2, also_cafe=$3, address=$4, sells_online=$7,
+         website=$12, ships_from=$13, ships_from_lat=$14, ships_from_lng=$15, ships_to=$16,
          lat=COALESCE($8, lat), lng=COALESCE($9, lng), gps_radius_m=CASE WHEN $8::float8 IS NULL THEN gps_radius_m ELSE $10 END
        WHERE id=$1),
      loc AS (INSERT INTO stamp_place_locations (place_id, name, lat, lng) SELECT $1, $11, $8, $9 WHERE $8::float8 IS NOT NULL)
      INSERT INTO place_practices (place_id, practice_id, status) SELECT $1, a.id, a.status FROM unnest($5::text[], $6::text[]) AS a(id, status)
      ON CONFLICT (place_id, practice_id) DO UPDATE SET status=EXCLUDED.status, updated_at=now() WHERE place_practices.status <> EXCLUDED.status`,
-    [place.id, kind, alsoCafe, address, answers.map((a) => a[0]), answers.map((a) => a[1]), online, newLoc?.lat ?? null, newLoc?.lng ?? null, GPS_RADIUS_M, place.name],
+    [place.id, kind, alsoCafe, address, answers.map((a) => a[0]), answers.map((a) => a[1]), online, newLoc?.lat ?? null, newLoc?.lng ?? null, GPS_RADIUS_M, place.name,
+     website, text(input.shipsFrom, 80), shipsPin?.lat ?? null, shipsPin?.lng ?? null, text(input.shipsTo, 80)],
   );
 }

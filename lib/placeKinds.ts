@@ -15,3 +15,5 @@ export const isKind = (id: string): id is PlaceKind => !!kindOf(id);
 export const isShop = (kind: string) => kind === "eco_shop";
 /** Join (self-serve) requires every place with a location to be at it when a stamp is claimed. */
 export const GPS_RADIUS_M = 150;
+/** A shop's website as a full http(s) address. */
+export const isWebsite = (url: string) => /^https?:\/\/[^\s/$.?#][^\s]*\.[^\s]+$/i.test(url);

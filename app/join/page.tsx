@@ -24,6 +24,7 @@ export default function Join() {
   // An eco shop's channels; every other kind is in store.
   const [shopInStore, setShopInStore] = useState(true);
   const [shopOnline, setShopOnline] = useState(false);
+  const [website, setWebsite] = useState("");
   const inStore = !isShop(kind) || shopInStore;
   const [rules, setRules] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -49,7 +50,7 @@ export default function Join() {
   async function submit() {
     setBusy(true); setErr("");
     try {
-      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, acceptRules: rules, inStore, online: isShop(kind) && shopOnline, ...(inStore ? loc ?? {} : {}) }) });
+      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, acceptRules: rules, inStore, online: isShop(kind) && shopOnline, website: isShop(kind) && shopOnline ? website : "", ...(inStore ? loc ?? {} : {}) }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Could not set up your place");
       setCreated(j); await refresh();
@@ -75,7 +76,7 @@ export default function Join() {
             <Link href={`/shop/${created.place.id}/practices`} className="block w-full rounded-full bg-terra-500 py-2.5 text-center text-sm font-bold text-cream">Next: tick your eco practices to earn stars</Link>
           )}
           <Link href={`/shop/${created.place.id}`} className="block w-full rounded-full bg-sage-500 py-2.5 text-center text-sm font-bold text-cream">Open its dashboard</Link>
-          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setRules(false); setShopInStore(true); setShopOnline(false); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
+          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setRules(false); setShopInStore(true); setShopOnline(false); setWebsite(""); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
         </>
       ) : (
         <div className="space-y-3 rounded-[28px] bg-neutral-100 p-4">
@@ -95,6 +96,8 @@ export default function Join() {
               <p className="font-semibold">How do customers buy from you?</p>
               <label className="flex items-start gap-2 text-xs"><input type="checkbox" className="mt-0.5" checked={shopInStore} onChange={(e) => setShopInStore(e.target.checked)} /> <span><b>In our shop.</b> You get a map pin and a QR for the counter.</span></label>
               <label className="flex items-start gap-2 text-xs"><input type="checkbox" className="mt-0.5" checked={shopOnline} onChange={(e) => setShopOnline(e.target.checked)} /> <span><b>Online.</b> Stamps come from your order emails (WooCommerce) or cards in your parcels, on any channel.</span></label>
+              {shopOnline && <input className={input} value={website} maxLength={200} inputMode="url" onChange={(e) => setWebsite(e.target.value)} placeholder="Your website, e.g. https://yourshop.com" />}
+              {shopOnline && <p className="text-[11px] text-neutral-500">You list your online shop in EcoProof&apos;s shop directory. Add where you ship from in your shop settings afterwards.</p>}
               <p className="text-[11px] text-neutral-500">Eco shops show the plastic and CO₂ their customers save instead of stars.</p>
             </div>
           )}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, ChevronRight, Copy, ExternalLink, Leaf, ListChecks, Loader2, QrCode, Sparkles, ShoppingBag, Ticket, UserPlus, Users } from "lucide-react";
+import ShopImpact from "@/components/ShopImpact";
 import Stars from "@/components/Stars";
 import AccountChip from "@/components/AccountChip";
 import { PlaceCard, type MyPlace } from "@/components/ShopTools";
@@ -283,6 +284,12 @@ export default function ShopDashboard({ id }: { id: string }) {
           </Panel>
         </div>
         <div className="space-y-4 lg:space-y-6">
+          {place.impact && (
+            <Panel title="What your customers saved" aside={<span className="text-xs text-sage-900">all time</span>}>
+              <ShopImpact impact={place.impact} />
+              <p className="mt-2 text-[11.5px] text-sage-900">This is what visitors see on your page and in the shop list, instead of stars.</p>
+            </Panel>
+          )}
           <Panel title="Turned into stamps" aside={<span className="text-xs text-sage-900">all time</span>}>
             <div className="space-y-3">
               <Rate label="Printed cards" done={a.cards.claimed} total={a.cards.printed} empty="none printed yet" />

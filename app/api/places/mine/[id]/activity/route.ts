@@ -1,5 +1,7 @@
 import { memberOf } from "@/lib/members";
 import { publishedStars } from "@/lib/placePractices";
+import { isShop } from "@/lib/placeKinds";
+import { shopImpact } from "@/lib/shops";
 import { shopActivity } from "@/lib/shopActivity";
 import { getPlace, toPublic } from "@/lib/stampPlaces";
 
@@ -17,6 +19,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       place: {
         ...toPublic(place), status: place.status, statusNote: place.status === "active" ? null : place.status_note,
         stars: (await publishedStars([place])).get(id) ?? null, // what the public sees
+        impact: isShop(place.kind) ? (await shopImpact([id])).get(id)! : null, // eco shops: what customers saved, instead of stars
       },
       role: m.role, activity: await shopActivity(id, days) },
     { headers: { "Cache-Control": "no-store" } },

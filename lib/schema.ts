@@ -70,6 +70,12 @@ export const stampPlaces = pgTable("stamp_places", {
   address: text(),
   alsoCafe: boolean("also_cafe").default(false).notNull(), // a restaurant that is a café too: its checklist adds the café's serving practices
   sellsOnline: boolean("sells_online").default(false).notNull(), // an eco shop's online channel (orders, parcel cards); in store = it has locations
+  // An online shop's public details: where it is based and ships from (a pin, for "nearest"), and where it ships to.
+  website: text(),
+  shipsFrom: text("ships_from"),
+  shipsFromLat: doublePrecision("ships_from_lat"),
+  shipsFromLng: doublePrecision("ships_from_lng"),
+  shipsTo: text("ships_to"),
 }, (t) => [
   index("stamp_places_owner").on(t.owner).where(sql`(owner IS NOT NULL)`),
   check("stamp_places_kind", sql`${t.kind} IN ('cafe', 'restaurant', 'hotel', 'eco_shop')`),
