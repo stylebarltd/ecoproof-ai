@@ -41,9 +41,13 @@ export function hashInput(d: DeclarationRow) {
   };
 }
 
+/** Score and stars are worked out again with today's scale (data/practices.json), like everywhere else; the stored ones are what
+ *  the scale gave on the day, kept in the hashed record. */
 export function toDeclaration(d: DeclarationRow): Declaration {
+  const answers: Answers = JSON.parse(d.answers);
+  const r = rating(d.kind, d.also_cafe, answers);
   return {
-    id: d.id, version: d.version, kind: d.kind, alsoCafe: d.also_cafe, answers: JSON.parse(d.answers), score: d.score, stars: d.stars,
+    id: d.id, version: d.version, kind: d.kind, alsoCafe: d.also_cafe, answers, score: r?.score ?? d.score, stars: r?.stars ?? d.stars,
     createdAt: new Date(d.created_at).toISOString(), hash: d.hash, pending: !d.signature,
     txUrl: d.signature ? explorerUrl(d.signature) : null, claimUrl: claimUrl(claimAddressOf("declaration", d.id)),
   };

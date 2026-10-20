@@ -59,7 +59,7 @@ test("N/A on a practice that doesn't allow it counts as no", () => {
   const r = rate(data, groups, answers);
   assert.equal(r.applicablePoints, 100);
   assert.equal(r.score, 88);
-  assert.equal(r.stars, 4);
+  assert.equal(r.stars, 5); // one big practice missing still leaves room for 5 stars (85+)
 });
 
 test("the score maps onto the scale in practices.json, rounding down", () => {
@@ -67,13 +67,25 @@ test("the score maps onto the scale in practices.json, rounding down", () => {
   const yes = (...ids) => Object.fromEntries(ids.map((id) => [id, "yes"]));
   assert.equal(rate(data, groups, yes("cafe_dinein_reusable", "cafe_free_water")).label, "Listed"); // 19
   assert.equal(rate(data, groups, yes("cafe_dinein_reusable", "cafe_free_water", "cafe_no_receipt")).stars, 1); // 20
-  // With N/A practices the score is a fraction: 89.x must stay 4 stars, not round up to 5.
+  // With N/A practices the score is a fraction: 84.x must stay 4.5 stars, not round up to 5.
   const answers = all(groups, "yes");
   answers.cafe_takeaway_cups = "not_applicable"; // applicable = 91
   answers.cafe_free_water = "no"; // yes = 84 of 91 = 92.3
   answers.cafe_no_receipt = "no"; answers.cafe_metal_spoons = "no"; answers.cafe_cup_deposit = "no"; // yes = 79 of 91 = 86.8
-  assert.equal(rate(data, groups, answers).score, 86);
-  assert.equal(rate(data, groups, answers).stars, 4);
+  answers.cafe_restroom_soap = "no"; // yes = 77 of 91 = 84.6
+  assert.equal(rate(data, groups, answers).score, 84);
+  assert.equal(rate(data, groups, answers).stars, 4.5);
+});
+
+test("the scale has half stars, covers 0 to 100 without gaps, and climbs in half-star steps", () => {
+  const scale = data.stars.scale;
+  assert.equal(scale[0].min, 0);
+  assert.equal(scale.at(-1).max, 100);
+  assert.equal(scale.at(-1).stars, 5);
+  for (let i = 1; i < scale.length; i++) {
+    assert.equal(scale[i].min, scale[i - 1].max + 1, `no gap before ${scale[i].stars} stars`);
+    assert.equal(scale[i].stars, i === 1 ? 1 : scale[i - 1].stars + 0.5);
+  }
 });
 
 test("a restaurant that is also a café adds the café serving practices, without duplicate labels", () => {
@@ -95,7 +107,8 @@ test("next easiest star: the fewest open practices that reach it, and they reall
       const before = rate(data, groups, answers);
       const next = nextStar(data, groups, answers);
       if (before.stars === 5) { assert.equal(next, null, "nothing after 5 stars"); break; }
-      assert.ok(next && next.stars === before.stars + 1, `${kind} at ${before.stars} stars`);
+      const step = data.stars.scale.find((s) => s.stars > before.stars);
+      assert.ok(next && next.stars === step.stars, `${kind} at ${before.stars} stars: next is the next step of the scale`);
       // One practice fewer can't get there, even taking the biggest open ones.
       const open = practicesOf(groups).filter((p) => answers[p.id] !== "yes").sort((a, b) => b.points - a.points);
       const fewer = open.slice(0, next.items.length - 1).reduce((s, p) => s + p.points, 0);

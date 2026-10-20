@@ -155,7 +155,7 @@ export default function PracticesEditor({ id }: { id: string }) {
       {open > 0 && <p className="mt-2 text-[11.5px] text-sage-900">{open} practice{open === 1 ? "" : "s"} not answered yet. Unanswered counts as no.</p>}
       {next ? (
         <div className="mt-3 rounded-2xl bg-white/60 p-3">
-          <p className="flex items-center gap-1.5 text-[13px] font-bold"><Sparkles size={15} strokeWidth={2.5} className="text-honey-700" /> Next easiest star: {next.stars} star{next.stars === 1 ? "" : "s"}</p>
+          <p className="flex items-center gap-1.5 text-[13px] font-bold"><Sparkles size={15} strokeWidth={2.5} className="text-honey-700" /> Next step up: {next.stars} star{next.stars === 1 ? "" : "s"}</p>
           <p className="mt-0.5 text-[11.5px] text-sage-900">Start {next.items.length === 1 ? "this practice" : `these ${next.items.length} practices`} to get there:</p>
           <ul className="mt-1.5 space-y-1">
             {next.items.map((p) => (

@@ -36,6 +36,13 @@
       "when": 1792429067446,
       "tag": "0004_declarations",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792459775917,
+      "tag": "0005_half_stars",
+      "breakpoints": true
     }
   ]
 }

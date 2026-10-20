@@ -1,0 +1,1 @@
+ALTER TABLE "practice_declarations" ALTER COLUMN "stars" SET DATA TYPE double precision;

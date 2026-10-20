@@ -1,14 +1,18 @@
 {
-  "version": "2026-10-17",
+  "version": "2026-10-20",
   "country": "TH",
   "stars": {
     "scale": [
       { "min": 0, "max": 19, "stars": 0, "label": "Listed" },
-      { "min": 20, "max": 39, "stars": 1 },
-      { "min": 40, "max": 59, "stars": 2 },
-      { "min": 60, "max": 74, "stars": 3 },
-      { "min": 75, "max": 89, "stars": 4 },
-      { "min": 90, "max": 100, "stars": 5 }
+      { "min": 20, "max": 29, "stars": 1 },
+      { "min": 30, "max": 39, "stars": 1.5 },
+      { "min": 40, "max": 47, "stars": 2 },
+      { "min": 48, "max": 54, "stars": 2.5 },
+      { "min": 55, "max": 62, "stars": 3 },
+      { "min": 63, "max": 69, "stars": 3.5 },
+      { "min": 70, "max": 77, "stars": 4 },
+      { "min": 78, "max": 84, "stars": 4.5 },
+      { "min": 85, "max": 100, "stars": 5 }
     ],
     "notes": "Points out of 100 per place type. Items marked not applicable by the owner are removed and the score is normalised to 100 from the remaining items. Confirmed 'Not true' reports remove that item's points. Only visitor-checkable practices count for stars."
   },

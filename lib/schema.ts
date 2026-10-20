@@ -278,7 +278,7 @@ export const practiceDeclarations = pgTable("practice_declarations", {
   answers: text().notNull(), // JSON { [practiceId]: status }, keys sorted
   checklistHash: text("checklist_hash").notNull(), // sha256 of the checklist answered (data/practices.json for this type)
   score: integer().notNull(),
-  stars: integer().notNull(),
+  stars: doublePrecision().notNull(), // half stars: 4.5
   declaredBy: text("declared_by").notNull(),
   createdAt: at("created_at").notNull(),
   hash: text().notNull(),

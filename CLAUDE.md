@@ -46,7 +46,8 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   answers in `place_practices`, owner checklist `/shop/<id>/practices`, public page
   `/places/<id>`, star pins + filters on `/map`. Kinds: cafe, restaurant, hotel, eco_shop,
   online_shop (`lib/placeKinds.ts`); only cafe/restaurant/hotel have stars. Keep practice ids
-  stable: answers are stored by id.
+  stable: answers are stored by id. Half stars: 5★ from 85 points, 4.5 from 78 (scale in the JSON);
+  stars are always recomputed with today's scale, so changing it needs no republishing.
 - Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
   most once a day, refused if unchanged) freezes it into `practice_declarations` (versions, never
   edited) and writes its SHA-256 to Solana (memo + claim account keyed on its id,

@@ -1,3 +1,4 @@
+import Stars from "@/components/Stars";
 import Link from "next/link";
 import { CORE_RULES, REPORT_WINDOW_DAYS, REVIEW_THRESHOLD } from "@/lib/ecoRules";
 import { SCALE } from "@/lib/practices";
@@ -16,11 +17,11 @@ export default function Rules() {
       <p>Joining is a promise: owners confirm the rules when they set up their place. We don&apos;t inspect places in person yet, so we rely on customers to tell us when a place doesn&apos;t keep it. &ldquo;Verified&rdquo; on the map means <b>claimed and set up on EcoProof</b>, not independently audited. Real vetting is on our roadmap.</p>
 
       <h2 id="stars" className="scroll-mt-20 pt-2 text-[17px]">Eco stars</h2>
-      <p>Cafés, restaurants and hotels get up to five eco stars. The owner answers a checklist of practices a visitor can see for themselves, such as real cups for dine-in or no plastic water bottles. Each practice is worth points, out of 100.</p>
+      <p>Cafés, restaurants and hotels get up to five eco stars, in half stars. The owner answers a checklist of practices a visitor can see for themselves, such as real cups for dine-in or no plastic water bottles. Each practice is worth points, out of 100.</p>
       <p>Some practices don&apos;t exist at every place, like takeaway at a café that has none. Those can be marked not applicable: they are left out, and the score is worked out from the practices that do apply. Eco shops and online shops are listed without stars.</p>
       <p>The owner&apos;s answers only count once they are published. Publishing is a public declaration: a fingerprint of the answers is written to the Solana blockchain, so what was declared, and when, can never be changed quietly. An owner can publish a new declaration at most once a day; earlier ones stay on record on the place&apos;s page.</p>
       <ul className="list-disc space-y-1 pl-5">
-        {SCALE.map((s) => <li key={s.stars}><b>{s.stars ? `${s.stars} star${s.stars === 1 ? "" : "s"}` : s.label}</b>: {s.min} to {s.max} points</li>)}
+        {SCALE.map((s) => <li key={s.stars}><b>{s.stars ? `${s.stars} star${s.stars === 1 ? "" : "s"}` : s.label}</b>{s.stars > 0 && <Stars stars={s.stars} size={12} className="mx-1.5 align-[-1px]" />}: {s.min} to {s.max} points</li>)}
       </ul>
 
       <h2 className="pt-2 text-[17px]">Report a place</h2>
