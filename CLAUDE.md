@@ -44,18 +44,24 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 - Eco stars (step 1): `data/practices.json` is the only source of place types, practices,
   points and the star scale; never hard-code them. Engine `lib/stars.ts` (pure, `npm test`),
   answers in `place_practices`, owner checklist `/shop/<id>/practices`, public page
-  `/places/<id>`, star pins + filters on `/map`. Kinds: cafe, restaurant, hotel, eco_shop
-  (`lib/placeKinds.ts`); only cafe/restaurant/hotel have stars. An eco shop has channels: in store
-  (has `stamp_place_locations`, computed as `in_store` by `PLACE_COLS`) and/or online
-  (`sells_online`: WooCommerce, parcel cards). There is no "online shop" kind any more.
+  `/places/<id>`, star pins + filters on `/map`. Keep practice ids stable: answers are stored by
+  id. Half stars: 5★ from 85 points, 4.5 from 78 (scale in the JSON); stars are always
+  recomputed with today's scale, so changing it needs no republishing.
+- Kinds: cafe, restaurant, hotel, eco_shop (`lib/placeKinds.ts`); only cafe/restaurant/hotel have
+  stars. An eco shop has channels: in store (has `stamp_place_locations`, computed as `in_store`
+  by `PLACE_COLS`) and/or online (`sells_online`: WooCommerce, parcel cards). There is no
+  "online shop" kind any more.
 - Shops show impact instead of stars (`lib/shops.ts`: plastic and CO2 summed from the shop's
   proofs, `components/ShopImpact.tsx`) on the place page, map sheet and dashboard. `/shops` lists
   every eco shop (the only way to find online-only ones), nearest first. Online shops set a
   website and shipping origins (`ship_origins`, `lib/shipping.ts`): one per warehouse, each
   serving listed countries or "everyone else". The visitor's country (`x-vercel-ip-country`,
-  or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance. Keep practice ids
-  stable: answers are stored by id. Half stars: 5★ from 85 points, 4.5 from 78 (scale in the JSON);
-  stars are always recomputed with today's scale, so changing it needs no republishing.
+  or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance.
+- "Where to get it": shops tick practices their products help with (`shop_supplies`, one row per
+  practice id; same-wording practices are one topic, `supplyTopics()`), with product and link.
+  A café/restaurant/hotel checklist shows the 2 nearest shops under practices not answered Yes
+  and in "Next step up" (`lib/supplies.ts`): distance to the shop's locations, or to the warehouse
+  serving the owner's country (request country, not stored per place). Never affects stars.
 - Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
   most once a day, refused if unchanged) freezes it into `practice_declarations` (versions, never
   edited) and writes its SHA-256 to Solana (memo + claim account keyed on its id,
@@ -64,9 +70,6 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (`/api/declarations/<id>/anchor`); demo places get a seeded declaration.
 
 ### v2 plans, not built yet (agreed with Pola, in this order)
-- "Where to get it": shops tick which practices their products help with (+ product link);
-  a café's checklist shows the nearest supplier that ships to it (shop location or origin) under practices
-  answered No and in "Next step up". Open to every shop, labelled, never affects stars.
 - Receipt scanning for eco shops: in the shop (GPS, name matches) 5 pts, at home 3 pts, receipt
   at most 7 days old, once per receipt on-chain; Claude sorts items into `lib/impact.ts`
   categories, and a per-shop item memory builds itself (shops never enter products).
