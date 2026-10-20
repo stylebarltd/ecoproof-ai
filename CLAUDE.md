@@ -107,6 +107,8 @@ Local DB: Docker Postgres container `ecoproof-pg` (port 5433), database `ecoproo
   `echo@stylebar.de`, not the global `boom@stylebar.de`. Check `git log -1 --format=%ae`.
 - **`DATABASE_URL_UNPOOLED` in `.env.local` points at production.** Never use it locally.
   Previews read `PREVIEW_DATABASE_DATABASE_URL` and refuse to fall back to production.
+- Previews build their links (QR, cards, order links, webhooks) from `VERCEL_BRANCH_URL`, not
+  `APP_URL` (`appUrl()` in `lib/nft.ts`).
 - Port 5432 to Neon may be blocked from Pola's machine; use the Neon console SQL editor.
 - **`SESSION_SECRET` is required in production** (>= 32 chars); locally a dev-only
   fallback is used. `ADMIN_TOKEN` (>= 16 chars) enables `/admin` and the admin API.
