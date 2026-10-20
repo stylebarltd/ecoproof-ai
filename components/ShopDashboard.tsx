@@ -7,7 +7,7 @@ import Stars from "@/components/Stars";
 import AccountChip from "@/components/AccountChip";
 import { PlaceCard, type MyPlace } from "@/components/ShopTools";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
-import { kindOf } from "@/lib/placeKinds";
+import { isShop, kindOf } from "@/lib/placeKinds";
 import { explorerTx } from "@/lib/passportView";
 import type { ShopActivity, Source } from "@/lib/shopActivity";
 import type { Member, Role } from "@/lib/members";
@@ -286,16 +286,16 @@ export default function ShopDashboard({ id }: { id: string }) {
           <Panel title="Turned into stamps" aside={<span className="text-xs text-sage-900">all time</span>}>
             <div className="space-y-3">
               <Rate label="Printed cards" done={a.cards.claimed} total={a.cards.printed} empty="none printed yet" />
-              {place.kind === "online_shop" && <Rate label="Online orders" done={a.orders.claimed} total={a.orders.sent} empty="no orders sent yet" />}
+              {place.online && <Rate label="Online orders" done={a.orders.claimed} total={a.orders.sent} empty="no orders sent yet" />}
             </div>
           </Panel>
           <Link href={`/shop/${place.id}/practices`} className="glass lift flex items-center gap-3 rounded-[28px] p-4 lg:p-5">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sage-500 text-cream"><ListChecks size={22} strokeWidth={2.5} /></span>
             <span className="min-w-0 flex-1">
-              <span className="block text-[17px] font-heading leading-tight">Eco practices</span>
+              <span className="block text-[17px] font-heading leading-tight">{place.stars ? "Eco practices" : "Shop settings"}</span>
               {place.stars ? (
                 <span className="mt-0.5 flex items-center gap-2 text-[12px] text-sage-900"><Stars stars={place.stars.stars} size={14} /> {place.stars.answered ? `${place.stars.score} of 100 points` : "Fill in and publish your checklist to get stars"}</span>
-              ) : <span className="block text-[12px] text-sage-900">Your place type and address</span>}
+              ) : <span className="block text-[12px] text-sage-900">{isShop(place.kind) ? `${[place.inStore && "In store", place.online && "Online"].filter(Boolean).join(" and ") || "No channel yet"} · type and address` : "Your place type and address"}</span>}
             </span>
             <ChevronRight size={20} strokeWidth={2.5} className="shrink-0 text-sage-700" />
           </Link>

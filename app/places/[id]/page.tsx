@@ -58,8 +58,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
         )}
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {place.kind !== "online_shop" && <Link href={`/c/${place.id}`} className="lift rounded-full bg-terra-500 px-4 py-2.5 text-sm font-bold text-cream">{place.demo ? "Collect a stamp (demo)" : "How to collect a stamp here"}</Link>}
-          {place.kind !== "online_shop" && <Link href={`/map?place=${place.id}`} className="glass rounded-full px-4 py-2.5 text-sm font-bold">Show on the map</Link>}
+          {place.in_store && <Link href={`/c/${place.id}`} className="lift rounded-full bg-terra-500 px-4 py-2.5 text-sm font-bold text-cream">{place.demo ? "Collect a stamp (demo)" : "How to collect a stamp here"}</Link>}
+          {place.in_store && <Link href={`/map?place=${place.id}`} className="glass rounded-full px-4 py-2.5 text-sm font-bold">Show on the map</Link>}
         </div>
       </section>
 

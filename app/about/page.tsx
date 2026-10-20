@@ -153,7 +153,7 @@ export default function About() {
         <H3>Set up a shop or café in a few minutes</H3>
         <Steps items={[
           { title: "Sign in.", body: <>With Google, Facebook or a Solana wallet. It&apos;s how you sign in as the owner, and it&apos;s free.</> },
-          { title: "Open Set up a place.", body: <>Go to <Link href="/join" className="font-bold underline">Run a place?</Link> from the map. Enter your name, whether you&apos;re a shop, café, restaurant, market stall or online shop, a one-line tagline, and upload your logo.</> },
+          { title: "Open Set up a place.", body: <>Go to <Link href="/join" className="font-bold underline">Run a place?</Link> from the map. Enter your name, whether you&apos;re a café, restaurant, hotel or eco shop (in store, online or both), a one-line tagline, and upload your logo.</> },
           { title: "Add your location.", body: <>Physical places share their location while standing in the shop. It puts you on the map, and stamps are only given to people who are really there (a GPS check, always on).</> },
           { title: "Print your QR.", body: <>You get your stamp, your QR code and a print-ready counter card. Put it where customers can scan it. One stamp per customer per day.</> },
         ]} />
@@ -163,7 +163,7 @@ export default function About() {
           <li className="flex gap-3"><Gift size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A. A QR in your order email (WooCommerce).</b> We give you a webhook and a small snippet for your shop. When an order is completed, the customer&apos;s email carries a personal QR. Their stamp becomes a <b>verified purchase</b> with the real impact of what they bought. Only this method can prove the order happened.</span></li>
           <li className="flex gap-3"><Package size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>B. Printed cards in the parcel.</b> Generate cards in your dashboard, print them and drop one in each parcel. It works on any channel, including Amazon, Lazada and Shopee, and needs nothing from the shop. It gives a presence stamp, with no impact number.</span></li>
         </ul>
-        <P>You can use both. All the steps and the snippet are in the Run a place? page, under your online shop.</P>
+        <P>You can use both. All the steps and the snippet are in the Run a place? page, under your shop (turn on its online channel).</P>
 
         <H3>What happens afterwards</H3>
         <ul className="mt-1 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">

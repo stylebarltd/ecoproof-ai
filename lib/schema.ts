@@ -69,9 +69,10 @@ export const stampPlaces = pgTable("stamp_places", {
   demo: boolean().default(false).notNull(), // demo places can be collected by tapping, others only by scanning their QR
   address: text(),
   alsoCafe: boolean("also_cafe").default(false).notNull(), // a restaurant that is a café too: its checklist adds the café's serving practices
+  sellsOnline: boolean("sells_online").default(false).notNull(), // an eco shop's online channel (orders, parcel cards); in store = it has locations
 }, (t) => [
   index("stamp_places_owner").on(t.owner).where(sql`(owner IS NOT NULL)`),
-  check("stamp_places_kind", sql`${t.kind} IN ('cafe', 'restaurant', 'hotel', 'eco_shop', 'online_shop')`),
+  check("stamp_places_kind", sql`${t.kind} IN ('cafe', 'restaurant', 'hotel', 'eco_shop')`),
 ]);
 
 export const stampPlaceLocations = pgTable("stamp_place_locations", {

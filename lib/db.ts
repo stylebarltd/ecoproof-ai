@@ -40,14 +40,14 @@ async function init(p: Pool) {
 /** Launch-partner places (our own place-setup). Upserted on cold start so edits to the JSON take effect; secrets are kept. */
 async function seedStampPlaces(p: Pool) {
   const { randomBytes } = await import("crypto");
-  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; image?: string; demo?: boolean; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null; locations?: { name?: string; lat: number; lng: number }[]; practices?: Record<string, string> }[];
+  const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; image?: string; demo?: boolean; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null; locations?: { name?: string; lat: number; lng: number }[]; online?: boolean; practices?: Record<string, string> }[];
   for (const x of list) {
     await p.query(
-      `INSERT INTO stamp_places (id,name,kind,tagline,impact_note,colour,lat,lng,gps_radius_m,secret,image,demo) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-       ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, kind=EXCLUDED.kind, tagline=EXCLUDED.tagline, impact_note=EXCLUDED.impact_note, colour=EXCLUDED.colour, lat=EXCLUDED.lat, lng=EXCLUDED.lng, gps_radius_m=EXCLUDED.gps_radius_m, image=EXCLUDED.image, demo=EXCLUDED.demo`,
-      [x.id, x.name, x.kind, x.tagline ?? null, x.impactNote ?? null, x.colour ?? null, x.lat ?? null, x.lng ?? null, x.gpsRadiusM ?? null, randomBytes(24).toString("hex"), x.image ?? null, !!x.demo],
+      `INSERT INTO stamp_places (id,name,kind,tagline,impact_note,colour,lat,lng,gps_radius_m,secret,image,demo,sells_online) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+       ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, kind=EXCLUDED.kind, tagline=EXCLUDED.tagline, impact_note=EXCLUDED.impact_note, colour=EXCLUDED.colour, lat=EXCLUDED.lat, lng=EXCLUDED.lng, gps_radius_m=EXCLUDED.gps_radius_m, image=EXCLUDED.image, demo=EXCLUDED.demo, sells_online=EXCLUDED.sells_online`,
+      [x.id, x.name, x.kind, x.tagline ?? null, x.impactNote ?? null, x.colour ?? null, x.lat ?? null, x.lng ?? null, x.gpsRadiusM ?? null, randomBytes(24).toString("hex"), x.image ?? null, !!x.demo, !!x.online],
     );
-    await p.query("DELETE FROM stamp_place_locations WHERE place_id=$1", [x.id]); // the data file is the source of truth for seeded places (an online shop has no pin)
+    await p.query("DELETE FROM stamp_place_locations WHERE place_id=$1", [x.id]); // the data file is the source of truth for seeded places (an online-only shop has no pin)
     for (const l of x.locations ?? []) await p.query("INSERT INTO stamp_place_locations (place_id,name,lat,lng) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING", [x.id, l.name ?? null, l.lat, l.lng]);
     // Demo answers to the practice checklist, only where none are stored yet: what an owner changes later is kept.
     const ans = Object.entries(x.practices ?? {});

@@ -10,8 +10,7 @@ export const CORE_RULES = [
 ] as const;
 
 const KIND_RULES: Record<string, string> = {
-  online_shop: "We do not pack orders in single-use plastic packaging as standard.",
-  eco_shop: "We do not hand out single-use plastic bags or packaging where an alternative exists.",
+  eco_shop: "We do not hand out single-use plastic bags, or pack online orders in single-use plastic, where an alternative exists.",
 };
 export const rulesFor = (kind: string): string[] => [...CORE_RULES, ...(KIND_RULES[kind] ? [KIND_RULES[kind]] : [])];
 

@@ -29,7 +29,7 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
   if (!place) throw new ClaimError("Unknown place", 404);
   const source = opts.source ?? "qr";
   if (place.status !== "active") throw new ClaimError(`${place.name} is paused while we review it, so stamps can't be collected right now.`, 423, { paused: true });
-  if (place.kind === "online_shop" && source === "qr") throw new ClaimError("This is an online shop. Collect your stamp from the card in your parcel or the link in your order email.", 422);
+  if (!place.in_store && source === "qr") throw new ClaimError(`${place.name} sells online only. Collect your stamp from the card in your parcel or the link in your order email.`, 422);
 
   if (place.gps_radius_m && place.lat != null && place.lng != null) {
     if (!opts.geo) throw new ClaimError("Share your location to collect this stamp: it must be claimed at the place.", 422, { needsGps: true });

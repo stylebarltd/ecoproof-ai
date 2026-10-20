@@ -114,12 +114,7 @@
     "eco_shop": {
       "label": "Eco shop",
       "hasStars": false,
-      "notes": "Map entry only. Purchases verified by receipt scan: GPS within ~100 m of registered location, shop name on receipt matches, receipt dated today, receipt fingerprint (shop + receipt no. + date/time + total) blocks reuse. AI extracts line items and calculates CO2/plastic saved; unreadable receipts give a stamp without impact."
-    },
-    "online_shop": {
-      "label": "Online shop",
-      "hasStars": false,
-      "notes": "Existing order webhook + signed claim link/QR in the order email."
+      "notes": "No stars: shops show the CO2 and plastic their customers save. Channels: in store (map pins, counter QR) and/or online (order webhook + signed claim link/QR in the order email, parcel cards). Planned receipt scan: in the shop (GPS, shop name on receipt matches) 5 points, at home 3 points, receipt at most 7 days old, fingerprint (shop + receipt no. + date/time + total) blocks reuse. AI extracts line items into the factor table; unreadable receipts give a stamp without impact."
     }
   }
 }

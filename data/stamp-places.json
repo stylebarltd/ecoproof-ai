@@ -3,6 +3,7 @@
     "id": "superbee",
     "name": "SuperBee",
     "kind": "eco_shop",
+    "online": true,
     "colour": "#e8a317",
     "tagline": "Plastic-free home goods, handmade in Chiang Mai",
     "impactNote": null,

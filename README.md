@@ -30,7 +30,7 @@ Underneath, every claim writes a proof on Solana: a hash of the claim plus a cla
 ## How it works
 
 ### Places
-Everything is a **place**: a shop, a café, a market stall, an online shop. A place has a name, a stamp (its logo, or a generated badge), a one-line tagline, and its own QR. We set up launch partners ourselves; owners can also **self-serve** at `/join` (sign in with a wallet, add name, logo and tagline, get a QR and a print-ready counter card).
+Everything is a **place**: a café, a restaurant, a hotel, or an eco shop that sells in store, online or both. A place has a name, a stamp (its logo, or a generated badge), a one-line tagline, and its own QR. We set up launch partners ourselves; owners can also **self-serve** at `/join` (sign in with a wallet, add name, logo and tagline, get a QR and a print-ready counter card).
 
 ### Three claim doors, one destination
 Each produces one stamp and one Solana proof.
@@ -82,7 +82,7 @@ app/page.tsx                  passport home (splash, hero NFTs, stamps, progress
 app/u/[id]/page.tsx           public read-only passport (the link a shared image points to)
 app/c/[id]/page.tsx           place QR claim page          app/k/[code]/page.tsx   printed card claim page
 app/o/[place]/[token]/page.tsx  verified-order claim page   app/map/page.tsx        joined places map
-app/join/page.tsx             self-serve place setup (+ online shop options)
+app/join/page.tsx             self-serve place setup (eco shops pick their channels)
 app/place/[id]/page.tsx       print-ready counter card     app/place/[id]/cards    print sheet for card batches
 app/api/claims                one endpoint for all three doors (streams live progress as NDJSON)
 app/api/woo/webhook/[place]   WooCommerce webhook ingest   app/api/woo/qr          QR image for the order email

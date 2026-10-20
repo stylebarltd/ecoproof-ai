@@ -3,7 +3,7 @@
 import { query } from "./db";
 import { differsFromPublished, declarationsOf, latestDeclarations, publishedAnswers, publishedToday, toDeclaration } from "./declarations";
 import { checklist, nextStar, practicesOf, rating, type Answers, type Status } from "./practices";
-import { isKind, isPhysical } from "./placeKinds";
+import { GPS_RADIUS_M, isKind, isShop, kindOf } from "./placeKinds";
 
 const STATUSES: Status[] = ["yes", "no", "not_applicable"];
 
@@ -49,14 +49,26 @@ export async function practiceSetup(place: { id: string; kind: string; also_cafe
 
 export class PracticeError extends Error {}
 
-/** Saves the owner's place type, address and answers. A physical place can switch between physical kinds; an online shop stays one.
+/** Saves the owner's place type, address, an eco shop's channels, and the answers. A café, restaurant or hotel needs a location, so
+ *  an online-only shop can only become one after adding its shop's location (`location`, sent from the owner's phone at the shop).
  *  Answers are checked against the checklist: unknown practices are refused, and N/A only where the practice allows it. */
-export async function savePractices(place: { id: string; kind: string }, input: { kind?: unknown; alsoCafe?: unknown; address?: unknown; answers?: unknown }) {
+export async function savePractices(
+  place: { id: string; name: string; kind: string; in_store: boolean; sells_online: boolean },
+  input: { kind?: unknown; alsoCafe?: unknown; address?: unknown; answers?: unknown; online?: unknown; location?: unknown },
+) {
   const kind = typeof input.kind === "string" ? input.kind : place.kind;
   if (!isKind(kind)) throw new PracticeError("Unknown place type.");
-  if (isPhysical(kind) !== isPhysical(place.kind)) throw new PracticeError(isPhysical(place.kind) ? "A place with a location can't become an online shop." : "An online shop can't become a place with a location.");
   const alsoCafe = kind === "restaurant" && input.alsoCafe === true;
   const address = typeof input.address === "string" ? input.address.trim().slice(0, 200) || null : null;
+
+  // Channels. A location can be added here (not removed); the online channel only exists for eco shops.
+  const l = input.location as { lat?: unknown; lng?: unknown } | null | undefined;
+  const lat = Number(l?.lat), lng = Number(l?.lng);
+  const newLoc = !place.in_store && l && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 ? { lat, lng } : null;
+  const inStore = place.in_store || !!newLoc;
+  const online = isShop(kind) ? (typeof input.online === "boolean" ? input.online : place.sells_online) : place.sells_online;
+  if (!inStore && !isShop(kind)) throw new PracticeError(`A ${kindOf(kind)!.label.toLowerCase()} needs a location. Add your shop's location first, from your phone while you're there.`);
+  if (isShop(kind) && !inStore && !online) throw new PracticeError("A shop needs at least one channel: your shop, online, or both.");
 
   const groups = checklist(kind, alsoCafe);
   const byId = new Map(groups ? practicesOf(groups).map((p) => [p.id, p]) : []);
@@ -69,12 +81,16 @@ export async function savePractices(place: { id: string; kind: string }, input: 
     answers.push([id, status as Status]);
   }
 
-  // One statement, so the type and the answers change together. Answers for practices outside the current checklist stay stored
-  // (switching the type back restores them) but never count.
+  // One statement, so the type, the channels and the answers change together. Answers for practices outside the current checklist
+  // stay stored (switching the type back restores them) but never count. A new location becomes the GPS-checked one.
   await query(
-    `WITH place AS (UPDATE stamp_places SET kind=$2, also_cafe=$3, address=$4 WHERE id=$1)
+    `WITH place AS (
+       UPDATE stamp_places SET kind=$2, also_cafe=$3, address=$4, sells_online=$7,
+         lat=COALESCE($8, lat), lng=COALESCE($9, lng), gps_radius_m=CASE WHEN $8::float8 IS NULL THEN gps_radius_m ELSE $10 END
+       WHERE id=$1),
+     loc AS (INSERT INTO stamp_place_locations (place_id, name, lat, lng) SELECT $1, $11, $8, $9 WHERE $8::float8 IS NOT NULL)
      INSERT INTO place_practices (place_id, practice_id, status) SELECT $1, a.id, a.status FROM unnest($5::text[], $6::text[]) AS a(id, status)
      ON CONFLICT (place_id, practice_id) DO UPDATE SET status=EXCLUDED.status, updated_at=now() WHERE place_practices.status <> EXCLUDED.status`,
-    [place.id, kind, alsoCafe, address, answers.map((a) => a[0]), answers.map((a) => a[1])],
+    [place.id, kind, alsoCafe, address, answers.map((a) => a[0]), answers.map((a) => a[1]), online, newLoc?.lat ?? null, newLoc?.lng ?? null, GPS_RADIUS_M, place.name],
   );
 }

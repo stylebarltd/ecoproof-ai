@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import AccountChip from "@/components/AccountChip";
 import { currentAccount } from "@/lib/account";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
-import { PLACE_KINDS, isPhysical } from "@/lib/placeKinds";
+import { PLACE_KINDS, isShop } from "@/lib/placeKinds";
 import { rulesFor } from "@/lib/ecoRules";
 import { prepareLogo } from "@/lib/clientLogo";
 import type { PublicPlace } from "@/lib/stampPlaces";
@@ -21,6 +21,10 @@ export default function Join() {
   const [tagline, setTagline] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
   const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(null);
+  // An eco shop's channels; every other kind is in store.
+  const [shopInStore, setShopInStore] = useState(true);
+  const [shopOnline, setShopOnline] = useState(false);
+  const inStore = !isShop(kind) || shopInStore;
   const [rules, setRules] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -45,7 +49,7 @@ export default function Join() {
   async function submit() {
     setBusy(true); setErr("");
     try {
-      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, acceptRules: rules, ...(isPhysical(kind) ? loc ?? {} : {}) }) });
+      const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, acceptRules: rules, inStore, online: isShop(kind) && shopOnline, ...(inStore ? loc ?? {} : {}) }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Could not set up your place");
       setCreated(j); await refresh();
@@ -71,7 +75,7 @@ export default function Join() {
             <Link href={`/shop/${created.place.id}/practices`} className="block w-full rounded-full bg-terra-500 py-2.5 text-center text-sm font-bold text-cream">Next: tick your eco practices to earn stars</Link>
           )}
           <Link href={`/shop/${created.place.id}`} className="block w-full rounded-full bg-sage-500 py-2.5 text-center text-sm font-bold text-cream">Open its dashboard</Link>
-          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setRules(false); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
+          <button onClick={() => { setCreated(null); setName(""); setTagline(""); setLogo(null); setLoc(null); setRules(false); setShopInStore(true); setShopOnline(false); }} className="w-full rounded-full border-[1.5px] border-neutral-300 py-2.5 text-sm font-semibold">Set up another place</button>
         </>
       ) : (
         <div className="space-y-3 rounded-[28px] bg-neutral-100 p-4">
@@ -86,13 +90,21 @@ export default function Join() {
               <img src={logo} alt="" width={56} height={56} className="rounded-full" /> Logo added · tap to change</span> : "🖼️ Upload your logo (optional)"}
             <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => pickLogo(e.target.files?.[0])} />
           </label>
-          {isPhysical(kind) ? (
+          {isShop(kind) && (
+            <div className="space-y-2 rounded-2xl bg-white p-3 text-sm ring-1 ring-neutral-300">
+              <p className="font-semibold">How do customers buy from you?</p>
+              <label className="flex items-start gap-2 text-xs"><input type="checkbox" className="mt-0.5" checked={shopInStore} onChange={(e) => setShopInStore(e.target.checked)} /> <span><b>In our shop.</b> You get a map pin and a QR for the counter.</span></label>
+              <label className="flex items-start gap-2 text-xs"><input type="checkbox" className="mt-0.5" checked={shopOnline} onChange={(e) => setShopOnline(e.target.checked)} /> <span><b>Online.</b> Stamps come from your order emails (WooCommerce) or cards in your parcels, on any channel.</span></label>
+              <p className="text-[11px] text-neutral-500">Eco shops show the plastic and CO₂ their customers save instead of stars.</p>
+            </div>
+          )}
+          {inStore ? (
             <div className="space-y-2 rounded-2xl bg-cream p-3 text-sm">
               <button onClick={locate} className="rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-neutral-300">{loc ? "📍 Location saved" : "📍 Use my current location"}</button>
               <p className="text-xs text-neutral-600">Do this while you&apos;re at your place. It puts you on the map, and stamps are only given to people who are there (GPS check, always on).</p>
             </div>
           ) : (
-            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">Online shops have no map pin and no GPS check. After you create it you choose how customers get their stamp: a QR in your order email (WooCommerce, with our free plugin), printed QR cards in the parcel (any channel, e.g. Amazon), or both.</p>
+            <p className="rounded-2xl bg-cream p-3 text-xs text-neutral-600">A shop that only sells online has no map pin and no GPS check. After you create it you choose how customers get their stamp: a QR in your order email (WooCommerce, with our free plugin), printed QR cards in the parcel (any channel, e.g. Amazon), or both. You can add your shop&apos;s location later.</p>
           )}
           <div className="space-y-2 rounded-2xl bg-white p-3 text-sm ring-1 ring-neutral-300">
             <p className="font-semibold">EcoProof is only for eco places</p>
@@ -100,7 +112,7 @@ export default function Join() {
             <label className="flex items-start gap-2 text-xs"><input type="checkbox" className="mt-0.5" checked={rules} onChange={(e) => setRules(e.target.checked)} /> <span>I confirm my place keeps these rules. I understand customers can report places that don&apos;t, and that EcoProof can pause or remove them. <Link href="/rules" className="underline">Read the rules</Link></span></label>
           </div>
           {err && <p className="rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
-          <button onClick={submit} disabled={busy || name.trim().length < 2 || !rules || (isPhysical(kind) && !loc)} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>
+          <button onClick={submit} disabled={busy || name.trim().length < 2 || !rules || (inStore && !loc) || (isShop(kind) && !shopInStore && !shopOnline)} className="w-full rounded-full bg-terra-500 py-3 font-bold text-cream disabled:opacity-60">{busy ? "Setting up…" : "Create my place and QR"}</button>
           <p className="text-[11px] text-neutral-500">Places are listed as &ldquo;claimed and set up&rdquo;. Independent vetting is on our roadmap.</p>
         </div>
       )}

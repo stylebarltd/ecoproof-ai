@@ -44,8 +44,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 - Eco stars (step 1): `data/practices.json` is the only source of place types, practices,
   points and the star scale; never hard-code them. Engine `lib/stars.ts` (pure, `npm test`),
   answers in `place_practices`, owner checklist `/shop/<id>/practices`, public page
-  `/places/<id>`, star pins + filters on `/map`. Kinds: cafe, restaurant, hotel, eco_shop,
-  online_shop (`lib/placeKinds.ts`); only cafe/restaurant/hotel have stars. Keep practice ids
+  `/places/<id>`, star pins + filters on `/map`. Kinds: cafe, restaurant, hotel, eco_shop
+  (`lib/placeKinds.ts`); only cafe/restaurant/hotel have stars. An eco shop has channels: in store
+  (has `stamp_place_locations`, computed as `in_store` by `PLACE_COLS`) and/or online
+  (`sells_online`: WooCommerce, parcel cards). There is no "online shop" kind any more. Keep practice ids
   stable: answers are stored by id. Half stars: 5★ from 85 points, 4.5 from 78 (scale in the JSON);
   stars are always recomputed with today's scale, so changing it needs no republishing.
 - Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
@@ -55,9 +57,14 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   if it matches the place's current type. Pending proofs are written on view
   (`/api/declarations/<id>/anchor`); demo places get a seeded declaration.
 
-### v2 plans, not built yet
-- Stars steps 2 to 5: customer True/Not true reports (`practice_reports` table exists, no
-  UI; reports should point at a declaration), eco shop receipt scanning, certification.
+### v2 plans, not built yet (agreed with Pola, in this order)
+- Shops show impact instead of stars: plastic and CO2 saved by customers, summed from proofs.
+- Receipt scanning for eco shops: in the shop (GPS, name matches) 5 pts, at home 3 pts, receipt
+  at most 7 days old, once per receipt on-chain; Claude sorts items into `lib/impact.ts`
+  categories, and a per-shop item memory builds itself (shops never enter products).
+- "Visitor-verified" (not "certified"): after a QR stamp, ask about one published practice
+  (Yes / No / Didn't notice); a No becomes a report (`practice_reports`); badge after 3 visitors
+  on 3 different days, shown with its count; any answer earns the reward, not only Yes.
 
 ## Stack
 Next.js 16 (App Router; read `node_modules/next/dist/docs/` first, see AGENTS.md) ·

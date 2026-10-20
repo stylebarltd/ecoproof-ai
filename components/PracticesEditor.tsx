@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Check, ExternalLink, Link2, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, Globe, Link2, Loader2, MapPin, Sparkles } from "lucide-react";
 import AccountChip from "@/components/AccountChip";
 import PublishSheet from "@/components/PublishSheet";
 import Stars from "@/components/Stars";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { readProgress } from "@/lib/progress";
-import { PLACE_KINDS, isPhysical, kindOf } from "@/lib/placeKinds";
+import { PLACE_KINDS, kindOf } from "@/lib/placeKinds";
 import { PRACTICES, checklist, nextStar, rating, type Answers, type Status } from "@/lib/practices";
 import type { Declaration } from "@/lib/declarations";
 import type { Role } from "@/lib/members";
@@ -54,6 +54,8 @@ export default function PracticesEditor({ id }: { id: string }) {
   const [kind, setKind] = useState("cafe");
   const [alsoCafe, setAlsoCafe] = useState(false);
   const [address, setAddress] = useState("");
+  const [online, setOnline] = useState(false); // an eco shop's online channel
+  const [newLoc, setNewLoc] = useState<{ lat: number; lng: number } | null>(null); // a shop location being added, saved with Save
   const [answers, setAnswers] = useState<Answers>({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null); // JSON of what is saved, to tell unsaved changes apart
@@ -62,8 +64,8 @@ export default function PracticesEditor({ id }: { id: string }) {
   const desktop = useDesktop();
 
   const apply = (s: Setup) => {
-    setSetup(s); setKind(s.kind); setAlsoCafe(s.alsoCafe); setAddress(s.address ?? ""); setAnswers(s.answers);
-    setSaved(JSON.stringify({ kind: s.kind, alsoCafe: s.alsoCafe, address: s.address ?? "", answers: s.answers }));
+    setSetup(s); setKind(s.kind); setAlsoCafe(s.alsoCafe); setAddress(s.address ?? ""); setAnswers(s.answers); setOnline(s.place.online); setNewLoc(null);
+    setSaved(JSON.stringify({ kind: s.kind, alsoCafe: s.alsoCafe, address: s.address ?? "", answers: s.answers, online: s.place.online, newLoc: null }));
   };
   const load = useCallback(async () => {
     const r = await fetch(`/api/places/mine/${id}/practices`, { cache: "no-store" });
@@ -77,7 +79,8 @@ export default function PracticesEditor({ id }: { id: string }) {
   const groups = useMemo(() => checklist(kind, alsoCafe), [kind, alsoCafe]);
   const live = useMemo(() => rating(kind, alsoCafe, answers), [kind, alsoCafe, answers]);
   const next = useMemo(() => nextStar(kind, alsoCafe, answers), [kind, alsoCafe, answers]);
-  const dirty = saved !== JSON.stringify({ kind, alsoCafe, address, answers });
+  const dirty = saved !== JSON.stringify({ kind, alsoCafe, address, answers, online, newLoc });
+  const inStore = !!setup?.place.inStore || !!newLoc;
   const canEdit = setup?.role === "owner";
   const open = groups ? groups.flatMap((g) => g.items).filter((p) => !answers[p.id]).length : 0;
 
@@ -90,7 +93,7 @@ export default function PracticesEditor({ id }: { id: string }) {
       const ids = new Set(groups?.flatMap((g) => g.items.map((p) => p.id)) ?? []);
       const r = await fetch(`/api/places/mine/${id}/practices`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, alsoCafe, address, answers: Object.fromEntries(Object.entries(answers).filter(([k]) => ids.has(k))) }),
+        body: JSON.stringify({ kind, alsoCafe, address, online, location: newLoc, answers: Object.fromEntries(Object.entries(answers).filter(([k]) => ids.has(k))) }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Couldn't save.");
@@ -141,7 +144,11 @@ export default function PracticesEditor({ id }: { id: string }) {
     );
   }
 
-  const kinds = PLACE_KINDS.filter((k) => k.physical === isPhysical(setup.kind));
+  const kinds = PLACE_KINDS; // a café, restaurant or hotel needs a location; the server says so if an online-only shop picks one
+  const locate = () => navigator.geolocation?.getCurrentPosition(
+    (p) => { setNewLoc({ lat: p.coords.latitude, lng: p.coords.longitude }); setErr(""); },
+    () => setErr("Location permission is needed to add your shop to the map."), { enableHighAccuracy: true, timeout: 15000 },
+  );
   const type = PRACTICES.placeTypes[kind];
 
   const preview = live && (
@@ -201,8 +208,8 @@ export default function PracticesEditor({ id }: { id: string }) {
     <div className="space-y-4 pb-24 lg:space-y-6 lg:pb-8">
       {header}
       <div>
-        <h1 className="text-[24px] leading-tight lg:text-[30px]">Eco practices and stars</h1>
-        <p className="mt-1 text-[13px] text-sage-900">Tick what your place really does. Save as often as you like: your draft stays private. When it&apos;s right, publish it. Then visitors see it on your public page, its fingerprint is written to the Solana blockchain for good, and visitors can report anything that isn&apos;t true.</p>
+        <h1 className="text-[24px] leading-tight lg:text-[30px]">{groups ? "Eco practices and stars" : "Shop settings"}</h1>
+        {!groups ? <p className="mt-1 text-[13px] text-sage-900">Your place type, address, and how customers buy from you.</p> : <p className="mt-1 text-[13px] text-sage-900">Tick what your place really does. Save as often as you like: your draft stays private. When it&apos;s right, publish it. Then visitors see it on your public page, its fingerprint is written to the Solana blockchain for good, and visitors can report anything that isn&apos;t true.</p>}
       </div>
       {!canEdit && <p className="rounded-2xl bg-cream p-3 text-sm">Only the owner can change these. You&apos;re staff, so this is read-only.</p>}
 
@@ -221,7 +228,7 @@ export default function PracticesEditor({ id }: { id: string }) {
               )}
               {type?.notes && type.hasStars && <p className="mt-2 text-[11.5px] text-sage-900">{type.notes}</p>}
             </div>
-            {isPhysical(kind) && (
+            {inStore && (
               <label className="block">
                 <span className="text-[13px] font-bold">Address</span>
                 <input value={address} disabled={!canEdit} onChange={(e) => setAddress(e.target.value)} maxLength={200} placeholder="Street, area, city" className="mt-1 w-full rounded-xl bg-white/80 px-3 py-2.5 text-sm ring-1 ring-sage-900/15" />
@@ -247,9 +254,32 @@ export default function PracticesEditor({ id }: { id: string }) {
               </ul>
             </section>
           )) : (
-            <section className="glass rounded-[28px] p-4 text-sm lg:p-5">
-              <p className="font-bold">{kindOf(kind)?.label}s are listed without stars.</p>
-              <p className="mt-1 text-sage-900">{kind === "online_shop" ? "Online shops appear in EcoProof without a map pin. Customers collect stamps from their order email or parcel card." : "Eco shops appear on the map without a star rating. Stars are for cafés, restaurants and hotels."}</p>
+            <section className="glass space-y-3 rounded-[28px] p-4 text-sm lg:p-5">
+              <div>
+                <h2 className="text-[17px]">How do customers buy from you?</h2>
+                <p className="mt-0.5 text-[12.5px] text-sage-900">{kindOf(kind)?.plural ?? "Shops"} show the plastic and CO₂ their customers save instead of stars. Use one channel or both.</p>
+              </div>
+              <div className="flex items-start gap-3 rounded-2xl bg-white/60 p-3">
+                <MapPin size={18} strokeWidth={2.5} className="mt-0.5 shrink-0 text-sage-800" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold">In our shop</p>
+                  {setup.place.inStore ? <p className="text-[12.5px] text-sage-900">On the map, with a QR for your counter. To remove a location, contact us.</p>
+                    : newLoc ? <p className="text-[12.5px] text-sage-900">Location added. Save to put your shop on the map.</p>
+                    : <>
+                        <p className="text-[12.5px] text-sage-900">Not on the map yet. Add your location from your phone while you&apos;re at the shop.</p>
+                        {canEdit && <button onClick={locate} className="mt-2 rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-sage-900/15">📍 Use my current location</button>}
+                      </>}
+                </div>
+              </div>
+              <label className="flex items-start gap-3 rounded-2xl bg-white/60 p-3">
+                <Globe size={18} strokeWidth={2.5} className="mt-0.5 shrink-0 text-sage-800" />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-bold">Online</span>
+                  <span className="block text-[12.5px] text-sage-900">Stamps come from your order emails (WooCommerce) or cards in your parcels. Set them up on your shop&apos;s page.</span>
+                </span>
+                <input type="checkbox" checked={online} disabled={!canEdit} onChange={(e) => setOnline(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-sage-600" />
+              </label>
+              {!inStore && !online && <p className="rounded-xl bg-terra-100 p-2.5 text-[12.5px] text-terra-800">Pick at least one channel.</p>}
             </section>
           )}
         </div>

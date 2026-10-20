@@ -7,7 +7,7 @@ export const GET = async () => Response.json({ places: (await listPlaces()).map(
 
 /**
  * Our own place-setup (launch partners). Requires the ADMIN_TOKEN header. Creating a place generates its QR/claim URL.
- * Body: { name, kind?: "cafe"|"restaurant"|"hotel"|"eco_shop"|"online_shop", tagline?, impactNote?, colour?, image? (data:image/... URL), lat?, lng?, gpsRadiusM? }
+ * Body: { name, kind?: "cafe"|"restaurant"|"hotel"|"eco_shop", tagline?, impactNote?, colour?, image? (data:image/... URL), lat?, lng?, gpsRadiusM? }
  */
 export async function POST(req: Request) {
   const token = process.env.ADMIN_TOKEN;

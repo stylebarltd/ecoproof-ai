@@ -12,7 +12,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   return Response.json({ place: toPublic(place), role: m.role, ...(await practiceSetup(place)) }, { headers: { "Cache-Control": "no-store" } });
 }
 
-/** Body: { kind, alsoCafe?, address?, answers: { [practiceId]: "yes" | "no" | "not_applicable" } } */
+/** Body: { kind, alsoCafe?, address?, online?, location?: { lat, lng }, answers: { [practiceId]: "yes" | "no" | "not_applicable" } }.
+ *  online and location are an eco shop's channels; a location can be added, not removed. */
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
   const m = await memberOf(req, id, "owner");
@@ -27,5 +28,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (e instanceof PracticeError) return Response.json({ error: e.message }, { status: 400 });
     throw e;
   }
-  return Response.json(await practiceSetup((await getPlace(id))!));
+  const saved = (await getPlace(id))!;
+  return Response.json({ place: toPublic(saved), ...(await practiceSetup(saved)) });
 }

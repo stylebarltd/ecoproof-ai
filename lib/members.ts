@@ -3,7 +3,7 @@ import { query } from "./db";
 import { isAccountKey, looksLikeWallet, userIdOfKey } from "./ids";
 import { isPlaceholderEmail } from "./solanaAuth";
 import { getSession, type Session } from "./session";
-import type { StampPlace } from "./stampPlaces";
+import { PLACE_COLS, type StampPlace } from "./stampPlaces";
 
 // Who runs which place (table place_members). Owners can do everything; staff print QR codes and cards and see customer activity.
 
@@ -18,7 +18,7 @@ export async function roleAt(placeId: string, keys: string[]): Promise<Role | nu
 
 export async function myPlaces(keys: string[]): Promise<(StampPlace & { role: Role })[]> {
   return query<StampPlace & { role: Role }>(
-    `SELECT p.*, CASE WHEN bool_or(m.role = 'owner') THEN 'owner' ELSE 'staff' END AS role
+    `SELECT ${PLACE_COLS}, CASE WHEN bool_or(m.role = 'owner') THEN 'owner' ELSE 'staff' END AS role
        FROM stamp_places p JOIN place_members m ON m.place_id = p.id
       WHERE m.member_key = ANY($1) GROUP BY p.id ORDER BY p.created_at`,
     [keys],

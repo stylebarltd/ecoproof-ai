@@ -11,7 +11,7 @@ export type Practices = { version: string; country: string; stars: { scale: Scal
 export type Answers = Record<string, Status>;
 export type Rating = { score: number; stars: number; label: string; yesPoints: number; applicablePoints: number };
 
-/** The checklist for a place, or null when its type has no stars (eco shops, online shops). A restaurant that is also a café
+/** The checklist for a place, or null when its type has no stars (eco shops). A restaurant that is also a café
  *  gets the café's "Serving" group as well, without the practices the restaurant list already has (same label). */
 export function checklist(data: Practices, kind: string, alsoCafe = false): Group[] | null {
   const type = data.placeTypes[kind];

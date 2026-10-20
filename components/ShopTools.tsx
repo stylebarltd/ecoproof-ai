@@ -87,41 +87,41 @@ export function WooOption({ id }: { id: string }) {
   );
 }
 
-/** Staff see everything except the WooCommerce setup, which holds the shop's secret. */
+/** A place's ways to give stamps, per channel: the counter QR in store, and the order email and parcel cards online. Staff see
+ *  everything except the WooCommerce setup, which holds the shop's secret. */
 export function PlaceCard({ p }: { p: MyPlace }) {
   const notice = p.status && p.status !== "active" ? <p className="rounded-xl bg-terra-100 p-2.5 text-xs text-terra-800">{p.status === "suspended" ? "This place was removed from EcoProof." : "This place is paused while we review reports."} {p.statusNote}</p> : null;
-  if (p.kind === "online_shop") {
-    return (
-      <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={p.imageUrl} alt="" width={96} height={96} className="mx-auto" />
-        <h3 className="text-lg">{p.name}</h3>
-        {notice}
-        <p className="text-xs text-neutral-600">Two ways to give customers their stamp. Use one or both.</p>
-        {p.role === "staff" ? (
-          <p className="rounded-2xl bg-sage-100 p-3 text-left text-xs text-neutral-600"><b>A. QR in your order email:</b> the WooCommerce setup holds the shop&apos;s secret, so only the owner sees it.</p>
-        ) : <WooOption id={p.id} />}
-        <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
-          <p className="font-semibold">B. Printed QR cards in the parcel <span className="font-normal text-neutral-600">(any channel: Amazon, Lazada, Shopee…)</span></p>
-          <p className="text-xs text-neutral-600">No shop code needed. Print the cards and drop one in each parcel. Every card gives one stamp, once. It can&apos;t show the order&apos;s impact, because a card doesn&apos;t prove what was bought.</p>
-          <CardsButton id={p.id} />
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={p.imageUrl} alt="" width={96} height={96} className="mx-auto" />
       <h3 className="text-lg">{p.name}</h3>
       {notice}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={p.qrUrl} alt={`QR code to collect a ${p.name} stamp`} width={180} height={180} className="mx-auto" />
-      <p className="hidden text-xs text-neutral-500 lg:block">Try it: scan this QR with your phone&apos;s camera to see what customers see.</p>
-      <div className="grid grid-cols-2 gap-2 text-sm font-semibold">
-        <Link href={`/place/${p.id}`} className="rounded-full bg-honey-500 py-2.5 text-ink">Print counter card</Link>
-        <Link href={`/c/${p.id}`} className="rounded-full border-[1.5px] border-neutral-300 py-2.5">Preview stamp page</Link>
-      </div>
+      {p.inStore && (
+        <>
+          {p.online && <p className="text-left text-sm font-semibold">In your shop</p>}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={p.qrUrl} alt={`QR code to collect a ${p.name} stamp`} width={180} height={180} className="mx-auto" />
+          <p className="hidden text-xs text-neutral-500 lg:block">Try it: scan this QR with your phone&apos;s camera to see what customers see.</p>
+          <div className="grid grid-cols-2 gap-2 text-sm font-semibold">
+            <Link href={`/place/${p.id}`} className="rounded-full bg-honey-500 py-2.5 text-ink">Print counter card</Link>
+            <Link href={`/c/${p.id}`} className="rounded-full border-[1.5px] border-neutral-300 py-2.5">Preview stamp page</Link>
+          </div>
+        </>
+      )}
+      {p.online && (
+        <>
+          {p.inStore ? <p className="pt-2 text-left text-sm font-semibold">Online</p> : <p className="text-xs text-neutral-600">Two ways to give customers their stamp. Use one or both.</p>}
+          {p.role === "staff" ? (
+            <p className="rounded-2xl bg-sage-100 p-3 text-left text-xs text-neutral-600"><b>A. QR in your order email:</b> the WooCommerce setup holds the shop&apos;s secret, so only the owner sees it.</p>
+          ) : <WooOption id={p.id} />}
+          <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
+            <p className="font-semibold">B. Printed QR cards in the parcel <span className="font-normal text-neutral-600">(any channel: Amazon, Lazada, Shopee…)</span></p>
+            <p className="text-xs text-neutral-600">No shop code needed. Print the cards and drop one in each parcel. Every card gives one stamp, once. It can&apos;t show the order&apos;s impact, because a card doesn&apos;t prove what was bought.</p>
+            <CardsButton id={p.id} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

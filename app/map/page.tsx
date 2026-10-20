@@ -10,7 +10,7 @@ import type { MapPlace } from "@/lib/stampPlaces";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false, loading: () => <div className="h-full w-full bg-sage-200" /> });
 
-const KINDS = PLACE_KINDS.filter((k) => k.physical); // online shops have no pin
+const KINDS = PLACE_KINDS; // online-only shops have no pin, so they never show up here
 const key = (p: MapPlace) => `${p.id}:${p.locationId}`;
 
 type Here = { lat: number; lng: number };
