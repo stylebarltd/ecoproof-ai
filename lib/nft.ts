@@ -18,7 +18,14 @@ import { payerKeypair, RPC } from "./solana";
 
 export { BASE_MILESTONES, reachedMilestones, nextMilestone, tierFor, milestoneLabel, type Tier } from "./milestoneRules";
 
-export const appUrl = () => (process.env.APP_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")).replace(/\/$/, "");
+/** Public base URL for links we hand out (QR codes, cards, order links, webhooks, NFT metadata). A preview links to its own branch URL,
+ *  even when APP_URL is set for every environment: a QR scanned while testing v2 must stamp on the preview's database, not production. */
+export const appUrl = () => {
+  const e = process.env;
+  const url = e.VERCEL_ENV === "preview" && e.VERCEL_BRANCH_URL ? `https://${e.VERCEL_BRANCH_URL}`
+    : e.APP_URL || (e.VERCEL_PROJECT_PRODUCTION_URL ? `https://${e.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+  return url.replace(/\/$/, "");
+};
 
 export function umiClient(): Umi {
   const umi = createUmi(RPC).use(mplBubblegum()).use(mplCore());
