@@ -1,3 +1,4 @@
+import { visitorCountry } from "@/lib/shipping";
 import { DeclarationError, publish, toDeclaration } from "@/lib/declarations";
 import { memberOf } from "@/lib/members";
 import { answersFor, practiceSetup } from "@/lib/placePractices";
@@ -22,7 +23,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const run = async (emit: (e: { step: string }) => void) => {
     const d = await publish(place, (await answersFor([id])).get(id) ?? {}, m.s.userId ?? m.s.key, (step) => emit({ step }));
-    return { declaration: toDeclaration(d), setup: await practiceSetup(place) };
+    return { declaration: toDeclaration(d), setup: await practiceSetup(place, visitorCountry(req)) };
   };
   const fail = (e: unknown) => {
     if (e instanceof DeclarationError) return { status: e.status, body: { error: e.message } };

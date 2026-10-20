@@ -2,9 +2,10 @@
 // are a private draft; the public sees only what was published (lib/declarations.ts).
 import { query } from "./db";
 import { differsFromPublished, declarationsOf, latestDeclarations, publishedAnswers, publishedToday, toDeclaration } from "./declarations";
-import { checklist, nextStar, practicesOf, rating, type Answers, type Status } from "./practices";
+import { checklist, hasStars, nextStar, practicesOf, rating, supplyTopics, type Answers, type Status } from "./practices";
 import { GPS_RADIUS_M, isKind, isShop, isWebsite, kindOf } from "./placeKinds";
 import { cleanOrigins } from "./shipping";
+import { cleanSupplies, placeAt, suppliersFor, suppliesOf } from "./supplies";
 import { originsOf } from "./shops";
 
 const STATUSES: Status[] = ["yes", "no", "not_applicable"];
@@ -34,11 +35,12 @@ export async function publishedStars(places: { id: string; kind: string; also_ca
   return new Map(places.map((p) => [p.id, starsOf(p.kind, p.also_cafe, publishedAnswers(p, latest.get(p.id)))]));
 }
 
-/** Everything the owner's checklist screen needs: the draft, and what is published. */
+/** Everything the owner's checklist screen needs: the draft, and what is published. For a café, restaurant or hotel also the
+ *  nearest shops per practice ("Where to get it"; `country` is the owner's, from the request); for a shop, what it supplies. */
 export async function practiceSetup(place: {
-  id: string; kind: string; also_cafe: boolean; address: string | null;
+  id: string; kind: string; also_cafe: boolean; address: string | null; lat: number | null; lng: number | null;
   website: string | null;
-}) {
+}, country: string | null = null) {
   const answers = (await answersFor([place.id])).get(place.id) ?? {};
   const history = await declarationsOf(place.id);
   const last = history[0];
@@ -46,6 +48,8 @@ export async function practiceSetup(place: {
     kind: place.kind, alsoCafe: place.also_cafe, address: place.address, answers,
     // An online shop's public details (eco shops only): website, and where it ships from.
     website: place.website, origins: (await originsOf([place.id])).get(place.id) ?? [],
+    supplies: isShop(place.kind) ? await suppliesOf(place.id) : [],
+    suppliers: hasStars(place.kind) ? await suppliersFor({ id: place.id, at: await placeAt(place), country }, supplyTopics().flatMap((t) => t.ids)) : {},
     rating: rating(place.kind, place.also_cafe, answers), next: nextStar(place.kind, place.also_cafe, answers),
     published: last ? toDeclaration(last) : null,
     publishedMatchesType: !!last && last.kind === place.kind && last.also_cafe === place.also_cafe,
@@ -63,7 +67,7 @@ export async function savePractices(
   place: { id: string; name: string; kind: string; in_store: boolean; sells_online: boolean },
   input: {
     kind?: unknown; alsoCafe?: unknown; address?: unknown; answers?: unknown; online?: unknown; location?: unknown;
-    website?: unknown; origins?: unknown;
+    website?: unknown; origins?: unknown; supplies?: unknown;
   },
 ) {
   const kind = typeof input.kind === "string" ? input.kind : place.kind;
@@ -85,6 +89,8 @@ export async function savePractices(
   if (website && !isWebsite(website)) throw new PracticeError("Enter your website as a full address, like https://superbee.me");
   const origins = input.origins === undefined ? null : cleanOrigins(input.origins); // null: leave them as they are
   if (typeof origins === "string") throw new PracticeError(origins);
+  const supplies = input.supplies === undefined || !isShop(kind) ? null : cleanSupplies(input.supplies); // null: leave them as they are
+  if (typeof supplies === "string") throw new PracticeError(supplies);
 
   const groups = checklist(kind, alsoCafe);
   const byId = new Map(groups ? practicesOf(groups).map((p) => [p.id, p]) : []);
@@ -108,10 +114,13 @@ export async function savePractices(
      loc AS (INSERT INTO stamp_place_locations (place_id, name, lat, lng) SELECT $1, $11, $8, $9 WHERE $8::float8 IS NOT NULL),
      gone AS (DELETE FROM ship_origins WHERE place_id=$1 AND $13::jsonb IS NOT NULL),
      origins AS (INSERT INTO ship_origins (place_id, label, lat, lng, countries)
-       SELECT $1, o.label, o.lat, o.lng, ARRAY(SELECT jsonb_array_elements_text(o.countries)) FROM jsonb_to_recordset($13::jsonb) AS o(label text, lat float8, lng float8, countries jsonb))
+       SELECT $1, o.label, o.lat, o.lng, ARRAY(SELECT jsonb_array_elements_text(o.countries)) FROM jsonb_to_recordset($13::jsonb) AS o(label text, lat float8, lng float8, countries jsonb)),
+     unsupplied AS (DELETE FROM shop_supplies WHERE place_id=$1 AND $14::jsonb IS NOT NULL),
+     supplied AS (INSERT INTO shop_supplies (place_id, practice_id, product, url)
+       SELECT $1, s."practiceId", s.product, s.url FROM jsonb_to_recordset($14::jsonb) AS s("practiceId" text, product text, url text))
      INSERT INTO place_practices (place_id, practice_id, status) SELECT $1, a.id, a.status FROM unnest($5::text[], $6::text[]) AS a(id, status)
      ON CONFLICT (place_id, practice_id) DO UPDATE SET status=EXCLUDED.status, updated_at=now() WHERE place_practices.status <> EXCLUDED.status`,
     [place.id, kind, alsoCafe, address, answers.map((a) => a[0]), answers.map((a) => a[1]), online, newLoc?.lat ?? null, newLoc?.lng ?? null, GPS_RADIUS_M, place.name,
-     website, origins && JSON.stringify(origins)],
+     website, origins && JSON.stringify(origins), supplies && JSON.stringify(supplies)],
   );
 }

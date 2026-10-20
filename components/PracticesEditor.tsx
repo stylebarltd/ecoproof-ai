@@ -5,6 +5,7 @@ import { ArrowLeft, Check, ExternalLink, Globe, Link2, Loader2, MapPin, Sparkles
 import AccountChip from "@/components/AccountChip";
 import OriginsEditor from "@/components/OriginsEditor";
 import PublishSheet from "@/components/PublishSheet";
+import SuppliesEditor from "@/components/SuppliesEditor";
 import Stars from "@/components/Stars";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { readProgress } from "@/lib/progress";
@@ -12,6 +13,7 @@ import { PLACE_KINDS, kindOf } from "@/lib/placeKinds";
 import { PRACTICES, checklist, nextStar, rating, type Answers, type Status } from "@/lib/practices";
 import type { Declaration } from "@/lib/declarations";
 import type { ShipOrigin } from "@/lib/shipping";
+import type { Supplier, Supply } from "@/lib/supplies";
 import type { Role } from "@/lib/members";
 import type { PublicPlace } from "@/lib/stampPlaces";
 
@@ -22,6 +24,8 @@ import type { PublicPlace } from "@/lib/stampPlaces";
 type Setup = {
   place: PublicPlace; role: Role; kind: string; alsoCafe: boolean; address: string | null; answers: Answers;
   website: string | null; origins: ShipOrigin[];
+  supplies: Supply[]; // a shop: the practices its products help with
+  suppliers: Record<string, Supplier[]>; // a café, restaurant or hotel: the nearest shops per practice id
   published: Declaration | null; publishedMatchesType: boolean; unpublishedChanges: boolean; publishedToday: boolean;
 };
 
@@ -51,6 +55,23 @@ function Choice({ value, allowNA, disabled, onChange, name }: { value: Status | 
   );
 }
 
+/** "Where to get it": the nearest eco shops on EcoProof whose products help with a practice. Never part of the stars. */
+function WhereToGet({ list }: { list: Supplier[] | undefined }) {
+  if (!list?.length) return null;
+  return (
+    <span className="mt-1 block text-[11.5px] leading-snug text-sage-900">
+      <span className="font-bold">Where to get it:</span>{" "}
+      {list.map((s, i) => (
+        <span key={s.shopId}>
+          {i > 0 && " · "}
+          <a href={s.url ?? `/places/${s.shopId}`} target={s.url ? "_blank" : undefined} rel={s.url ? "noreferrer" : undefined} className="underline decoration-sage-900/30 underline-offset-2">{s.product}</a>
+          {" "}from {s.shopName}{s.km != null ? ` (${s.km < 1 ? "under 1" : s.km < 10 ? s.km.toFixed(1) : Math.round(s.km).toLocaleString("en")} km${s.via === "online" ? ", ships" : ""})` : s.via === "online" ? " (ships to you)" : ""}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function PracticesEditor({ id }: { id: string }) {
   const [state, setState] = useState<"loading" | "ready" | "signin" | "missing">("loading");
   const [setup, setSetup] = useState<Setup | null>(null);
@@ -61,6 +82,7 @@ export default function PracticesEditor({ id }: { id: string }) {
   const [newLoc, setNewLoc] = useState<{ lat: number; lng: number } | null>(null); // a shop location being added, saved with Save
   const [website, setWebsite] = useState("");
   const [origins, setOrigins] = useState<ShipOrigin[]>([]);
+  const [supplies, setSupplies] = useState<Supply[]>([]);
   const [answers, setAnswers] = useState<Answers>({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null); // JSON of what is saved, to tell unsaved changes apart
@@ -70,8 +92,8 @@ export default function PracticesEditor({ id }: { id: string }) {
 
   const apply = (s: Setup) => {
     setSetup(s); setKind(s.kind); setAlsoCafe(s.alsoCafe); setAddress(s.address ?? ""); setAnswers(s.answers); setOnline(s.place.online); setNewLoc(null);
-    setWebsite(s.website ?? ""); setOrigins(s.origins);
-    setSaved(JSON.stringify({ kind: s.kind, alsoCafe: s.alsoCafe, address: s.address ?? "", answers: s.answers, online: s.place.online, newLoc: null, website: s.website ?? "", origins: s.origins }));
+    setWebsite(s.website ?? ""); setOrigins(s.origins); setSupplies(s.supplies);
+    setSaved(JSON.stringify({ kind: s.kind, alsoCafe: s.alsoCafe, address: s.address ?? "", answers: s.answers, online: s.place.online, newLoc: null, website: s.website ?? "", origins: s.origins, supplies: s.supplies }));
   };
   const load = useCallback(async () => {
     const r = await fetch(`/api/places/mine/${id}/practices`, { cache: "no-store" });
@@ -85,7 +107,7 @@ export default function PracticesEditor({ id }: { id: string }) {
   const groups = useMemo(() => checklist(kind, alsoCafe), [kind, alsoCafe]);
   const live = useMemo(() => rating(kind, alsoCafe, answers), [kind, alsoCafe, answers]);
   const next = useMemo(() => nextStar(kind, alsoCafe, answers), [kind, alsoCafe, answers]);
-  const dirty = saved !== JSON.stringify({ kind, alsoCafe, address, answers, online, newLoc, website, origins });
+  const dirty = saved !== JSON.stringify({ kind, alsoCafe, address, answers, online, newLoc, website, origins, supplies });
   const inStore = !!setup?.place.inStore || !!newLoc;
   const canEdit = setup?.role === "owner";
   const open = groups ? groups.flatMap((g) => g.items).filter((p) => !answers[p.id]).length : 0;
@@ -99,7 +121,7 @@ export default function PracticesEditor({ id }: { id: string }) {
       const ids = new Set(groups?.flatMap((g) => g.items.map((p) => p.id)) ?? []);
       const r = await fetch(`/api/places/mine/${id}/practices`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, alsoCafe, address, online, location: newLoc, website, origins, answers: Object.fromEntries(Object.entries(answers).filter(([k]) => ids.has(k))) }),
+        body: JSON.stringify({ kind, alsoCafe, address, online, location: newLoc, website, origins, supplies, answers: Object.fromEntries(Object.entries(answers).filter(([k]) => ids.has(k))) }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Couldn't save.");
@@ -174,7 +196,10 @@ export default function PracticesEditor({ id }: { id: string }) {
             {next.items.map((p) => (
               <li key={p.id} className="flex items-start gap-2 text-[12.5px] leading-snug">
                 <span className="mt-0.5 shrink-0 rounded-full bg-honey-300 px-1.5 text-[10.5px] font-bold">+{p.points}</span>
-                <button onClick={() => document.getElementById(`practice-${p.id}`)?.scrollIntoView({ block: "center", behavior: "smooth" })} className="text-left underline decoration-sage-900/30 underline-offset-2">{p.label}</button>
+                <span>
+                  <button onClick={() => document.getElementById(`practice-${p.id}`)?.scrollIntoView({ block: "center", behavior: "smooth" })} className="text-left underline decoration-sage-900/30 underline-offset-2">{p.label}</button>
+                  <WhereToGet list={setup.suppliers[p.id]} />
+                </span>
               </li>
             ))}
           </ul>
@@ -253,6 +278,7 @@ export default function PracticesEditor({ id }: { id: string }) {
                   <li key={p.id} id={`practice-${p.id}`} className="flex scroll-mt-24 flex-col gap-2 py-2.5 sm:flex-row sm:items-center sm:justify-between">
                     <span className="text-[13.5px] leading-snug">
                       {p.label} <span className="whitespace-nowrap text-[11px] font-bold text-sage-800">· {p.points} pt{p.points === 1 ? "" : "s"}</span>
+                      {answers[p.id] !== "yes" && answers[p.id] !== "not_applicable" && <WhereToGet list={setup.suppliers[p.id]} />}
                     </span>
                     <Choice name={p.label} value={answers[p.id]} allowNA={!!p.notApplicableAllowed} disabled={!canEdit} onChange={(s) => setAnswers((a) => ({ ...a, [p.id]: s }))} />
                   </li>
@@ -296,6 +322,10 @@ export default function PracticesEditor({ id }: { id: string }) {
               )}
               {!inStore && !online && <p className="rounded-xl bg-terra-100 p-2.5 text-[12.5px] text-terra-800">Pick at least one channel.</p>}
             </section>
+          )}
+          {!groups && <SuppliesEditor supplies={supplies} onChange={setSupplies} disabled={!canEdit} />}
+          {groups && Object.keys(setup.suppliers).length > 0 && (
+            <p className="px-1 text-[11.5px] text-sage-900">&ldquo;Where to get it&rdquo; suggests eco shops on EcoProof, nearest first. Any shop can be listed, and suggestions never change your stars.</p>
           )}
         </div>
         {desktop && <div className="sticky top-24 space-y-4">{status}{preview}</div>}

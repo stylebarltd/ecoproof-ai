@@ -22,3 +22,21 @@ export function nextStar(kind: string, alsoCafe: boolean, answers: Answers) {
   const groups = checklist(kind, alsoCafe);
   return groups ? engine.nextStar(PRACTICES, groups, answers) : null;
 }
+
+/** A practice as one topic across place types: cafés, restaurants and hotels can each have their own id for the same wording
+ *  ("No plastic straws"). Shops pick topics for "Where to get it"; every id of a topic is stored. */
+export type SupplyTopic = { key: string; label: string; ids: string[]; group: string; types: string[] };
+
+export function supplyTopics(): SupplyTopic[] {
+  const topics = new Map<string, SupplyTopic>();
+  for (const [type, t] of Object.entries(PRACTICES.placeTypes)) {
+    if (!t.hasStars || !t.groups) continue;
+    for (const g of t.groups) for (const p of g.items) {
+      const key = p.label.toLowerCase();
+      const topic = topics.get(key) ?? topics.set(key, { key, label: p.label, ids: [], group: g.label, types: [] }).get(key)!;
+      if (!topic.ids.includes(p.id)) topic.ids.push(p.id);
+      if (!topic.types.includes(type)) topic.types.push(type);
+    }
+  }
+  return [...topics.values()];
+}

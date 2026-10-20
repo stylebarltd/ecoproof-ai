@@ -280,6 +280,15 @@ export const shipOrigins = pgTable("ship_origins", {
   countries: text().array().default(sql`'{}'::text[]`).notNull(),
 }, (t) => [index("ship_origins_place").on(t.placeId)]);
 
+/** "Where to get it": which practices an eco shop's products help a café, restaurant or hotel with (practice ids from
+ *  data/practices.json), with the product and an optional link. Suggestions only; they never affect stars. lib/supplies.ts */
+export const shopSupplies = pgTable("shop_supplies", {
+  placeId: text("place_id").notNull(),
+  practiceId: text("practice_id").notNull(),
+  product: text().notNull(),
+  url: text(),
+}, (t) => [primaryKey({ columns: [t.placeId, t.practiceId], name: "shop_supplies_pkey" }), index("shop_supplies_practice").on(t.practiceId)]);
+
 /** What an owner published: a frozen copy of the place type and answers, hashed and written to Solana as a memo (lib/declarations.ts).
  *  place_practices is the owner's draft; only the latest declaration is public. Rows are never updated except to add the proof. */
 export const practiceDeclarations = pgTable("practice_declarations", {
