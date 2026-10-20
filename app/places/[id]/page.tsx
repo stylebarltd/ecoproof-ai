@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Check, ExternalLink, Globe, Link2, MapPin, Truck } from "lucide-react";
 import AnchorPending from "@/components/AnchorPending";
@@ -8,7 +9,8 @@ import Stars from "@/components/Stars";
 import VerifyButton from "@/components/VerifyButton";
 import { declarationsOf, publishedAnswers, toDeclaration } from "@/lib/declarations";
 import { isShop, kindOf } from "@/lib/placeKinds";
-import { shopImpact } from "@/lib/shops";
+import { countryName, originFor, pickCountry, servesText } from "@/lib/shipping";
+import { originsOf, shopImpact } from "@/lib/shops";
 import { checklist, rating } from "@/lib/practices";
 import { getPlace, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
@@ -22,14 +24,18 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 /** A place's public page: its stars, and the eco practices its owner declared (the latest published declaration), with its Solana proof. */
-export default async function PlacePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PlacePage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const place = await getPlace((await params).id);
   if (!visible(place)) notFound();
   const p = toPublic(place);
   const history = await declarationsOf(place.id);
   const answers = publishedAnswers(place, history[0]);
   const current = history[0] && history[0].kind === place.kind && history[0].also_cafe === place.also_cafe ? toDeclaration(history[0]) : null;
+  const origins = p.online ? (await originsOf([place.id])).get(place.id)! : [];
   const shop = isShop(place.kind) ? { impact: (await shopImpact([place.id])).get(place.id)!, online: p.online } : null;
+  // Which origin ships to this visitor (Vercel's IP country, or ?country=US to test), listed first.
+  const country = pickCountry((await searchParams).country as string | undefined, (await headers()).get("x-vercel-ip-country"));
+  const { origin: yours, shipsHere } = originFor(origins, country);
   const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
   const groups = checklist(place.kind, place.also_cafe);
   const r = rating(place.kind, place.also_cafe, answers);
@@ -66,9 +72,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <ShopImpact impact={shop.impact} />
           </div>
         )}
-        {shop?.online && (place.website || place.ships_from || place.ships_to) && (
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-sage-900">
-            {(place.ships_from || place.ships_to) && <span className="flex items-center gap-1.5"><Truck size={15} strokeWidth={2.5} /> {place.ships_from ? `Ships from ${place.ships_from}` : "Ships"}{place.ships_to ? ` to ${place.ships_to}` : ""}</span>}
+        {shop?.online && (place.website || origins.length > 0) && (
+          <div className="mt-3 space-y-1.5 text-[13px] text-sage-900">
+            {country && shipsHere === false && <p className="rounded-xl bg-terra-100 px-3 py-1.5 text-terra-800">Doesn&apos;t ship to {countryName(country)}.</p>}
+            {[...origins].sort((a, b) => Number(b === yours) - Number(a === yours)).map((o) => (
+              <p key={o.label} className="flex items-start gap-1.5">
+                <Truck size={15} strokeWidth={2.5} className="mt-0.5 shrink-0" />
+                <span>Ships from <b className="text-ink">{o.label}</b> to {servesText(o, origins.length === 1)}{country && o === yours ? <span className="ml-1.5 rounded-full bg-honey-300 px-2 py-0.5 text-[10.5px] font-bold text-ink">for you in {countryName(country)}</span> : null}</span>
+              </p>
+            ))}
             {place.website && <a href={place.website} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 font-bold underline"><Globe size={15} strokeWidth={2.5} /> Visit the online shop</a>}
           </div>
         )}

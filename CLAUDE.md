@@ -50,8 +50,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (`sells_online`: WooCommerce, parcel cards). There is no "online shop" kind any more.
 - Shops show impact instead of stars (`lib/shops.ts`: plastic and CO2 summed from the shop's
   proofs, `components/ShopImpact.tsx`) on the place page, map sheet and dashboard. `/shops` lists
-  every eco shop (the only way to find online-only ones), nearest first via its locations and
-  its ships-from pin. Online shops set website, ships from (label + pin) and ships to in settings. Keep practice ids
+  every eco shop (the only way to find online-only ones), nearest first. Online shops set a
+  website and shipping origins (`ship_origins`, `lib/shipping.ts`): one per warehouse, each
+  serving listed countries or "everyone else". The visitor's country (`x-vercel-ip-country`,
+  or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance. Keep practice ids
   stable: answers are stored by id. Half stars: 5★ from 85 points, 4.5 from 78 (scale in the JSON);
   stars are always recomputed with today's scale, so changing it needs no republishing.
 - Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
@@ -63,7 +65,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 
 ### v2 plans, not built yet (agreed with Pola, in this order)
 - "Where to get it": shops tick which practices their products help with (+ product link);
-  a café's checklist shows the nearest supplier (shop location or ships-from pin) under practices
+  a café's checklist shows the nearest supplier that ships to it (shop location or origin) under practices
   answered No and in "Next step up". Open to every shop, labelled, never affects stars.
 - Receipt scanning for eco shops: in the shop (GPS, name matches) 5 pts, at home 3 pts, receipt
   at most 7 days old, once per receipt on-chain; Claude sorts items into `lib/impact.ts`

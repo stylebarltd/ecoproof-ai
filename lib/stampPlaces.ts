@@ -8,7 +8,7 @@ export type StampPlace = {
   id: string; name: string; kind: string; tagline: string | null; impact_note: string | null; image: string | null; colour: string | null;
   lat: number | null; lng: number | null; gps_radius_m: number | null; secret: string; owner: string | null;
   status: string; status_note: string | null; rules_accepted_at: string | null; demo: boolean; address: string | null; also_cafe: boolean;
-  sells_online: boolean; website: string | null; ships_from: string | null; ships_from_lat: number | null; ships_from_lng: number | null; ships_to: string | null;
+  sells_online: boolean; website: string | null;
   /** Has at least one location (map pin): customers can visit it. Worked out by PLACE_COLS, not stored. */
   in_store: boolean;
 };

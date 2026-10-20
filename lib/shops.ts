@@ -3,6 +3,7 @@
 // online orders today, receipts later. QR and card stamps count as visits. All figures are estimates from lib/impact.ts.
 import { query } from "./db";
 import { isShop } from "./placeKinds";
+import { originFor, type ShipOrigin } from "./shipping";
 import { listPlaces, toPublic, type PublicPlace } from "./stampPlaces";
 
 export type ShopImpact = { purchases: number; customers: number; plasticItems: number; co2Kg: number; packagingG: number };
@@ -25,27 +26,41 @@ export async function shopImpact(placeIds: string[]): Promise<Map<string, ShopIm
   return out;
 }
 
+/** A shop's shipping origins (ship_origins), for many shops at once, in the order the owner listed them. */
+export async function originsOf(placeIds: string[]): Promise<Map<string, ShipOrigin[]>> {
+  const out = new Map<string, ShipOrigin[]>(placeIds.map((id) => [id, []]));
+  if (!placeIds.length) return out;
+  const rows = await query<ShipOrigin & { place_id: string }>("SELECT place_id, label, lat, lng, countries FROM ship_origins WHERE place_id = ANY($1) ORDER BY id", [placeIds]);
+  for (const { place_id, ...o } of rows) out.get(place_id)?.push(o);
+  return out;
+}
+
 export type ShopListing = PublicPlace & {
-  tagline: string | null; website: string | null; shipsFrom: string | null; shipsTo: string | null; locations: number;
-  /** Every point the shop can be measured from: its shop locations and its ships-from pin. */
-  points: { lat: number; lng: number }[]; impact: ShopImpact;
+  website: string | null; locations: number; impact: ShopImpact;
+  /** All of the shop's shipping origins, and the one that serves the visitor's country (shipsHere false: it doesn't ship there). */
+  origins: ShipOrigin[]; origin: ShipOrigin | null; shipsHere: boolean | null;
+  /** Every point the shop can be measured from: its shop locations, and the pin of the origin that serves the visitor. */
+  points: { lat: number; lng: number }[];
 };
 
-/** Every active eco shop, in store or online, with its impact. */
-export async function listShops(): Promise<ShopListing[]> {
+/** Every active eco shop, in store or online, with its impact and, for a visitor in `country`, where it ships from. */
+export async function listShops(country: string | null): Promise<ShopListing[]> {
   const shops = (await listPlaces()).filter((p) => isShop(p.kind));
   if (!shops.length) return [];
   const ids = shops.map((s) => s.id);
-  const [impact, locs] = await Promise.all([
+  const [impact, origins, locs] = await Promise.all([
     shopImpact(ids),
+    originsOf(ids),
     query<{ place_id: string; lat: number; lng: number }>("SELECT place_id, lat, lng FROM stamp_place_locations WHERE place_id = ANY($1) ORDER BY id", [ids]),
   ]);
   return shops.map((s) => {
+    const p = toPublic(s);
     const mine = locs.filter((l) => l.place_id === s.id).map(({ lat, lng }) => ({ lat, lng }));
+    const all = p.online ? origins.get(s.id)! : [];
+    const { origin, shipsHere } = originFor(all, country);
     return {
-      ...toPublic(s), tagline: s.tagline, website: s.website, shipsFrom: s.ships_from, shipsTo: s.ships_to, locations: mine.length,
-      points: [...mine, ...(s.ships_from_lat != null && s.ships_from_lng != null ? [{ lat: s.ships_from_lat, lng: s.ships_from_lng }] : [])],
-      impact: impact.get(s.id)!,
+      ...p, website: p.online ? s.website : null, locations: mine.length, impact: impact.get(s.id)!, origins: all, origin, shipsHere,
+      points: [...mine, ...(origin?.lat != null && origin.lng != null ? [{ lat: origin.lat, lng: origin.lng }] : [])],
     };
   });
 }

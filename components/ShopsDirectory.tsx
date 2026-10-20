@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ChevronRight, Globe, MapPin, Truck } from "lucide-react";
 import ShopImpact from "@/components/ShopImpact";
+import { countryName, servesText } from "@/lib/shipping";
 import type { ShopListing } from "@/lib/shops";
 
 type Here = { lat: number; lng: number };
@@ -20,17 +21,25 @@ const host = (url: string) => { try { return new URL(url).hostname.replace(/^www
 /** Every eco shop, in store and online: the only place online-only shops can be found, since they have no map pin. */
 export default function ShopsDirectory() {
   const [shops, setShops] = useState<ShopListing[] | null>(null);
+  const [country, setCountry] = useState<string | null>(null); // the visitor's country: which warehouse each online shop ships from
   const [filter, setFilter] = useState<"all" | "store" | "online">("all");
   const [here, setHere] = useState<Here | null>(null);
 
-  useEffect(() => { fetch("/api/shops").then((r) => (r.ok ? r.json() : [])).then(setShops).catch(() => setShops([])); }, []);
+  useEffect(() => {
+    const asked = new URLSearchParams(location.search).get("country"); // ?country=US shows the directory as a visitor from there
+    fetch(`/api/shops${asked ? `?country=${encodeURIComponent(asked)}` : ""}`)
+      .then((r) => (r.ok ? r.json() : { country: null, shops: [] }))
+      .then((j: { country: string | null; shops: ShopListing[] }) => { setCountry(j.country); setShops(j.shops); })
+      .catch(() => setShops([]));
+  }, []);
   const locate = () => navigator.geolocation?.getCurrentPosition((p) => setHere({ lat: p.coords.latitude, lng: p.coords.longitude }), () => {}, { timeout: 15000 });
   useEffect(() => { // already allowed? sort by distance without asking
     navigator.permissions?.query({ name: "geolocation" }).then((st) => { if (st.state === "granted") locate(); }).catch(() => {});
   }, []);
 
   const shown = (shops ?? []).filter((s) => filter === "all" || (filter === "store" ? s.inStore : s.online));
-  const listed = here ? [...shown].sort((a, b) => nearest(a, here) - nearest(b, here)) : shown;
+  // Nearest first when we know where the visitor is; shops that don't ship to their country go last.
+  const listed = [...shown].sort((a, b) => Number(a.shipsHere === false) - Number(b.shipsHere === false) || (here ? nearest(a, here) - nearest(b, here) : 0));
   const chip = (on: boolean) => `rounded-full px-3 py-1.5 text-[12px] font-semibold ${on ? "bg-sage-500 text-cream" : "border-[1.5px] border-neutral-300 text-ink"}`;
 
   return (
@@ -72,9 +81,10 @@ export default function ShopsDirectory() {
                   </span>
                   <ChevronRight size={18} strokeWidth={2.5} className="mt-1 shrink-0 text-sage-700" />
                 </Link>
-                {s.online && (s.shipsFrom || s.shipsTo || s.website) && (
+                {s.online && (s.origins.length > 0 || s.website) && (
                   <p className="flex flex-wrap gap-x-3 gap-y-0.5 text-[12px] text-sage-900">
-                    {(s.shipsFrom || s.shipsTo) && <span className="flex items-center gap-1"><Truck size={13} strokeWidth={2.5} /> {s.shipsFrom ? `Ships from ${s.shipsFrom}` : "Ships"}{s.shipsTo ? ` to ${s.shipsTo}` : ""}</span>}
+                    {s.shipsHere === false && country ? <span className="flex items-center gap-1 text-terra-800"><Truck size={13} strokeWidth={2.5} /> Doesn&apos;t ship to {countryName(country)}</span>
+                      : s.origin && <span className="flex items-center gap-1"><Truck size={13} strokeWidth={2.5} /> Ships from {s.origin.label}{country ? ` to you in ${countryName(country)}` : ` to ${servesText(s.origin, s.origins.length === 1)}`}</span>}
                     {s.website && <a href={s.website} target="_blank" rel="noreferrer" className="flex items-center gap-1 font-bold underline"><Globe size={13} strokeWidth={2.5} /> {host(s.website)}</a>}
                   </p>
                 )}

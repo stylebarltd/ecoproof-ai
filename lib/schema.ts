@@ -70,12 +70,7 @@ export const stampPlaces = pgTable("stamp_places", {
   address: text(),
   alsoCafe: boolean("also_cafe").default(false).notNull(), // a restaurant that is a café too: its checklist adds the café's serving practices
   sellsOnline: boolean("sells_online").default(false).notNull(), // an eco shop's online channel (orders, parcel cards); in store = it has locations
-  // An online shop's public details: where it is based and ships from (a pin, for "nearest"), and where it ships to.
-  website: text(),
-  shipsFrom: text("ships_from"),
-  shipsFromLat: doublePrecision("ships_from_lat"),
-  shipsFromLng: doublePrecision("ships_from_lng"),
-  shipsTo: text("ships_to"),
+  website: text(), // an online shop's website; where it ships from is in ship_origins
 }, (t) => [
   index("stamp_places_owner").on(t.owner).where(sql`(owner IS NOT NULL)`),
   check("stamp_places_kind", sql`${t.kind} IN ('cafe', 'restaurant', 'hotel', 'eco_shop')`),
@@ -273,6 +268,17 @@ export const placePractices = pgTable("place_practices", {
   primaryKey({ columns: [t.placeId, t.practiceId], name: "place_practices_pkey" }),
   check("place_practices_status", sql`${t.status} IN ('yes', 'no', 'not_applicable')`),
 ]);
+
+/** Where an online shop ships from: one row per warehouse, each serving a list of countries (ISO 3166 alpha-2, e.g. "US"), or every
+ *  country no other origin serves (empty list). The pin is for distances ("nearest"), never drawn on the map. lib/shipping.ts */
+export const shipOrigins = pgTable("ship_origins", {
+  id: serial().primaryKey(),
+  placeId: text("place_id").notNull(),
+  label: text().notNull(),
+  lat: doublePrecision(),
+  lng: doublePrecision(),
+  countries: text().array().default(sql`'{}'::text[]`).notNull(),
+}, (t) => [index("ship_origins_place").on(t.placeId)]);
 
 /** What an owner published: a frozen copy of the place type and answers, hashed and written to Solana as a memo (lib/declarations.ts).
  *  place_practices is the owner's draft; only the latest declaration is public. Rows are never updated except to add the proof. */
