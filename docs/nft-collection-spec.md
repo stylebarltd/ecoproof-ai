@@ -99,10 +99,10 @@ attributes:
 
 - [x] `sentinel_card.png`: transparent, chest-up, cropped at the vest hem
 - [x] `warden/guardian/vanguard/paragon_card.png`: made by img2img with a ControlNet canny guide at 0.75, with head, hand and wings composited back from the Sentinel and the background removed (Paragon crown added by a separate inpaint)
-- [ ] 8 background PNGs (flat colour, paper grain)
-- [ ] 5 aura PNGs (transparent)
-- [ ] 9 item PNGs (transparent, positioned for the free hand)
-- [ ] 5 badge PNGs
-- [ ] frame SVG template with text slots
-- [ ] compositor script + deterministic trait picker
-- [ ] 64 px readability check for every layer combination of each rank
+- [x] 8 background PNGs (flat colour, paper grain)
+- [x] 5 aura PNGs (transparent)
+- [x] 9 item PNGs (8 objects + none; transparent). The cards show no free hand, so items currently float top-left beside the thumbs-up
+- [x] 5 badge PNGs (chest position; decorative only, not visible at 64 px)
+- [x] frame SVG template with text slots (1024x1434 card, app fonts Caprasimo + Figtree)
+- [x] compositor script + deterministic trait picker (prototype: `art/v2/compositor/compose.mjs`, sharp)
+- [x] 64 px readability check for every layer combination of each rank (`art/v2/compositor/check64.html`); weak spots: honey and cream backgrounds, beige items on kraft/cream
