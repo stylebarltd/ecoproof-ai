@@ -98,7 +98,7 @@ attributes:
 ## 6. Asset production checklist
 
 - [x] `sentinel_card.png`: transparent, chest-up, cropped at the vest hem
-- [x] `warden/guardian/vanguard/paragon_card.png`: made by img2img with a ControlNet canny guide at 0.75, with head, hand and wings composited back from the Sentinel and the background removed (Paragon still needs its laurel crown)
+- [x] `warden/guardian/vanguard/paragon_card.png`: made by img2img with a ControlNet canny guide at 0.75, with head, hand and wings composited back from the Sentinel and the background removed (Paragon crown added by a separate inpaint)
 - [ ] 8 background PNGs (flat colour, paper grain)
 - [ ] 5 aura PNGs (transparent)
 - [ ] 9 item PNGs (transparent, positioned for the free hand)
