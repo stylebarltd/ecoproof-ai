@@ -194,22 +194,12 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
   font-family: var(--font-stamp); text-transform: uppercase; letter-spacing: 0.1em; line-height: 1;
   border: 2.5px solid currentColor; border-radius: 14px; outline: 1.5px dashed currentColor; outline-offset: -7px; mix-blend-mode: multiply;
 }
-/* Island hero parallax (scroll-driven animation where supported, off under prefers-reduced-motion): over the first viewport of scrolling the
-   sky slides down 24vh (it starts 24vh above the section, so no gap opens), the island 9vh, while the flower strip, the copy and the bee move
-   with the page. Far things lag, near things keep up: that is the depth. */
-@supports (animation-timeline: scroll()) {
-  @keyframes island-sky-drift { to { translate: 0 24vh; } }
-  @keyframes island-main-drift { to { translate: 0 9vh; } }
-  .island-sky { animation: island-sky-drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
-  .island-main { animation: island-main-drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
-}
 /* Kraft hero: a faint vignette toward the edges. */
 .vignette::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(58, 42, 28, 0.12) 100%); }
 @media (prefers-reduced-motion: reduce) {
   .fan-card, .hero-art:hover .fan-card { transition: none; transform: rotate(var(--r)); }
   @media (max-width: 1023px) { .fan-card, .hero-art:hover .fan-card { transform: rotate(calc(var(--r) * 0.5)); } }
   .bee-bob { animation: none; }
-  .island-sky, .island-main { animation: none; }
 }
 /* "Eco Passport" in the landing nav when this device already has stamps: leaf green (a small success mark) with a slow, soft pulse. */
 @keyframes passport-pulse { 50% { background-color: rgba(111, 143, 78, 0.16); box-shadow: 0 0 0 4px rgba(111, 143, 78, 0.12); } }
