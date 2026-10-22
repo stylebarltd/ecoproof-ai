@@ -8,7 +8,7 @@ D = pathlib.Path(__file__).parent
 SS = 2
 scene = Image.open(D/"r1_106.png").convert("RGB"); W,H = scene.size
 big = scene.resize((W*SS,H*SS), Image.LANCZOS)
-SCREEN = [(180,524),(524,500),(538,757),(205,788)]   # inner glass, read off _zoom_screen.png
+SCREEN = [(177,526),(524,500),(538,757),(205,788)]   # inner glass, read off _zoom_screen.png
 CARD = [(591,853),(750,835),(828,902),(670,932)]     # top face of the card stack, read off _zoom_card.png
 def coeffs(src, dst):
     A = []
