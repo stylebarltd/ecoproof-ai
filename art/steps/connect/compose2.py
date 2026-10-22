@@ -7,7 +7,7 @@ D = pathlib.Path(__file__).parent
 SS = 2
 SCENES = {
     # the QR card alone on the counter stand
-    "105": {"scene": "r1_105.png", "card": [(333,492),(677,546),(615,825),(292,715)], "card_art": "card.png", "screen": None, "crop": (0,0,1024,1024)},
+    "105": {"scene": "r1_105.png", "card": [(340,498),(668,549),(608,818),(298,712)], "card_art": "card.png", "card_mode": "multiply", "screen": None, "crop": (0,0,1024,1024)},
     # the plugins page on the tablet POS, the QR card flat on the counter
     "103": {"scene": "r1_103.png", "screen": [(400,490),(592,492),(513,613),(333,593)], "card": [(550,797),(838,790),(832,873),(563,870)], "card_art": "card.png", "crop": (0,0,1024,1024)},
 }
@@ -26,8 +26,12 @@ if S["screen"]:
     l = np.asarray(place(Image.open(D/"wp_plugins_fit.png").convert("RGB"), S["screen"]), np.float32); a = l[...,3:4]/255
     out = out*(1-a) + (l[...,:3]*0.94 + 255*0.06*lum[...,None])*a
 l = np.asarray(place(Image.open(D/S["card_art"]).convert("RGB"), S["card"]), np.float32); a = l[...,3:4]/255
-shade = (lum*255/np.percentile((lum*255)[l[...,3]>0], 95)).clip(0,1)[...,None]
-out = out*(1-a) + l[...,:3]*(0.35+0.65*shade)*a
+if S.get("card_mode") == "multiply":
+    # print the QR and text straight onto the stand's own white face: the card's white multiplies to nothing, only the ink darkens the photo
+    out = out*(1-a) + out*(l[...,:3]/255)*a
+else:
+    shade = (lum*255/np.percentile((lum*255)[l[...,3]>0], 95)).clip(0,1)[...,None]
+    out = out*(1-a) + l[...,:3]*(0.35+0.65*shade)*a
 big = Image.fromarray(out.clip(0,255).astype(np.uint8))
 x0,y0,x1,y1 = S["crop"]
 big.crop((x0*SS,y0*SS,x1*SS,y1*SS)).resize((800,800), Image.LANCZOS).save(D/f"connect_{key}.png")
