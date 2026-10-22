@@ -1,0 +1,17 @@
+{
+ "sentinel": {
+  "key": "hue key"
+ },
+ "guardian": {
+  "key": "hue key"
+ },
+ "vanguard": {
+  "key": "hue key"
+ },
+ "paragon": {
+  "key": "hue key"
+ },
+ "warden": {
+  "source": "former sentinel_card.png, already transparent"
+ }
+}

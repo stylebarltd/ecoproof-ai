@@ -1,0 +1,1086 @@
+{
+ "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+ "style": "stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, gentle soft shading, ink outlines, light crosshatching only in shadow areas, chubby striped honeybee body in warm honey orange and dark brown, bold clear black and honey-yellow stripe bands, translucent pale wings, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+ "negative": "nsfw, nude, suggestive, glossy skin, shiny, plastic, vinyl, latex, rubber, specular highlights, reflective body, photograph, realistic insect, green background, green body, foliage, globe, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae",
+ "runs": {
+  "warden_r1": {
+   "prompt": "cute honeybee grove keeper mascot, a calm watchful bee with a rounder softer face, kind half-lidded eyes with highlights, gentle closed-mouth smile, rosy cheeks, plain antennae with round tips, wide-brimmed woven straw hat with a small leaf tucked in the band, kraft brown felt vest with a short woven cloak of stitched leaves over the shoulders, brass-buckle backpack, holding a small glowing lantern in one hand, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, gentle soft shading, ink outlines, light crosshatching only in shadow areas, chubby striped honeybee body in warm honey orange and dark brown, bold clear black and honey-yellow stripe bands, translucent pale wings, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "images": [
+    {
+     "file": "warden_r1_51001.png",
+     "seed": 51001
+    },
+    {
+     "file": "warden_r1_51002.png",
+     "seed": 51002
+    },
+    {
+     "file": "warden_r1_51003.png",
+     "seed": 51003
+    },
+    {
+     "file": "warden_r1_51004.png",
+     "seed": 51004
+    }
+   ]
+  },
+  "guardian_r1": {
+   "prompt": "cute honeybee protector mascot, a sturdy broad-faced bee with thick determined eyebrows, confident steady eyes with highlights, brave closed-mouth smirk, plain antennae with round tips, round brass goggles pushed up on the forehead, fitted leather vest in kraft brown with riveted iron shoulder pieces and a green leaf patch, iron-clasp backpack, arms crossed over the chest, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, gentle soft shading, ink outlines, light crosshatching only in shadow areas, chubby striped honeybee body in warm honey orange and dark brown, bold clear black and honey-yellow stripe bands, translucent pale wings, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "images": [
+    {
+     "file": "guardian_r1_51001.png",
+     "seed": 51001
+    },
+    {
+     "file": "guardian_r1_51002.png",
+     "seed": 51002
+    }
+   ]
+  },
+  "warden_r2": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, kind half-lidded eyes, gentle closed-mouth smile, wide-brimmed woven straw hat between the antennae with a small leaf in the band, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, holding a small glowing lantern in one hand, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "warden_r2_d62_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.62
+    },
+    {
+     "file": "warden_r2_d62_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.62
+    },
+    {
+     "file": "warden_r2_d75_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.75
+    },
+    {
+     "file": "warden_r2_d75_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.75
+    },
+    {
+     "file": "warden_r2_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "warden_r2_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "warden_r2_d88_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.88
+    },
+    {
+     "file": "warden_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.88
+    }
+   ]
+  },
+  "guardian_r2": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee sturdy broad-faced protector, thick determined dark eyebrows, steady confident eyes, brave closed-mouth smirk, round brass goggles pushed up on the forehead between the antennae, fitted kraft brown leather vest with riveted iron shoulder pieces and a small green leaf patch, iron-clasp backpack, arms crossed over the chest, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "guardian_r2_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "guardian_r2_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "guardian_r2_d88_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.88
+    },
+    {
+     "file": "guardian_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.88
+    }
+   ]
+  },
+  "vanguard_r2": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright sparkling eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest with a green leaf emblem, backpack with a rolled map on top, pointing forward with one hand, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "vanguard_r2_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "vanguard_r2_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "vanguard_r2_d88_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.88
+    },
+    {
+     "file": "vanguard_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.88
+    }
+   ]
+  },
+  "paragon_r2": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee wise serene elder sage, eyes gently closed in a peaceful smile, soft white fuzzy eyebrows and a small white fuzzy beard, tiny round spectacles, small gold laurel crown between the antennae, gleaming gold honeycomb armour with engraved leaf patterns, gold-trimmed backpack, both hands resting on a wooden staff topped with a honeycomb, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "paragon_r2_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "paragon_r2_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "paragon_r2_d88_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.88
+    },
+    {
+     "file": "paragon_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.88
+    }
+   ]
+  },
+  "warden_stylepass": {
+   "mode": "img2img style pass",
+   "prompt": "cute honeybee calm watchful grove keeper, kind half-lidded eyes, gentle closed-mouth smile, wide-brimmed woven straw hat between the antennae with a small leaf in the band, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, holding a small glowing lantern in one hand, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, soft matte felt texture with visible fine fuzz on head and body, ink outlines, light crosshatching in shadow areas, textured fabric weave on the clothes, hand-inked collectible illustration, same character, same pose, same colours, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "warden_r2_d88_51003_sp40_51003.png",
+     "init": "warden_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.4
+    },
+    {
+     "file": "warden_r2_d88_51003_sp50_51003.png",
+     "init": "warden_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.5
+    }
+   ]
+  },
+  "guardian_stylepass": {
+   "mode": "img2img style pass",
+   "prompt": "cute honeybee sturdy broad-faced protector, thick determined dark eyebrows, steady confident eyes, brave closed-mouth smirk, round brass goggles pushed up on the forehead between the antennae, fitted kraft brown leather vest with riveted iron shoulder pieces and a small green leaf patch, iron-clasp backpack, arms crossed over the chest, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, soft matte felt texture with visible fine fuzz on head and body, ink outlines, light crosshatching in shadow areas, textured fabric weave on the clothes, hand-inked collectible illustration, same character, same pose, same colours, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "guardian_r2_d88_51003_sp40_51003.png",
+     "init": "guardian_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.4
+    },
+    {
+     "file": "guardian_r2_d88_51003_sp50_51003.png",
+     "init": "guardian_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.5
+    }
+   ]
+  },
+  "vanguard_stylepass": {
+   "mode": "img2img style pass",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright sparkling eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest with a green leaf emblem, backpack with a rolled map on top, pointing forward with one hand, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, soft matte felt texture with visible fine fuzz on head and body, ink outlines, light crosshatching in shadow areas, textured fabric weave on the clothes, hand-inked collectible illustration, same character, same pose, same colours, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "vanguard_r2_d88_51003_sp40_51003.png",
+     "init": "vanguard_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.4
+    },
+    {
+     "file": "vanguard_r2_d88_51003_sp50_51003.png",
+     "init": "vanguard_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.5
+    }
+   ]
+  },
+  "paragon_stylepass": {
+   "mode": "img2img style pass",
+   "prompt": "cute honeybee wise serene elder sage, eyes gently closed in a peaceful smile, soft white fuzzy eyebrows and a small white fuzzy beard, tiny round spectacles, small gold laurel crown between the antennae, gleaming gold honeycomb armour with engraved leaf patterns, gold-trimmed backpack, both hands resting on a wooden staff topped with a honeycomb, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby striped bee body in warm honey orange and dark brown with bold clear black and honey-yellow stripe bands, translucent pale wings, soft matte felt texture with visible fine fuzz on head and body, ink outlines, light crosshatching in shadow areas, textured fabric weave on the clothes, hand-inked collectible illustration, same character, same pose, same colours, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "paragon_r2_d88_51003_sp40_51003.png",
+     "init": "paragon_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.4
+    },
+    {
+     "file": "paragon_r2_d88_51003_sp50_51003.png",
+     "init": "paragon_r2_d88_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.5
+    }
+   ]
+  },
+  "warden_r3": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, kind half-lidded eyes, gentle closed-mouth smile, wide-brimmed woven straw hat between the antennae, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, holding a small glowing lantern in one hand, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "warden_r3_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r3_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r3_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r3_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r3_d80_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "warden_r3_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "warden_r3_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "warden_r3_d80_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.8
+    }
+   ]
+  },
+  "guardian_r3": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee sturdy broad-faced protector, thick determined dark eyebrows, steady confident eyes, brave closed-mouth smirk, round brass goggles pushed up on the forehead between the antennae, fitted kraft brown leather vest with riveted iron shoulder pieces, iron-clasp backpack, arms crossed over the chest, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "guardian_r3_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r3_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r3_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r3_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r3_d80_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "guardian_r3_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "guardian_r3_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "guardian_r3_d80_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.8
+    }
+   ]
+  },
+  "vanguard_r3": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright sparkling eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest, backpack with a rolled map on top, pointing forward with one hand, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "vanguard_r3_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r3_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r3_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r3_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r3_d80_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "vanguard_r3_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "vanguard_r3_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "vanguard_r3_d80_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.8
+    }
+   ]
+  },
+  "paragon_r3": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee wise serene elder sage, eyes gently closed in a peaceful smile, soft white fuzzy eyebrows and a small white fuzzy beard, tiny round spectacles, small gold laurel crown between the antennae, gleaming gold honeycomb armour with engraved leaf patterns, gold-trimmed backpack, both hands resting on a wooden staff topped with a honeycomb, anthropomorphic honeybee mascot with a round fuzzy golden-yellow bee head, no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "paragon_r3_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r3_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r3_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r3_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r3_d80_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "paragon_r3_d80_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "paragon_r3_d80_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.8
+    },
+    {
+     "file": "paragon_r3_d80_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.8
+    }
+   ]
+  },
+  "warden_r3t": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, kind half-lidded eyes, gentle closed-mouth smile, wide-brimmed woven straw hat between the antennae, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, one hand raised making a peace sign with two fingers, anthropomorphic honeybee mascot, (round golden-yellow bee head with a fuzzy ragged outline drawn in short ink fuzz strokes:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "warden_r3t_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r3t_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    }
+   ]
+  },
+  "warden_r4": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, kind half-lidded eyes, gentle closed-mouth smile, wide-brimmed woven straw hat between the antennae, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, one hand raised making a peace sign with two fingers, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "warden_r4_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r4_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r4_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r4_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    }
+   ]
+  },
+  "guardian_r4": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee sturdy broad-faced protector, thick determined dark eyebrows, steady confident eyes, brave closed-mouth smirk, round brass goggles pushed up on the forehead between the antennae, fitted kraft brown leather vest with riveted iron shoulder pieces, iron-clasp backpack, one hand raised open-palmed for a high five, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "guardian_r4_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r4_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r4_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r4_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    }
+   ]
+  },
+  "vanguard_r4": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright sparkling eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest, backpack with a rolled map on top, one fist pumped up in the air, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, two plain antennae with round tips, chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, leaf antennae, leaf-shaped antennae",
+   "images": [
+    {
+     "file": "vanguard_r4_d72_51001.png",
+     "seed": 51001,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r4_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r4_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r4_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    }
+   ]
+  },
+  "warden_r5": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, (kind half-lidded eyes, gentle closed-mouth smile:1.2), wide-brimmed woven straw hat between the antennae, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, one hand raised making a peace sign with two fingers, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "warden_r5_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r5_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r5_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r5_d72_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r5_d72_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r5_d76_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "warden_r5_d76_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "warden_r5_d76_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "warden_r5_d76_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "warden_r5_d76_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.76
+    }
+   ]
+  },
+  "guardian_r5": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee sturdy broad-faced protector, (thick determined dark eyebrows:1.3), steady confident eyes, brave closed-mouth smirk, (round brass goggles pushed up on the forehead between the antennae:1.3), fitted kraft brown leather vest with riveted iron shoulder pieces, iron-clasp backpack, one hand raised open-palmed for a high five, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "guardian_r5_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r5_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r5_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r5_d72_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r5_d72_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r5_d76_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "guardian_r5_d76_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "guardian_r5_d76_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "guardian_r5_d76_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "guardian_r5_d76_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.76
+    }
+   ]
+  },
+  "vanguard_r5": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright sparkling eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest, backpack with a rolled map on top, one fist pumped up in the air, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "vanguard_r5_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r5_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r5_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r5_d72_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r5_d72_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "vanguard_r5_d76_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "vanguard_r5_d76_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.76
+    }
+   ]
+  },
+  "paragon_r5": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee wise serene elder sage, (eyes gently closed in a peaceful smile:1.3), (soft white fuzzy eyebrows and a small white fuzzy beard:1.3), (tiny round spectacles:1.3), small gold laurel crown between the antennae, gleaming gold honeycomb armour with engraved leaf patterns, gold-trimmed backpack, both hands resting on a wooden staff topped with a honeycomb, anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "paragon_r5_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r5_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r5_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r5_d72_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r5_d72_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.72
+    }
+   ]
+  },
+  "guardian_hand": {
+   "mode": "inpaint hand",
+   "images": [
+    {
+     "file": "guardian_r5_d72_51002_hand100f2w_1.png",
+     "init": "guardian_r5_d72_51002.png",
+     "box": [
+      110,
+      560,
+      470,
+      870
+     ],
+     "seed": 1,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand with four fingers, open palm raised toward the viewer for a high five, matte felt, soft shading"
+    },
+    {
+     "file": "guardian_r5_d72_51002_hand100f2w_2.png",
+     "init": "guardian_r5_d72_51002.png",
+     "box": [
+      110,
+      560,
+      470,
+      870
+     ],
+     "seed": 2,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand with four fingers, open palm raised toward the viewer for a high five, matte felt, soft shading"
+    },
+    {
+     "file": "guardian_r5_d72_51002_hand100f2w_3.png",
+     "init": "guardian_r5_d72_51002.png",
+     "box": [
+      110,
+      560,
+      470,
+      870
+     ],
+     "seed": 3,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand with four fingers, open palm raised toward the viewer for a high five, matte felt, soft shading"
+    },
+    {
+     "file": "guardian_r5_d72_51002_hand100f2w_4.png",
+     "init": "guardian_r5_d72_51002.png",
+     "box": [
+      110,
+      560,
+      470,
+      870
+     ],
+     "seed": 4,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand with four fingers, open palm raised toward the viewer for a high five, matte felt, soft shading"
+    }
+   ]
+  },
+  "warden_hand": {
+   "mode": "inpaint hand",
+   "images": [
+    {
+     "file": "warden_r5_d72_51002_hand100f2w_1.png",
+     "init": "warden_r5_d72_51002.png",
+     "box": [
+      140,
+      600,
+      440,
+      870
+     ],
+     "seed": 1,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand making a peace sign with two fingers up, matte felt, soft shading"
+    },
+    {
+     "file": "warden_r5_d72_51002_hand100f2w_2.png",
+     "init": "warden_r5_d72_51002.png",
+     "box": [
+      140,
+      600,
+      440,
+      870
+     ],
+     "seed": 2,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand making a peace sign with two fingers up, matte felt, soft shading"
+    },
+    {
+     "file": "warden_r5_d72_51002_hand100f2w_3.png",
+     "init": "warden_r5_d72_51002.png",
+     "box": [
+      140,
+      600,
+      440,
+      870
+     ],
+     "seed": 3,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand making a peace sign with two fingers up, matte felt, soft shading"
+    },
+    {
+     "file": "warden_r5_d72_51002_hand100f2w_4.png",
+     "init": "warden_r5_d72_51002.png",
+     "box": [
+      140,
+      600,
+      440,
+      870
+     ],
+     "seed": 4,
+     "denoising_strength": 1.0,
+     "hand": "the bee's left arm: a chubby golden-yellow cartoon arm with a fuzzy black felt stripe band at the wrist, ending in a hand making a peace sign with two fingers up, matte felt, soft shading"
+    }
+   ]
+  },
+  "warden_r6h": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, (kind half-lidded eyes, gentle closed-mouth smile:1.2), wide-brimmed woven straw hat between the antennae, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, one hand raised making a peace sign with two fingers, (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "warden_r6h_d70_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.7
+    },
+    {
+     "file": "warden_r6h_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r6h_d74_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.74
+    }
+   ]
+  },
+  "guardian_r6h": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee sturdy broad-faced protector, (thick determined dark eyebrows:1.3), steady confident eyes, brave closed-mouth smirk, (round brass goggles pushed up on the forehead between the antennae:1.3), fitted kraft brown leather vest with riveted iron shoulder pieces, iron-clasp backpack, one hand raised open-palmed for a high five, (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with highlights, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy matte black felt stripe bands, ragged ink-stroked fuzzy edges like the body stripes:1.3), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "guardian_r6h_d70_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.7
+    },
+    {
+     "file": "guardian_r6h_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "guardian_r6h_d74_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.74
+    }
+   ]
+  },
+  "warden_r7": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee calm watchful grove keeper, (kind half-lidded eyes, gentle closed-mouth smile:1.2), wide-brimmed woven straw hat between the antennae, kraft brown felt vest with a short cloak of stitched leaves over the shoulders, brass-buckle backpack, one hand raised making a peace sign with two fingers, (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with one simple round white highlight each, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy black felt stripe bands drawn as ragged ink-hatched fur with spiky frayed edges, like the Sentinel's bands, never a flat smooth band:1.45), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, flat smooth black arm band, solid black stripe on arm, star-shaped eye highlights, sparkle eyes, star pupils, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "warden_r7_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r7_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "warden_r7_d70_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.7
+    }
+   ]
+  },
+  "guardian_r7": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee sturdy broad-faced protector, (thick determined dark eyebrows:1.3), steady confident eyes, brave closed-mouth smirk, (round brass goggles pushed up on the forehead between the antennae:1.3), fitted kraft brown leather vest with riveted iron shoulder pieces, iron-clasp backpack, one hand raised open-palmed for a high five, (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with one simple round white highlight each, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy black felt stripe bands drawn as ragged ink-hatched fur with spiky frayed edges, like the Sentinel's bands, never a flat smooth band:1.45), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, flat smooth black arm band, solid black stripe on arm, star-shaped eye highlights, sparkle eyes, star pupils, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "guardian_r7_d76_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.76
+    }
+   ]
+  },
+  "vanguard_r7": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright eager eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest, backpack with a rolled map on top, one fist pumped up in the air, (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with one simple round white highlight each, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy black felt stripe bands drawn as ragged ink-hatched fur with spiky frayed edges, like the Sentinel's bands, never a flat smooth band:1.45), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, flat smooth black arm band, solid black stripe on arm, star-shaped eye highlights, sparkle eyes, star pupils, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "vanguard_r7_d76_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.76
+    }
+   ]
+  },
+  "paragon_r8": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee wise serene elder bee king, kind calm eyes behind (tiny round gold-rimmed spectacles:1.3), (soft white fuzzy eyebrows and a small white fuzzy beard:1.3), gentle closed-mouth smile, (small gold laurel crown between the antennae:1.2), royal robe of kraft felt with gold-trimmed edges and a honeycomb clasp over gold honeycomb chest armour, (one arm held out clearly to the side, separate from the body, the hand gripping a tall wooden staff topped with a glowing honeycomb:1.4), gold-trimmed backpack, (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with one simple round white highlight each, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy black felt stripe bands drawn as ragged ink-hatched fur with spiky frayed edges, like the Sentinel's bands, never a flat smooth band:1.45), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, arm merged into the body, armless, spiked bracelet, spikes on wrist, flat smooth black arm band, solid black stripe on arm, star-shaped eye highlights, sparkle eyes, star pupils, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "paragon_r8_d72_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r8_d72_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r8_d72_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r8_d72_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r8_d72_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.72
+    },
+    {
+     "file": "paragon_r8_d78_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.78
+    },
+    {
+     "file": "paragon_r8_d78_51003.png",
+     "seed": 51003,
+     "denoising_strength": 0.78
+    },
+    {
+     "file": "paragon_r8_d78_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.78
+    },
+    {
+     "file": "paragon_r8_d78_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.78
+    },
+    {
+     "file": "paragon_r8_d78_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.78
+    }
+   ]
+  },
+  "vanguard_r8": {
+   "mode": "img2img",
+   "init": "sentinel/sentinel_card_bg.png",
+   "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+   "prompt": "cute honeybee bold energetic pathfinder, wide excited grin showing one small tooth, bright eager eyes, one eyebrow raised, red bandana tied around the head under the antennae, honeycomb-patterned bronze chest armour over a kraft brown vest, backpack with a rolled map on top, (one arm raised with a clenched fist pumped up in the air in triumph:1.4), (the raised hand with its fingers clearly visible in front of the wing:1.35), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with one simple round white highlight each, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy black felt stripe bands drawn as ragged ink-hatched fur with spiky frayed edges, like the Sentinel's bands, never a flat smooth band:1.45), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
+   "negative": "nsfw, nude, suggestive, pointing finger, index finger extended, arm merged into the body, armless, spiked bracelet, spikes on wrist, flat smooth black arm band, solid black stripe on arm, star-shaped eye highlights, sparkle eyes, star pupils, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching",
+   "images": [
+    {
+     "file": "vanguard_r8_d76_51002.png",
+     "seed": 51002,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "vanguard_r8_d76_51004.png",
+     "seed": 51004,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "vanguard_r8_d76_51005.png",
+     "seed": 51005,
+     "denoising_strength": 0.76
+    },
+    {
+     "file": "vanguard_r8_d76_51006.png",
+     "seed": 51006,
+     "denoising_strength": 0.76
+    }
+   ]
+  }
+ },
+ "ladder": {
+  "note": "decided 22 Oct 2026: one bee growing up, a different gesture per rank; files in pick/",
+  "sentinel": {
+   "file": "pick/sentinel.png",
+   "from": "warden_r3_d72_51002.png",
+   "gesture": "peace sign",
+   "look": "hooded scarf, no vest, youngest face"
+  },
+  "warden": {
+   "file": "pick/warden.png",
+   "from": "../sentinel/sentinel_card.png (the former Sentinel)",
+   "gesture": "thumbs up",
+   "look": "kraft vest, leaf patch, backpack"
+  },
+  "guardian": {
+   "file": "pick/guardian.png",
+   "from": "guardian_r5_d76_51004.png",
+   "gesture": "high five",
+   "look": "goggles, quilted armour vest"
+  },
+  "vanguard": {
+   "file": "pick/vanguard.png",
+   "from": "vanguard_r8_d76_51004.png",
+   "gesture": "fist pump",
+   "look": "chain mail, red bandana, grin"
+  },
+  "paragon": {
+   "file": "pick/paragon.png",
+   "from": "paragon_r8_d78_51005.png",
+   "gesture": "holds a crooked staff",
+   "look": "spectacles, laurel crown, gold-pattern cloak, grey fur collar"
+  }
+ }
+}
