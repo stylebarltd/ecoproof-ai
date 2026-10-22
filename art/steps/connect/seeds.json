@@ -1,0 +1,74 @@
+{
+ "r1_101.png": {
+  "run": "r1",
+  "seed": 101,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r1_102.png": {
+  "run": "r1",
+  "seed": 102,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r1_103.png": {
+  "run": "r1",
+  "seed": 103,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r2_101.png": {
+  "run": "r2",
+  "seed": 101,
+  "prompt": "first-person photo, a cashier looking down at a shop counter: in the foreground a plain blank white folded tent card on the wooden counter, next to it a tablet point-of-sale on a stand showing a plain white blank screen, a small potted plant, receipt paper, soft daylight from a window, shallow depth of field, 35mm, photorealistic, clean, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r2_102.png": {
+  "run": "r2",
+  "seed": 102,
+  "prompt": "first-person photo, a cashier looking down at a shop counter: in the foreground a plain blank white folded tent card on the wooden counter, next to it a tablet point-of-sale on a stand showing a plain white blank screen, a small potted plant, receipt paper, soft daylight from a window, shallow depth of field, 35mm, photorealistic, clean, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r1_104.png": {
+  "run": "r1",
+  "seed": 104,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r1_105.png": {
+  "run": "r1",
+  "seed": 105,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r1_106.png": {
+  "run": "r1",
+  "seed": 106,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "r1_107.png": {
+  "run": "r1",
+  "seed": 107,
+  "prompt": "photo taken from behind a cafe counter, cashier's point of view looking down at the wooden counter top, a small white acrylic table-top sign holder with a plain blank white card standing on the counter in the centre, to the left a point-of-sale monitor turned slightly toward the camera showing a plain white blank screen, a card payment terminal, a ceramic cup, natural window light, shallow depth of field, 35mm lens, soft bokeh of the cafe in the background, warm wood and cream tones, photorealistic, editorial product photography, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, people, hands, face, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ }
+}

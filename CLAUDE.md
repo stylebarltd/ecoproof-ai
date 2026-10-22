@@ -77,8 +77,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   rings) stays behind `NEXT_PUBLIC_LANDING_HERO=cards`. Paper grain and stamps are CSS. Buildings inpainted onto the island (`inpaint.py`,
   `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the four owner-door spots
   (`public/landing/doors/`, picked from `art/doors/`: coffee/restaurant seed 2070966653, hotel 826490947, store 1172946982; epicrealismXL via the local A1111 API) and partner logos (`public/landing/partners/`, from
-  `art/partner/`) stay. How-it-works step images `public/landing/steps/`: connect and stamp are screenshots from
-  `../ecoproofai.stylebar.de/src/assets/screens/` (order email, stamp collection), share is `/api/passport-card/<id>?format=square` rendered
+  `art/partner/`) stay. How-it-works step images `public/landing/steps/`: connect is a photoreal composite
+  (`art/steps/connect/`: epicrealismXL counter scene seed 106 with a blank POS screen and card, `compose.py` warps a replica of the WordPress
+  plugins page and the real demo-café QR card onto them), stamp is a screenshot from
+  `../ecoproofai.stylebar.de/src/assets/screens/` (stamp collection), share is `/api/passport-card/<id>?format=square` rendered
   locally with `APP_URL=https://ecoproof.superbee.me` for the footer. The counter strip counts plastic *items* avoided, not kg (that is what
   the DB has).
 - Points by kind (`POINTS_BY_KIND` in `lib/stampClasses.ts`, decided 21 Oct 2026): a presence stamp is worth 1 at a café or restaurant,
