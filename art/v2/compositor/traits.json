@@ -1,0 +1,209 @@
+{
+  "layers_dir": "../layers",
+  "ranks_dir": "../ranks",
+  "canvas": {
+    "card": [
+      1024,
+      1434
+    ],
+    "art": 1024,
+    "art_window": {
+      "x": 36,
+      "y": 36,
+      "size": 952
+    }
+  },
+  "ranks": {
+    "sentinel": {
+      "title": "Sentinel",
+      "points": 1,
+      "colour": "#A9825A",
+      "aura": "none"
+    },
+    "warden": {
+      "title": "Warden",
+      "points": 3,
+      "colour": "#B4703C",
+      "aura": "soft_glow"
+    },
+    "guardian": {
+      "title": "Guardian",
+      "points": 10,
+      "colour": "#6F6B66",
+      "aura": "gold_outline"
+    },
+    "vanguard": {
+      "title": "Vanguard",
+      "points": 25,
+      "colour": "#B98535",
+      "aura": "sparks",
+      "exclude_backgrounds": [
+        "honey",
+        "cream"
+      ]
+    },
+    "paragon": {
+      "title": "Paragon",
+      "points": 50,
+      "colour": "#D9A63A",
+      "aura": "halo_rays",
+      "exclude_backgrounds": [
+        "honey",
+        "cream"
+      ]
+    }
+  },
+  "auras": [
+    "none",
+    "soft_glow",
+    "gold_outline",
+    "sparks",
+    "halo_rays"
+  ],
+  "backgrounds": [
+    "periwinkle",
+    "dusty_blue",
+    "terracotta",
+    "honey",
+    "cream",
+    "kraft",
+    "sage_grey",
+    "night_brown"
+  ],
+  "items": [
+    "none",
+    "beeswax_wrap",
+    "bamboo_cup",
+    "parcel",
+    "honey_jar",
+    "compass",
+    "map",
+    "seedling",
+    "tote_bag"
+  ],
+  "badges": [
+    "leaf",
+    "stamp",
+    "globe",
+    "star",
+    "heart"
+  ],
+  "achievement_colour": "#3A2A1C",
+  "badge_placement": {
+    "cx": 848,
+    "cy": 815,
+    "size": 120,
+    "note": "badge PNGs are full 1024 canvases, built from _cut_*.png by centre (cx,cy); globe larger because of its stand",
+    "moved": {
+      "leaf": {
+        "height": 120,
+        "box_before": [
+          802,
+          845,
+          917,
+          965
+        ],
+        "box_after": [
+          790,
+          755,
+          905,
+          875
+        ]
+      },
+      "stamp": {
+        "height": 118,
+        "box_before": [
+          800,
+          846,
+          920,
+          964
+        ],
+        "box_after": [
+          788,
+          756,
+          908,
+          874
+        ]
+      },
+      "globe": {
+        "height": 120,
+        "box_before": [
+          816,
+          845,
+          905,
+          965
+        ],
+        "box_after": [
+          792,
+          740,
+          904,
+          890
+        ]
+      },
+      "star": {
+        "height": 116,
+        "box_before": [
+          800,
+          847,
+          920,
+          963
+        ],
+        "box_after": [
+          788,
+          757,
+          908,
+          873
+        ]
+      },
+      "heart": {
+        "height": 119,
+        "box_before": [
+          800,
+          846,
+          920,
+          965
+        ],
+        "box_after": [
+          788,
+          756,
+          908,
+          875
+        ]
+      }
+    },
+    "sizes": {
+      "leaf": 120,
+      "stamp": 136,
+      "globe": 120,
+      "star": 120,
+      "heart": 120
+    }
+  },
+  "item_slot": {
+    "cx": 205,
+    "cy": 225,
+    "r": 150,
+    "item_size": 200
+  },
+  "item_bubble": {
+    "cx": 225,
+    "cy": 215,
+    "rx": 175,
+    "ry": 150,
+    "item_size": 210,
+    "tail": [
+      [
+        330,
+        320
+      ],
+      [
+        420,
+        300
+      ],
+      [
+        500,
+        430
+      ]
+    ]
+  }
+}
