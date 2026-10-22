@@ -8,7 +8,7 @@ import { currentAccount } from "@/lib/account";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { kindOf } from "@/lib/placeKinds";
 
-/** "My shop": the places the signed-in person runs, as owner or staff. */
+/** "My shop": the places the signed-in person runs, as owner or staff. Their home at "/" and the /shop page. */
 export default function MyShops() {
   const [places, setPlaces] = useState<MyPlace[] | null>(null);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);

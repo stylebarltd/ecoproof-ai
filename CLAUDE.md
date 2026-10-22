@@ -26,7 +26,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   Bubblegum V2 + MPL-Core: `lib/milestones.ts`, `lib/nft.ts`, `lib/milestoneRules.ts`).
 - Proofs: SHA-256 of the record as a Memo tx + a claim account ("one scan, one stamp").
   `app/api/verify/[id]` recomputes and compares.
-- Passport (`app/page.tsx`), public passport `/u/[id]`, joined-places map, self-serve
+- Passport (`components/PassportHome.tsx`), public passport `/u/[id]`, joined-places map, self-serve
   `/join`, share images (`next/og`), WooCommerce webhook ingest + plugin
   (`integrations/woocommerce/`, zipped by `scripts/plugin-zip.mjs` before dev/build).
 - Postgres: tables created at startup (`lib/db.ts`). No accounts.
@@ -62,6 +62,30 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   A café/restaurant/hotel checklist shows the 2 nearest shops under practices not answered Yes
   and in "Next step up" (`lib/supplies.ts`): distance to the shop's locations, or to the warehouse
   serving the owner's country (request country, not stored per place). Never affects stars.
+- Three homes at `/` (`app/page.tsx`, decided on the server from the session): signed out → the marketing landing page
+  (`components/landing/`, design brief of 21 Oct 2026: kraft/paper tokens and Fraunces/Nunito/Bebas in `globals.css`, live counter from
+  `lib/landingStats.ts`, pricing copy in `lib/landingContent.ts`, `LANDING_DEMO_PASSPORT` for "See a live passport"); a customer → their
+  passport; an owner or staff member → "My shop" (`components/MyShops.tsx`). The passport also lives at `/passport` (the only home of
+  anonymous device passports; the nav's Passport tab, "View my passport" links and the landing nav's "Eco Passport" go there; that link turns
+  leaf green and pulses when the device already has stamps, `components/landing/PassportNavLink.tsx`). App routes sit in the `app/(app)` route group,
+  whose layout is the chrome (`components/AppShell.tsx`); the landing has its own nav. Art is one language, the cel-shaded NFT card set. The hero is the
+  island world (`components/landing/IslandHero.tsx`, `NEXT_PUBLIC_LANDING_HERO=island`, default): seed 41002 plate from `art/v2/island/`
+  (same Illustrious checkpoint as the cards), split into sky / island / flower-strip layers (`layers_sky.py`, `layers_cut.py`, `export_web.py
+  <folder> <ver>` → `public/landing/island/<ver>/`, a new folder per plate so caches bust; current `v4`) with a scroll-driven CSS parallax; the
+  copy sits in the sky and the Bee Guardian cutout (`public/landing/bee.webp`, from `art/v2/ranks/sentinel/sentinel_card.png`) peeks in. The
+  card-fan hero (`components/landing/HeroArt.tsx`, `public/landing/cards/*.webp`, 2x of 300x420, from `art/v2/compositor/samples/`, SVG stamp
+  rings) stays behind `NEXT_PUBLIC_LANDING_HERO=cards`. Paper grain and stamps are CSS. Buildings inpainted onto the island (`inpaint.py`,
+  `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the four owner-door spots
+  (`public/landing/doors/`, picked from `art/doors/`: coffee/restaurant seed 2070966653, hotel 826490947, store 1172946982; epicrealismXL via the local A1111 API) and partner logos (`public/landing/partners/`, from
+  `art/partner/`) stay. How-it-works step images `public/landing/steps/`: connect and stamp are screenshots from
+  `../ecoproofai.stylebar.de/src/assets/screens/` (order email, stamp collection), share is `/api/passport-card/<id>?format=square` rendered
+  locally with `APP_URL=https://ecoproof.superbee.me` for the footer. The counter strip counts plastic *items* avoided, not kg (that is what
+  the DB has).
+- Points by kind (`POINTS_BY_KIND` in `lib/stampClasses.ts`, decided 21 Oct 2026): a presence stamp is worth 1 at a café or restaurant,
+  2 at a hotel/resort, 1 at an eco store's till; a verified purchase is 5 (online order now; in store only after a successful receipt scan,
+  so receipt scanning must land as a verified-class source). `pointsFor(source, kind)` everywhere; the passport query joins the place's kind.
+  Recomputed on read, so old stamps follow today's table. The landing shows three doors: Café / Restaurant (one door, a small café/restaurant
+  switch is planned), Hotel / Resort, Eco store.
 - Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
   most once a day, refused if unchanged) freezes it into `practice_declarations` (versions, never
   edited) and writes its SHA-256 to Solana (memo + claim account keyed on its id,
@@ -114,6 +138,8 @@ Local DB: Docker Postgres container `ecoproof-pg` (port 5433), database `ecoproo
   fallback is used. `ADMIN_TOKEN` (>= 16 chars) enables `/admin` and the admin API.
   Keep `.env.example` in sync when code reads a new variable.
 - `next dev` rewrites `AGENTS.md`; that diff is expected.
+- After replacing an image under `public/`, `next dev` keeps serving the old optimized copies from `.next/dev/cache/images`
+  (not `.next/cache/images`); delete that folder, or use a new file name.
 - Impact numbers are estimates from `lib/impact.ts`, not audited data. Keep the
   README's "Honest limits" honest in anything public.
 

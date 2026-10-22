@@ -81,5 +81,5 @@ export async function claimStamp(opts: { placeId: string; passportId: string; so
     if ((e as { code?: string }).code === "23505") throw already(null, claimAddress);
     throw e;
   }
-  return { stampClass: stampClass(source), points: pointsFor(source), recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: opts.order?.line ?? null, /* only a verified order carries an impact line */ hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
+  return { stampClass: stampClass(source), points: pointsFor(source, place.kind), recordId: row.id, placeId: place.id, placeName: place.name, source, day, impactNote: opts.order?.line ?? null, /* only a verified order carries an impact line */ hash: row.hash, signature, claimAddress, claimUrl: claimAddress ? claimUrl(claimAddress) : null, proofUrl: `/p/${row.id}` };
 }

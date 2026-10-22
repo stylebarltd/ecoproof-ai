@@ -131,7 +131,7 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
           <p className="text-sm text-neutral-600 lg:text-base"><b className="text-ink">+{done.stamp.points} point{done.stamp.points === 1 ? "" : "s"}</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
           {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Bee Guardian NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")} {newNfts.every((n) => n.status === "minted") ? "(minted)" : <>(saved for you: <Link href="/collection" className="underline">claim {newNfts.length > 1 ? "them" : "it"} to a wallet</Link>)</>}</p>}
           {done.stamp.claimUrl && <a className="block text-xs text-sage-700 underline" href={done.stamp.claimUrl} target="_blank" rel="noreferrer">See the proof on Solana ↗</a>}
-          <Link href="/" className="lift block rounded-full bg-sage-500 py-3 font-bold text-cream lg:py-4 lg:text-lg">View my passport</Link>
+          <Link href="/passport" className="lift block rounded-full bg-sage-500 py-3 font-bold text-cream lg:py-4 lg:text-lg">View my passport</Link>
         </div>
       )}
     </div>

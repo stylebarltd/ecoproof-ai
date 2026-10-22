@@ -77,13 +77,15 @@ Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devne
 ## Project layout
 
 ```
-app/about/page.tsx            "How EcoProof works": the guide for customers and shops (linked from the passport and the bottom nav)
-app/page.tsx                  passport home (splash, hero NFTs, stamps, progress, proof trail)
-app/u/[id]/page.tsx           public read-only passport (the link a shared image points to)
-app/c/[id]/page.tsx           place QR claim page          app/k/[code]/page.tsx   printed card claim page
-app/o/[place]/[token]/page.tsx  verified-order claim page   app/map/page.tsx        joined places map
-app/join/page.tsx             self-serve place setup (eco shops pick their channels)
-app/place/[id]/page.tsx       print-ready counter card     app/place/[id]/cards    print sheet for card batches
+app/page.tsx                  "/" by session: landing page for visitors (components/landing/), passport for customers, "My shop" for owners
+app/(app)/                    every app route, inside the app chrome (components/AppShell.tsx: navbars + column)
+app/(app)/passport/page.tsx   passport home (splash, hero NFTs, stamps, progress, proof trail); also "/" for a signed-in customer
+app/(app)/about/page.tsx      "How EcoProof works": the guide for customers and shops (linked from the passport and the bottom nav)
+app/(app)/u/[id]/page.tsx     public read-only passport (the link a shared image points to)
+app/(app)/c/[id]/page.tsx     place QR claim page          app/(app)/k/[code]/page.tsx   printed card claim page
+app/(app)/o/[place]/[token]/page.tsx  verified-order claim page   app/(app)/map/page.tsx   joined places map
+app/(app)/join/page.tsx       self-serve place setup (eco shops pick their channels)
+app/(app)/place/[id]/page.tsx print-ready counter card     app/(app)/place/[id]/cards    print sheet for card batches
 app/api/claims                one endpoint for all three doors (streams live progress as NDJSON)
 app/api/woo/webhook/[place]   WooCommerce webhook ingest   app/api/woo/qr          QR image for the order email
 app/api/passport-card/[id]    share image of a passport    app/api/card/[id]       share image of one stamp

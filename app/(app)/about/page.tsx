@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Check, Camera, Coffee, Flag, Gift, Heart, MapPin, Package, QrCode, Share2, ShieldCheck, Smartphone, Store, Wallet } from "lucide-react";
 import { RANKS, rankWebp } from "@/lib/milestoneRules";
-import { POINTS_PRESENCE, POINTS_VERIFIED } from "@/lib/stampClasses";
+import { POINTS_BY_KIND, POINTS_VERIFIED } from "@/lib/stampClasses";
 import InviteShop from "@/components/InviteShop";
 
 export const metadata = {
@@ -51,7 +51,7 @@ export default function About() {
           EcoProof turns your real eco-friendly choices into <b>stamps</b> in a personal eco passport. Every stamp is proven on the Solana blockchain, and collecting enough of them unlocks a collectible <b>Bee Guardian NFT</b> that only you can own.
         </p>
         <div className="mt-4 flex justify-center gap-2">
-          <Link href="/" className="rounded-full bg-honey-500 px-4 py-2.5 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">My passport</Link>
+          <Link href="/passport" className="rounded-full bg-honey-500 px-4 py-2.5 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">My passport</Link>
           <Link href="/map" className="glass rounded-full px-4 py-2.5 text-[14px] font-bold">Find places</Link>
         </div>
       </header>
@@ -102,9 +102,9 @@ export default function About() {
             <p className="mt-1.5 text-[12.5px] leading-snug text-ink/80">Comes from a real online order. Because the shop tells us what was in it, the stamp shows the real impact of your purchase. Worth <b>{POINTS_VERIFIED} points</b>.</p>
           </div>
           <div className="rounded-2xl bg-white/45 p-3.5 ring-1 ring-white/70">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-sage-800">Presence stamp <span className="ml-1 rounded-full bg-white px-1.5 py-0.5 text-[9px]">+{POINTS_PRESENCE} pt</span></span>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-sage-800">Presence stamp <span className="ml-1 rounded-full bg-white px-1.5 py-0.5 text-[9px]">+{POINTS_BY_KIND.cafe} to {POINTS_BY_KIND.hotel} pt</span></span>
             <p className="mt-1 font-heading text-[16px]">Demo Café</p>
-            <p className="text-[12.5px] leading-snug text-ink/80">Comes from a counter QR or a parcel card. It proves you were there or that you received the parcel, nothing about what was bought, so there is no impact number. Worth <b>{POINTS_PRESENCE} point</b>.</p>
+            <p className="text-[12.5px] leading-snug text-ink/80">Comes from a counter QR or a parcel card. It proves you were there or that you received the parcel, nothing about what was bought, so there is no impact number. Worth <b>{POINTS_BY_KIND.cafe} point</b> at a café, restaurant or eco store till, <b>{POINTS_BY_KIND.hotel}</b> at a hotel or resort.</p>
           </div>
         </div>
         <P>Both kinds live in the same passport.</P>
@@ -124,7 +124,7 @@ export default function About() {
       {/* Points and ranks */}
       <Panel id="points">
         <H2>Points and ranks</H2>
-        <P>Ranks are reached by <b>points</b>, not by how many times you scan: a verified purchase is worth {POINTS_VERIFIED}, a presence stamp {POINTS_PRESENCE}. Every stamp records a proof on Solana, but only reaching a rank mints an NFT.</P>
+        <P>Ranks are reached by <b>points</b>, not by how many times you scan: a verified purchase is worth {POINTS_VERIFIED}; a presence stamp is worth {POINTS_BY_KIND.cafe} at a café, restaurant or eco store till and {POINTS_BY_KIND.hotel} at a hotel or resort. Scanning a receipt in an eco store will count as a verified purchase once it launches. Every stamp records a proof on Solana, but only reaching a rank mints an NFT.</P>
         <div className="mt-4 grid grid-cols-2 gap-3 min-[420px]:grid-cols-3">
           {RANKS.map((r) => (
             <div key={r.key} className="text-center">
@@ -213,7 +213,7 @@ export default function About() {
       </Panel>
 
       <div className="flex flex-wrap justify-center gap-2 pb-2">
-        <Link href="/" className="rounded-full bg-honey-500 px-5 py-3 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">Go to my passport</Link>
+        <Link href="/passport" className="rounded-full bg-honey-500 px-5 py-3 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">Go to my passport</Link>
         <Link href="/join" className="glass rounded-full px-5 py-3 text-[14px] font-bold">Set up my place</Link>
       </div>
       <p className="pb-2 text-center text-[11px] text-ink/60"><Check size={11} className="mr-1 inline" /><Camera size={11} className="mr-1 inline" /><Wallet size={11} className="mr-1 inline" />Every stamp is anchored on Solana. · <Link href="/privacy" className="underline">Privacy</Link></p>

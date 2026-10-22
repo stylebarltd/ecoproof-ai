@@ -37,7 +37,8 @@ export type Passport = {
 
 export async function getPassport(userId: string): Promise<Passport> {
   const ids = await identityGroup(userId);
-  const rows = await query<RecordRow>("SELECT * FROM records WHERE user_id = ANY($1) ORDER BY created_at DESC", [ids]);
+  // The place's kind decides what a presence stamp is worth (lib/stampClasses.ts), so it rides along with each record.
+  const rows = await query<RecordRow & { place_kind: string | null }>("SELECT r.*, p.kind AS place_kind FROM records r LEFT JOIN stamp_places p ON p.id = r.place_id WHERE r.user_id = ANY($1) ORDER BY r.created_at DESC", [ids]);
   // A place QR gives one stamp per person per day. Devices that collected stamps before they were linked to the same wallet
   // would otherwise double up, so only the first QR stamp per place per day counts. Every number shown (points, stamp counts,
   // the per-place ×N bubble) uses only the stamps that count; the proof list still shows every record (a duplicate earns 0 points).
@@ -50,7 +51,7 @@ export async function getPassport(userId: string): Promise<Passport> {
     return true;
   }).reverse();
   const counted = new Set(stamps.map((r) => r.id));
-  const points = stamps.reduce((n, r) => n + pointsFor(r.source), 0);
+  const points = stamps.reduce((n, r) => n + pointsFor(r.source, r.place_kind), 0);
   const totals: Totals = { receipts: stamps.length, co2Kg: 0, plasticItems: 0, packagingG: 0, sustainableItems: 0 };
   for (const r of stamps) {
     totals.co2Kg += r.co2_kg ?? 0;
@@ -87,7 +88,7 @@ export async function getPassport(userId: string): Promise<Passport> {
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
     collectionUrl: (() => { const c = nftConfig()?.collection; return c ? addressUrl(c) : null; })(),
     records: rows.slice(0, 20).map((r) => ({
-      id: r.id, placeId: r.place_id ?? null, source: r.source ?? null, class: stampClass(r.source), points: counted.has(r.id) ? pointsFor(r.source) : 0, impactNote: r.impact_note ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
+      id: r.id, placeId: r.place_id ?? null, source: r.source ?? null, class: stampClass(r.source), points: counted.has(r.id) ? pointsFor(r.source, r.place_kind) : 0, impactNote: r.impact_note ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticItems: r.plastic_items,
       verified: !!r.signature, signature: r.signature, createdAt: new Date(r.created_at).toISOString(),
     })),
   };

@@ -70,7 +70,7 @@ export default function CollectionPage() {
       <div className="passport-bg fixed inset-0 -z-10" aria-hidden />
       <div className="flex items-center justify-between gap-2">
         <div>
-          <Link href="/" className="text-xs font-bold text-sage-800">← Passport</Link>
+          <Link href="/passport" className="text-xs font-bold text-sage-800">← Passport</Link>
           <h1 className="text-[22px] leading-tight lg:text-[30px]">My Bee Guardians</h1>
         </div>
         {!desktop && <AccountChip onChange={load} />}

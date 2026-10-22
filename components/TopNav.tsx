@@ -5,9 +5,10 @@ import { CircleHelp, MapPin, ShoppingBag, Store } from "lucide-react";
 import AccountChip from "@/components/AccountChip";
 import { LeafMark, LogoLockup } from "@/components/Logo";
 import { announceAccountChange, useDesktop } from "@/lib/desktop";
+import { isPassportPath, isShopPath, type RootIs } from "@/lib/nav";
 
 /** Desktop (lg+) navbar. Phones keep the bottom tab bar. The wallet chip mounts here only on desktop, so there is only ever one. */
-export default function TopNav() {
+export default function TopNav({ rootIs = "passport" }: { rootIs?: RootIs }) {
   const path = usePathname();
   const desktop = useDesktop();
   const link = (href: string, icon: React.ReactNode, label: string, on: boolean) => (
@@ -18,12 +19,12 @@ export default function TopNav() {
   return (
     <header className="sticky top-0 z-[2000] hidden border-b border-white/70 bg-white/40 shadow-[0_4px_24px_rgba(39,46,27,0.10)] backdrop-blur-xl backdrop-saturate-150 lg:block print:hidden">
       <nav className="mx-auto flex h-16 max-w-[1280px] items-center gap-6 px-10" aria-label="Main">
-        <Link href="/" aria-label="EcoProof AI, my passport" className="shrink-0"><LogoLockup size={34} /></Link>
+        <Link href="/" aria-label="EcoProof AI, home" className="shrink-0"><LogoLockup size={34} /></Link>
         <div className="flex items-center gap-1">
-          {link("/", <LeafMark size={18} stroke="currentColor" strokeWidth={2.75} />, "Passport", path === "/" || path.startsWith("/p/") || path.startsWith("/u/") || path.startsWith("/collection"))}
+          {link("/passport", <LeafMark size={18} stroke="currentColor" strokeWidth={2.75} />, "Passport", isPassportPath(path, rootIs))}
           {link("/map", <MapPin size={17} strokeWidth={2.5} />, "Map", path.startsWith("/map"))}
           {link("/shops", <ShoppingBag size={17} strokeWidth={2.5} />, "Shops", path.startsWith("/shops"))}
-          {link("/join", <Store size={17} strokeWidth={2.5} />, "For brands", path.startsWith("/join") || path.startsWith("/place/") || path === "/shop" || path.startsWith("/shop/"))}
+          {link("/join", <Store size={17} strokeWidth={2.5} />, "For brands", isShopPath(path, rootIs))}
           {link("/about", <CircleHelp size={17} strokeWidth={2.5} />, "How it works", path.startsWith("/about") || path.startsWith("/rules"))}
         </div>
         <div className="ml-auto">{desktop && <AccountChip onChange={announceAccountChange} />}</div>

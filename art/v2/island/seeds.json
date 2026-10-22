@@ -1,0 +1,566 @@
+{
+ "settings": {
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "steps": 35,
+  "cfg_scale": 6.5,
+  "sampler_name": "DPM++ 2M",
+  "scheduler": "karras",
+  "width": 1536,
+  "height": 768,
+  "enable_hr": true,
+  "hr_scale": 1.3333333333333333,
+  "hr_upscaler": "R-ESRGAN 4x+ Anime6B",
+  "hr_second_pass_steps": 20,
+  "denoising_strength": 0.4
+ },
+ "runs": {
+  "r1": {
+   "prompt": "a floating island in the sky seen from a slightly elevated three-quarter view, cel-shaded illustration with clean dark outlines and flat warm colours, light painterly shading, golden-hour light, cream and peach sunset sky with soft clouds, the island has terracotta and brown rocky cliffs with roots hanging below, a blue river winding across it ending in a small waterfall off the left edge, honey-coloured meadows full of wildflowers in orange, red and white, a few round green trees and bushes, CENTRE: a small wooden beekeeper's hut with three beehives in the flower meadow, LEFT of centre by the river: a cosy little caf\u00e9 with an awning and two outdoor tables, RIGHT of centre: a small village eco shop with a striped canopy and crates of goods, FAR RIGHT on a hill: a small boutique hotel with a terrace, FAR LEFT near the waterfall: a market stall under a cloth roof, a winding dirt path connecting all five places, a few honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, lots of calm sky above the island for a headline, highly detailed, consistent outline weight throughout",
+   "negative": "nsfw, nude, suggestive, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, people, humans, text, letters, signs with writing, watermark, logo, blurry, low quality, dominant green, grey sky, modern city, cars",
+   "images": [
+    {
+     "file": "island_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_41004.png",
+     "seed": 41004
+    }
+   ]
+  },
+  "r2": {
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (floating island in the sky:1.4), one island floating high among the clouds, seen from above at a slightly elevated three-quarter angle, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky, soft clouds, terracotta and brown rocky cliffs underneath the island with roots hanging below, blue river winding across the island into a small waterfall pouring off the left edge, (honey-coloured golden-yellow meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with an awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, a winding dirt path connecting the five buildings, tiny honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, lots of empty calm sky above the island, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line",
+   "images": [
+    {
+     "file": "island_r2_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r2_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r2_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r2_41004.png",
+     "seed": 41004
+    }
+   ]
+  },
+  "r3": {
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (one single wide floating island in the sky:1.4), the island fills the lower two thirds of the frame from edge to edge, seen from a slightly elevated three-quarter view, close enough that the buildings are large and readable, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky with soft clouds above, terracotta and brown rocky cliffs underneath the island with roots hanging below, (a clear blue river with white water:1.2) winding across the island top and pouring off the left edge as a small waterfall, (golden yellow and amber meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, five different small buildings spread out along a winding dirt path: a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with a red awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, tiny honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, calm empty sky in the top third, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line, (multiple islands:1.4), small islets, floating rocks, floating debris, honey waterfall, liquid honey, bird's eye view, top-down view, tiny buildings, far away",
+   "images": [
+    {
+     "file": "island_r3_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r3_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r3_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r3_41004.png",
+     "seed": 41004
+    }
+   ]
+  },
+  "r4": {
+   "method": "img2img from layout.png (layout.py) + controlnet canny",
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (one single wide floating island in the sky:1.4), the island fills the lower two thirds of the frame from edge to edge, seen from a slightly elevated three-quarter view, close enough that the buildings are large and readable, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky with soft clouds above, terracotta and brown rocky cliffs underneath the island with roots hanging below, (a clear blue river with white water:1.2) winding across the island top and pouring off the left edge as a small waterfall, (golden yellow and amber meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, five different small buildings spread out along a winding dirt path: a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with a red awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, tiny honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, calm empty sky in the top third, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line, (multiple islands:1.4), small islets, floating rocks, floating debris, honey waterfall, liquid honey, bird's eye view, top-down view, tiny buildings, far away",
+   "denoise": 0.8,
+   "cn_weight": 0.6,
+   "cn_model": "controlnet-canny-sdxl-xinsir-v2 [ab7dc06d]",
+   "size": "1536x768",
+   "images": [
+    {
+     "file": "island_r4_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r4_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r4_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r4_41004.png",
+     "seed": 41004
+    }
+   ]
+  },
+  "r5": {
+   "method": "img2img from layout.png (layout.py) + controlnet canny",
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (one single wide floating island in the sky:1.4), the island fills the lower two thirds of the frame from edge to edge, seen from a slightly elevated three-quarter view, close enough that the buildings are large and readable, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky with soft clouds above, terracotta and brown rocky cliffs underneath the island with roots hanging below, (a clear blue river with white water:1.2) winding across the island top and pouring off the left edge as a small waterfall, (golden yellow and amber meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, five different small buildings spread out along a winding dirt path: a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with a red awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, tiny honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, calm empty sky in the top third, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line, (multiple islands:1.4), small islets, floating rocks, floating debris, honey waterfall, liquid honey, bird's eye view, top-down view, tiny buildings, far away",
+   "denoise": 1.0,
+   "cn_weight": 0.45,
+   "cn_end": 0.5,
+   "cn_model": "controlnet-canny-sdxl-xinsir-v2 [ab7dc06d]",
+   "size": "1536x768",
+   "images": [
+    {
+     "file": "island_r5_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r5_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r5_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r5_41004.png",
+     "seed": 41004
+    }
+   ]
+  },
+  "r6": {
+   "method": "img2img from layout.png (layout.py) + controlnet canny",
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (one single wide floating island in the sky:1.4), the island fills the lower two thirds of the frame from edge to edge, seen from a slightly elevated three-quarter view, close enough that the buildings are large and readable, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky with soft clouds above, terracotta and brown rocky cliffs underneath the island with roots hanging below, (a clear blue river with white water:1.2) winding across the island top and pouring off the left edge as a small waterfall, (golden yellow and amber meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, five different small buildings spread out along a winding dirt path: a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with a red awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, tiny honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, calm empty sky in the top third, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line, (multiple islands:1.4), small islets, floating rocks, floating debris, honey waterfall, liquid honey, bird's eye view, top-down view, tiny buildings, far away",
+   "denoise": 1.0,
+   "cn_weight": 0.3,
+   "cn_end": 0.4,
+   "cn_model": "controlnet-canny-sdxl-xinsir-v2 [ab7dc06d]",
+   "size": "1536x768",
+   "images": [
+    {
+     "file": "island_r6_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r6_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r6_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r6_41004.png",
+     "seed": 41004
+    }
+   ]
+  },
+  "r7": {
+   "method": "img2img from layout.png (layout.py) + controlnet canny",
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (one single wide floating island in the sky:1.4), the island fills the lower two thirds of the frame from edge to edge, seen from a slightly elevated three-quarter view, close enough that the buildings are large and readable, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky with soft clouds above, terracotta and brown rocky cliffs underneath the island with roots hanging below, (a clear blue river with white water:1.2) winding across the island top and pouring off the left edge as a small waterfall, (golden yellow and amber meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, five different small buildings spread out along a winding dirt path: a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with a red awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, tiny honeybees flying along the path, warm cosy storybook atmosphere, wide panoramic composition, calm empty sky in the top third, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line, (multiple islands:1.4), small islets, floating rocks, floating debris, honey waterfall, liquid honey, bird's eye view, top-down view, tiny buildings, far away",
+   "denoise": 0.9,
+   "cn_weight": 0.45,
+   "cn_end": 0.55,
+   "cn_model": "controlnet-canny-sdxl-xinsir-v2 [ab7dc06d]",
+   "size": "1536x768",
+   "images": [
+    {
+     "file": "island_r7_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r7_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r7_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r7_41004.png",
+     "seed": 41004
+    },
+    {
+     "file": "island_r7_41005.png",
+     "seed": 41005
+    },
+    {
+     "file": "island_r7_41006.png",
+     "seed": 41006
+    }
+   ]
+  },
+  "r8": {
+   "prompt": "masterpiece, best quality, very aesthetic, no humans, scenery, (one single wide floating island in the sky:1.4), the island fills the lower two thirds of the frame from edge to edge, seen from a slightly elevated three-quarter view, close enough that the buildings are large and readable, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour, cream and peach sunset sky with soft clouds above, terracotta and brown rocky cliffs underneath the island with roots hanging below, (a clear blue river with white water:1.2) winding across the island top and pouring off the left edge as a small waterfall, (golden yellow and amber meadows:1.3) full of orange red and white wildflowers, a few round green trees and bushes, five different small buildings spread out along a winding dirt path: a small wooden beekeeper's hut with three beehives in the middle of the meadow, a tiny cafe with a red awning and two outdoor tables by the river left of the hut, a small village shop with a striped canopy and wooden crates right of the hut, a small hotel with a terrace on a hill at the far right, a market stall under a cloth roof near the waterfall at the far left, tiny honeybees flying along the path, densely detailed meadow with wildflower patches, hedges, low wooden fences, lanterns and flower beds around every building, warm cosy storybook atmosphere, wide panoramic composition, calm empty sky in the top third, highly detailed, consistent outline weight",
+   "negative": "nsfw, nude, suggestive, 1girl, 1boy, people, humans, character, text, english text, letters, speech bubble, signboard with writing, watermark, logo, signature, photograph, photorealistic, photo collage, 3D render, neon, dark, gloomy, night, snow, blurry, low quality, (green grass:1.3), dominant green, grey sky, modern city, cars, ground level view, mountains in the background, horizon line, (multiple islands:1.4), small islets, floating rocks, floating debris, honey waterfall, liquid honey, bird's eye view, top-down view, tiny buildings, far away, empty meadow, plain flat ground, bare ground",
+   "controlnet": {
+    "module": "canny",
+    "model": "controlnet-canny-sdxl-xinsir-v2 [ab7dc06d]",
+    "weight": 0.35,
+    "end": 0.45,
+    "guide": "layout.png"
+   },
+   "images": [
+    {
+     "file": "island_r8_41001.png",
+     "seed": 41001
+    },
+    {
+     "file": "island_r8_41002.png",
+     "seed": 41002
+    },
+    {
+     "file": "island_r8_41003.png",
+     "seed": 41003
+    },
+    {
+     "file": "island_r8_41004.png",
+     "seed": 41004
+    },
+    {
+     "file": "island_r8_41005.png",
+     "seed": 41005
+    }
+   ]
+  }
+ },
+ "candidates": {
+  "note": "hotspot x,y in 2048x1024 space; 9:16 centre crop = x 736..1312",
+  "picks": {
+   "A": {
+    "file": "island_r8_41001.png",
+    "run": "r8",
+    "seed": 41001,
+    "hotspots": {
+     "market": [
+      500,
+      500,
+      "big timber house, inpaint to market stall"
+     ],
+     "cafe": [
+      770,
+      530,
+      "timber house, add awning + tables"
+     ],
+     "hut": [
+      1050,
+      500,
+      "small barn, centre, add 3 hives"
+     ],
+     "shop": [
+      1300,
+      480,
+      "large house with crates, add striped canopy"
+     ],
+     "hotel": [
+      1650,
+      470,
+      "small house far right, inpaint to hotel with terrace"
+     ]
+    },
+    "fixes": "castle islet (1350,200), islets (1080,180) and (1650,80), background land -> sky; grass is green, recolour to honey; waterfalls at x=560/920/1460 not off the left edge"
+   },
+   "B": {
+    "file": "island_r8_41005.png",
+    "run": "r8",
+    "seed": 41005,
+    "hotspots": {
+     "market": [
+      540,
+      520,
+      "round-roof cottage, inpaint to stall"
+     ],
+     "cafe": [
+      750,
+      520,
+      "cottage, add awning + tables"
+     ],
+     "hut": [
+      1050,
+      520,
+      "cottage with small tower, centre, add 3 hives"
+     ],
+     "shop": [
+      1330,
+      520,
+      "currently a boat, inpaint to shop"
+     ],
+     "hotel": [
+      1510,
+      440,
+      "house far right, inpaint to hotel"
+     ]
+    },
+    "fixes": "spire mountain (1230,250) -> sky/hill; islets (1390,330), (1870,260); no left waterfall; foreground flower field bottom 20% is already there (good for island_fg)"
+   },
+   "C": {
+    "file": "island_r6_41001.png",
+    "run": "r6",
+    "seed": 41001,
+    "hotspots": {
+     "market": [
+      560,
+      480,
+      "house, inpaint to stall"
+     ],
+     "cafe": [
+      700,
+      520,
+      "timber house, add awning + tables"
+     ],
+     "hut": [
+      1330,
+      340,
+      "replace the mountain with hut + hives"
+     ],
+     "shop": [
+      1480,
+      575,
+      "house, add canopy + crates"
+     ],
+     "hotel": [
+      1680,
+      505,
+      "big timber house, add terrace"
+     ]
+    },
+    "fixes": "mountain centre-right -> hut; 1536x768 only (img2img run), needs its own 2x pass; waterfall at x=600 is off the left cliff (good)"
+   },
+   "D": {
+    "file": "island_r3_41001.png",
+    "run": "r3",
+    "seed": 41001,
+    "hotspots": {
+     "market": [
+      800,
+      570,
+      "small shed, inpaint to stall"
+     ],
+     "cafe": [
+      720,
+      520,
+      "house with table at (870,560)"
+     ],
+     "hut": [
+      1190,
+      460,
+      "house, add hives"
+     ],
+     "shop": [
+      1300,
+      560,
+      "timber house, add canopy"
+     ],
+     "hotel": [
+      1200,
+      590,
+      "small house, weak; or outpaint a hill far right"
+     ]
+    },
+    "fixes": "second island with castle (1400-2048, 60-380) must go -> sky; tree islet left (300-700,250-350); no market stall position far left"
+   }
+  }
+ },
+ "cleanup": {
+  "source": "island_41002.png (r1 seed 41002, Pola's pick)",
+  "seed": 41002,
+  "method": "only-masked inpaint (padding 96, mask blur 8); text: fill=0 denoise 0.75; places: pre-painted silhouette (inpaint.py PREPAINT) then fill=original; hives: meadow restored under the mask first",
+  "order": [
+   "text",
+   "market",
+   "cafe",
+   "hives",
+   "shop",
+   "hotel"
+  ],
+  "steps": {
+   "text": {
+    "box": [
+     880,
+     20,
+     1230,
+     150
+    ],
+    "denoise": 0.75,
+    "fill": 0,
+    "prompt": "cream and peach sunset sky with soft fluffy clouds, empty sky, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour light, same style as the surrounding scene, highly detailed"
+   },
+   "market": {
+    "box": [
+     80,
+     540,
+     300,
+     680
+    ],
+    "denoise": 1.0,
+    "fill": 2,
+    "prompt": "a small wooden market stall with a red and white striped cloth roof, baskets of fruit and honey jars on the counter, standing on a flower meadow, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour light, same style as the surrounding scene, highly detailed"
+   },
+   "cafe": {
+    "box": [
+     600,
+     440,
+     900,
+     620
+    ],
+    "denoise": 0.75,
+    "fill": 1,
+    "prompt": "(a cosy little cafe building:1.3), one small timber house with a red and white striped awning over the door, two round outdoor cafe tables with chairs in front, the building fills most of the view, warm cream walls, standing on the meadow, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour light, same style as the surrounding scene, highly detailed"
+   },
+   "hives": {
+    "box": [
+     460,
+     780,
+     700,
+     890
+    ],
+    "denoise": 0.45,
+    "fill": 1,
+    "prompt": "apiary, three white painted wooden bee boxes, plain rectangular wooden crates with brown lids standing in a row on the grass, no face, still life objects, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour light, same style as the surrounding scene, highly detailed"
+   },
+   "shop": {
+    "box": [
+     1560,
+     480,
+     1870,
+     680
+    ],
+    "denoise": 0.55,
+    "fill": 1,
+    "prompt": "(a small village shop building:1.3), one small timber house with an orange and white striped canopy over the door and wooden crates of vegetables outside, the building fills most of the view, warm cream walls, standing on the meadow, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour light, same style as the surrounding scene, highly detailed"
+   },
+   "hotel": {
+    "box": [
+     1370,
+     90,
+     1700,
+     275
+    ],
+    "denoise": 0.75,
+    "fill": 1,
+    "prompt": "(a small boutique hotel:1.3), a two-storey cream-coloured building with a terracotta tiled roof, balconies and a wooden terrace with orange parasols, standing on top of a flat grassy plateau, the building fills most of the view, cel-shaded illustration, clean dark outlines, flat warm colours, light painterly shading, golden hour light, same style as the surrounding scene, highly detailed"
+   }
+  },
+  "negative": "nsfw, nude, 1girl, 1boy, people, humans, character, mascot, bee character, cartoon bee, egg, face, eyes, chibi, creature, ghost, chick, animal, wheat field, crops, pumpkins, barn, purple, text, english text, letters, signboard with writing, watermark, logo, photograph, 3D render, blurry, low quality, deformed, floating, cut off, modern, concrete",
+  "result": "pick/hero_island.png",
+  "layers": {
+   "sky": "pick/island_sky.png (layers_sky.py: polygon mask dilated 25px, gradient pre-paint, denoise 0.7)",
+   "main": "pick/island_main.png (layers_cut.py: polygon guide + colour-refined horizon, 3px feather)",
+   "fg": "pick/island_fg.png (bottom 15%, y>=870, 60px feathered top; rembg gave noise on the strip)"
+  },
+  "exports": {
+   "hero_island.webp": "2048x1024 q88",
+   "hero_island_mobile.webp": "1080x1350 from the 2x Anime6B upscale (hero_island_4096.png), crop x 250..1069 of 2048, centred between hives (570,840) and cafe (740,540)"
+  },
+  "hotspots_2048": {
+   "market": [
+    200,
+    610
+   ],
+   "cafe": [
+    750,
+    540
+   ],
+   "hut": [
+    360,
+    760
+   ],
+   "hives": [
+    575,
+    850
+   ],
+   "shop": [
+    1700,
+    600
+   ],
+   "hotel": [
+    1530,
+    200
+   ]
+  },
+  "round2": {
+   "base": "pick/step_all3.png (text removed, shop cottage kept, denoise 0.75 over pre-paint)",
+   "picks": {
+    "market": "r2_41003 (box 70,520,330,690; denoise 0.8)",
+    "cafe": "r2_41003 (box 590,420,910,620; denoise 0.82)",
+    "hives": "r3_41002 (hive huts on posts, denoise 0.6)",
+    "hotel": "r5_41003 (box 1380,80,1690,280; denoise 0.75, thatched cottage with veranda)"
+   },
+   "assembly": "regions pasted onto step_all3 with a 12px feathered box mask (assembled_partial.png + hotel)",
+   "failed": "hives at 0.8 vanish or become figures; hotel at whole-image scale dissolves into cloud, at only-masked 2x it fills the box"
+  }
+ },
+ "v3": {
+  "base": "island_41002.png + text fix from pick/step_all.png",
+  "river": "v3_river.py: cloned land pre-paint + inpaint denoise 0.6 (v3/land.png)",
+  "buildings": "v3_buildings.py: one per pass, pre-painted block, denoise 0.82, no ControlNet (reference_only made them flat); cluster pass (v3_village.py) merged into one huge building",
+  "picks": {
+   "hotel": "b_hotel_41002 (box 560,410,930,620)",
+   "store": "b_store_41002 (500,710,810,900)",
+   "coffee": "b_coffee_41002 (790,720,1100,910)",
+   "restaurant": "b_restaurant_41005 (140,460,460,640)",
+   "hut": "original"
+  },
+  "hotspots_2048": {
+   "restaurant": [
+    300,
+    560
+   ],
+   "hotel": [
+    745,
+    520
+   ],
+   "hut": [
+    360,
+    760
+   ],
+   "store": [
+    650,
+    800
+   ],
+   "coffee": [
+    940,
+    810
+   ]
+  },
+  "result": "v3/hero_island.png"
+ },
+ "v4": {
+  "note": "Fresh start from v3/base.png (seed 41002 plate, only the painted text removed; no buildings added). Replaces v3 on the landing.",
+  "plate": "v4/hero_island.png",
+  "sky": {
+   "script": "layers_sky.py v4 41002 0.7 --full",
+   "size": "2048x1536",
+   "note": "whole-canvas img2img over the plate's sky + 512 px gradient above + gradient over the land; no mask so no seams; clouds the frame cut off are finished; sun kept between the mesas"
+  },
+  "cut": "layers_cut.py v4 (land rule now caps lightness at 0.80 so the yellow sun glow is sky)",
+  "web": "public/landing/island/v4 via export_web.py v4 v4",
+  "hotspots_2048": {
+   "hut": [
+    360,
+    760
+   ],
+   "waterfall": [
+    960,
+    620
+   ],
+   "left_mesa": [
+    640,
+    330
+   ],
+   "right_mesa": [
+    1500,
+    330
+   ]
+  }
+ }
+}

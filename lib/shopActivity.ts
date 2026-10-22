@@ -61,6 +61,7 @@ export async function shopActivity(placeId: string, days: number): Promise<ShopA
   );
   const [cards] = await query<{ printed: number; claimed: number }>("SELECT COUNT(*)::int printed, COUNT(claimed_at)::int claimed FROM claim_cards WHERE place_id=$1", [placeId]);
   const [orders] = await query<{ sent: number; claimed: number }>("SELECT COUNT(*)::int sent, COUNT(claimed_at)::int claimed FROM woo_orders WHERE place_id=$1 AND status='valid'", [placeId]);
+  const [kindRow] = await query<{ kind: string }>("SELECT kind FROM stamp_places WHERE id=$1", [placeId]);
   const recent = await query<{ id: string; user_id: string; created_at: string; source: Source | null; co2_kg: number | null; plastic_items: number | null; signature: string | null }>(
     "SELECT id, user_id, created_at, source, co2_kg, plastic_items, signature FROM records WHERE place_id=$1 ORDER BY created_at DESC LIMIT 25",
     [placeId],
@@ -74,7 +75,7 @@ export async function shopActivity(placeId: string, days: number): Promise<ShopA
     recent: recent.map((r) => ({
       id: r.id, at: new Date(r.created_at).toISOString(), source: r.source ?? "qr",
       customer: hmac("shop-customer", `${placeId}:${r.user_id}`).replace(/[^A-Za-z0-9]/g, "").slice(0, 4).toUpperCase(),
-      points: pointsFor(r.source), co2Kg: r.co2_kg ?? 0, plasticItems: r.plastic_items ?? 0, signature: r.signature,
+      points: pointsFor(r.source, kindRow?.kind), co2Kg: r.co2_kg ?? 0, plasticItems: r.plastic_items ?? 0, signature: r.signature,
     })),
   };
 }

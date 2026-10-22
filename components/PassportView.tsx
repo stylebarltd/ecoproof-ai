@@ -10,7 +10,7 @@ import { LogoLockup } from "@/components/Logo";
 import BeeCard from "@/components/BeeCard";
 import { impactParts } from "@/lib/impact";
 import { milestoneLabel, RANKS, tierFor } from "@/lib/milestoneRules";
-import { POINTS_PRESENCE, POINTS_VERIFIED } from "@/lib/stampClasses";
+import { POINTS_BY_KIND, POINTS_VERIFIED } from "@/lib/stampClasses";
 import { explorerTx, nftState, progress, rankNfts } from "@/lib/passportView";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import type { Passport } from "@/lib/passport";
@@ -171,7 +171,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
           </div>
         )}
 
-        <h3 className="mb-2 text-[13px] text-sage-900">Places you&apos;ve been <span className="font-sans text-[10.5px] font-semibold">· {POINTS_PRESENCE} point each</span></h3>
+        <h3 className="mb-2 text-[13px] text-sage-900">Places you&apos;ve been <span className="font-sans text-[10.5px] font-semibold">· {POINTS_BY_KIND.cafe} to {POINTS_BY_KIND.hotel} points each, by kind of place</span></h3>
         <div className="grid grid-cols-4 gap-x-2 gap-y-3.5 md:grid-cols-6 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
           {(pass?.places ?? []).map((pl) => (
             <Link key={pl.id} href={`/c/${pl.id}`} title={pl.name} className="lift-soft flex flex-col items-center gap-1 text-center">

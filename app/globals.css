@@ -133,3 +133,85 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 
 /* Visible keyboard focus everywhere (mouse and touch focus stay unstyled). */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid #e8a317; outline-offset: 2px; }
+
+/* Landing page ("travel journal"): the design brief's tokens. Meant to restyle the app later too, so they live in the theme, not the page. */
+@theme {
+  --color-paper: #f4e9d8;
+  --color-kraft: #d9b88c;
+  --color-kraft-deep: #b8905f;
+  --color-cocoa: #3a2a1c;
+  --color-honey: #e08a2e;
+  --color-honey-deep: #b96a1d;
+  --color-terracotta: #c9704e;
+  --color-sky: #8fa9c8;
+  --color-leaf: #6f8f4e; /* only the bee's leaf patch and small success marks, never a background */
+  --font-journal-display: var(--font-fraunces), Georgia, serif;
+  --font-journal-body: var(--font-nunito), system-ui, sans-serif;
+  --font-stamp: var(--font-bebas), Impact, sans-serif;
+}
+/* The next/font variables only exist on the landing element, so the font tokens are set again here, where they can resolve (a :root token
+   that points at a variable :root doesn't have is invalid). */
+.journal {
+  --font-journal-display: var(--font-fraunces), Georgia, serif;
+  --font-journal-body: var(--font-nunito), system-ui, sans-serif;
+  --font-stamp: var(--font-bebas), Impact, sans-serif;
+  font-family: var(--font-journal-body); color: var(--color-cocoa); background: var(--color-paper);
+}
+.journal :is(h1, h2, h3) { font-family: var(--font-journal-display); font-weight: 700; letter-spacing: -0.01em; font-variation-settings: "opsz" 96; }
+/* Paper grain: a touch of noise over paper and kraft surfaces, drawn by CSS (no image). */
+.grain { position: relative; }
+.grain::before {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.04; mix-blend-mode: multiply; border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* Rubber-stamp mark: a double ring with condensed uppercase text, slightly tilted and a little worn. */
+.stamp {
+  font-family: var(--font-stamp); text-transform: uppercase; letter-spacing: 0.08em; line-height: 1;
+  border: 2.5px solid currentColor; border-radius: 9999px; outline: 1.5px dashed currentColor; outline-offset: -7px;
+  mix-blend-mode: multiply; opacity: 0.92;
+}
+/* Sticker: a paper label with a soft shadow and a white edge. */
+.sticker { border-radius: 14px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 6px 18px rgba(58, 42, 28, 0.14); outline: 3px solid rgba(255, 255, 255, 0.85); }
+/* Stitched border on feature cards. */
+.stitched { outline: 2px dashed rgba(58, 42, 28, 0.28); outline-offset: -10px; }
+.scroll-snap-x { scroll-snap-type: x mandatory; }
+.scroll-snap-x > * { scroll-snap-align: center; }
+/* Hero card fan: each card has its resting rotation (--r) and its open rotation (--ro); hovering the fan opens it. Below 1024px the rotations
+   are halved. The stamp SVGs multiply onto the paper like ink. The bee bobs gently. All motion stops under prefers-reduced-motion. */
+.fan-card { transform: rotate(var(--r)); transition: transform 300ms ease-out; }
+.hero-art:hover .fan-card { transform: rotate(var(--ro)); }
+@media (max-width: 1023px) {
+  .fan-card { transform: rotate(calc(var(--r) * 0.5)); }
+  .hero-art:hover .fan-card { transform: rotate(calc(var(--ro) * 0.5)); }
+}
+.stamp-svg { mix-blend-mode: multiply; }
+.stamp-svg text { font-family: var(--font-stamp); }
+@keyframes bee-bob { 50% { translate: 0 -3px; } }
+.bee-bob { animation: bee-bob 2s ease-in-out infinite; }
+/* Counter tiles: square rubber stamps with a number and a condensed label. */
+.stamp-tile {
+  font-family: var(--font-stamp); text-transform: uppercase; letter-spacing: 0.1em; line-height: 1;
+  border: 2.5px solid currentColor; border-radius: 14px; outline: 1.5px dashed currentColor; outline-offset: -7px; mix-blend-mode: multiply;
+}
+/* Island hero parallax (scroll-driven animation where supported, off under prefers-reduced-motion): over the first viewport of scrolling the
+   sky slides down 24vh (it starts 24vh above the section, so no gap opens), the island 9vh, while the flower strip, the copy and the bee move
+   with the page. Far things lag, near things keep up: that is the depth. */
+@supports (animation-timeline: scroll()) {
+  @keyframes island-sky-drift { to { translate: 0 24vh; } }
+  @keyframes island-main-drift { to { translate: 0 9vh; } }
+  .island-sky { animation: island-sky-drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+  .island-main { animation: island-main-drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+}
+/* Kraft hero: a faint vignette toward the edges. */
+.vignette::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(58, 42, 28, 0.12) 100%); }
+@media (prefers-reduced-motion: reduce) {
+  .fan-card, .hero-art:hover .fan-card { transition: none; transform: rotate(var(--r)); }
+  @media (max-width: 1023px) { .fan-card, .hero-art:hover .fan-card { transform: rotate(calc(var(--r) * 0.5)); } }
+  .bee-bob { animation: none; }
+  .island-sky, .island-main { animation: none; }
+}
+/* "Eco Passport" in the landing nav when this device already has stamps: leaf green (a small success mark) with a slow, soft pulse. */
+@keyframes passport-pulse { 50% { background-color: rgba(111, 143, 78, 0.16); box-shadow: 0 0 0 4px rgba(111, 143, 78, 0.12); } }
+.passport-live { animation: passport-pulse 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .passport-live { animation: none; background-color: rgba(111, 143, 78, 0.14); } }
