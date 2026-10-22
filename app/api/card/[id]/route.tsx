@@ -5,7 +5,7 @@ import { CHECK_PATH, CREAM, INK, LEAF_PATH, SAGE, TERRA_LIGHT } from "@/lib/bran
 import { listNfts, verifiedImpact } from "@/lib/milestones";
 import { rankNfts } from "@/lib/passportView";
 import { RANKS, tierFor } from "@/lib/milestoneRules";
-import { BeeCardOg, rankArt } from "@/lib/beeCardOg";
+import { BeeCardOg, cardFonts, rankArt } from "@/lib/beeCardOg";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,7 +16,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const stampImg = place ? `data:image/svg+xml;base64,${Buffer.from(stampSvg(place, { labels: false })).toString("base64")}` : null;
   const [top] = rankNfts(await listNfts(r.user_id)); // the owner's highest Bee Guardian, on the same card frame as the passport
   const rank = top ? tierFor(top.milestone) : RANKS[0];
-  const bee = <BeeCardOg rank={rank} art={await rankArt(rank.key)} size={square ? 330 : 230} serial={top?.serial} edition={top?.edition} locked={!top} impact={await verifiedImpact(r.user_id)} />;
+  const impact = await verifiedImpact(r.user_id);
+  const stamps = Number((await query<{ n: string }>("SELECT count(*)::text AS n FROM records WHERE user_id=$1", [r.user_id]))[0]?.n ?? 0);
+  const [art, fonts] = await Promise.all([rankArt(rank.key), cardFonts()]);
+  const bee = <BeeCardOg rank={rank} art={art} size={square ? 330 : 230} serial={top?.serial} edition={top?.edition} locked={!top} minted={top?.status === "minted"} impact={{ plasticItems: impact.plasticItems, co2Kg: impact.co2Kg, stamps }} />;
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: CREAM, borderRadius: 28, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700, color: INK }}>{v}</div>
@@ -63,6 +66,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         <div style={{ display: "flex", flexShrink: 0, alignItems: "center", alignSelf: "flex-start", fontSize: 26, fontWeight: 700, color: INK, background: CREAM, border: "2px solid #9945FF", borderRadius: 999, padding: "10px 24px" }}>{r.signature ? "Verified on Solana" : "Pending on-chain proof"}</div>
       </div>
     ),
-    { width: square ? 1080 : 1200, height: square ? 1080 : 630 },
+    { width: square ? 1080 : 1200, height: square ? 1080 : 630, fonts },
   );
 }

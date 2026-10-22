@@ -81,7 +81,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (`art/steps/connect/`: epicrealismXL counter scene seed 106 with a blank POS screen and card, `compose.py` warps a replica of the WordPress
   plugins page and the real demo-café QR card onto them), stamp is a screenshot from
   `../ecoproofai.stylebar.de/src/assets/screens/` (stamp collection), share is `/api/passport-card/<id>?format=square` rendered
-  locally with `APP_URL=https://ecoproof.superbee.me` for the footer. The counter strip counts plastic *items* avoided, not kg (that is what
+  locally with `APP_URL=https://ecoproof.superbee.me` for the footer (local Warden passport `DGc2…`). Share images (`lib/beeCardOg.tsx`,
+  `/api/passport-card`, `/api/card`) draw the NFT card set's frame (paper, rank-coloured rim, Caprasimo/Figtree) on kraft paper with the
+  cel-shaded rank art from `public/share/art/` (640px, from `art/v2/compositor/samples/`) and the fonts from `public/share/fonts/`
+  (static Figtree instances: the og renderer cannot read variable fonts), both traced in `next.config.ts`. The counter strip counts plastic *items* avoided, not kg (that is what
   the DB has).
 - Points by kind (`POINTS_BY_KIND` in `lib/stampClasses.ts`, decided 21 Oct 2026): a presence stamp is worth 1 at a café or restaurant,
   2 at a hotel/resort, 1 at an eco store's till; a verified purchase is 5 (online order now; in store only after a successful receipt scan,

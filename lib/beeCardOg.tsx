@@ -1,50 +1,93 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { rankImage, rankSharePng, type RankKey, type Tier } from "./milestoneRules";
-import { impactParts, type Replaces } from "./impact";
+import type { RankKey, Tier } from "./milestoneRules";
 
-// The Bee Guardian collectible card for share images (next/og), drawn to match components/BeeCard.tsx.
+// The Bee Guardian rank card for share images (next/og), drawn like the NFT card set (art/v2/layers/frame/frame.svg): a paper card with a
+// rank-coloured rim, the cel-shaded artwork in a window, the name plate, the impact row and the footer. Caprasimo (display) and Figtree (text)
+// ship in public/share/fonts (OFL); the artwork per rank in public/share/art (640px, from art/v2/compositor/samples).
 
-/**
- * The rank's artwork as a data URI, read from public/ on disk (next.config.ts traces the files into the share-image routes),
- * so a share image never depends on the server fetching its own URL. Tries the 512px PNG first, then the full one
- * (WebP is not an option: the og renderer cannot decode it). Null if neither exists: the card then shows the rank name instead.
- */
+export const CARD_INK = "#3A2A1C", CARD_PAPER = "#FBF5EA", CARD_MUTED = "#6B5843", CARD_RULE = "#D8CBB6";
+export const RANK_COLOUR: Record<RankKey, string> = { sentinel: "#A9825A", warden: "#B4703C", guardian: "#6F6B66", vanguard: "#B98535", paragon: "#D9A63A" };
+
+const pub = (p: string) => readFile(join(process.cwd(), "public", p));
+
+/** The rank's artwork as a data URI, read from public/ on disk (next.config.ts traces it into the share routes). Null if missing. */
 export async function rankArt(key: RankKey): Promise<string | null> {
-  for (const path of [rankSharePng(key), rankImage(key)]) {
-    const png = await readFile(join(process.cwd(), "public", path)).catch(() => null);
-    if (png) return `data:image/png;base64,${png.toString("base64")}`;
-  }
-  return null;
+  const png = await pub(`share/art/${key}.png`).catch(() => null);
+  return png ? `data:image/png;base64,${png.toString("base64")}` : null;
 }
 
-/** `impact`: the owner's verified-purchase totals, drawn under the rank once there are any. */
-export function BeeCardOg({ rank, art, size, serial, edition, locked, impact }: { rank: Tier; art: string | null; size: number; serial?: number; edition?: number; locked?: boolean; impact?: { plasticItems: number; co2Kg: number; replaces?: Replaces[] } }) {
-  const proven = !locked && impact ? impactParts(impact, 1) : []; // one kind of item on the card, it is small
-  const k = size / 360;
-  const label = serial ? `${rank.key === "paragon" && edition ? `Ed. ${edition} · ` : ""}#${String(serial).padStart(4, "0")}` : "";
+/** The card fonts for ImageResponse: Caprasimo, Figtree regular and bold (static instances of the variable font; the renderer cannot read
+ *  variable fonts). */
+export async function cardFonts() {
+  const [caprasimo, figtree, figtreeBold] = await Promise.all([pub("share/fonts/Caprasimo-Regular.ttf"), pub("share/fonts/Figtree-Regular.ttf"), pub("share/fonts/Figtree-Bold.ttf")]);
+  return [
+    { name: "Caprasimo", data: caprasimo, weight: 400 as const, style: "normal" as const },
+    { name: "Figtree", data: figtree, weight: 400 as const, style: "normal" as const },
+    { name: "Figtree", data: figtreeBold, weight: 700 as const, style: "normal" as const },
+  ];
+}
+
+const nf = (n: number, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+
+type Props = {
+  rank: Tier;
+  art: string | null;
+  /** Card width in px; the height follows the NFT card's 1024x1434. */
+  size: number;
+  serial?: number;
+  edition?: number;
+  locked?: boolean;
+  /** Whether the Bee Guardian is on Solana already (else it is earned and waiting for its mint). */
+  minted?: boolean;
+  /** The owner's totals, drawn in the impact row. */
+  impact: { plasticItems: number; co2Kg: number; stamps: number };
+};
+
+export function BeeCardOg({ rank, art, size, serial, edition, locked, minted, impact }: Props) {
+  const k = size / 1024;
+  const colour = locked ? CARD_RULE : RANK_COLOUR[rank.key];
+  const serialText = serial ? `${rank.key === "paragon" && edition ? `Ed. ${edition} · ` : ""}#${serial}` : "";
+  const subtitle = `RANK CARD · ${rank.at}${rank.key === "paragon" ? "+" : ""} POINT${rank.at === 1 ? "" : "S"}`;
+  const stat = (value: string, label: string) => (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+      <div style={{ display: "flex", fontWeight: 700, fontSize: 46 * k, color: CARD_INK, lineHeight: 1 }}>{value}</div>
+      <div style={{ display: "flex", fontSize: 23 * k, color: CARD_MUTED, marginTop: 8 * k }}>{label}</div>
+    </div>
+  );
+  const rule = (w: number, c: string) => <div style={{ display: "flex", height: w * k, background: c, borderRadius: 999 }} />;
   return (
-    <div style={{ display: "flex", padding: 4 * k, borderRadius: 30 * k, background: "linear-gradient(135deg,#f7d27a,#a86f00 22%,#f0b93e 38%,#9be7d8 50%,#c9a0ff 58%,#f0b93e 70%,#7a5200 86%,#f7d27a)", boxShadow: "0 16px 40px rgba(0,0,0,0.35)" }}>
-      <div style={{ display: "flex", flexDirection: "column", width: size, padding: 16 * k, borderRadius: 26 * k, color: "#f6f1e4", background: "radial-gradient(circle at 50% 40%, rgba(247,210,122,0.30), rgba(247,210,122,0) 62%), linear-gradient(160deg,#1d2416,#2c361f 55%,#14180e)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 18 * k, fontWeight: 800, color: "#f7d27a", letterSpacing: 1 }}>
-          <div style={{ display: "flex" }}>{`TIER ${rank.tier}`}</div>
-          <div style={{ display: "flex", color: "#dcebc4" }}>{label}</div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: size - 32 * k, height: size - 32 * k }}>
+    <div style={{ display: "flex", width: size, height: 1434 * k, padding: 16 * k, borderRadius: 40 * k, background: colour, boxShadow: `0 ${18 * k}px ${40 * k}px rgba(58,42,28,0.28)` }}>
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, padding: 20 * k, borderRadius: 32 * k, border: `${4 * k}px solid ${CARD_INK}`, background: CARD_PAPER, color: CARD_INK, fontFamily: "Figtree" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 952 * k, height: 952 * k, borderRadius: 28 * k, border: `${6 * k}px solid ${CARD_INK}`, background: "#E9E2D4", overflow: "hidden" }}>
           {art ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={art} width={size - 40 * k} height={size - 40 * k} alt="" style={{ opacity: locked ? 0.3 : 1 }} />
+            <img src={art} width={940 * k} height={940 * k} alt="" style={{ opacity: locked ? 0.3 : 1 }} />
           ) : (
-            <div style={{ display: "flex", fontSize: 54 * k, fontWeight: 800, color: "#f7d27a" }}>{rank.name}</div>
+            <div style={{ display: "flex", fontFamily: "Caprasimo", fontSize: 90 * k, color: colour }}>{rank.name}</div>
           )}
         </div>
-        <div style={{ display: "flex", justifyContent: "center", fontSize: 34 * k, fontWeight: 800 }}>{rank.name}</div>
-        {proven.length ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: `${4 * k}px 0`, fontSize: 17 * k, lineHeight: 1.3, fontWeight: 700, color: "#dcebc4" }}>
-            {proven.map((line) => <div key={line} style={{ display: "flex", justifyContent: "center", textAlign: "center" }}>{line}</div>)}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: 44 * k }}>
+          <div style={{ display: "flex", fontFamily: "Caprasimo", fontSize: 86 * k, lineHeight: 1 }}>{rank.name}</div>
+          <div style={{ display: "flex", fontWeight: 700, fontSize: 58 * k, lineHeight: 1, color: colour }}>{serialText}</div>
+        </div>
+        <div style={{ display: "flex", fontWeight: 700, fontSize: 25 * k, letterSpacing: 3 * k, color: CARD_MUTED, marginTop: 16 * k }}>{subtitle}</div>
+        <div style={{ display: "flex", marginTop: 20 * k }}>{rule(3, CARD_INK)}</div>
+        <div style={{ display: "flex", alignItems: "center", marginTop: 26 * k }}>
+          {stat(nf(impact.plasticItems), "plastic items avoided")}
+          <div style={{ display: "flex", width: 2 * k, height: 76 * k, background: CARD_RULE }} />
+          {stat(`${nf(impact.co2Kg, impact.co2Kg >= 100 ? 0 : 1)} kg`, "CO₂e avoided")}
+          <div style={{ display: "flex", width: 2 * k, height: 76 * k, background: CARD_RULE }} />
+          {stat(nf(impact.stamps), impact.stamps === 1 ? "stamp" : "stamps")}
+        </div>
+        <div style={{ display: "flex", marginTop: 30 * k }}>{rule(2, CARD_RULE)}</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", fontWeight: 700, fontSize: 30 * k, color: CARD_INK }}>{locked ? `Unlocks at ${rank.at} point${rank.at === 1 ? "" : "s"}` : "Soulbound Bee Guardian"}</div>
+            <div style={{ display: "flex", fontSize: 23 * k, color: CARD_MUTED, marginTop: 6 * k }}>{locked ? "Collect stamps to earn it" : minted ? "Minted on Solana" : "Earned · minting on Solana"}</div>
           </div>
-        ) : null}
-        <div style={{ display: "flex", justifyContent: "center", fontSize: 17 * k, fontWeight: 700, color: "#f7d27a" }}>{locked ? `Unlocks at ${rank.at} point${rank.at === 1 ? "" : "s"}` : "Soulbound Bee Guardian · on Solana"}</div>
+          <div style={{ display: "flex", fontFamily: "Caprasimo", fontSize: 34 * k, color: colour }}>EcoProof</div>
+        </div>
       </div>
     </div>
   );
