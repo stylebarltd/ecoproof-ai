@@ -70,9 +70,9 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   leaf green and pulses when the device already has stamps, `components/landing/PassportNavLink.tsx`). App routes sit in the `app/(app)` route group,
   whose layout is the chrome (`components/AppShell.tsx`); the landing has its own nav. Art is one language, the cel-shaded NFT card set. The hero is the
   island world (`components/landing/IslandHero.tsx`, `NEXT_PUBLIC_LANDING_HERO=island`, default): seed 41002 plate from `art/v2/island/`
-  (same Illustrious checkpoint as the cards), split into sky / island / flower-strip layers (`layers_sky.py`, `layers_cut.py`, `export_web.py
-  <folder> <ver>` → `public/landing/island/<ver>/`, a new folder per plate so caches bust; current `v4`) with a scroll-driven CSS parallax; the
-  copy sits in the sky and the Bee Guardian cutout (`public/landing/bee.webp`, from `art/v2/ranks/sentinel/sentinel_card.png`) peeks in. The
+  (same Illustrious checkpoint as the cards), as two static images: the plate's own sky extended upward (`sky_static.py`) behind the copy, and
+  the island cutout (`layers_cut.py`) under it; `export_web.py <folder> <ver>` → `public/landing/island/<ver>/`, a new folder per plate so
+  caches bust; current `v4`. A scroll parallax was tried and dropped (not seen as moving, blurred the strip). The Bee Guardian cutout (`public/landing/bee.webp`, from `art/v2/ranks/sentinel/sentinel_card.png`) peeks in. The
   card-fan hero (`components/landing/HeroArt.tsx`, `public/landing/cards/*.webp`, 2x of 300x420, from `art/v2/compositor/samples/`, SVG stamp
   rings) stays behind `NEXT_PUBLIC_LANDING_HERO=cards`. Paper grain and stamps are CSS. Buildings inpainted onto the island (`inpaint.py`,
   `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the four owner-door spots

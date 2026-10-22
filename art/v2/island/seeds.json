@@ -535,12 +535,12 @@
   "result": "v3/hero_island.png"
  },
  "v4": {
-  "note": "Fresh start from v3/base.png (seed 41002 plate, only the painted text removed; no buildings added). Replaces v3 on the landing.",
+  "note": "Fresh start from v3/base.png (seed 41002 plate, only the painted text removed; no buildings added). Replaces v3 on the landing. Static hero (no parallax) since 22 Oct 2026.",
   "plate": "v4/hero_island.png",
   "sky": {
-   "script": "layers_sky.py v4 41002 0.7 --full",
+   "script": "sky_static.py v4",
    "size": "2048x1536",
-   "note": "whole-canvas img2img over the plate's sky + 512 px gradient above + gradient over the land; no mask so no seams; clouds the frame cut off are finished; sun kept between the mesas"
+   "note": "static: the plate's own sky, 512 px gradient above, top 120 rows faded into haze so cut clouds dissolve; land region blurred. The SD whole-canvas sky (layers_sky.py v4 41002 0.7 --full, kept as v4/island_sky_sd.png) was rejected: brownish cloud mass in the middle."
   },
   "cut": "layers_cut.py v4 (land rule now caps lightness at 0.80 so the yellow sun glow is sky)",
   "web": "public/landing/island/v4 via export_web.py v4 v4",
