@@ -78,8 +78,8 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the four owner-door spots
   (`public/landing/doors/`, picked from `art/doors/`: coffee/restaurant seed 2070966653, hotel 826490947, store 1172946982; epicrealismXL via the local A1111 API) and partner logos (`public/landing/partners/`, from
   `art/partner/`) stay. How-it-works step images `public/landing/steps/`: connect is a photoreal composite
-  (`art/steps/connect/`: epicrealismXL counter scene seed 106 with a blank POS screen and card, `compose.py` warps a replica of the WordPress
-  plugins page and the real demo-café QR card onto them), stamp is a screenshot from
+  (`art/steps/connect/`: epicrealismXL counter scene seed 105 with a blank card stand, `compose2.py 105` warps the real demo-café QR card
+  onto it; `compose2.py 103` is the alternative with a replica of the WordPress plugins page on a tablet POS plus the card), stamp is a screenshot from
   `../ecoproofai.stylebar.de/src/assets/screens/` (stamp collection), share is `/api/passport-card/<id>?format=square` rendered
   locally with `APP_URL=https://ecoproof.superbee.me` for the footer (local Warden passport `DGc2…`). Share images (`lib/beeCardOg.tsx`,
   `/api/passport-card`, `/api/card`) draw the NFT card set's frame (paper, rank-coloured rim, Caprasimo/Figtree) on kraft paper with the

@@ -1,41 +1,7 @@
 {
- "scene": "r1_106.png",
- "screen": [
-  [
-   177,
-   526
-  ],
-  [
-   524,
-   500
-  ],
-  [
-   538,
-   757
-  ],
-  [
-   205,
-   788
-  ]
- ],
- "card": [
-  [
-   591,
-   853
-  ],
-  [
-   750,
-   835
-  ],
-  [
-   828,
-   902
-  ],
-  [
-   670,
-   932
-  ]
- ],
- "screen_page": "wp_plugins_fit.png",
- "card_art": "card.png"
+ "live": "connect_105.png (compose2.py 105)",
+ "alternatives": [
+  "connect_103.png (compose2.py 103: plugins page + card)",
+  "connect_composite.png (compose.py, seed 106)"
+ ]
 }
