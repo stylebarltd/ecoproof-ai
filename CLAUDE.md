@@ -91,6 +91,12 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   so receipt scanning must land as a verified-class source). `pointsFor(source, kind)` everywhere; the passport query joins the place's kind.
   Recomputed on read, so old stamps follow today's table. The landing shows three doors: Café / Restaurant (one door, a small café/restaurant
   switch is planned), Hotel / Resort, Eco store.
+- Rank personas (decided 22 Oct 2026): five different bees, one per rank, in `art/v2/ranks/personas/` (img2img from the former Sentinel card at
+  denoise 0.72 to 0.78, `gen2.py`; ladder, prompts and seeds in its `seeds.json`; chosen renders `pick/<rank>.png`, hue-keyed card masters via `cards.py`).
+  Sentinel is the young hooded bee (peace sign), Warden the former Sentinel (thumbs up), Guardian goggles (high five), Vanguard bandana (fist pump),
+  Paragon spectacles and staff. Renders carry no badges or items (the compositor adds them), no visible abdomen, natural antennae, fuzzy ink arm bands,
+  a fuzz head edge with no outline. Live cards: `art/v2/ranks/<rank>/<rank>_card.png` (old ones kept as `_prev`); `node art/v2/compositor/samples.mjs`
+  re-renders the sample cards. `art/v2/ranks`, `layers` and `compositor` are not in git (300 MB of renders); only `personas/pick` and the scripts are.
 - Declarations: `place_practices` is the owner's private draft. "Publish…" (warning sheet, at
   most once a day, refused if unchanged) freezes it into `practice_declarations` (versions, never
   edited) and writes its SHA-256 to Solana (memo + claim account keyed on its id,
