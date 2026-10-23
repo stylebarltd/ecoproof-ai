@@ -75,8 +75,9 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   caches bust; current `v4`. A scroll parallax was tried and dropped (not seen as moving, blurred the strip). The Bee Guardian cutout (`public/landing/bee.webp`, from `art/v2/ranks/sentinel/sentinel_card.png`) peeks in. The
   card-fan hero (`components/landing/HeroArt.tsx`, `public/landing/cards/*.webp`, 2x of 300x420, from `art/v2/compositor/samples/`, SVG stamp
   rings) stays behind `NEXT_PUBLIC_LANDING_HERO=cards`. Paper grain and stamps are CSS. Buildings inpainted onto the island (`inpaint.py`,
-  `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the four owner-door spots
-  (`public/landing/doors/`, picked from `art/doors/`: coffee/restaurant seed 2070966653, hotel 826490947, store 1172946982; epicrealismXL via the local A1111 API) and partner logos (`public/landing/partners/`, from
+  `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the three owner-door photos
+  (`public/landing/doors/`, from `art/doors/v2/`: epicrealismXL scenes with blank surfaces, `gen.py`, restaurant seed 202, hotel 211, store 203 with the hand repainted off the
+  screen by `inpaint_hand.py` seed 306; `compose.py` prints the real QR card, the SuperBee receipt and the EcoProof screen from `assets.mjs` onto them; the café tile uses `coffee.webp`) and partner logos (`public/landing/partners/`, from
   `art/partner/`) stay. How-it-works step images `public/landing/steps/`: connect is a photoreal composite
   (`art/steps/connect/`: epicrealismXL counter scene seed 105 with a blank card stand, `compose2.py 105` warps the real demo-café QR card
   onto it; `compose2.py 103` is the alternative with a replica of the WordPress plugins page on a tablet POS plus the card), stamp is a screenshot from

@@ -1,0 +1,266 @@
+{
+ "restaurant_201.png": {
+  "scene": "restaurant",
+  "seed": 201,
+  "prompt": "photo taken from behind a restaurant counter, the cashier's point of view looking out across a warm cosy Thai restaurant dining room with wooden tables, rattan lamps and potted plants, guests softly out of focus in the background, on the wooden counter in the foreground a small white acrylic table-top sign holder with a plain blank white card standing upright facing the guests, a ceramic bowl, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "restaurant_202.png": {
+  "scene": "restaurant",
+  "seed": 202,
+  "prompt": "photo taken from behind a restaurant counter, the cashier's point of view looking out across a warm cosy Thai restaurant dining room with wooden tables, rattan lamps and potted plants, guests softly out of focus in the background, on the wooden counter in the foreground a small white acrylic table-top sign holder with a plain blank white card standing upright facing the guests, a ceramic bowl, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "restaurant_203.png": {
+  "scene": "restaurant",
+  "seed": 203,
+  "prompt": "photo taken from behind a restaurant counter, the cashier's point of view looking out across a warm cosy Thai restaurant dining room with wooden tables, rattan lamps and potted plants, guests softly out of focus in the background, on the wooden counter in the foreground a small white acrylic table-top sign holder with a plain blank white card standing upright facing the guests, a ceramic bowl, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "restaurant_204.png": {
+  "scene": "restaurant",
+  "seed": 204,
+  "prompt": "photo taken from behind a restaurant counter, the cashier's point of view looking out across a warm cosy Thai restaurant dining room with wooden tables, rattan lamps and potted plants, guests softly out of focus in the background, on the wooden counter in the foreground a small white acrylic table-top sign holder with a plain blank white card standing upright facing the guests, a ceramic bowl, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "restaurant_205.png": {
+  "scene": "restaurant",
+  "seed": 205,
+  "prompt": "photo taken from behind a restaurant counter, the cashier's point of view looking out across a warm cosy Thai restaurant dining room with wooden tables, rattan lamps and potted plants, guests softly out of focus in the background, on the wooden counter in the foreground a small white acrylic table-top sign holder with a plain blank white card standing upright facing the guests, a ceramic bowl, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "restaurant_206.png": {
+  "scene": "restaurant",
+  "seed": 206,
+  "prompt": "photo taken from behind a restaurant counter, the cashier's point of view looking out across a warm cosy Thai restaurant dining room with wooden tables, rattan lamps and potted plants, guests softly out of focus in the background, on the wooden counter in the foreground a small white acrylic table-top sign holder with a plain blank white card standing upright facing the guests, a ceramic bowl, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_201.png": {
+  "scene": "hotel",
+  "seed": 201,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak wood furniture, a bed with crisp white linen, a large window with a green garden view, in the foreground on a wooden bedside table a small white acrylic table-top sign holder with a plain blank white card standing upright, a ceramic carafe and a glass, a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_202.png": {
+  "scene": "hotel",
+  "seed": 202,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak wood furniture, a bed with crisp white linen, a large window with a green garden view, in the foreground on a wooden bedside table a small white acrylic table-top sign holder with a plain blank white card standing upright, a ceramic carafe and a glass, a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_203.png": {
+  "scene": "hotel",
+  "seed": 203,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak wood furniture, a bed with crisp white linen, a large window with a green garden view, in the foreground on a wooden bedside table a small white acrylic table-top sign holder with a plain blank white card standing upright, a ceramic carafe and a glass, a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_204.png": {
+  "scene": "hotel",
+  "seed": 204,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak wood furniture, a bed with crisp white linen, a large window with a green garden view, in the foreground on a wooden bedside table a small white acrylic table-top sign holder with a plain blank white card standing upright, a ceramic carafe and a glass, a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_205.png": {
+  "scene": "hotel",
+  "seed": 205,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak wood furniture, a bed with crisp white linen, a large window with a green garden view, in the foreground on a wooden bedside table a small white acrylic table-top sign holder with a plain blank white card standing upright, a ceramic carafe and a glass, a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_206.png": {
+  "scene": "hotel",
+  "seed": 206,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak wood furniture, a bed with crisp white linen, a large window with a green garden view, in the foreground on a wooden bedside table a small white acrylic table-top sign holder with a plain blank white card standing upright, a ceramic carafe and a glass, a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_201.png": {
+  "scene": "store",
+  "seed": 201,
+  "prompt": "close-up photo at the wooden counter of a small zero-waste eco shop, a hand holding a smartphone flat above a printed paper shop receipt lying on the counter, the phone screen plain white and blank, behind it glass refill jars, beeswax food wraps and a cotton tote bag softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_202.png": {
+  "scene": "store",
+  "seed": 202,
+  "prompt": "close-up photo at the wooden counter of a small zero-waste eco shop, a hand holding a smartphone flat above a printed paper shop receipt lying on the counter, the phone screen plain white and blank, behind it glass refill jars, beeswax food wraps and a cotton tote bag softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203.png": {
+  "scene": "store",
+  "seed": 203,
+  "prompt": "close-up photo at the wooden counter of a small zero-waste eco shop, a hand holding a smartphone flat above a printed paper shop receipt lying on the counter, the phone screen plain white and blank, behind it glass refill jars, beeswax food wraps and a cotton tote bag softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_204.png": {
+  "scene": "store",
+  "seed": 204,
+  "prompt": "close-up photo at the wooden counter of a small zero-waste eco shop, a hand holding a smartphone flat above a printed paper shop receipt lying on the counter, the phone screen plain white and blank, behind it glass refill jars, beeswax food wraps and a cotton tote bag softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_205.png": {
+  "scene": "store",
+  "seed": 205,
+  "prompt": "close-up photo at the wooden counter of a small zero-waste eco shop, a hand holding a smartphone flat above a printed paper shop receipt lying on the counter, the phone screen plain white and blank, behind it glass refill jars, beeswax food wraps and a cotton tote bag softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_206.png": {
+  "scene": "store",
+  "seed": 206,
+  "prompt": "close-up photo at the wooden counter of a small zero-waste eco shop, a hand holding a smartphone flat above a printed paper shop receipt lying on the counter, the phone screen plain white and blank, behind it glass refill jars, beeswax food wraps and a cotton tote bag softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_211.png": {
+  "scene": "hotel",
+  "seed": 211,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak furniture, a bed with crisp white linen, a window with a green garden view softly out of focus, in the sharp foreground on a wooden bedside table a single plain blank white folded tent card standing upright facing the camera, next to it a ceramic carafe, a glass and a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_212.png": {
+  "scene": "hotel",
+  "seed": 212,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak furniture, a bed with crisp white linen, a window with a green garden view softly out of focus, in the sharp foreground on a wooden bedside table a single plain blank white folded tent card standing upright facing the camera, next to it a ceramic carafe, a glass and a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_213.png": {
+  "scene": "hotel",
+  "seed": 213,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak furniture, a bed with crisp white linen, a window with a green garden view softly out of focus, in the sharp foreground on a wooden bedside table a single plain blank white folded tent card standing upright facing the camera, next to it a ceramic carafe, a glass and a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_214.png": {
+  "scene": "hotel",
+  "seed": 214,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak furniture, a bed with crisp white linen, a window with a green garden view softly out of focus, in the sharp foreground on a wooden bedside table a single plain blank white folded tent card standing upright facing the camera, next to it a ceramic carafe, a glass and a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_215.png": {
+  "scene": "hotel",
+  "seed": 215,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak furniture, a bed with crisp white linen, a window with a green garden view softly out of focus, in the sharp foreground on a wooden bedside table a single plain blank white folded tent card standing upright facing the camera, next to it a ceramic carafe, a glass and a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "hotel_216.png": {
+  "scene": "hotel",
+  "seed": 216,
+  "prompt": "photo of a calm boutique resort hotel room in northern Thailand, teak furniture, a bed with crisp white linen, a window with a green garden view softly out of focus, in the sharp foreground on a wooden bedside table a single plain blank white folded tent card standing upright facing the camera, next to it a ceramic carafe, a glass and a small plant, soft morning light, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, user interface, screen content, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, extra fingers, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_301.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 301,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_302.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 302,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_303.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 303,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_304.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 304,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_305.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 305,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_306.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 306,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_307.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 307,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "store_203_hand_308.png": {
+  "scene": "store inpaint",
+  "from": "store_203.png",
+  "seed": 308,
+  "prompt": "close-up photo, a hand holding a black smartphone by its side edges with the thumb on the bezel, the phone screen fully visible and plain white, nothing covering the screen, over a wooden shop counter, natural light, photorealistic, editorial photography, high detail",
+  "negative": "fingers on the screen, thumb on the screen, text, letters, logo, user interface, screen content, extra fingers, deformed hand, cartoon, illustration, blurry, low quality",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "img2img inpaint, mask store_203_mask.png, blur 8, fill original, only masked pad 96, denoise 0.85, steps 30 cfg 6 DPM++ 2M karras"
+ }
+}
