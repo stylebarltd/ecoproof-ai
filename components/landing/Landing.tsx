@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Check, Hash, Link2, Plug, Share2, Stamp, X } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import CopySnippet from "@/components/landing/CopySnippet";
+import StampJourney from "@/components/landing/StampJourney";
 import HeroArt from "@/components/landing/HeroArt";
 import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
@@ -10,7 +11,8 @@ import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
 import { demoPassportHref, PRICING } from "@/lib/landingContent";
 import { badgeEmbed, badgeSvg } from "@/lib/badge";
-import { proofMemo } from "@/lib/solana";
+import QRCode from "qrcode";
+import { appUrl } from "@/lib/nft";
 import type { LandingRecord, LandingStats } from "@/lib/landingStats";
 import { RANKS } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
@@ -137,34 +139,40 @@ function RecordCard({ r }: { r: LandingRecord }) {
   );
 }
 
-/** How a stamp lands on Solana, in four tiles with the newest real record's own data: the record, its SHA-256, the memo transaction and
- *  claim account, and the check anyone can run. Without a record yet, the tiles show the shapes. */
-function ChainFlow({ r }: { r: LandingRecord | null }) {
-  const hash = r?.hash ?? "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
-  const Mono = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => <p className={`mt-2 break-all font-mono text-[11.5px] leading-[1.5] text-cocoa/80 ${className}`}>{children}</p>;
-  const tiles = [
-    { n: 1, title: "The record", body: "One stamp is one small record: who sold, what was bought, what it saved, and when.", mono: r
-        ? <>{"{ merchant: "}&quot;{r.merchant}&quot;{", items: ["}{r.items.slice(0, 2).map((it) => `${it.quantity}× ${it.name.length > 22 ? it.name.slice(0, 21) + "…" : it.name}`).join(", ")}{r.items.length > 2 ? ", …" : ""}{"], impact: { plasticItems: "}{r.plasticItems}{", co2Kg: "}{r.co2Kg}{" }, createdAt: "}&quot;{r.date.slice(0, 19)}Z&quot;{" }"}</>
-        : <>{"{ merchant, items, impact, createdAt }"}</> },
-    { n: 2, title: "Its fingerprint", body: "The record is hashed with SHA-256. Change one character of the record and the fingerprint is a different number.", mono: <>sha256 → {hash}</> },
-    { n: 3, title: "Written to Solana", body: "The fingerprint goes on-chain as a memo in a transaction, plus a claim account for the order, so the same order can never be stamped twice.", mono: r
-        ? <>memo &quot;{proofMemo(hash).slice(0, 36)}…&quot;<br />tx <a href={r.txUrl} target="_blank" rel="noopener" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">{r.signature.slice(0, 14)}…</a>{r.claimUrl && <> · claim <a href={r.claimUrl} target="_blank" rel="noopener" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">account</a></>}</>
-        : <>memo &quot;EcoProof AI proof v1: &lt;hash&gt;&quot;<br />tx &lt;signature&gt; · claim &lt;account&gt;</> },
-    { n: 4, title: "Anyone checks", body: "Recompute the fingerprint from the record, read the memo back from Solana, compare. No EcoProof needed in between.", mono: <>sha256(record) == memo ? <b className="font-sans font-extrabold text-leaf">verified</b> : <b className="font-sans font-extrabold text-terracotta">altered</b><br /><a href="#proof" className="font-sans font-bold underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">That is what the button above does</a></> },
-  ];
+/** How a stamp lands on Solana, told the way a customer meets it: the QR in the order email, the phone working through its steps
+ *  (StampJourney, a replay of the real claim screen), and the stamp staying checkable. The newest real record supplies the order. */
+const Cap = ({ children }: { children: React.ReactNode }) => <p className="mb-3 font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/60">{children}</p>;
+function Journey({ r, qr }: { r: LandingRecord | null; qr: string }) {
+  const link = "font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey";
   return (
-    <ol className="mt-8 grid gap-3 md:grid-cols-4 md:gap-0" aria-label="How a stamp lands on Solana">
-      {tiles.map((t, i) => (
-        <li key={t.n} className="relative flex">
-          <div className="sticker grain flex-1 rounded-[16px] bg-paper p-4 ring-1 ring-cocoa/10 md:mr-7">
-            <p className="flex items-center gap-2"><span className="stamp flex h-8 w-8 items-center justify-center text-[15px] text-sky">{t.n}</span><span className="text-[16px] font-extrabold">{t.title}</span></p>
-            <p className="mt-2 text-[13.5px] leading-[1.5] text-cocoa/80">{t.body}</p>
-            <Mono>{t.mono}</Mono>
+    <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-start md:gap-6 lg:gap-10">
+      <div className="md:mt-20">
+        <Cap>1 · The QR in your order email</Cap>
+        <div className="sticker grain rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10">
+          <p className="text-[12.5px] font-bold text-cocoa/55">{r ? r.merchant : "Your shop"} · Your order is on its way</p>
+          <p className="mt-2 text-[16px] font-extrabold leading-snug">Thank you for choosing plastic-free.</p>
+          <div className="mt-3 flex items-center gap-4">
+            <div className="h-[104px] w-[104px] shrink-0 [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
+            <p className="text-[13.5px] leading-snug text-cocoa/80"><b className="font-extrabold">Collect your eco stamp.</b> Point your phone camera at the code. No app, no account.</p>
           </div>
-          {i < tiles.length - 1 && <ArrowRight size={22} className="absolute -bottom-0.5 left-1/2 hidden -translate-x-1/2 text-honey-deep md:static md:top-1/2 md:block md:-ml-5 md:-mt-3 md:translate-x-0 md:self-center" aria-hidden />}
-        </li>
-      ))}
-    </ol>
+        </div>
+        <p className="mt-2 text-[12.5px] font-bold text-cocoa/55">This code works: it opens our demo café.</p>
+      </div>
+      <div>
+        <Cap>2 · A few seconds on your phone</Cap>
+        <StampJourney r={r} />
+      </div>
+      <div className="md:mt-20">
+        <Cap>3 · And it stays that way</Cap>
+        <div className="sticker grain rounded-[16px] bg-kraft/60 p-5">
+          <p className="text-[16px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
+          <p className="mt-2 text-[13.5px] leading-[1.55] text-cocoa/80">Our database holds the order. Solana holds its fingerprint, a number computed from the order. If anyone changed the order later, even us, the two would stop matching, and the check fails.</p>
+          <p className="mt-3 text-[13.5px]">
+            {r ? <><a href={r.txUrl} target="_blank" rel="noopener" className={link}>See this stamp on Solana</a> · <a href="#proof" className={link}>check it yourself</a></> : <a href="#proof" className={link}>Check one yourself</a>}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -200,7 +208,9 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
  *  bee). Set NEXT_PUBLIC_LANDING_HERO to switch; the copy is the same in both. */
 const HERO = (process.env.NEXT_PUBLIC_LANDING_HERO ?? "island") as "island" | "cards";
 
-export default function Landing({ stats }: { stats: LandingStats | null }) {
+export default async function Landing({ stats }: { stats: LandingStats | null }) {
+  // The QR in the "order email" picture: a real code that opens the demo café, so a reader can try it from the page
+  const qr = await QRCode.toString(`${appUrl()}/c/demo-cafe?src=qr`, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#3a2a1c", light: "#0000" } });
   // The three owner doors (images in public/landing/doors; cafés and restaurants share one door, a small café/restaurant switch is planned):
   // how their customers collect a stamp, what each side gets, and setup. An eco store sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
@@ -386,8 +396,8 @@ export default function Landing({ stats }: { stats: LandingStats | null }) {
       <Section id="why-chain" className="py-12 lg:py-20">
         <Eyebrow>Why blockchain</Eyebrow>
         <H2>Why put a coffee stamp on Solana?</H2>
-        <Lead>Because a claim you can only check by trusting us is still a claim. A proof has to hold up without us. This is what happens to every stamp, in the four seconds after it is made:</Lead>
-        <ChainFlow r={stats?.record ?? null} />
+        <Lead>Because a claim you can only check by trusting us is still a claim. A proof has to hold up without us. This is what happens in the seconds after you scan the QR in your order email:</Lead>
+        <Journey r={stats?.record ?? null} qr={qr} />
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-14">
           <div>
             <ul className="space-y-4 text-[15.5px] leading-[1.6]">
