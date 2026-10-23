@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Hash, Link2, Plug, Share2, Stamp, X } from "lucide-react";
+import { ArrowRight, Check, Link2, Plug, Share2, Stamp } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import CopySnippet from "@/components/landing/CopySnippet";
 import StampJourney from "@/components/landing/StampJourney";
@@ -144,30 +144,39 @@ function RecordCard({ r }: { r: LandingRecord }) {
 const Cap = ({ children }: { children: React.ReactNode }) => <p className="mb-3 font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/60">{children}</p>;
 function Journey({ r, qr }: { r: LandingRecord | null; qr: string }) {
   const link = "font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey";
+  const promises = [
+    "Nobody can edit it later, not even us.",
+    "The same order can never become a second stamp.",
+    "Only a fingerprint goes on the chain. Never a name, an email or what you bought.",
+    "No wallet, no coins. We pay the fee, a fraction of a satang.",
+    "Still readable if EcoProof closed tomorrow.",
+  ];
   return (
-    <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-start md:gap-6 lg:gap-10">
-      <div className="md:mt-20">
+    <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-stretch md:gap-6 lg:gap-10">
+      <div className="flex flex-col">
         <Cap>1 · The QR in your order email</Cap>
-        <div className="sticker grain rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10">
+        <div className="sticker grain flex flex-1 flex-col justify-center rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10">
           <p className="text-[12.5px] font-bold text-cocoa/55">{r ? r.merchant : "Your shop"} · Your order is on its way</p>
-          <p className="mt-2 text-[16px] font-extrabold leading-snug">Thank you for choosing plastic-free.</p>
-          <div className="mt-3 flex items-center gap-4">
-            <div className="h-[104px] w-[104px] shrink-0 [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
-            <p className="text-[13.5px] leading-snug text-cocoa/80"><b className="font-extrabold">Collect your eco stamp.</b> Point your phone camera at the code. No app, no account.</p>
+          <p className="mt-2 text-[18px] font-extrabold leading-snug">Thank you for choosing plastic-free.</p>
+          <div className="mt-4 flex items-center gap-5">
+            <div className="h-[140px] w-[140px] shrink-0 [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
+            <p className="text-[15px] leading-snug text-cocoa/80"><b className="font-extrabold">Collect your eco stamp.</b> Point your phone camera at the code. No app, no account.</p>
           </div>
+          <p className="mt-5 text-[13px] font-bold text-cocoa/55">This code works: it opens our demo café.</p>
         </div>
-        <p className="mt-2 text-[12.5px] font-bold text-cocoa/55">This code works: it opens our demo café.</p>
       </div>
-      <div>
+      <div className="flex flex-col">
         <Cap>2 · A few seconds on your phone</Cap>
         <StampJourney r={r} />
       </div>
-      <div className="md:mt-20">
+      <div className="flex flex-col">
         <Cap>3 · And it stays that way</Cap>
-        <div className="sticker grain rounded-[16px] bg-kraft/60 p-5">
-          <p className="text-[16px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
-          <p className="mt-2 text-[13.5px] leading-[1.55] text-cocoa/80">Our database holds the order. Solana holds its fingerprint, a number computed from the order. If anyone changed the order later, even us, the two would stop matching, and the check fails.</p>
-          <p className="mt-3 text-[13.5px]">
+        <div className="sticker grain flex flex-1 flex-col rounded-[16px] bg-kraft/60 p-5">
+          <p className="text-[18px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
+          <ul className="mt-4 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
+            {promises.map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf" /><span>{t}</span></li>)}
+          </ul>
+          <p className="mt-auto pt-5 text-[15px]">
             {r ? <><a href={r.txUrl} target="_blank" rel="noopener" className={link}>See this stamp on Solana</a> · <a href="#proof" className={link}>check it yourself</a></> : <a href="#proof" className={link}>Check one yourself</a>}
           </p>
         </div>
@@ -398,41 +407,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <H2>Why put a coffee stamp on Solana?</H2>
         <Lead>Because a claim you can only check by trusting us is still a claim. A proof has to hold up without us. This is what happens in the seconds after you scan the QR in your order email:</Lead>
         <Journey r={stats?.record ?? null} qr={qr} />
-        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-14">
-          <div>
-            <ul className="space-y-4 text-[15.5px] leading-[1.6]">
-              {[
-                ["Nobody can edit history, not even EcoProof.", "Each stamp's record is hashed and the hash is written to Solana the moment it's made. Change the record later and the hash no longer matches: anyone can recompute it and compare."],
-                ["One scan, one stamp, by design.", "Every stamp also creates a claim account on-chain. Claiming the same order or card twice fails on the chain itself, not in a rule we could quietly relax."],
-                ["It outlives the app.", "If EcoProof closed tomorrow, every proof would still be readable on a public network that no company owns."],
-                ["Earned, not bought.", "Bee Guardians are soulbound NFTs: they can't be sold or transferred, so the only way to show one is to have earned it."],
-                ["Invisible to customers.", "No wallet, no coins, nothing to buy. A fee is a fraction of a satang and we pay it. A wallet is only needed to receive a Bee Guardian."],
-              ].map(([t, b]) => (
-                <li key={t} className="flex gap-3"><Check size={20} className="mt-1 shrink-0 text-leaf" /><span><b className="font-extrabold">{t}</b> <span className="text-cocoa/80">{b}</span></span></li>
-              ))}
-            </ul>
-          </div>
-          <div className="sticker grain self-start rounded-[20px] bg-kraft/60 p-6 sm:p-8">
-            <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/60">What goes on the chain, and what doesn&apos;t</p>
-            <div className="mt-4 grid gap-5 sm:grid-cols-2">
-              <div>
-                <h3 className="flex items-center gap-2 text-[18px]"><Hash size={18} className="text-sky" /> On Solana</h3>
-                <ul className="mt-2 space-y-1.5 text-[14.5px] leading-snug text-cocoa/85">
-                  <li>The SHA-256 fingerprint of each stamp record</li><li>A claim account per order, card or visit</li><li>The fingerprint of each published practices checklist</li><li>Bee Guardian NFTs, minted to the customer</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="flex items-center gap-2 text-[18px]"><X size={18} className="text-terracotta" /> Never on the chain</h3>
-                <ul className="mt-2 space-y-1.5 text-[14.5px] leading-snug text-cocoa/85">
-                  <li>Names, emails, phone numbers</li><li>Where a customer was and when</li><li>What exactly they bought</li><li>Anything that would identify a person</li>
-                </ul>
-                <p className="mt-2 text-[13px] font-bold text-cocoa/60">Personal data stays in our database under Thailand&apos;s PDPA, and a fingerprint can&apos;t be turned back into it.</p>
-              </div>
-            </div>
-            <p className="mt-5 border-t border-cocoa/10 pt-4 text-[14px] leading-[1.6] text-cocoa/80">Honest footnote: a proof shows a record wasn&apos;t altered after it was made. It proves a purchase only through the verified-order door; a QR stamp proves a visit, not what was bought. During the hackathon phase proofs are written to Solana devnet.</p>
-            {stats?.proofUrl && <a href={stats.proofUrl} target="_blank" rel="noopener" className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey"><SolanaMark /> Open the newest proof on Solana Explorer</a>}
-          </div>
-        </div>
+        <p className="mt-6 max-w-3xl text-[13.5px] leading-[1.6] text-cocoa/65">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought. During the hackathon phase proofs are written to Solana devnet.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
       </Section>
 
       {/* Pricing */}
