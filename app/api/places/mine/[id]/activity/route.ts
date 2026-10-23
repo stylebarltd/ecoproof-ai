@@ -1,4 +1,6 @@
+import { badgeEmbed } from "@/lib/badge";
 import { memberOf } from "@/lib/members";
+import { appUrl } from "@/lib/nft";
 import { publishedStars } from "@/lib/placePractices";
 import { isShop } from "@/lib/placeKinds";
 import { shopImpact } from "@/lib/shops";
@@ -21,7 +23,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         stars: (await publishedStars([place])).get(id) ?? null, // what the public sees
         impact: isShop(place.kind) ? (await shopImpact([id])).get(id)! : null, // eco shops: what customers saved, instead of stars
       },
-      role: m.role, activity: await shopActivity(id, days) },
+      role: m.role, activity: await shopActivity(id, days),
+      // the live impact badge an active eco shop can put on its own site (lib/badge.ts)
+      badge: isShop(place.kind) && place.status === "active" ? { url: `${appUrl()}/api/badge/${id}.svg`, embed: badgeEmbed(id, place.name) } : null },
     { headers: { "Cache-Control": "no-store" } },
   );
 }

@@ -10,6 +10,7 @@ import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
 import { demoPassportHref, PRICING } from "@/lib/landingContent";
 import { badgeEmbed, badgeSvg } from "@/lib/badge";
+import { proofMemo } from "@/lib/solana";
 import type { LandingRecord, LandingStats } from "@/lib/landingStats";
 import { RANKS } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
@@ -133,6 +134,37 @@ function RecordCard({ r }: { r: LandingRecord }) {
       <CheckRecord id={r.id} />
       <p className="mt-3 text-[13px] font-bold text-cocoa/65"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link> · the newest proof in the system, whoever made it</p>
     </div>
+  );
+}
+
+/** How a stamp lands on Solana, in four tiles with the newest real record's own data: the record, its SHA-256, the memo transaction and
+ *  claim account, and the check anyone can run. Without a record yet, the tiles show the shapes. */
+function ChainFlow({ r }: { r: LandingRecord | null }) {
+  const hash = r?.hash ?? "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+  const Mono = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => <p className={`mt-2 break-all font-mono text-[11.5px] leading-[1.5] text-cocoa/80 ${className}`}>{children}</p>;
+  const tiles = [
+    { n: 1, title: "The record", body: "One stamp is one small record: who sold, what was bought, what it saved, and when.", mono: r
+        ? <>{"{ merchant: "}&quot;{r.merchant}&quot;{", items: ["}{r.items.slice(0, 2).map((it) => `${it.quantity}× ${it.name.length > 22 ? it.name.slice(0, 21) + "…" : it.name}`).join(", ")}{r.items.length > 2 ? ", …" : ""}{"], impact: { plasticItems: "}{r.plasticItems}{", co2Kg: "}{r.co2Kg}{" }, createdAt: "}&quot;{r.date.slice(0, 19)}Z&quot;{" }"}</>
+        : <>{"{ merchant, items, impact, createdAt }"}</> },
+    { n: 2, title: "Its fingerprint", body: "The record is hashed with SHA-256. Change one character of the record and the fingerprint is a different number.", mono: <>sha256 → {hash}</> },
+    { n: 3, title: "Written to Solana", body: "The fingerprint goes on-chain as a memo in a transaction, plus a claim account for the order, so the same order can never be stamped twice.", mono: r
+        ? <>memo &quot;{proofMemo(hash).slice(0, 36)}…&quot;<br />tx <a href={r.txUrl} target="_blank" rel="noopener" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">{r.signature.slice(0, 14)}…</a>{r.claimUrl && <> · claim <a href={r.claimUrl} target="_blank" rel="noopener" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">account</a></>}</>
+        : <>memo &quot;EcoProof AI proof v1: &lt;hash&gt;&quot;<br />tx &lt;signature&gt; · claim &lt;account&gt;</> },
+    { n: 4, title: "Anyone checks", body: "Recompute the fingerprint from the record, read the memo back from Solana, compare. No EcoProof needed in between.", mono: <>sha256(record) == memo ? <b className="font-sans font-extrabold text-leaf">verified</b> : <b className="font-sans font-extrabold text-terracotta">altered</b><br /><a href="#proof" className="font-sans font-bold underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">That is what the button above does</a></> },
+  ];
+  return (
+    <ol className="mt-8 grid gap-3 md:grid-cols-4 md:gap-0" aria-label="How a stamp lands on Solana">
+      {tiles.map((t, i) => (
+        <li key={t.n} className="relative flex">
+          <div className="sticker grain flex-1 rounded-[16px] bg-paper p-4 ring-1 ring-cocoa/10 md:mr-7">
+            <p className="flex items-center gap-2"><span className="stamp flex h-8 w-8 items-center justify-center text-[15px] text-sky">{t.n}</span><span className="text-[16px] font-extrabold">{t.title}</span></p>
+            <p className="mt-2 text-[13.5px] leading-[1.5] text-cocoa/80">{t.body}</p>
+            <Mono>{t.mono}</Mono>
+          </div>
+          {i < tiles.length - 1 && <ArrowRight size={22} className="absolute -bottom-0.5 left-1/2 hidden -translate-x-1/2 text-honey-deep md:static md:top-1/2 md:block md:-ml-5 md:-mt-3 md:translate-x-0 md:self-center" aria-hidden />}
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -350,14 +382,15 @@ export default function Landing({ stats }: { stats: LandingStats | null }) {
         <p className="mt-5 text-[14px] font-bold text-cocoa/65">Cafés, restaurants and hotels have stars; stores have an impact page instead. Every kind gets a public place page, a map pin and share images.</p>
       </Section>
 
-      {/* Why a blockchain */}
+      {/* Why a blockchain: how one record lands on the chain (with the real newest record), then why, then what goes on and what never does. */}
       <Section id="why-chain" className="py-12 lg:py-20">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-14">
+        <Eyebrow>Why blockchain</Eyebrow>
+        <H2>Why put a coffee stamp on Solana?</H2>
+        <Lead>Because a claim you can only check by trusting us is still a claim. A proof has to hold up without us. This is what happens to every stamp, in the four seconds after it is made:</Lead>
+        <ChainFlow r={stats?.record ?? null} />
+        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-14">
           <div>
-            <Eyebrow>Why blockchain</Eyebrow>
-            <H2>Why put a coffee stamp on Solana?</H2>
-            <Lead>Because a claim you can only check by trusting us is still a claim. A proof has to hold up without us.</Lead>
-            <ul className="mt-6 space-y-4 text-[15.5px] leading-[1.6]">
+            <ul className="space-y-4 text-[15.5px] leading-[1.6]">
               {[
                 ["Nobody can edit history, not even EcoProof.", "Each stamp's record is hashed and the hash is written to Solana the moment it's made. Change the record later and the hash no longer matches: anyone can recompute it and compare."],
                 ["One scan, one stamp, by design.", "Every stamp also creates a claim account on-chain. Claiming the same order or card twice fails on the chain itself, not in a rule we could quietly relax."],

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, ChevronRight, Copy, ExternalLink, Leaf, ListChecks, Loader2, QrCode, Sparkles, ShoppingBag, Ticket, UserPlus, Users } from "lucide-react";
 import ShopImpact from "@/components/ShopImpact";
+import CopySnippet from "@/components/landing/CopySnippet";
 import Stars from "@/components/Stars";
 import AccountChip from "@/components/AccountChip";
 import { PlaceCard, type MyPlace } from "@/components/ShopTools";
@@ -15,7 +16,7 @@ import type { Member, Role } from "@/lib/members";
 
 // The shop dashboard: what customers did (stamps, how they were collected, impact, proofs), the place's stamp tools, and the team.
 
-type Data = { place: MyPlace; role: Role; activity: ShopActivity };
+type Data = { place: MyPlace; role: Role; activity: ShopActivity; badge: { url: string; embed: string } | null };
 type Team = { role: Role; members: Member[]; invites: { role: Role; expiresAt: string }[] };
 
 const SOURCES: { key: Source; label: string; color: string; icon: typeof QrCode }[] = [
@@ -288,6 +289,14 @@ export default function ShopDashboard({ id }: { id: string }) {
             <Panel title="What your customers saved" aside={<span className="text-xs text-sage-900">all time</span>}>
               <ShopImpact impact={place.impact} />
               <p className="mt-2 text-[11.5px] text-sage-900">This is what visitors see on your page and in the shop list, instead of stars.</p>
+            </Panel>
+          )}
+          {data.badge && (
+            <Panel title="Badge for your site" aside={<span className="text-xs text-sage-900">live</span>}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- an SVG served by our own route */}
+              <img src={data.badge.url} alt="Your live impact badge" height={30} className="h-[30px] w-auto" />
+              <p className="mt-2 text-[12px] leading-snug text-sage-900">Paste this where your customers can see it. The numbers are drawn from your proofs every few minutes, and a click opens your page with the proofs behind them.</p>
+              <div className="mt-2"><CopySnippet code={data.badge.embed} /></div>
             </Panel>
           )}
           <Panel title="Turned into stamps" aside={<span className="text-xs text-sage-900">all time</span>}>

@@ -1,4 +1,5 @@
 import { query, type RecordRow } from "./db";
+import { claimUrl } from "./claim";
 import { explorerUrl } from "./solana";
 import { listShops, type ShopListing } from "./shops";
 
@@ -19,6 +20,8 @@ export type LandingStats = {
 export type LandingRecord = {
   id: string; merchant: string; date: string; items: { name: string; quantity: number }[];
   plasticItems: number; co2Kg: number; packagingG: number; note: string | null; hash: string; signature: string; txUrl: string;
+  /** Solana Explorer link to the order's claim account, when it has one. */
+  claimUrl: string | null;
 };
 
 export async function landingStats(): Promise<LandingStats | null> {
@@ -43,7 +46,7 @@ export async function landingStats(): Promise<LandingStats | null> {
       record: rec ? {
         id: rec.id, merchant: rec.merchant, date: new Date(rec.created_at).toISOString(), items,
         plasticItems: rec.plastic_items, co2Kg: Math.round(rec.co2_kg * 10) / 10, packagingG: Math.round(rec.packaging_g), note: rec.impact_note ?? null,
-        hash: rec.hash, signature: rec.signature!, txUrl: explorerUrl(rec.signature!),
+        hash: rec.hash, signature: rec.signature!, txUrl: explorerUrl(rec.signature!), claimUrl: rec.claim_address ? claimUrl(rec.claim_address) : null,
       } : null,
     };
   } catch (e) {
