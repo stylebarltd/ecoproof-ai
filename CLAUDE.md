@@ -86,7 +86,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   `/api/passport-card`, `/api/card`) draw the NFT card set's frame (paper, rank-coloured rim, Caprasimo/Figtree) on kraft paper with the
   cel-shaded rank art from `public/share/art/` (640px, from `art/v2/compositor/samples/`) and the fonts from `public/share/fonts/`
   (static Figtree instances: the og renderer cannot read variable fonts), both traced in `next.config.ts`. The counter strip counts plastic *items* avoided, not kg (that is what
-  the DB has).
+  the DB has). "Anyone can print a green badge" shows the newest verified record (`LandingStats.record`) with a live check
+  (`components/landing/CheckRecord.tsx` → `/api/verify`); "Your impact page writes itself" shows the example shop (most verified purchases) with
+  its numbers linking to `/places/<id>#proofs` (the proof list, `shopProofs()` in `lib/shops.ts`), and the live badge: `lib/badge.ts` builds the SVG,
+  `/api/badge/<place>.svg` serves it (eco shops only, cached 5 min), `badgeEmbed()` is the snippet. With no example shop the widget shows dashes, never zeros.
 - Points by kind (`POINTS_BY_KIND` in `lib/stampClasses.ts`, decided 21 Oct 2026): a presence stamp is worth 1 at a café or restaurant,
   2 at a hotel/resort, 1 at an eco store's till; a verified purchase is 5 (online order now; in store only after a successful receipt scan,
   so receipt scanning must land as a verified-class source). `pointsFor(source, kind)` everywhere; the passport query joins the place's kind.

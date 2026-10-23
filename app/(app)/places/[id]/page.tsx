@@ -10,7 +10,7 @@ import VerifyButton from "@/components/VerifyButton";
 import { declarationsOf, publishedAnswers, toDeclaration } from "@/lib/declarations";
 import { isShop, kindOf } from "@/lib/placeKinds";
 import { countryName, originFor, pickCountry, servesText } from "@/lib/shipping";
-import { originsOf, shopImpact } from "@/lib/shops";
+import { originsOf, shopImpact, shopProofs } from "@/lib/shops";
 import { checklist, rating } from "@/lib/practices";
 import { getPlace, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
@@ -32,7 +32,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
   const answers = publishedAnswers(place, history[0]);
   const current = history[0] && history[0].kind === place.kind && history[0].also_cafe === place.also_cafe ? toDeclaration(history[0]) : null;
   const origins = p.online ? (await originsOf([place.id])).get(place.id)! : [];
-  const shop = isShop(place.kind) ? { impact: (await shopImpact([place.id])).get(place.id)!, online: p.online } : null;
+  const shop = isShop(place.kind) ? { impact: (await shopImpact([place.id])).get(place.id)!, online: p.online, proofs: await shopProofs(place.id) } : null;
   // Which origin ships to this visitor (Vercel's IP country, or ?country=US to test), listed first.
   const country = pickCountry((await searchParams).country as string | undefined, (await headers()).get("x-vercel-ip-country"));
   const { origin: yours, shipsHere } = originFor(origins, country);
@@ -70,6 +70,25 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
           <div className="mt-4 rounded-2xl bg-white/60 p-3 lg:p-4">
             <p className="mb-2 text-[12px] font-bold uppercase tracking-wide text-sage-900">What customers saved here</p>
             <ShopImpact impact={shop.impact} />
+          </div>
+        )}
+        {shop && shop.proofs.length > 0 && (
+          <div id="proofs" className="mt-3 scroll-mt-20 rounded-2xl bg-white/60 p-3 lg:p-4">
+            <p className="mb-2 text-[12px] font-bold uppercase tracking-wide text-sage-900">The proofs behind the numbers</p>
+            <ul className="divide-y divide-sage-200 text-[13px]">
+              {shop.proofs.map((pr) => (
+                <li key={pr.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-2">
+                  <span className="w-[88px] shrink-0 text-sage-900">{fmt(pr.createdAt)}</span>
+                  <span className="min-w-0 flex-1 truncate">{pr.summary || "Verified purchase"}</span>
+                  <span className="whitespace-nowrap text-sage-900">{pr.plasticItems} plastic · {pr.co2Kg} kg CO₂</span>
+                  <span className="flex items-center gap-2 whitespace-nowrap">
+                    <Link href={`/p/${pr.id}`} className="font-bold text-sage-800 underline">record</Link>
+                    {pr.txUrl ? <a href={pr.txUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-0.5 font-bold text-sage-800 underline">Solana <ExternalLink size={11} /></a> : <span className="text-sage-900">proof pending</span>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[11.5px] text-sage-900">Each record is hashed and written to Solana. Open one and check it yourself.</p>
           </div>
         )}
         {shop?.online && (place.website || origins.length > 0) && (

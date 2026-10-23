@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Cpu, Hash, Link2, Plug, Receipt, Share2, Stamp, X } from "lucide-react";
+import { ArrowRight, Check, Hash, Link2, Plug, Share2, Stamp, X } from "lucide-react";
+import CheckRecord from "@/components/landing/CheckRecord";
+import CopySnippet from "@/components/landing/CopySnippet";
 import HeroArt from "@/components/landing/HeroArt";
 import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
 import { demoPassportHref, PRICING } from "@/lib/landingContent";
-import type { LandingStats } from "@/lib/landingStats";
+import { badgeEmbed, badgeSvg } from "@/lib/badge";
+import type { LandingRecord, LandingStats } from "@/lib/landingStats";
 import { RANKS } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
 
@@ -83,6 +86,80 @@ function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; c
         </div>
       ))}
       <span className="inline-flex basis-full items-center gap-1.5 text-[13px] font-bold text-cocoa/70 lg:basis-auto"><Link2 size={14} /> anchored on Solana · estimates</span>
+    </div>
+  );
+}
+
+/** A home-printed "eco" sticker: the kind of badge anyone can make. Drawn in CSS and SVG so the point is made without a photo. */
+function FakeSticker() {
+  return (
+    <div className="relative h-[168px] w-[168px] -rotate-6 rounded-full bg-white shadow-[0_10px_24px_rgba(58,42,28,0.22)] ring-1 ring-cocoa/10" role="img" aria-label="A printed sticker that says 100% eco-friendly, green choice, planet positive">
+      <svg viewBox="0 0 168 168" className="absolute inset-0 h-full w-full" aria-hidden>
+        <defs><path id="ring" d="M84 84m-62 0a62 62 0 1 1 124 0a62 62 0 1 1-124 0" /></defs>
+        <circle cx="84" cy="84" r="78" fill="none" stroke="#4f8a4a" strokeWidth="3" />
+        <circle cx="84" cy="84" r="48" fill="none" stroke="#4f8a4a" strokeWidth="1.5" strokeDasharray="3 4" />
+        <text fill="#4f8a4a" fontSize="11" fontWeight="800" fontFamily="Arial, Helvetica, sans-serif" textLength="382" lengthAdjust="spacingAndGlyphs"><textPath href="#ring" textLength="382" lengthAdjust="spacingAndGlyphs">★ 100% ECO-FRIENDLY ★ GREEN CHOICE ★ PLANET POSITIVE </textPath></text>
+        <path d="M84 56c-12 0-20 9-20 20 0 10 7 18 20 18 10 0 18-7 18-16 0-13-8-22-18-22z" fill="#4f8a4a" />
+        <path d="M84 60v30" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+        <text x="84" y="113" textAnchor="middle" fill="#4f8a4a" fontSize="15" fontWeight="900" fontFamily="Arial, Helvetica, sans-serif">CERTIFIED*</text>
+        <text x="84" y="127" textAnchor="middle" fill="#4f8a4a" fontSize="8" fontFamily="Arial, Helvetica, sans-serif">* by ourselves</text>
+      </svg>
+    </div>
+  );
+}
+
+const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
+
+/** One real verified purchase: its lines, what it saved, its hash and its Solana transaction, with a live check. */
+function RecordCard({ r }: { r: LandingRecord }) {
+  const short = (s: string) => `${s.slice(0, 10)}…${s.slice(-8)}`;
+  return (
+    <div className="mt-2">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <p className="font-stamp text-[16px] uppercase tracking-[0.12em] text-sky">Verified purchase · {r.merchant}</p>
+        <p className="text-[13px] font-bold text-cocoa/65">{fmtDate(r.date)}</p>
+      </div>
+      <ul className="mt-3 divide-y divide-cocoa/10 rounded-xl bg-paper/80 px-3.5 ring-1 ring-cocoa/10">
+        {r.items.slice(0, 4).map((it, i) => (
+          <li key={i} className="flex items-baseline gap-3 py-2 text-[14.5px]"><span className="w-7 shrink-0 font-extrabold text-cocoa/60">{it.quantity}×</span><span className="min-w-0 flex-1 truncate font-bold">{it.name}</span></li>
+        ))}
+        {r.items.length > 4 && <li className="py-2 text-[13px] font-bold text-cocoa/60">and {r.items.length - 4} more</li>}
+      </ul>
+      <p className="mt-3 text-[14.5px] leading-[1.55]"><b className="font-extrabold">{n(r.plasticItems)} single-use plastic items</b>, <b className="font-extrabold">{r.co2Kg} kg CO₂e</b> and <b className="font-extrabold">{n(r.packagingG)} g packaging</b> avoided.{r.note ? ` ${r.note.split(" · ")[0]}.` : ""}</p>
+      <dl className="mt-3 space-y-1 font-mono text-[12px] text-cocoa/75">
+        <div className="flex gap-2"><dt className="w-14 shrink-0 font-sans font-bold">sha256</dt><dd className="truncate">{r.hash}</dd></div>
+        <div className="flex gap-2"><dt className="w-14 shrink-0 font-sans font-bold">Solana</dt><dd className="truncate"><a href={r.txUrl} target="_blank" rel="noopener" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">{short(r.signature)}</a></dd></div>
+      </dl>
+      <CheckRecord id={r.id} />
+      <p className="mt-3 text-[13px] font-bold text-cocoa/65"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link> · the newest proof in the system, whoever made it</p>
+    </div>
+  );
+}
+
+/** The impact page in miniature: the shop with the most verified purchases, or, before any shop has one, the empty page that the first order fills in. */
+function ImpactWidget({ example }: { example: LandingStats["example"] }) {
+  const i = example?.impact;
+  const rows = [[i ? n(i.plasticItems) : "—", "single-use plastic items avoided"], [i ? `${n(i.co2Kg)} kg` : "—", "CO₂e avoided"], [i ? `${n(Math.round(i.packagingG / 100) / 10)} kg` : "—", "packaging avoided"]] as const;
+  const proofs = example ? `/places/${example.id}#proofs` : null;
+  return (
+    <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
+      <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/60">{example ? `${example.name} · verified impact` : "Your shop · verified impact"}</p>
+      <dl className="mt-4 divide-y divide-cocoa/10">
+        {rows.map(([v, l], k) => (
+          <div key={l} className="flex items-baseline justify-between gap-4 py-3">
+            <dt className="text-[15px] font-bold text-cocoa/80">{l}</dt>
+            <dd className={`font-journal-display font-bold ${k === 0 ? "text-[34px] text-honey-deep" : "text-[24px]"}`}>{proofs ? <Link href={proofs} className="underline decoration-sky/70 decoration-[3px] underline-offset-[6px] hover:decoration-honey">{v}</Link> : v}</dd>
+          </div>
+        ))}
+        <div className="flex items-baseline justify-between gap-4 py-3 text-[13px] font-bold text-cocoa/65">
+          <dt>{i ? `From ${n(i.purchases)} verified purchases by ${n(i.customers)} customers` : "Fills in from your first verified order"}</dt>
+          <dd className="inline-flex items-center gap-1"><Link2 size={12} /> on Solana</dd>
+        </div>
+      </dl>
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        {proofs ? <Link href={proofs} className="text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4">See the page and its proofs →</Link> : <span />}
+        <Link href="/join" className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[14px] font-extrabold text-paper hover:bg-honey-deep">Get yours</Link>
+      </div>
     </div>
   );
 }
@@ -210,59 +287,42 @@ export default function Landing({ stats }: { stats: LandingStats | null }) {
         </div>
       </Section>
 
-      {/* Verified, not claimed */}
-      <Section className="py-12 lg:py-20">
+      {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
+      <Section id="proof" className="py-12 lg:py-20">
         <Eyebrow>Verified, not claimed</Eyebrow>
         <H2>Anyone can print a green badge</H2>
-        <Lead>EcoProof doesn&apos;t grade your marketing. It records what actually happened, and lets anyone check the record.</Lead>
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          <div className="rounded-[18px] border-2 border-dashed border-cocoa/25 p-6">
-            <h3 className="flex items-center gap-2 text-[20px] text-cocoa/60"><X size={20} className="text-terracotta" /> Claims</h3>
-            <ul className="mt-4 flex flex-wrap gap-2.5">
-              {["100% eco-friendly", "Green choice", "Sustainably sourced", "Planet positive", "Carbon neutral*"].map((c) => (
-                <li key={c} className="rounded-full bg-paper px-3.5 py-1.5 text-[14px] font-bold text-cocoa/55 line-through decoration-terracotta decoration-2 ring-1 ring-cocoa/15">{c}</li>
-              ))}
-            </ul>
-            <p className="mt-5 text-[14.5px] leading-[1.6] text-cocoa/70">A badge says nothing about one specific order or visit. Nobody can check it, so nobody believes it.</p>
+        <Lead>EcoProof doesn&apos;t grade your marketing. It records what actually happened, one order at a time, and lets anyone check the record.</Lead>
+        <div className="mt-8 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
+          <div className="flex flex-col items-center rounded-[18px] border-2 border-dashed border-cocoa/25 px-6 py-8 text-center">
+            <FakeSticker />
+            <p className="mt-6 text-[15px] font-extrabold">A claim</p>
+            <p className="mt-1 max-w-[300px] text-[14.5px] leading-[1.6] text-cocoa/70">Printed in a minute. Says nothing about any one order or visit. Nobody can check it, so nobody has to believe it.</p>
           </div>
-          <div className="sticker grain rounded-[18px] bg-kraft/60 p-6">
-            <h3 className="flex items-center gap-2 text-[20px]"><Check size={20} className="text-leaf" /> Proof</h3>
-            <ol className="mt-4 space-y-3 text-[15px] leading-snug">
-              {[[<Receipt key="r" size={18} />, "Order line items", "What was bought, from your shop system, not a form."], [<Cpu key="c" size={18} />, "Impact estimate", "Each item sorted into a transparent factor table: plastic items avoided, CO₂e, packaging."], [<Hash key="h" size={18} />, "Solana proof", "The record's SHA-256 goes on-chain as a memo plus a claim account: one scan, one stamp, never twice."]].map(([icon, t, b]) => (
-                <li key={t as string} className="flex gap-3"><span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper text-sky ring-1 ring-cocoa/10">{icon}</span><span><b className="font-extrabold">{t}</b><br /><span className="text-cocoa/80">{b}</span></span></li>
-              ))}
-            </ol>
-            {stats?.proofUrl && <a href={stats.proofUrl} target="_blank" rel="noopener" className="mt-5 inline-flex items-center gap-1.5 text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey"><SolanaMark /> See a real proof on Solana Explorer</a>}
+          <div className="sticker grain rounded-[18px] bg-kraft/60 p-5 sm:p-6">
+            <p className="text-[15px] font-extrabold">A record</p>
+            {stats?.record ? <RecordCard r={stats.record} /> : (
+              <p className="mt-2 text-[14.5px] leading-[1.6] text-cocoa/80">The newest verified purchase appears here, with its line items, its impact, its hash and its Solana transaction, and a button that checks it against the chain while you watch.</p>
+            )}
           </div>
         </div>
       </Section>
 
-      {/* Impact you can publish */}
+      {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}
       <Section id="impact" className="py-12 lg:py-20">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
             <Eyebrow>Impact you can publish</Eyebrow>
-            <H2>Numbers your customers added up for you</H2>
-            <Lead>Every verified purchase at your shop adds to one public impact page. Plastic avoided leads, CO₂e second, packaging third, and every figure links back to its proofs.</Lead>
-            <p className="mt-3 text-[14px] font-bold text-cocoa/65">Impact figures are estimates from a transparent factor table, not audited lifecycle data. An embeddable widget for your own site is on the way.</p>
-          </div>
-          <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
-            <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/60">{stats?.example ? `${stats.example.name} · verified impact` : "Your shop · verified impact"}</p>
-            {(() => {
-              const i = stats?.example?.impact ?? { purchases: 0, customers: 0, plasticItems: 0, co2Kg: 0, packagingG: 0 };
-              const rows = [[n(i.plasticItems), "single-use plastic items avoided"], [`${n(i.co2Kg)} kg`, "CO₂e avoided"], [`${n(Math.round(i.packagingG / 100) / 10)} kg`, "packaging avoided"]] as const;
-              return (
-                <dl className="mt-4 divide-y divide-cocoa/10">
-                  {rows.map(([v, l], k) => <div key={l} className="flex items-baseline justify-between gap-4 py-3"><dt className="text-[15px] font-bold text-cocoa/80">{l}</dt><dd className={`font-journal-display font-bold ${k === 0 ? "text-[34px] text-honey-deep" : "text-[24px]"}`}>{v}</dd></div>)}
-                  <div className="flex items-baseline justify-between gap-4 py-3 text-[13px] font-bold text-cocoa/65"><dt>From {n(i.purchases)} verified purchases by {n(i.customers)} customers</dt><dd className="inline-flex items-center gap-1"><Link2 size={12} /> on Solana</dd></div>
-                </dl>
-              );
-            })()}
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              {stats?.example ? <Link href={`/places/${stats.example.id}`} className="text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4">See the live page →</Link> : <span />}
-              <Link href="/join" className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[14px] font-extrabold text-paper hover:bg-honey-deep">Get yours</Link>
+            <H2>Your impact page writes itself</H2>
+            <Lead>Every verified purchase adds to one public page: plastic items avoided first, CO₂e second, packaging third. Each number links to the proofs behind it. You never type a figure.</Lead>
+            <p className="mt-3 text-[14px] font-bold text-cocoa/65">Impact figures are estimates from a transparent factor table, not audited lifecycle data, and the page says so.</p>
+            <div className="mt-8">
+              <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/60">A badge nobody can print</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
+              <div className="mt-4 inline-block [&>svg]:block" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
+              <div className="mt-3"><CopySnippet code={badgeEmbed(stats?.example?.id ?? "your-shop", stats?.example?.name ?? "Your shop")} /></div>
             </div>
           </div>
+          <ImpactWidget example={stats?.example ?? null} />
         </div>
       </Section>
 
