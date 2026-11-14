@@ -32,7 +32,7 @@ const STEPS = [
 
 /** The /join page's content: signed out, what joining takes and the sign-in (Google and Facebook first, a wallet only under "other ways");
  *  signed in, the set-up form; after that, the new place's QR and what to do next. */
-export default function JoinFlow({ initialKind = "cafe" }: { initialKind?: string }) {
+export default function JoinFlow({ initialKind = "cafe", near = null }: { initialKind?: string; near?: { lat: number; lng: number } | null }) {
   const [signedIn, setSignedIn] = useState<boolean | undefined>(undefined);
   const [social, setSocial] = useState<Social[]>([]);
   const [mine, setMine] = useState<MyPlace[]>([]);
@@ -79,7 +79,7 @@ export default function JoinFlow({ initialKind = "cafe" }: { initialKind?: strin
     <div className="mx-auto max-w-[680px]">
       <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Set up your place</h1>
       <p className="mt-4 text-[18px] leading-[1.6] text-cocoa/85">You&apos;re signed in. Fill this in once and we make your QR. You can change everything later on your dashboard.</p>
-      <PlaceForm key={formKey} initialKind={initialKind} onCreated={async (c) => { setCreated(c); await refresh(); }} />
+      <PlaceForm key={formKey} initialKind={initialKind} near={near} onCreated={async (c) => { setCreated(c); await refresh(); }} />
       {mine.length > 0 && (
         <section className="mt-12">
           <h2 className="text-[22px] leading-[1.15]">Places you already run</h2>
@@ -125,7 +125,7 @@ function SignIn({ social, onSignedIn }: { social: Social[]; onSignedIn: () => vo
   );
 }
 
-function PlaceForm({ initialKind, onCreated }: { initialKind: string; onCreated: (c: { place: PublicPlace; onMap: boolean }) => void }) {
+function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near: { lat: number; lng: number } | null; onCreated: (c: { place: PublicPlace; onMap: boolean }) => void }) {
   const [name, setName] = useState("");
   const [kind, setKind] = useState(initialKind);
   const [mapOpen, setMapOpen] = useState(false);
@@ -228,7 +228,7 @@ function PlaceForm({ initialKind, onCreated }: { initialKind: string; onCreated:
           </div>
           {mapOpen && (
             <div className="mt-3">
-              <PinPicker pin={loc} onPick={(p) => { setLoc(p); setErr(""); }} precise className="h-64 rounded-[16px] ring-1 ring-cocoa/15" />
+              <PinPicker pin={loc} onPick={(p) => { setLoc(p); setErr(""); }} precise start={near} className="h-64 rounded-[16px] ring-1 ring-cocoa/15" />
               <p className={`${note} mt-2`}>Zoom in until you can see your street, then tap your door. Tap again to move the pin.</p>
             </div>
           )}

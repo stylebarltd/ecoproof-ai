@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronDown, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
+import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import SolanaJourney from "@/components/landing/SolanaJourney";
 import MobileJoinBar from "@/components/landing/MobileJoinBar";
@@ -77,11 +77,10 @@ function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; c
   if (!stats) return null;
   if (stats.proofs < COUNTERS_FROM) {
     // Early days: the real counts in one honest line, with the way to check them, instead of stamp tiles full of small numbers.
-    const count = (v: number, one: string, many: string) => `${n(v)} ${v === 1 ? one : many}`;
     return (
       <div className={`items-center ${className}`}>
         <p className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-[18px] bg-paper/85 px-4 py-2 sm:rounded-full text-[15px] font-bold text-cocoa/85 ring-1 ring-cocoa/10">
-          <span>Early days: {count(stats.places, "place", "places")} and {count(stats.proofs, "stamp", "stamps")} so far, each one written to Solana.</span>
+          <span>Early days, and every stamp so far is on Solana for anyone to check.</span>
           <a href="#proof" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Check one</a>
         </p>
       </div>
@@ -158,6 +157,7 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
   return (
     <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
       <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{example ? `${example.name} · verified impact` : "Your shop · verified impact"}</p>
+      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Estimates, worked out per product from each verified order.</p>
       <dl className="mt-4 divide-y divide-cocoa/10">
         {rows.map(([v, l], k) => (
           <div key={l} className="flex items-baseline justify-between gap-4 py-3">
@@ -166,10 +166,19 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
           </div>
         ))}
         <div className="flex items-baseline justify-between gap-4 py-3 text-[13px] font-bold text-cocoa/80">
-          <dt>{i ? `From ${n(i.purchases)} verified purchases by ${n(i.customers)} customers` : "Fills in from your first verified order"}</dt>
+          <dt>{i ? `From ${n(i.purchases)} verified purchase${i.purchases === 1 ? "" : "s"} by ${n(i.customers)} customer${i.customers === 1 ? "" : "s"}` : "Fills in from your first verified order"}</dt>
           <dd className="inline-flex items-center gap-1"><Link2 size={12} /> on Solana</dd>
         </div>
       </dl>
+      {/* While there are only a few orders, show them: one big order (a 300-load laundry kit) explains a large total better than any footnote. */}
+      {example?.orders && example.orders.length > 0 && (
+        <div className="mt-2">
+          <p className="text-[13px] font-bold text-cocoa/80">The orders behind these numbers</p>
+          <ul className="mt-2 space-y-1.5 text-[14px] leading-snug text-cocoa/85">
+            {example.orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{n(o.plasticItems)} items</span></li>)}
+          </ul>
+        </div>
+      )}
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         {proofs ? <Link href={proofs} className="text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4">See the page and its proofs →</Link> : <span />}
         <Link href="/join" className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[14px] font-extrabold text-paper hover:bg-honey-ink">Get yours</Link>
@@ -205,10 +214,10 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
   const doors = [
     { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.cafe)} per visit, once a day`,
-      you: "An eco star rating and a map pin, and regulars who have a reason to keep coming back. The stars show guests what you actually do: no plastic straws, local produce, no single-use packaging.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
+      you: "An eco star rating and a map pin, and regulars who have a reason to keep coming back.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
     { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.hotel)} per stay`,
       you: "An eco star rating from your published practices checklist, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
-    { img: "store", kind: "eco_shop", title: "Eco store", join: "an eco store", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `Verified purchase, ${pointsLabel(POINTS_VERIFIED)}, with what the order saved. Online orders today; in store, a QR at the till gives ${pointsLabel(POINTS_BY_KIND.eco_shop)} until receipt scanning arrives`,
+    { img: "store", kind: "eco_shop", title: "Eco store", join: "an eco store", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified online order, with what it saved; ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
       you: "A public impact page that adds up every order, a listing in the eco shops directory, and referrals from cafés' and hotels' checklists.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
   ];
   const partners = [
@@ -275,6 +284,25 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         </div>
       </Section>
 
+      {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
+      <Section id="proof" className="py-12 lg:py-20">
+        <H2>Anyone can print a green badge</H2>
+        <Lead>EcoProof doesn&apos;t grade your marketing. It records what actually happened, one order at a time, and lets anyone check the record.</Lead>
+        <div className="mt-8 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
+          <div className="flex flex-col items-center rounded-[18px] border-2 border-dashed border-cocoa/25 px-6 py-8 text-center">
+            <FakeSticker />
+            <p className="mt-6 text-[15px] font-extrabold">A claim</p>
+            <p className="mt-1 max-w-[300px] text-[15px] leading-[1.6] text-cocoa/80">Printed in a minute. Says nothing about any one order or visit. Nobody can check it, so nobody has to believe it.</p>
+          </div>
+          <div className="sticker grain rounded-[18px] bg-kraft/60 p-5 sm:p-6">
+            <p className="text-[15px] font-extrabold">A record</p>
+            {stats?.record ? <RecordCard r={stats.record} /> : (
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/80">The newest verified purchase appears here, with its line items, its impact, its hash and its Solana transaction, and a button that checks it against the chain while you watch.</p>
+            )}
+          </div>
+        </div>
+      </Section>
+
       {/* How it works */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>Live in three steps</H2>
@@ -307,27 +335,16 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
               <Image src={`/landing/doors/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
               <h3 className="mt-5 text-[22px] leading-tight">{d.title}</h3>
               <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-paper px-3 py-1 text-[13px] font-extrabold text-cocoa ring-1 ring-cocoa/10"><Stamp size={14} className="shrink-0 text-sky-ink" /> {d.door}</p>
-              {/* Phones fold the two benefit rows under a toggle (the doors were about three screens tall); from md all rows show. */}
+              {/* Three facts per card (critique of 14 Nov 2026: 12+ chunks for "which one am I?"); what customers get is in "For customers". */}
               <dl className="mt-3 space-y-2.5 text-[15px] leading-[1.5] md:flex-1">
                 <DoorRow term="The stamp">{d.stamp}</DoorRow>
-                <DoorRow term="You get" className="hidden md:block">{d.you}</DoorRow>
-                <DoorRow term="Your customers get" className="hidden md:block">{d.them}</DoorRow>
+                <DoorRow term="You get">{d.you}</DoorRow>
               </dl>
-              <details className="group mt-3 md:hidden">
-                <summary className="flex h-11 cursor-pointer list-none items-center gap-1.5 text-[15px] font-extrabold text-cocoa [&::-webkit-details-marker]:hidden">
-                  <ChevronDown size={18} className="shrink-0 transition-transform group-open:rotate-180" aria-hidden /> What you and your customers get
-                </summary>
-                <dl className="mt-1 space-y-2.5 text-[15px] leading-[1.5]">
-                  <DoorRow term="You get">{d.you}</DoorRow>
-                  <DoorRow term="Your customers get">{d.them}</DoorRow>
-                </dl>
-              </details>
-              <p className="mt-3 text-[13px] font-bold text-cocoa/80">Setup: {d.setup}</p>
               <Link href={`/join?kind=${d.kind}`} className="mt-3 inline-flex items-center gap-1.5 text-[15px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Join as {d.join} <ArrowRight size={16} /></Link>
             </li>
           ))}
         </ul>
-        <p className="mt-5 max-w-[68ch] text-[14px] font-bold leading-[1.6] text-cocoa/80">Cafés, restaurants and hotels have stars; stores have an impact page instead. Stars come from the practices you publish, and each published version is frozen with its fingerprint on Solana, so it can&apos;t be quietly changed later. Every kind gets a public place page, a map pin and share images.</p>
+        <p className="mt-5 max-w-[68ch] text-[14px] font-bold leading-[1.6] text-cocoa/80">Cafés, restaurants and hotels earn eco stars from the practices they publish; shops show the impact of their orders instead. Every kind gets a public place page, a map pin and share images.</p>
       </Section>
 
       {/* Pricing */}
@@ -371,30 +388,13 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         </div>
       </Section>
 
-      {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
-      <Section id="proof" className="py-12 lg:py-20">
-        <H2>Anyone can print a green badge</H2>
-        <Lead>EcoProof doesn&apos;t grade your marketing. It records what actually happened, one order at a time, and lets anyone check the record.</Lead>
-        <div className="mt-8 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
-          <div className="flex flex-col items-center rounded-[18px] border-2 border-dashed border-cocoa/25 px-6 py-8 text-center">
-            <FakeSticker />
-            <p className="mt-6 text-[15px] font-extrabold">A claim</p>
-            <p className="mt-1 max-w-[300px] text-[15px] leading-[1.6] text-cocoa/80">Printed in a minute. Says nothing about any one order or visit. Nobody can check it, so nobody has to believe it.</p>
-          </div>
-          <div className="sticker grain rounded-[18px] bg-kraft/60 p-5 sm:p-6">
-            <p className="text-[15px] font-extrabold">A record</p>
-            {stats?.record ? <RecordCard r={stats.record} /> : (
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/80">The newest verified purchase appears here, with its line items, its impact, its hash and its Solana transaction, and a button that checks it against the chain while you watch.</p>
-            )}
-          </div>
-        </div>
-        {/* Where the record comes from, in the same section (the critique found two separate proof demos making one argument twice). */}
-        <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
-          <h3 className="text-[22px] leading-[1.15]">Why put a coffee stamp on Solana?</h3>
-          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</p>
-          <SolanaJourney r={stats?.record ?? null} qr={qr} />
-          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
-        </div>
+      {/* How a stamp becomes a record: the customer's phone, and why it holds up. Its own section again, below the customers; the record itself
+          sits near the top (critique of 14 Nov 2026: the live check was buried about 7,400px down on a phone). */}
+      <Section id="why-chain" className="py-12 lg:py-20">
+        <H2>Why put a coffee stamp on Solana?</H2>
+        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</Lead>
+        <SolanaJourney r={stats?.record ?? null} qr={qr} />
+        <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
       </Section>
 
       {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}

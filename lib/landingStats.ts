@@ -1,7 +1,7 @@
 import { query, type RecordRow } from "./db";
 import { claimUrl } from "./claim";
 import { explorerUrl } from "./solana";
-import { listShops, type ShopListing } from "./shops";
+import { listShops, shopProofs, type ShopListing, type ShopProof } from "./shops";
 
 /** The live numbers on the signed-out landing page: what EcoProof has verified so far, one real proof to look at, and the shop with the most
  *  verified purchases as the example impact widget. Everything is an estimate from lib/impact.ts, and the page says so. */
@@ -14,7 +14,8 @@ export type LandingStats = {
   co2Kg: number;
   /** Solana Explorer link to the newest proof, or null before the first one. */
   proofUrl: string | null;
-  example: Pick<ShopListing, "id" | "name" | "impact"> | null;
+  /** The example shop; while it has fewer than ORDERS_SHOWN_BELOW verified purchases, also the orders behind its numbers. */
+  example: (Pick<ShopListing, "id" | "name" | "impact"> & { orders: Pick<ShopProof, "id" | "summary" | "plasticItems">[] | null }) | null;
   /** The newest verified purchase with a proof: the one real record the landing shows and lets visitors check. */
   record: LandingRecord | null;
 };
@@ -27,6 +28,9 @@ export type LandingRecord = {
   /** Made in the last 14 days: only then does the page call it "the newest". */
   recent: boolean;
 };
+
+/** Below this many verified purchases the impact widget lists the orders themselves. */
+const ORDERS_SHOWN_BELOW = 10;
 
 export async function landingStats(): Promise<LandingStats | null> {
   try {
@@ -44,10 +48,13 @@ export async function landingStats(): Promise<LandingStats | null> {
     let items: LandingRecord["items"] = [];
     try { items = rec ? (JSON.parse(rec.items) as LandingRecord["items"]).map(({ name, quantity }) => ({ name, quantity })) : []; } catch { /* shown without its lines */ }
     const best = shops.filter((s) => s.impact.purchases > 0).sort((a, b) => b.impact.purchases - a.impact.purchases)[0];
+    const orders = best && best.impact.purchases < ORDERS_SHOWN_BELOW
+      ? (await shopProofs(best.id, ORDERS_SHOWN_BELOW)).map(({ id, summary, plasticItems }) => ({ id, summary, plasticItems }))
+      : null;
     return {
       proofs: t.proofs, places: pl?.places ?? 0, passports: t.passports, plasticItems: t.plastic, co2Kg: t.co2,
       proofUrl: latest ? explorerUrl(latest.signature) : null,
-      example: best ? { id: best.id, name: best.name, impact: best.impact } : null,
+      example: best ? { id: best.id, name: best.name, impact: best.impact, orders } : null,
       record: rec ? {
         id: rec.id, merchant: rec.merchant, date: new Date(rec.created_at).toISOString(), items,
         plasticItems: rec.plastic_items, co2Kg: Math.round(rec.co2_kg * 10) / 10, packagingG: Math.round(rec.packaging_g), note: rec.impact_note ?? null,

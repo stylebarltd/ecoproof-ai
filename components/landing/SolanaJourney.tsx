@@ -53,7 +53,8 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
         ))}
       </div>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_auto_1fr] lg:items-start lg:gap-10">
-        <div className="flex flex-col">
+        {/* The QR card is for scanning from a computer screen; phones skip it (the replay shows the same moment). */}
+        <div className="hidden flex-col lg:flex">
           {door === "visit" ? (
             <>
               <Cap>1 · The QR on your counter</Cap>
@@ -80,11 +81,11 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
           <p className="mt-3 text-[13px] font-bold text-cocoa/80">This code works: it opens our demo café.</p>
         </div>
         <div className="flex flex-col">
-          <Cap>2 · A few seconds on their phone</Cap>
+          <Cap><span className="hidden lg:inline">2 · </span>A few seconds on their phone</Cap>
           <StampJourney key={door} door={door} r={r} />
         </div>
         <div className="flex flex-col">
-          <Cap>3 · And it stays that way</Cap>
+          <Cap><span className="hidden lg:inline">3 · </span>And it stays that way</Cap>
           <div className="sticker grain flex flex-col rounded-[16px] bg-kraft/60 p-5">
             <p className="text-[18px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
             <ul className="mt-4 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
@@ -93,7 +94,7 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
             {/* Honest limits: the promises hold on mainnet; the hackathon build writes to devnet, which can be reset. */}
             <p className="mt-4 text-[14px] font-bold leading-snug text-cocoa/80">Today&apos;s demo proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
             <p className="pt-5 text-[15px]">
-              {r ? <><a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> · <a href="#proof" className={link}>check it yourself</a></> : <a href="#proof" className={link}>Check one yourself</a>}
+              {r ? <a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> : <a href="#proof" className={link}>Check a record yourself</a>}
             </p>
           </div>
         </div>
