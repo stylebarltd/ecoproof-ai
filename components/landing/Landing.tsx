@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import CopySnippet from "@/components/landing/CopySnippet";
 import SolanaJourney from "@/components/landing/SolanaJourney";
+import MobileJoinBar from "@/components/landing/MobileJoinBar";
 import HeroArt from "@/components/landing/HeroArt";
 import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
@@ -25,7 +26,12 @@ const Section = ({ id, className = "", children }: { id?: string; className?: st
 const H2 = ({ children }: { children: React.ReactNode }) => <h2 className="text-[30px] leading-[1.08] sm:text-[38px]">{children}</h2>;
 const Lead = ({ children }: { children: React.ReactNode }) => <p className="mt-3 max-w-2xl text-[18px] leading-[1.6] text-cocoa/85">{children}</p>;
 const Primary = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Link href={href} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-honey px-6 text-[16px] font-extrabold text-cocoa shadow-[0_8px_22px_rgba(224,138,46,0.38)] transition hover:bg-honey-light sm:w-auto">{children}</Link>
+  <Link href={href} data-join className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-honey px-6 text-[16px] font-extrabold text-cocoa shadow-[0_8px_22px_rgba(224,138,46,0.38)] transition hover:bg-honey-light sm:w-auto">{children}</Link>
+);
+
+/** One labelled row of a business door card. */
+const DoorRow = ({ term, className = "", children }: { term: string; className?: string; children: React.ReactNode }) => (
+  <div className={className}><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">{term}</dt><dd className="text-cocoa/85">{children}</dd></div>
 );
 
 /** A round rubber-stamp mark with a number and an icon. */
@@ -287,14 +293,24 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <ul className="mt-8 grid gap-6 md:grid-cols-3">
           {doors.map((d, i) => (
             <li key={d.img} className="stitched grain flex flex-col rounded-[20px] bg-kraft/50 p-4 sm:p-5">
-              <Image src={`/landing/doors/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
+              <Image src={`/landing/doors/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
               <h3 className="mt-5 text-[22px] leading-tight">{d.title}</h3>
               <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-paper px-3 py-1 text-[13px] font-extrabold text-cocoa ring-1 ring-cocoa/10"><Stamp size={14} className="shrink-0 text-sky-ink" /> {d.door}</p>
-              <dl className="mt-3 flex-1 space-y-2.5 text-[15px] leading-[1.5]">
-                <div><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">The stamp</dt><dd className="text-cocoa/85">{d.stamp}</dd></div>
-                <div><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">You get</dt><dd className="text-cocoa/85">{d.you}</dd></div>
-                <div><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">Your customers get</dt><dd className="text-cocoa/85">{d.them}</dd></div>
+              {/* Phones fold the two benefit rows under a toggle (the doors were about three screens tall); from md all rows show. */}
+              <dl className="mt-3 space-y-2.5 text-[15px] leading-[1.5] md:flex-1">
+                <DoorRow term="The stamp">{d.stamp}</DoorRow>
+                <DoorRow term="You get" className="hidden md:block">{d.you}</DoorRow>
+                <DoorRow term="Your customers get" className="hidden md:block">{d.them}</DoorRow>
               </dl>
+              <details className="group mt-3 md:hidden">
+                <summary className="flex h-11 cursor-pointer list-none items-center gap-1.5 text-[15px] font-extrabold text-cocoa [&::-webkit-details-marker]:hidden">
+                  <ChevronDown size={18} className="shrink-0 transition-transform group-open:rotate-180" aria-hidden /> What you and your customers get
+                </summary>
+                <dl className="mt-1 space-y-2.5 text-[15px] leading-[1.5]">
+                  <DoorRow term="You get">{d.you}</DoorRow>
+                  <DoorRow term="Your customers get">{d.them}</DoorRow>
+                </dl>
+              </details>
               <p className="mt-3 text-[13px] font-bold text-cocoa/80">Setup: {d.setup}</p>
               <Link href="/join" className="mt-3 inline-flex items-center gap-1.5 text-[15px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Join as {d.join} <ArrowRight size={16} /></Link>
             </li>
@@ -399,7 +415,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       </Section>
 
       {/* Footer */}
-      <footer className="border-t border-cocoa/10 px-4 py-10 sm:px-6">
+      <footer className="border-t border-cocoa/10 px-4 pt-10 pb-24 sm:px-6 md:pb-10">
         <div className="mx-auto grid max-w-[1200px] gap-8 md:grid-cols-[1fr_auto_auto]">
           <div>
             <JournalWordmark className="text-[22px]" />
@@ -421,6 +437,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         </div>
         <p className="mx-auto mt-8 max-w-[1200px] text-[12px] text-cocoa/80">Proofs are written to Solana devnet during the hackathon phase. Impact figures are estimates, not audited data.</p>
       </footer>
+      <MobileJoinBar />
     </div>
   );
 }
