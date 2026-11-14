@@ -18,19 +18,20 @@ function Clicks({ onPick }: { onPick: (p: Pin) => void }) {
   return null;
 }
 
-function Follow({ pin }: { pin: Pin | null }) {
+function Follow({ pin, zoom }: { pin: Pin | null; zoom: number }) {
   const map = useMap();
-  useEffect(() => { if (pin) map.setView([pin.lat, pin.lng], Math.max(map.getZoom(), 9)); }, [map, pin]);
+  useEffect(() => { if (pin) map.setView([pin.lat, pin.lng], Math.max(map.getZoom(), zoom)); }, [map, pin, zoom]);
   return null;
 }
 
-/** Tap the map to set a pin (where an online shop ships from). Opens on Thailand when there is no pin yet. */
-export default function PinPicker({ pin, onPick, disabled = false }: { pin: Pin | null; onPick: (p: Pin) => void; disabled?: boolean }) {
+/** Tap the map to set a pin (where an online shop ships from). Opens on Thailand when there is no pin yet. `precise` is for a place's own
+ *  location (the GPS check works within 150 m of it): zoom buttons, and a tap zooms to street level so the pin can be moved onto the door. */
+export default function PinPicker({ pin, onPick, disabled = false, precise = false, className = "h-56 rounded-2xl" }: { pin: Pin | null; onPick: (p: Pin) => void; disabled?: boolean; precise?: boolean; className?: string }) {
   return (
-    <MapContainer center={pin ? [pin.lat, pin.lng] : [15.5, 101]} zoom={pin ? 9 : 5} className="isolate h-56 w-full rounded-2xl" zoomControl={false} attributionControl={false}>
+    <MapContainer center={pin ? [pin.lat, pin.lng] : [15.5, 101]} zoom={pin ? (precise ? 17 : 9) : 5} className={`isolate w-full ${className}`} zoomControl={precise} attributionControl={false}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {!disabled && <Clicks onPick={onPick} />}
-      <Follow pin={pin} />
+      <Follow pin={pin} zoom={precise ? 17 : 9} />
       {pin && <Marker position={[pin.lat, pin.lng]} icon={icon} />}
     </MapContainer>
   );

@@ -1,16 +1,19 @@
 "use client";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Check, ChevronRight, ImagePlus, Loader2, MapPin } from "lucide-react";
 import { SocialButton, WalletSheet } from "@/components/AccountChip";
 import { currentAccount, type Social } from "@/lib/account";
 import { announceAccountChange, useAccountChange } from "@/lib/desktop";
 import { hasStars } from "@/lib/practices";
-import { PLACE_KINDS, isShop } from "@/lib/placeKinds";
+import { GPS_RADIUS_M, PLACE_KINDS, isShop } from "@/lib/placeKinds";
 import { rulesFor } from "@/lib/ecoRules";
 import { prepareLogo } from "@/lib/clientLogo";
 import type { PublicPlace } from "@/lib/stampPlaces";
 import type { MyPlace } from "@/components/ShopTools";
+
+const PinPicker = dynamic(() => import("@/components/PinPicker"), { ssr: false, loading: () => <div className="h-64 w-full rounded-[16px] bg-kraft/40" /> });
 
 // The journal's pieces (DESIGN.md): honey is the one next action, cocoa ink buttons and sky-underlined links are everything else.
 const honey = "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-honey px-6 text-[16px] font-extrabold text-cocoa shadow-[0_8px_22px_rgba(224,138,46,0.38)] transition hover:bg-honey-light disabled:opacity-60 disabled:shadow-none";
@@ -29,7 +32,7 @@ const STEPS = [
 
 /** The /join page's content: signed out, what joining takes and the sign-in (Google and Facebook first, a wallet only under "other ways");
  *  signed in, the set-up form; after that, the new place's QR and what to do next. */
-export default function JoinFlow() {
+export default function JoinFlow({ initialKind = "cafe" }: { initialKind?: string }) {
   const [signedIn, setSignedIn] = useState<boolean | undefined>(undefined);
   const [social, setSocial] = useState<Social[]>([]);
   const [mine, setMine] = useState<MyPlace[]>([]);
@@ -76,7 +79,7 @@ export default function JoinFlow() {
     <div className="mx-auto max-w-[680px]">
       <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Set up your place</h1>
       <p className="mt-4 text-[18px] leading-[1.6] text-cocoa/85">You&apos;re signed in. Fill this in once and we make your QR. You can change everything later on your dashboard.</p>
-      <PlaceForm key={formKey} onCreated={async (c) => { setCreated(c); await refresh(); }} />
+      <PlaceForm key={formKey} initialKind={initialKind} onCreated={async (c) => { setCreated(c); await refresh(); }} />
       {mine.length > 0 && (
         <section className="mt-12">
           <h2 className="text-[22px] leading-[1.15]">Places you already run</h2>
@@ -122,9 +125,10 @@ function SignIn({ social, onSignedIn }: { social: Social[]; onSignedIn: () => vo
   );
 }
 
-function PlaceForm({ onCreated }: { onCreated: (c: { place: PublicPlace; onMap: boolean }) => void }) {
+function PlaceForm({ initialKind, onCreated }: { initialKind: string; onCreated: (c: { place: PublicPlace; onMap: boolean }) => void }) {
   const [name, setName] = useState("");
-  const [kind, setKind] = useState("cafe");
+  const [kind, setKind] = useState(initialKind);
+  const [mapOpen, setMapOpen] = useState(false);
   const [tagline, setTagline] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
   const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(null);
@@ -146,7 +150,7 @@ function PlaceForm({ onCreated }: { onCreated: (c: { place: PublicPlace; onMap: 
     setLocating(true);
     navigator.geolocation?.getCurrentPosition(
       (p) => { setLoc({ lat: p.coords.latitude, lng: p.coords.longitude }); setLocating(false); },
-      () => { setErr("Location permission is needed to put you on the map."); setLocating(false); },
+      () => { setErr("We couldn't get your location. Pin your place on the map instead."); setMapOpen(true); setLocating(false); },
       { enableHighAccuracy: true, timeout: 15000 },
     );
   }
@@ -160,7 +164,14 @@ function PlaceForm({ onCreated }: { onCreated: (c: { place: PublicPlace; onMap: 
     } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
     setBusy(false);
   }
-  const ready = name.trim().length >= 2 && rules && (!inStore || !!loc) && (!isShop(kind) || shopInStore || shopOnline);
+  // What still stops "Create my place", said under the button instead of a silent disabled state.
+  const missing = [
+    name.trim().length < 2 && "a name",
+    isShop(kind) && !shopInStore && !shopOnline && "how customers buy from you",
+    inStore && !loc && "where your place is",
+    !rules && "your confirmation of the eco rules",
+  ].filter((m): m is string => !!m);
+  const ready = missing.length === 0;
 
   return (
     <div className={`${card} mt-8 space-y-6`}>
@@ -207,11 +218,20 @@ function PlaceForm({ onCreated }: { onCreated: (c: { place: PublicPlace; onMap: 
       {inStore ? (
         <div>
           <p className={fieldLabel}>Where is it?</p>
-          <p className="mt-1 text-[15px] leading-[1.6] text-cocoa/85">Do this while you&apos;re at your place. It puts you on the map, and a stamp is only given to someone who is really there (a GPS check, always on).</p>
-          <button type="button" onClick={locate} className={`mt-3 inline-flex h-11 items-center gap-2 rounded-full px-4 text-[15px] font-extrabold transition ${loc ? "bg-white text-cocoa ring-1 ring-cocoa/20" : "bg-cocoa text-paper hover:bg-honey-ink"}`}>
-            {locating ? <Loader2 size={18} className="animate-spin" aria-hidden /> : loc ? <Check size={18} strokeWidth={3} className="text-leaf-ink" aria-hidden /> : <MapPin size={18} aria-hidden />}
-            {loc ? "Location saved" : "Use my current location"}
-          </button>
+          <p className="mt-1 text-[15px] leading-[1.6] text-cocoa/85">It puts you on the map, and a stamp is only given to someone within {GPS_RADIUS_M} m of it (a GPS check, always on). At your place, use your phone&apos;s location; anywhere else, pin it on the map.</p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <button type="button" onClick={locate} className={`inline-flex h-11 items-center gap-2 rounded-full px-4 text-[15px] font-extrabold transition ${loc ? "bg-white text-cocoa ring-1 ring-cocoa/20" : "bg-cocoa text-paper hover:bg-honey-ink"}`}>
+              {locating ? <Loader2 size={18} className="animate-spin" aria-hidden /> : loc ? <Check size={18} strokeWidth={3} className="text-leaf-ink" aria-hidden /> : <MapPin size={18} aria-hidden />}
+              {loc ? "Location saved" : "Use my current location"}
+            </button>
+            <button type="button" onClick={() => setMapOpen((o) => !o)} aria-expanded={mapOpen} className={linkCta}>{mapOpen ? "Hide the map" : loc ? "Move the pin on the map" : "Or pin it on the map"}</button>
+          </div>
+          {mapOpen && (
+            <div className="mt-3">
+              <PinPicker pin={loc} onPick={(p) => { setLoc(p); setErr(""); }} precise className="h-64 rounded-[16px] ring-1 ring-cocoa/15" />
+              <p className={`${note} mt-2`}>Zoom in until you can see your street, then tap your door. Tap again to move the pin.</p>
+            </div>
+          )}
         </div>
       ) : (
         <p className="text-[15px] leading-[1.6] text-cocoa/85">A shop that only sells online has no map pin and no GPS check. Once it&apos;s set up you choose how customers get their stamp: a QR in your order email (WooCommerce, with our free plugin), printed QR cards in the parcel (any channel, e.g. Amazon), or both. You can add a shop location later.</p>
@@ -227,7 +247,8 @@ function PlaceForm({ onCreated }: { onCreated: (c: { place: PublicPlace; onMap: 
 
       {err && <p className="rounded-xl bg-terracotta/15 p-3 text-[15px] font-bold text-terracotta-ink" role="alert">{err}</p>}
       <div>
-        <button onClick={submit} disabled={busy || !ready} className={honey}>{busy ? <><Loader2 size={18} className="animate-spin" aria-hidden /> Setting up…</> : <>Create my place and QR <ArrowRight size={18} aria-hidden /></>}</button>
+        <button onClick={submit} disabled={busy || !ready} aria-describedby={ready ? undefined : "join-missing"} className={honey}>{busy ? <><Loader2 size={18} className="animate-spin" aria-hidden /> Setting up…</> : <>Create my place and QR <ArrowRight size={18} aria-hidden /></>}</button>
+        {!ready && <p id="join-missing" className="mt-3 text-center text-[15px] font-bold text-cocoa/85">Still needed: {missing.join(", ")}.</p>}
         <p className={`${note} mt-3 text-center`}>Places are listed as &ldquo;claimed and set up&rdquo;. Independent vetting is on our roadmap.</p>
       </div>
     </div>

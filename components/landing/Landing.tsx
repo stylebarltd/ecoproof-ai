@@ -193,11 +193,11 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
   // how their customers collect a stamp, what each side gets, and setup. An eco store sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
   const doors = [
-    { img: "coffee", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.cafe)} per visit, once a day`,
+    { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.cafe)} per visit, once a day`,
       you: "An eco star rating and a map pin, and regulars who have a reason to keep coming back. The stars show guests what you actually do: no plastic straws, local produce, no single-use packaging.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
-    { img: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.hotel)} per stay`,
+    { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.hotel)} per stay`,
       you: "An eco star rating from your published practices checklist, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
-    { img: "store", title: "Eco store", join: "an eco store", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `Verified purchase, ${pointsLabel(POINTS_VERIFIED)}, with what the order saved. Online orders today; in store, a QR at the till gives ${pointsLabel(POINTS_BY_KIND.eco_shop)} until receipt scanning arrives`,
+    { img: "store", kind: "eco_shop", title: "Eco store", join: "an eco store", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `Verified purchase, ${pointsLabel(POINTS_VERIFIED)}, with what the order saved. Online orders today; in store, a QR at the till gives ${pointsLabel(POINTS_BY_KIND.eco_shop)} until receipt scanning arrives`,
       you: "A public impact page that adds up every order, a listing in the eco shops directory, and referrals from cafés' and hotels' checklists.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
   ];
   const partners = [
@@ -312,7 +312,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
                 </dl>
               </details>
               <p className="mt-3 text-[13px] font-bold text-cocoa/80">Setup: {d.setup}</p>
-              <Link href="/join" className="mt-3 inline-flex items-center gap-1.5 text-[15px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Join as {d.join} <ArrowRight size={16} /></Link>
+              <Link href={`/join?kind=${d.kind}`} className="mt-3 inline-flex items-center gap-1.5 text-[15px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Join as {d.join} <ArrowRight size={16} /></Link>
             </li>
           ))}
         </ul>

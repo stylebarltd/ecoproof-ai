@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import JoinFlow from "@/components/landing/JoinFlow";
 import LandingNav from "@/components/landing/LandingNav";
 import { journalFonts } from "@/components/landing/fonts";
+import { isKind } from "@/lib/placeKinds";
 
 export const metadata: Metadata = {
   title: "Join as a business · EcoProof AI",
@@ -10,12 +11,14 @@ export const metadata: Metadata = {
 
 /** Where every "Join as a business" on the landing leads. It sits outside the (app) group on purpose: it wears the landing's travel-journal chrome
  *  (DESIGN.md), not the legacy app shell, so the hand-off from the landing page looks like the same place. */
-export default function JoinPage() {
+export default async function JoinPage({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
+  // The landing's business cards link here with ?kind=, so "Join as a hotel" starts on Hotel.
+  const { kind } = await searchParams;
   return (
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav page="join" />
       <main className="px-4 pb-20 pt-10 sm:px-6 lg:pt-14">
-        <div className="mx-auto max-w-[1000px]"><JoinFlow /></div>
+        <div className="mx-auto max-w-[1000px]"><JoinFlow initialKind={kind && isKind(kind) ? kind : "cafe"} /></div>
       </main>
     </div>
   );
