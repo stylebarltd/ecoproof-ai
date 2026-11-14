@@ -374,20 +374,19 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       <Section id="pricing" className="py-12 lg:py-20">
         <H2>Free for the founding fifty</H2>
         <Lead>Stamps, proofs and the public impact page are included in every plan. The chain fees are on us.</Lead>
-        <ul className="mt-8 grid gap-5 md:grid-cols-3">
+        <ul className="mt-8 grid max-w-[880px] gap-5 md:grid-cols-2">
           {PRICING.map((p, i) => (
             <li key={p.name} className={`flex flex-col rounded-[18px] p-6 ${i === 0 ? "sticker grain bg-honey/15 ring-2 ring-honey" : "bg-paper ring-1 ring-cocoa/15"}`}>
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{p.name}</p>
-              <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}<span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span></p>
+              {p.price && <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}{p.period && <span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span>}</p>}
               <p className="mt-3 text-[15px] leading-[1.6] text-cocoa/80">{p.note}</p>
               {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Claim a founding spot <ArrowRight size={18} /></Primary></div>}
             </li>
           ))}
         </ul>
-        <ul className="mt-6 grid gap-x-8 gap-y-2.5 text-[15px] leading-snug text-cocoa/85 md:grid-cols-3">
-          {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave.", "Founding businesses never pay more than they signed up for."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
+        <ul className="mt-6 grid gap-x-8 gap-y-2.5 text-[15px] leading-snug text-cocoa/85 md:grid-cols-2 max-w-[880px]">
+          {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
         </ul>
-        <p className="mt-4 text-[14px] text-cocoa/80">Prices after the founding fifty are still being set.</p>
       </Section>
 
       {/* Final CTA */}
