@@ -32,7 +32,7 @@ Proof that can't be edited after the fact: one scan, one stamp, enforced on-chai
 - **Honest limits.** Impact numbers are estimates from `lib/impact.ts`, labelled as such; never "certified" or "audited". Public statistics only with a citable source. Empty data shows dashes, never zeros.
 - **No wallet needed.** Customers never need crypto knowledge; Solana stays in the background as the reason the record is trustworthy, explained from the customer's view, not the mechanics.
 - **One art language:** the cel-shaded Bee Guardian card set, five rank personas (`art/v2/ranks/`, `public/nft/`). No mixing in other illustration styles.
-- **Pricing as drafted** (`lib/landingContent.ts`): Founding free for the first 50 businesses; Early from $50/year, locked for life in the first year; Standard $200/year. Final numbers may still change in that file.
+- **Pricing** (`lib/landingContent.ts`): Founding is free for the first 50 businesses, everything included, for as long as EcoProof exists; founding businesses never pay. After the first 50: a simple yearly price per place, not decided yet; the page promises it is shown there before anyone is asked to pay. Never print undecided prices.
 - Name: "EcoProof AI" / "EcoProof". Made by SuperBee (stylebar).
 
 ## Evidence on Hand
