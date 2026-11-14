@@ -8,7 +8,7 @@ import { currentAccount, type Social } from "@/lib/account";
 import { announceAccountChange, useAccountChange } from "@/lib/desktop";
 import { hasStars } from "@/lib/practices";
 import { GPS_RADIUS_M, PLACE_KINDS, isShop } from "@/lib/placeKinds";
-import { rulesFor } from "@/lib/ecoRules";
+import { CORE_RULES, rulesFor } from "@/lib/ecoRules";
 import { prepareLogo } from "@/lib/clientLogo";
 import type { PublicPlace } from "@/lib/stampPlaces";
 import type { MyPlace } from "@/components/ShopTools";
@@ -24,16 +24,24 @@ const input = "mt-1.5 h-12 w-full rounded-xl bg-white px-3.5 text-[16px] text-co
 const fieldLabel = "block text-[15px] font-extrabold";
 const note = "text-[13px] font-bold leading-snug text-cocoa/80";
 
-const STEPS = [
+/** What joining takes, worded for the business type the visitor came for (?kind=), or for everyone. */
+const QR_STEP: Record<string, string> = {
+  cafe: "Print the card for your counter or tables. Every scan gives your customer a stamp.",
+  restaurant: "Print the card for your counter or tables. Every scan gives your customer a stamp.",
+  hotel: "Print the card for reception or the rooms. Every scan gives your guest a stamp.",
+  eco_shop: "Print the card for your till. For online orders, add our WooCommerce plugin or put a printed card in each parcel.",
+};
+const steps = (kind?: string) => [
   ["Sign in", "So the place has an owner who can always get back in. No password, and no wallet needed."],
   ["Tell us about your place", "Its name, what kind of place it is, a logo and, if customers visit you, where it is. You also confirm a few short eco rules, like no drinks in single-use plastic and no plastic straws."],
-  ["Put up your QR", "Print the counter card. Online shops send a QR in the order email or a card in the parcel instead."],
+  ["Put up your QR", (kind && QR_STEP[kind]) || "Print the counter card. Online shops send a QR in the order email or a card in the parcel instead."],
 ] as const;
 
 /** The /join page's content: signed out, what joining takes and the sign-in (Google and Facebook first, a wallet only under "other ways");
  *  signed in, the set-up form; after that, the new place's QR and what to do next. */
 // The heading when a business card on the landing sent the visitor here with ?kind=, worded like that card's link.
 const JOIN_AS: Record<string, string> = { cafe: "a café or restaurant", restaurant: "a café or restaurant", hotel: "a hotel or resort", eco_shop: "an eco shop" };
+const CHOICES = [{ label: "Café / Restaurant", kinds: ["cafe", "restaurant"] }, { label: "Hotel / resort", kinds: ["hotel"] }, { label: "Eco shop", kinds: ["eco_shop"] }];
 const SET_UP: Record<string, string> = { cafe: "café or restaurant", restaurant: "café or restaurant", hotel: "hotel or resort", eco_shop: "eco shop" };
 
 export default function JoinFlow({ initialKind, near = null }: { initialKind?: string; near?: { lat: number; lng: number } | null }) {
@@ -70,7 +78,7 @@ export default function JoinFlow({ initialKind, near = null }: { initialKind?: s
         </div>
         <div className="lg:col-start-1 lg:row-start-2">
           <ol className="space-y-5 lg:mt-8">
-            {STEPS.map(([title, text], i) => (
+            {steps(initialKind).map(([title, text], i) => (
               <li key={title} className="flex gap-4">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-journal-display text-[22px] font-bold text-cocoa ring-2 ring-cocoa/25" aria-hidden>{i + 1}</span>
                 <span>
@@ -130,26 +138,41 @@ function SignIn({ social, onSignedIn }: { social: Social[]; onSignedIn: () => vo
       </div>
       {err && <p className="mt-3 rounded-xl bg-terracotta/15 p-3 text-[15px] font-bold text-terracotta-ink" role="alert">{err}</p>}
       {social.length > 0 && <button onClick={() => setWallet(true)} className={`${linkCta} mt-5`}>Other ways to sign in</button>}
+      <p className="mt-5 text-[15px] leading-[1.6] text-cocoa/85">After signing in: your place&apos;s name, type, logo and location, and the eco rules. About 5 minutes.</p>
       <p className={`${note} mt-5`}>What we keep and why: <Link href="/privacy" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">Privacy</Link></p>
       {wallet && <WalletSheet connect={false} onClose={() => setWallet(false)} onSignedIn={onSignedIn} />}
     </div>
   );
 }
 
+/** The form's entries survive leaving the page (fetching a logo, a phone call, the sign-in round trip) for this browser tab. */
+const DRAFT_KEY = "ecoproof:join-draft";
+type Draft = { name: string; kind: string; tagline: string; logo: string | null; loc: { lat: number; lng: number } | null; shopInStore: boolean; shopOnline: boolean; website: string; rules: boolean };
+function readDraft(): Partial<Draft> {
+  try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? "{}") as Partial<Draft>; } catch { return {}; }
+}
+
 function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near: { lat: number; lng: number } | null; onCreated: (c: { place: PublicPlace; onMap: boolean }) => void }) {
-  const [name, setName] = useState("");
-  const [kind, setKind] = useState(initialKind);
+  const [draft] = useState(readDraft); // rendered only in the browser (after the sign-in check), so sessionStorage is there
+  const [name, setName] = useState(draft.name ?? "");
+  const [kind, setKind] = useState(draft.kind ?? initialKind);
   const [mapOpen, setMapOpen] = useState(false);
-  const [tagline, setTagline] = useState("");
-  const [logo, setLogo] = useState<string | null>(null);
-  const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(null);
+  const [tagline, setTagline] = useState(draft.tagline ?? "");
+  const [logo, setLogo] = useState<string | null>(draft.logo ?? null);
+  const [loc, setLoc] = useState<{ lat: number; lng: number } | null>(draft.loc ?? null);
   const [locating, setLocating] = useState(false);
   // An eco shop's channels; every other kind is in store.
-  const [shopInStore, setShopInStore] = useState(true);
-  const [shopOnline, setShopOnline] = useState(false);
-  const [website, setWebsite] = useState("");
+  const [shopInStore, setShopInStore] = useState(draft.shopInStore ?? true);
+  const [shopOnline, setShopOnline] = useState(draft.shopOnline ?? false);
+  const [website, setWebsite] = useState(draft.website ?? "");
   const inStore = !isShop(kind) || shopInStore;
-  const [rules, setRules] = useState(false);
+  const [rules, setRules] = useState(draft.rules ?? false);
+  useEffect(() => {
+    const d: Draft = { name, kind, tagline, logo, loc, shopInStore, shopOnline, website, rules };
+    try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch { /* storage full or blocked: the form still works, it just won't be remembered */ }
+  }, [name, kind, tagline, logo, loc, shopInStore, shopOnline, website, rules]);
+  // An online-only shop serves no drinks or takeaway, so only the rules that can apply to it are asked.
+  const shownRules = isShop(kind) && !shopInStore ? rulesFor(kind).filter((r) => !CORE_RULES.slice(0, 2).includes(r as (typeof CORE_RULES)[number])) : rulesFor(kind);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
@@ -171,8 +194,9 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
       const r = await fetch("/api/places/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, kind, tagline, logo, acceptRules: rules, inStore, online: isShop(kind) && shopOnline, website: isShop(kind) && shopOnline ? website : "", ...(inStore ? loc ?? {} : {}) }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Could not set up your place");
+      try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* nothing to clear */ }
       onCreated(j);
-    } catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
+    } catch (e) { setErr(e instanceof Error ? e.message : "Something went wrong. Please try again in a moment."); }
     setBusy(false);
   }
   // What still stops "Create my place", said under the button instead of a silent disabled state.
@@ -190,11 +214,22 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
 
       <fieldset>
         <legend className={fieldLabel}>What kind of place is it?</legend>
+        {/* The same three choices as the landing's business cards; a café or restaurant then says which (their checklists differ). */}
         <div className="mt-2 flex flex-wrap gap-2">
-          {PLACE_KINDS.map((k) => (
-            <button key={k.id} type="button" aria-pressed={kind === k.id} onClick={() => setKind(k.id)} className={`h-11 rounded-full px-4 text-[15px] font-extrabold transition ${kind === k.id ? "bg-cocoa text-paper" : "bg-white text-cocoa ring-1 ring-cocoa/20 hover:bg-kraft/40"}`}>{k.label}</button>
-          ))}
+          {CHOICES.map((c) => {
+            const on = c.kinds.includes(kind);
+            return <button key={c.label} type="button" aria-pressed={on} onClick={() => { if (!on) setKind(c.kinds[0]); }} className={`h-11 rounded-full px-4 text-[15px] font-extrabold transition ${on ? "bg-cocoa text-paper" : "bg-white text-cocoa ring-1 ring-cocoa/20 hover:bg-kraft/40"}`}>{c.label}</button>;
+          })}
         </div>
+        {(kind === "cafe" || kind === "restaurant") && (
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[15px]" role="radiogroup" aria-label="Café or restaurant">
+            {(["cafe", "restaurant"] as const).map((k) => (
+              <label key={k} className="flex cursor-pointer items-center gap-2 font-bold text-cocoa/85">
+                <input type="radio" name="cafe-or-restaurant" className="h-5 w-5 accent-cocoa" checked={kind === k} onChange={() => setKind(k)} /> {PLACE_KINDS.find((x) => x.id === k)?.label}
+              </label>
+            ))}
+          </div>
+        )}
       </fieldset>
 
       <label className={fieldLabel}>One-line tagline <span className="font-bold text-cocoa/80">(optional)</span><input className={input} value={tagline} maxLength={90} onChange={(e) => setTagline(e.target.value)} placeholder="e.g. Bring your own cup, skip the plastic" /></label>
@@ -250,7 +285,7 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
 
       <div className="stitched rounded-[20px] bg-kraft/50 p-5 sm:p-6">
         <p className="text-[18px] font-extrabold">EcoProof is only for eco places</p>
-        <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[15px] leading-[1.6] text-cocoa/85">{rulesFor(kind).map((r) => <li key={r}>{r}</li>)}</ul>
+        <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[15px] leading-[1.6] text-cocoa/85">{shownRules.map((r) => <li key={r}>{r}</li>)}</ul>
         <div className="mt-4">
           <Tick checked={rules} onChange={setRules}>I confirm my place keeps these rules. I understand customers can report places that don&apos;t, and that EcoProof can pause or remove them. <Link href="/rules" className="font-extrabold underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">Read the rules</Link></Tick>
         </div>

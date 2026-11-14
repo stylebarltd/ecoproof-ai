@@ -27,9 +27,10 @@ function Follow({ pin, zoom }: { pin: Pin | null; zoom: number }) {
 /** Tap the map to set a pin (where an online shop ships from). Opens on Thailand when there is no pin yet. `precise` is for a place's own
  *  location (the GPS check works within 150 m of it): zoom buttons, and a tap zooms to street level so the pin can be moved onto the door. */
 export default function PinPicker({ pin, onPick, disabled = false, precise = false, start = null, className = "h-56 rounded-2xl" }: { pin: Pin | null; onPick: (p: Pin) => void; disabled?: boolean; precise?: boolean; start?: Pin | null; className?: string }) {
-  // Without a pin: the visitor's approximate city when known (`start`), else Thailand.
-  const center: [number, number] = pin ? [pin.lat, pin.lng] : start ? [start.lat, start.lng] : [15.5, 101];
-  const zoom = pin ? (precise ? 17 : 9) : start ? 12 : 5;
+  // Without a pin: the visitor's approximate city when known (`start`); else, for a place's own pin, the whole world (a global launch),
+  // and for shipping origins, Thailand as before.
+  const center: [number, number] = pin ? [pin.lat, pin.lng] : start ? [start.lat, start.lng] : precise ? [20, 10] : [15.5, 101];
+  const zoom = pin ? (precise ? 17 : 9) : start ? 12 : precise ? 2 : 5;
   return (
     <MapContainer center={center} zoom={zoom} className={`isolate w-full ${className}`} zoomControl={precise} attributionControl>
       {/* OpenStreetMap's tile licence asks for the credit on the map. */}

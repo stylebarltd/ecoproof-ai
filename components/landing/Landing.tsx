@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
+import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Star as StarIcon, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import SolanaJourney from "@/components/landing/SolanaJourney";
 import MobileJoinBar from "@/components/landing/MobileJoinBar";
@@ -13,7 +13,7 @@ import { COUNTERS_FROM, demoPassportHref, PRICING } from "@/lib/landingContent";
 import { badgeSvg, kg } from "@/lib/badge";
 import QRCode from "qrcode";
 import { appUrl } from "@/lib/nft";
-import type { LandingRecord, LandingStats } from "@/lib/landingStats";
+import type { Hospitality, LandingRecord, LandingStats } from "@/lib/landingStats";
 import { RANKS } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
 
@@ -46,7 +46,7 @@ function StampMark({ num, icon, label }: { num: number; icon: React.ReactNode; l
 
 /** A passport on a phone, drawn in CSS: what a customer sees after a few stamps. */
 function PhoneMockup() {
-  const stamps = [["Eco café", "Presence stamp", POINTS_BY_KIND.cafe], ["Online eco shop", "Verified order", POINTS_VERIFIED], ["Eco hotel", "Presence stamp", POINTS_BY_KIND.hotel]] as const;
+  const stamps = [["Eco café", "Visit stamp", POINTS_BY_KIND.cafe], ["Online eco shop", "Verified order", POINTS_VERIFIED], ["Eco hotel", "Visit stamp", POINTS_BY_KIND.hotel]] as const;
   return (
     <div className="mx-auto w-[272px] rounded-[38px] border-[8px] border-cocoa bg-paper p-3 shadow-[0_24px_50px_rgba(58,42,28,0.3)]" aria-label="A customer's eco passport on a phone" role="img">
       <div className="mx-auto mb-3 h-5 w-24 rounded-full bg-cocoa" />
@@ -127,7 +127,7 @@ function RecordCard({ r }: { r: LandingRecord }) {
     <div className="mt-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <p className="font-stamp text-[15px] uppercase tracking-[0.12em] text-sky-ink">Verified purchase · {r.merchant}</p>
-        <p className="text-[13px] font-bold text-cocoa/80">{fmtDate(r.date)}</p>
+        <p className="text-[13px] font-bold text-cocoa/80">{fmtDate(r.date)} · {r.age}</p>
       </div>
       <ul className="mt-3 divide-y divide-cocoa/10 border-y border-cocoa/10">
         {r.items.slice(0, 4).map((it, i) => (
@@ -149,44 +149,68 @@ function RecordCard({ r }: { r: LandingRecord }) {
   );
 }
 
-/** The impact page in miniature: the shop with the most verified purchases, or, before any shop has one, the empty page that the first order fills in. */
+/** The impact page in miniature: the shop with the most verified purchases, or, before any shop has one, the empty page that the first order
+ *  fills in. While orders are few (example.orders is set) it starts with the orders themselves, so one big order explains the totals
+ *  instead of headlining them; no figure is highlighted (critique runs 5 to 7). */
 function ImpactWidget({ example }: { example: LandingStats["example"] }) {
   const i = example?.impact;
-  // While there are only a few orders (example.orders is set), one big order would make the plastic total the headline; then the
-  // highlighted figure is the count of verified orders, and the totals follow as ordinary rows.
-  const few = !!example?.orders;
-  const totals = [[i ? n(i.plasticItems) : "—", "single-use plastic items avoided"], [i ? `${kg(i.co2Kg)} kg` : "—", "CO₂e avoided"], [i ? `${n(Math.round(i.packagingG / 100) / 10)} kg` : "—", "packaging avoided"]] as const;
-  const rows = few && i ? [[n(i.purchases), i.purchases === 1 ? "verified order, on Solana" : "verified orders, each one on Solana"] as const, ...totals] : totals;
+  const orders = example?.orders && example.orders.length > 0 ? example.orders : null;
+  const plural = (v: number, one: string) => `${n(v)} ${one}${v === 1 ? "" : "s"}`;
+  const rows = [[i ? n(i.plasticItems) : "—", "single-use plastic items avoided"], [i ? `${kg(i.co2Kg)} kg` : "—", "CO₂e avoided"], [i ? `${n(Math.round(i.packagingG / 100) / 10)} kg` : "—", "packaging avoided"]] as const;
   const proofs = example ? `/places/${example.id}#proofs` : null;
   return (
     <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
       <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{example ? `${example.name} · verified impact` : "Your shop · verified impact"}</p>
       <p className="mt-1 text-[13px] font-bold text-cocoa/80">Estimates, worked out per product from each verified order.</p>
-      <dl className="mt-4 divide-y divide-cocoa/10">
-        {rows.map(([v, l], k) => (
-          <div key={l} className="flex items-baseline justify-between gap-4 py-3">
-            <dt className="text-[15px] font-bold text-cocoa/80">{l}</dt>
-            <dd className={`font-journal-display font-bold ${k === 0 ? "text-[36px] text-honey-ink" : "text-[26px]"}`}>{proofs ? <Link href={proofs} className="underline decoration-sky/70 decoration-[3px] underline-offset-[6px] hover:decoration-honey">{v}</Link> : v}</dd>
-          </div>
-        ))}
-        <div className="flex items-baseline justify-between gap-4 py-3 text-[13px] font-bold text-cocoa/80">
-          <dt>{i ? (few ? `By ${n(i.customers)} customer${i.customers === 1 ? "" : "s"}` : `From ${n(i.purchases)} verified purchase${i.purchases === 1 ? "" : "s"} by ${n(i.customers)} customer${i.customers === 1 ? "" : "s"}`) : "Fills in from your first verified order"}</dt>
-          <dd className="inline-flex items-center gap-1"><Link2 size={12} /> on Solana</dd>
-        </div>
-      </dl>
-      {/* While there are only a few orders, show them: one big order (a 300-load laundry kit) explains a large total better than any footnote. */}
-      {example?.orders && example.orders.length > 0 && (
-        <div className="mt-2">
-          <p className="text-[13px] font-bold text-cocoa/80">The orders behind these numbers · <Link href="/about#proof" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">how products are counted</Link></p>
-          <ul className="mt-2 space-y-1.5 text-[14px] leading-snug text-cocoa/85">
-            {example.orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{n(o.plasticItems)} items</span></li>)}
+      {orders && i && (
+        <div className="mt-4">
+          <p className="text-[15px] font-extrabold">{plural(i.purchases, "verified order")} by {plural(i.customers, "customer")}, each one on Solana</p>
+          <ul className="mt-2 divide-y divide-cocoa/10 border-y border-cocoa/10 text-[14px] leading-snug text-cocoa/85">
+            {orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4 py-2"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{n(o.plasticItems)} items</span></li>)}
           </ul>
+          <p className="mt-2 text-[13px] font-bold text-cocoa/80"><Link href="/about#proof" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">How products are counted</Link></p>
         </div>
       )}
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        {proofs ? <Link href={proofs} className="text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4">See the page and its proofs →</Link> : <span />}
-        <Link href="/join" data-join className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[14px] font-extrabold text-paper hover:bg-honey-ink">Join free</Link>
+      <dl className="mt-3 divide-y divide-cocoa/10">
+        {rows.map(([v, l]) => (
+          <div key={l} className="flex items-baseline justify-between gap-4 py-3">
+            <dt className="text-[15px] font-bold text-cocoa/80">{orders ? `In total: ${l}` : l}</dt>
+            <dd className="font-journal-display text-[26px] font-bold">{proofs ? <Link href={proofs} className="underline decoration-sky/70 decoration-[3px] underline-offset-[6px] hover:decoration-honey">{v}</Link> : v}</dd>
+          </div>
+        ))}
+        {!orders && (
+          <div className="flex items-baseline justify-between gap-4 py-3 text-[13px] font-bold text-cocoa/80">
+            <dt>{i ? `From ${plural(i.purchases, "verified purchase")} by ${plural(i.customers, "customer")}` : "Fills in from your first verified order"}</dt>
+            <dd className="inline-flex items-center gap-1"><Link2 size={12} /> on Solana</dd>
+          </div>
+        )}
+      </dl>
+      {proofs && <Link href={proofs} className="mt-4 inline-flex items-center gap-1.5 text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See the page and its proofs <ArrowRight size={16} /></Link>}
+    </div>
+  );
+}
+
+/** The hospitality side of "your public page": a café, restaurant or hotel with published stars (a real place once one has published;
+ *  until then a demo place, labelled as one). Stars come from its frozen declaration; the link proves it on Solana. */
+function HospitalityCard({ h }: { h: Hospitality }) {
+  return (
+    <div className="sticker grain rounded-[18px] bg-paper p-5 ring-1 ring-cocoa/10 sm:p-6">
+      <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{h.demo ? `Example · ${h.name}, a demo place` : `${h.name} · published practices`}</p>
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span className="inline-flex" role="img" aria-label={`${h.stars} out of 5 eco stars`}>
+          {[1, 2, 3, 4, 5].map((k) => <StarIcon key={k} size={22} strokeWidth={2} aria-hidden className={k <= h.stars ? "fill-honey text-honey-deep" : k - 0.5 <= h.stars ? "fill-honey/50 text-honey-deep" : "fill-transparent text-cocoa/25"} />)}
+        </span>
+        <span className="text-[15px] font-extrabold">{h.yes} of {h.total} practices, published {fmtDate(h.publishedAt)}</span>
       </div>
+      {h.examples.length > 0 && (
+        <ul className="mt-3 space-y-1.5 text-[15px] leading-snug text-cocoa/85">
+          {h.examples.map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
+        </ul>
+      )}
+      <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[15px]">
+        <Link href={`/places/${h.id}`} className="font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See its page</Link>
+        {h.txUrl && <a href={h.txUrl} target="_blank" rel="noopener" className="font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Its declaration on Solana</a>}
+      </p>
     </div>
   );
 }
@@ -217,9 +241,9 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
   // how their customers collect a stamp, what each side gets, and setup. An eco shop sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
   const doors = [
-    { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.cafe)} per visit, once a day`,
+    { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `A stamp for each visit, ${pointsLabel(POINTS_BY_KIND.cafe)}, once a day`,
       you: "An eco star rating and a map pin, and regulars who have a reason to keep coming back.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
-    { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.hotel)} per stay`,
+    { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `A stamp for each stay, ${pointsLabel(POINTS_BY_KIND.hotel)}`,
       you: "An eco star rating from your published practices checklist, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
     { img: "store", kind: "eco_shop", title: "Eco shop", join: "an eco shop", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified online order, with what it saved; ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
       you: "A public impact page that adds up every order, a listing in the eco shops directory, and referrals from cafés' and hotels' checklists.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
@@ -305,6 +329,13 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             )}
           </div>
         </div>
+        {/* Where the record comes from, as the second half of the same section: one proof story, not three (critique run 7). */}
+        <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
+          <h3 className="text-[22px] leading-[1.15]">Why put a coffee stamp on Solana?</h3>
+          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</p>
+          <SolanaJourney r={stats?.record ?? null} qr={qr} />
+          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
+        </div>
       </Section>
 
       {/* How it works */}
@@ -313,7 +344,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <Lead>Cafés and hotels print one QR code. Online shops connect WooCommerce. Your customers need nothing but their phone: no app, no account, no wallet.</Lead>
         <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
           {[
-            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "WooCommerce webhook for online orders, printable claim cards for parcels, a QR code for the counter or reception." },
+            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter or reception, our WooCommerce plugin for online orders, or printable cards for parcels." },
             { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: `A café visit is worth ${pointsLabel(POINTS_BY_KIND.cafe)}, a hotel stay ${POINTS_BY_KIND.hotel}, a verified eco shop purchase ${POINTS_VERIFIED}. Each stamp is one record, hashed and written to Solana.` },
             { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Their passport names your business on every stamp. A share image is one tap away, and the proof is one tap further." },
           ].map((s, i) => (
@@ -355,14 +386,15 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       <Section id="impact" className="py-12 lg:py-20">
         <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="min-w-0">
-            <H2>Your impact page writes itself</H2>
-            <Lead>Every verified order adds to one public page, and each number on it links to the proofs behind it. You never type a figure.</Lead>
+            <H2>Your public page writes itself</H2>
+            <Lead>A shop&apos;s page adds up every verified order, and each number links to the proofs behind it. A café, restaurant or hotel shows eco stars from the practices it publishes, frozen on Solana so they can&apos;t quietly change. You never type a figure.</Lead>
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
               <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
               <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
               <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
             </div>
+            {stats?.hospitality && <div className="mt-8"><HospitalityCard h={stats.hospitality} /></div>}
           </div>
           <ImpactWidget example={stats?.example ?? null} />
         </div>
@@ -372,21 +404,25 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       <Section id="pricing" className="py-12 lg:py-20">
         <H2>Free for the founding fifty</H2>
         <Lead>Stamps, proofs and the public impact page are always included. No wallet or coins for you or your customers: the chain fees are on us.</Lead>
-        <ul className="mt-8 grid max-w-[440px] gap-5">
+        <div className="mt-8 grid items-start gap-6 lg:grid-cols-2 lg:gap-12">
+        <ul className="grid max-w-[480px] gap-5">
           {PRICING.filter((p) => p.price).map((p, i) => (
             <li key={p.name} className={`flex flex-col rounded-[18px] p-6 ${i === 0 ? "sticker grain bg-honey/15 ring-2 ring-honey" : "bg-paper ring-1 ring-cocoa/15"}`}>
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{p.name}</p>
               {p.price && <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}{p.period && <span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span>}</p>}
               <p className="mt-3 text-[15px] leading-[1.6] text-cocoa/80">{p.note}</p>
-              {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Claim a founding spot <ArrowRight size={18} /></Primary></div>}
+              {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Join as a business <ArrowRight size={18} /></Primary></div>}
             </li>
           ))}
         </ul>
+        <div className="max-w-xl">
         {/* A plan without a price yet is a line, not an empty card. */}
-        {PRICING.filter((p) => !p.price).map((p) => <p key={p.name} className="mt-5 max-w-xl text-[15px] leading-[1.6] text-cocoa/85"><b className="font-extrabold">{p.name}:</b> {p.note}</p>)}
-        <ul className="mt-5 grid max-w-xl gap-y-2.5 text-[15px] leading-snug text-cocoa/85">
+        {PRICING.filter((p) => !p.price).map((p) => <p key={p.name} className="text-[15px] leading-[1.6] text-cocoa/85"><b className="font-extrabold">{p.name}:</b> {p.note}</p>)}
+        <ul className="mt-5 grid gap-y-2.5 text-[15px] leading-snug text-cocoa/85">
           {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave (from launch, on mainnet)."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
         </ul>
+        </div>
+        </div>
       </Section>
 
       {/* What customers get */}
@@ -397,7 +433,8 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <div className="min-w-0">
               <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
               <Lead>A passport that fills up with real choices, place by place. Enough stamps unlock a Bee Guardian: a collectible card (a soulbound NFT) that can&apos;t be bought or transferred, only earned. No wallet needed; it waits for them until they want one.</Lead>
-              <ul className="scroll-snap-x no-scrollbar -mx-5 mt-8 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
+              <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
+              <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
                 {RANKS.map((r, i) => (
                   <li key={r.key} className="w-[150px] shrink-0 text-center lg:w-auto" style={{ transform: `rotate(${(i - 2) * 2.5}deg)` }}>
                     <Image src={`/landing/cards/${r.key}.webp`} alt={`${r.name} Bee Guardian card`} width={600} height={840} sizes="150px" className="w-full rounded-[10px] shadow-[0_10px_24px_rgba(58,42,28,0.25)]" />
@@ -409,15 +446,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             </div>
           </div>
         </div>
-      </Section>
-
-      {/* How a stamp becomes a record: the customer's phone, and why it holds up. Its own section again, below the customers; the record itself
-          sits near the top (critique of 14 Nov 2026: the live check was buried about 7,400px down on a phone). */}
-      <Section id="why-chain" className="py-12 lg:py-20">
-        <H2>Why put a coffee stamp on Solana?</H2>
-        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</Lead>
-        <SolanaJourney r={stats?.record ?? null} qr={qr} />
-        <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
       </Section>
 
       {/* Final CTA */}
