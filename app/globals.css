@@ -145,6 +145,13 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
   --color-terracotta: #c9704e;
   --color-sky: #8fa9c8;
   --color-leaf: #6f8f4e; /* only the bee's leaf patch and small success marks, never a background */
+  /* Ink: the text versions of the accents, dark enough to read on paper (4.5:1+) and on kraft panels. The light accents above stay for
+     fills, rings, underlines and icons; text in an accent colour always uses its ink. */
+  --color-honey-light: #eda055; /* hover of the honey button (cocoa text stays readable, 6.4:1) */
+  --color-honey-ink: #8f4c10;
+  --color-sky-ink: #36557c;
+  --color-terracotta-ink: #8c4325;
+  --color-leaf-ink: #45602d;
   --font-journal-display: var(--font-fraunces), Georgia, serif;
   --font-journal-body: var(--font-nunito), system-ui, sans-serif;
   --font-stamp: var(--font-bebas), Impact, sans-serif;
@@ -157,7 +164,10 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
   --font-stamp: var(--font-bebas), Impact, sans-serif;
   font-family: var(--font-journal-body); color: var(--color-cocoa); background: var(--color-paper);
 }
-.journal :is(h1, h2, h3) { font-family: var(--font-journal-display); font-weight: 700; letter-spacing: -0.01em; font-variation-settings: "opsz" 96; }
+.journal :is(h1, h2, h3) { font-family: var(--font-journal-display); font-weight: 700; letter-spacing: -0.01em; font-variation-settings: "opsz" 96; text-wrap: balance; }
+/* No lone last word at the end of a paragraph; selected text in honey, like a highlighter on paper. */
+.journal :is(p, li, dd) { text-wrap: pretty; }
+.journal ::selection { background: rgba(224, 138, 46, 0.35); color: var(--color-cocoa); }
 /* Paper grain: a touch of noise over paper and kraft surfaces, drawn by CSS (no image). */
 .grain { position: relative; }
 .grain::before {

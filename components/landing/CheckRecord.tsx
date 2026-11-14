@@ -30,12 +30,12 @@ export default function CheckRecord({ id }: { id: string }) {
 
   return (
     <div className="mt-4">
-      <button type="button" onClick={run} disabled={busy} className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-cocoa px-5 text-[14.5px] font-extrabold text-paper transition hover:bg-honey-deep disabled:opacity-60 sm:w-auto">
+      <button type="button" onClick={run} disabled={busy} className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper transition hover:bg-honey-ink disabled:opacity-60 sm:w-auto">
         {busy ? "Asking Solana…" : v ? "Check it again" : "Check this record now"}
       </button>
-      {err && <p className="mt-2 text-[14px] font-bold text-terracotta">{err}</p>}
+      {err && <p className="mt-2 text-[14px] font-bold text-terracotta-ink">{err}</p>}
       {v && (
-        <ul className="mt-3 space-y-1.5 text-[14.5px] leading-snug">
+        <ul className="mt-3 space-y-1.5 text-[15px] leading-snug">
           {row(v.dataIntact, "The data still matches its hash: nothing was edited")}
           {row(v.anchored && v.onChainMatch, v.onChainMatch ? `Solana holds the same hash${v.blockTime ? `, written ${when(v.blockTime)}` : ""}${v.slot ? `, slot ${v.slot.toLocaleString("en")}` : ""}` : v.error ?? "Solana's copy could not be read just now")}
           {v.claimed !== null && row(v.claimed, "The order has its own claim account: it can never become a second stamp")}

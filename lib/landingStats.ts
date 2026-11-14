@@ -40,7 +40,7 @@ export async function landingStats(): Promise<LandingStats | null> {
     try { items = rec ? (JSON.parse(rec.items) as LandingRecord["items"]).map(({ name, quantity }) => ({ name, quantity })) : []; } catch { /* shown without its lines */ }
     const best = shops.filter((s) => s.impact.purchases > 0).sort((a, b) => b.impact.purchases - a.impact.purchases)[0];
     return {
-      proofs: t.proofs, passports: t.passports, plasticItems: t.plastic, co2Kg: Math.round(t.co2),
+      proofs: t.proofs, passports: t.passports, plasticItems: t.plastic, co2Kg: t.co2,
       proofUrl: latest ? explorerUrl(latest.signature) : null,
       example: best ? { id: best.id, name: best.name, impact: best.impact } : null,
       record: rec ? {

@@ -38,7 +38,7 @@ export default function HeroArt() {
   ];
   return (
     <div className="hero-art relative mx-auto h-[330px] w-full max-w-[560px] lg:h-[500px]" aria-label="The five Bee Guardian rank cards, fanned out, and the Bee Guardian giving a thumbs up" role="img">
-      {scatter.map((s) => <StampRing key={s.text} text={s.text} glyph={s.glyph} size={s.size} rotate={s.rotate} className={`absolute text-sky ${s.className}`} />)}
+      {scatter.map((s) => <StampRing key={s.text} text={s.text} glyph={s.glyph} size={s.size} rotate={s.rotate} className={`absolute text-sky-ink ${s.className}`} />)}
       <div className="fan absolute bottom-[26px] left-1/2 h-[280px] w-[200px] -translate-x-1/2 lg:bottom-[40px] lg:h-[420px] lg:w-[300px]">
         {RANKS.map((rank) => (
           <div key={rank.key} className="fan-card absolute inset-0 origin-bottom" style={{ "--r": `${fan[rank.key].r}deg`, "--ro": `${fan[rank.key].r * 2.2}deg`, zIndex: fan[rank.key].z } as React.CSSProperties}>

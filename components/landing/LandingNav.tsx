@@ -21,7 +21,7 @@ export default function LandingNav() {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <AccountChip onChange={announceAccountChange} />
-          <Link href="/join" className="hidden h-11 items-center rounded-full bg-honey px-5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(224,138,46,0.35)] hover:bg-honey-deep md:inline-flex">Join as a business</Link>
+          <Link href="/join" className="hidden h-11 items-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink md:inline-flex">Join as a business</Link>
           <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="landing-menu" aria-label={open ? "Close menu" : "Open menu"} className="flex h-11 w-11 items-center justify-center rounded-full text-cocoa hover:bg-kraft/40 md:hidden">
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -31,7 +31,7 @@ export default function LandingNav() {
         <div id="landing-menu" className="border-t border-cocoa/10 bg-paper px-4 pb-4 pt-2 md:hidden">
           {SECTIONS.map(([href, label]) => <a key={href} href={href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 text-[16px] font-bold text-cocoa hover:bg-kraft/40">{label}</a>)}
           <PassportNavLink onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-3 text-[16px] font-bold text-cocoa hover:bg-kraft/40" />
-          <Link href="/join" className="mt-2 flex h-12 items-center justify-center rounded-full bg-honey text-[16px] font-extrabold text-white">Join as a business</Link>
+          <Link href="/join" className="mt-2 flex h-12 items-center justify-center rounded-full bg-cocoa text-[16px] font-extrabold text-paper hover:bg-honey-ink">Join as a business</Link>
         </div>
       )}
     </header>

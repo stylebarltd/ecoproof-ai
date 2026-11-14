@@ -11,6 +11,11 @@ colors:
   terracotta: "#c9704e"
   sky: "#8fa9c8"
   leaf: "#6f8f4e"
+  honey-light: "#eda055"
+  honey-ink: "#8f4c10"
+  sky-ink: "#36557c"
+  terracotta-ink: "#8c4325"
+  leaf-ink: "#45602d"
   white: "#ffffff"
 typography:
   display:
@@ -20,6 +25,12 @@ typography:
     lineHeight: 1.04
     letterSpacing: "-0.01em"
     fontVariation: "\"opsz\" 96"
+  display-tablet:
+    fontFamily: "Fraunces, Georgia, serif"
+    fontSize: "2.875rem"
+    fontWeight: 700
+    lineHeight: 1.04
+    letterSpacing: "-0.01em"
   headline:
     fontFamily: "Fraunces, Georgia, serif"
     fontSize: "clamp(1.875rem, 4vw, 2.375rem)"
@@ -27,16 +38,51 @@ typography:
     lineHeight: 1.08
     letterSpacing: "-0.01em"
     fontVariation: "\"opsz\" 96"
+  title-lg:
+    fontFamily: "Fraunces, Georgia, serif"
+    fontSize: "1.375rem"
+    fontWeight: 700
+    lineHeight: 1.15
   title:
     fontFamily: "Nunito, system-ui, sans-serif"
     fontSize: "1.125rem"
     fontWeight: 800
     lineHeight: 1.3
+  lead:
+    fontFamily: "Nunito, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.6
   body:
     fontFamily: "Nunito, system-ui, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.5
+  body-sm:
+    fontFamily: "Nunito, system-ui, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    lineHeight: 1.6
+  caption:
+    fontFamily: "Nunito, system-ui, sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 700
+    lineHeight: 1.5
+  micro:
+    fontFamily: "Nunito, system-ui, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 700
+    lineHeight: 1.3
+  figure:
+    fontFamily: "Fraunces, Georgia, serif"
+    fontSize: "1.625rem"
+    fontWeight: 700
+    lineHeight: 1
+  figure-lg:
+    fontFamily: "Fraunces, Georgia, serif"
+    fontSize: "2.25rem"
+    fontWeight: 700
+    lineHeight: 1
   label:
     fontFamily: "\"Bebas Neue\", Impact, sans-serif"
     fontSize: "0.875rem"
@@ -60,12 +106,12 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.honey}"
-    textColor: "{colors.white}"
+    textColor: "{colors.cocoa}"
     rounded: "{rounded.pill}"
     padding: "0 24px"
     height: "48px"
   button-primary-hover:
-    backgroundColor: "{colors.honey-deep}"
+    backgroundColor: "{colors.honey-light}"
   button-ink:
     backgroundColor: "{colors.cocoa}"
     textColor: "{colors.paper}"
@@ -73,7 +119,7 @@ components:
     padding: "0 20px"
     height: "44px"
   button-ink-hover:
-    backgroundColor: "{colors.honey-deep}"
+    backgroundColor: "{colors.honey-ink}"
   link-underline:
     textColor: "{colors.cocoa}"
     typography: "{typography.title}"
@@ -86,7 +132,7 @@ components:
     rounded: "{rounded.card}"
     padding: "40px 20px"
   stamp-mark:
-    textColor: "{colors.sky}"
+    textColor: "{colors.sky-ink}"
     typography: "{typography.label}"
     rounded: "{rounded.pill}"
     padding: "8px 16px"
@@ -125,24 +171,28 @@ All art comes from one place: the cel-shaded Bee Guardian card set (five rank pe
 An earthy, sun-warmed palette: paper and kraft underfoot, cocoa ink, honey for action, a dusty sky blue for anything you can follow or check.
 
 ### Primary
-- **Wildflower Honey** (honey): the call to action. Primary buttons, the "AI" in the wordmark, the one highlighted number in a row. Its hover and pressed state, and honey used as text on paper, is **Burnt Honey** (honey-deep), as in the hero headline's "Verified, not claimed."
+- **Wildflower Honey** (honey): the call to action, as a fill. Primary buttons carry cocoa text on it (5.1:1); white on honey fails contrast. Hover lightens to **Light Honey** (honey-light). **Burnt Honey** (honey-deep) is a fill and border shade only.
+- **Honey Ink** (honey-ink): honey as text: the "AI" in the wordmark, the hero's "Verified, not claimed.", the one highlighted number in a row, and the hover of ink buttons.
 
 ### Secondary
-- **Faded Sky Ink** (sky): link underlines (3px, offset 4px) and inked stamp marks. It says "you can follow this". Hovering a link turns its underline honey.
+- **Faded Sky** (sky): link underlines (3px, offset 4px), stamp rings and icons. It says "you can follow this". Hovering a link turns its underline honey. Never text.
+- **Sky Ink** (sky-ink): the text inside stamps and stamp labels.
 
 ### Tertiary
-- **Clay Terracotta** (terracotta): section eyebrows in stamp type and warm accents. Never a button.
-- **Bee Leaf** (leaf): the bee's leaf patch and small success marks only, such as the pulsing "Eco Passport" nav link when this device already has stamps. Never a background or a large fill.
+- **Clay Terracotta** (terracotta): warm fills and the "failed" mark of a check. Never a button, never text. **Terracotta Ink** (terracotta-ink) is its text form: card labels and error lines.
+- **Bee Leaf** (leaf): the bee's leaf patch and small success ticks and icons only, such as the pulse behind the "Eco Passport" nav link when this device already has stamps. Never a background or a large fill. **Leaf Ink** (leaf-ink) is its text form, for the word inside a "verified" stamp.
 
 ### Neutral
 - **Journal Paper** (paper): the page and sticker surface.
 - **Kraft Board** (kraft): hero and feature panels, often at 50 to 60% over paper. **Deep Kraft** (kraft-deep) is the darker board edge.
-- **Cocoa Ink** (cocoa): all text, at full strength for headings and 65 to 80% for body and secondary lines; dark buttons, the phone frame and code blocks. Hairlines are cocoa at 10%.
+- **Cocoa Ink** (cocoa): all text, at full strength for headings, 85% for body and 80% for secondary lines (never lighter: below 80% it fails contrast on kraft); dark buttons, the phone frame and code blocks. Hairlines are cocoa at 10%.
 
 ### Named Rules
 **The One Honey Rule.** Honey marks the single next action in a view. If two things are honey, one of them is wrong.
 
 **The Leaf Is Small Rule.** Green is a detail (a leaf, a tick, a pulse), never a surface. The sage-green app backgrounds are legacy.
+
+**The Ink Rule.** Text in an accent colour always uses that accent's ink token (honey-ink, sky-ink, terracotta-ink, leaf-ink). The light accents are for fills, rings, underlines and icons. Every text pair meets 4.5:1, or 3:1 at headline size.
 
 ## Typography
 
@@ -153,14 +203,21 @@ An earthy, sun-warmed palette: paper and kraft underfoot, cocoa ink, honey for a
 **Character:** Fraunces brings a hand-set, slightly old-world warmth to big statements. Nunito's rounded strokes keep reading friendly and practical. Bebas is the rubber stamp: condensed, uppercase, tracked out.
 
 ### Hierarchy
-- **Display** (700, 36px phone → 46px → 56px desktop, line-height 1.04): the hero headline only.
+- **Display** (700, 36px phone → 46px → 56px desktop, line-height 1.04): the hero headline, and the closing call to action at 36 → 46px.
 - **Headline** (700, 30px → 38px, line-height 1.08): section headings.
-- **Title** (Nunito 800, 18px, snug): card headings, link CTAs, row labels.
-- **Body** (Nunito 400, 15 to 16px, line-height about 1.5, cocoa at 80%): paragraphs, up to about 65ch.
-- **Label** (Bebas 400, 14 to 15px, tracking 0.12 to 0.14em, uppercase): section eyebrows in terracotta, stamp text, counter tiles.
+- **Title large** (Fraunces 700, 22px): card and step headings.
+- **Title** (Nunito 800, 18px, snug): small card headings, link CTAs.
+- **Lead** (Nunito 400, 18px, line-height 1.6): the paragraph under a heading.
+- **Body** (Nunito, 16px; 15px for secondary body, line-height about 1.5 to 1.6, cocoa at 85%): paragraphs, up to about 65ch.
+- **Label** (Bebas 400, 14 to 15px, tracking 0.12 to 0.14em, uppercase): card labels in terracotta ink, stamp text, counter tiles, captions over a column.
+- **Caption** (Nunito 700, 13 to 14px, cocoa at 80%): notes, dates, setup lines, footnotes.
+- **Micro** (Nunito 700, 12px): the smallest text, only inside device mock-ups and stamps. Nothing smaller.
+- **Figure** (Fraunces 700, 26px; 36px for the one big number): counters and impact totals.
 
 ### Named Rules
-**The Stamp-Only Capitals Rule.** Uppercase and tracking belong to Bebas inside stamps, eyebrows and counters. Headlines and body are never set in capitals.
+**The Stamp-Only Capitals Rule.** Uppercase and tracking belong to Bebas inside stamps, card labels and counters. Headlines and body are never set in capitals.
+
+**The Heading Stands Alone Rule.** No label, kicker or stamp sits directly above a section heading or the hero headline; the heading carries its own weight.
 
 **The Numbers in Serif Rule.** Key figures (impact totals, counters) are set in Fraunces 700 so they read as written down, not as dashboard digits.
 
@@ -189,9 +246,9 @@ Soft, hand-cut corners: stickers at 14 to 18px, cards at 20px, big panels at 24p
 ### Buttons
 Round, warm and sure of themselves, like a pressed paper token.
 - **Shape:** full pill (9999px).
-- **Primary:** Wildflower Honey with white Nunito 800 at 16px, 48px tall, 24px side padding, with the honey glow under it; full width on phones.
-- **Hover / Focus:** hover deepens to Burnt Honey. Keyboard focus everywhere is a 3px honey outline offset 2px. On real pointers, `.lift` raises 2px with a honey ring.
-- **Ink:** Cocoa with paper text, 44px tall, 14px Nunito 800; hover turns Burnt Honey. For a secondary action inside a card ("Get yours").
+- **Primary:** Wildflower Honey with cocoa Nunito 800 at 16px, 48px tall, 24px side padding, with the honey glow under it; full width on phones. One per view (the One Honey Rule): the nav's "Join as a business" is an ink button so it never competes with the hero.
+- **Hover / Focus:** hover lightens to Light Honey. Keyboard focus everywhere is a 3px honey outline offset 2px. On real pointers, `.lift` raises 2px with a honey ring.
+- **Ink:** Cocoa with paper text, 44px tall, 14 to 15px Nunito 800; hover turns Honey Ink. For the nav's join button and secondary actions inside a card ("Get yours", "Check this record now").
 - **Link CTA:** no box, Nunito 800 cocoa text with a 3px Faded Sky underline offset 4px, turning honey on hover. The standard secondary action ("See a live passport").
 
 ### Cards / Containers
@@ -203,7 +260,7 @@ Round, warm and sure of themselves, like a pressed paper token.
 The landing nav is sticky, paper at 95% with a light blur and a cocoa 10% bottom hairline. Links are pills in Nunito 700 at 15px, cocoa at 80%, and on hover they fill with kraft at 40% and go full cocoa. The "Eco Passport" link pulses Bee Leaf when this device has stamps. (The app's legacy bottom nav, on cream with sage active states, is due to move to this language.)
 
 ### Stamp mark (signature)
-An inked rubber stamp: Bebas uppercase in sky or terracotta, double ring, slight tilt, multiplied onto the paper. It marks proof, ranks, counters and "verified" moments. It is decoration with meaning: only put a stamp on something that was really stamped or verified.
+An inked rubber stamp: Bebas uppercase in sky ink or terracotta ink, double ring, slight tilt, multiplied onto the paper. It marks proof, ranks, counters and "verified" moments. It is decoration with meaning: only put a stamp on something that was really stamped or verified.
 
 ### Bee Guardian card (signature)
 The cel-shaded rank cards (Sentinel, Warden, Guardian, Vanguard, Paragon), drawn with the card frame from `lib/beeCardOg.tsx`: paper, a rank-coloured rim, Caprasimo and Figtree on the card itself. They are collectible objects laid onto the journal, not part of its typography.
@@ -215,7 +272,8 @@ For the badge embed: cocoa at 90% with paper text at 90%, 12px mono, 12px radius
 
 ### Do:
 - **Do** build new screens on paper and kraft with cocoa ink, using the journal tokens in `app/globals.css`.
-- **Do** give each view one honey action; make secondary actions sky-underlined link CTAs or ink buttons.
+- **Do** give each view one honey action, with cocoa text; make secondary actions sky-underlined link CTAs or ink buttons.
+- **Do** use the ink token whenever an accent colour is text.
 - **Do** put grain (`.grain`) on paper and kraft surfaces, and multiply ink onto them.
 - **Do** link every shown number or record to its live proof, styled as a sky-underlined link.
 - **Do** keep all motion behind `prefers-reduced-motion` (fan, bob, pulse, pop), as the existing CSS does.
@@ -225,6 +283,9 @@ For the badge embed: cocoa at 90% with paper text at 90%, 12px mono, 12px radius
 - **Don't** add frosted glass panels or the sage-green gradient to new work; they are legacy.
 - **Don't** use leaf green as a background or large fill.
 - **Don't** set headlines or body copy in uppercase; capitals belong to Bebas stamps and labels.
-- **Don't** use pure black or pure grey; text is cocoa.
+- **Don't** use pure black or pure grey; text is cocoa, never lighter than 80%.
+- **Don't** put white text on honey, or set sky, terracotta or leaf as text.
+- **Don't** set text below 12px.
+- **Don't** put a small label or eyebrow above a heading.
 - **Don't** mix in other illustration styles, stock vectors or AI art in another style.
 - **Don't** stamp something that wasn't verified; the stamp means proof.

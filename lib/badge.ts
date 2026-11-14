@@ -13,11 +13,13 @@ const FONT = "Verdana, 'DejaVu Sans', Geneva, sans-serif";
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const width = (s: string, size: number) => Math.round(s.length * size * 0.62); // Verdana averages ~0.62 em per character
 const num = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
+/** kg with one decimal below 100 (5.4 kg), whole above: the same rounding as the landing page and the impact widget. */
+export const kg = (v: number) => new Intl.NumberFormat("en", { maximumFractionDigits: v < 100 ? 1 : 0 }).format(v);
 
 /** What the badge says on its right half: the verified numbers, or, before the first verified purchase, what the shop is. */
 export function badgeText(impact: Pick<ShopImpact, "purchases" | "plasticItems" | "co2Kg">): string {
   if (impact.purchases === 0) return "verified eco shop · proofs on Solana";
-  return `${num(impact.plasticItems)} plastic items · ${num(impact.co2Kg)} kg CO₂e avoided`;
+  return `${num(impact.plasticItems)} plastic items · ${kg(impact.co2Kg)} kg CO₂e avoided`;
 }
 
 export function badgeSvg(name: string, impact: Pick<ShopImpact, "purchases" | "plasticItems" | "co2Kg">): string {

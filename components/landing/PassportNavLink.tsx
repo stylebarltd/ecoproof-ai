@@ -15,8 +15,8 @@ export default function PassportNavLink({ className = "", onClick }: { className
   }, []);
   const has = stamps > 0;
   return (
-    <Link href="/passport" onClick={onClick} className={`${className} ${has ? "passport-live text-leaf" : ""}`} title={has ? `This phone has an eco passport with ${stamps} ${stamps === 1 ? "stamp" : "stamps"}` : undefined}>
-      <BookUser size={18} className="shrink-0" aria-hidden /> Eco Passport{has && <span className="sr-only"> ({stamps} {stamps === 1 ? "stamp" : "stamps"} on this phone)</span>}
+    <Link href="/passport" onClick={onClick} className={`${className} ${has ? "passport-live" : ""}`} title={has ? `This phone has an eco passport with ${stamps} ${stamps === 1 ? "stamp" : "stamps"}` : undefined}>
+      <BookUser size={18} className={`shrink-0 ${has ? "text-leaf-ink" : ""}`} aria-hidden /> Eco Passport{has && <span className="sr-only"> ({stamps} {stamps === 1 ? "stamp" : "stamps"} on this phone)</span>}
     </Link>
   );
 }

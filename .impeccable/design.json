@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T14:58:54.226946+00:00",
+  "title": "Design System: EcoProof AI",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Journal Paper",
+        "canonical": "oklch(93.8% 0.026 78.9)",
+        "tonalRamp": [
+          "#0d0b07",
+          "#29241e",
+          "#474137",
+          "#686053",
+          "#8a8173",
+          "#aba499",
+          "#cec8c0",
+          "#f2eee8"
+        ]
+      },
+      "kraft": {
+        "role": "neutral",
+        "displayName": "Kraft Board",
+        "canonical": "oklch(80.1% 0.070 74.5)",
+        "tonalRamp": [
+          "#110a02",
+          "#302210",
+          "#523e23",
+          "#775c37",
+          "#997d57",
+          "#b8a183",
+          "#d8c6b0",
+          "#f8edde"
+        ]
+      },
+      "kraft-deep": {
+        "role": "neutral",
+        "displayName": "Deep Kraft",
+        "canonical": "oklch(68.0% 0.081 71.4)",
+        "tonalRamp": [
+          "#120901",
+          "#32210c",
+          "#553d1d",
+          "#7b5a2f",
+          "#9e7b50",
+          "#bca07d",
+          "#dbc5ac",
+          "#faecdb"
+        ]
+      },
+      "cocoa": {
+        "role": "neutral",
+        "displayName": "Cocoa Ink",
+        "canonical": "oklch(30.0% 0.034 62.2)",
+        "tonalRamp": [
+          "#0f0a07",
+          "#2b231c",
+          "#4c3f35",
+          "#6e5e50",
+          "#907f70",
+          "#b0a296",
+          "#d2c7be",
+          "#f4ede7"
+        ]
+      },
+      "honey": {
+        "role": "primary",
+        "displayName": "Wildflower Honey",
+        "canonical": "oklch(70.9% 0.145 62.5)",
+        "tonalRamp": [
+          "#190500",
+          "#3e1a00",
+          "#673200",
+          "#944c00",
+          "#b96e17",
+          "#d3965e",
+          "#eebf96",
+          "#ffe8ce"
+        ]
+      },
+      "honey-deep": {
+        "role": "primary",
+        "displayName": "Burnt Honey",
+        "canonical": "oklch(60.1% 0.131 58.8)",
+        "tonalRamp": [
+          "#180600",
+          "#3d1b00",
+          "#653300",
+          "#914d00",
+          "#b66f2f",
+          "#d19768",
+          "#ecbf9d",
+          "#ffe8d2"
+        ]
+      },
+      "terracotta": {
+        "role": "tertiary",
+        "displayName": "Clay Terracotta",
+        "canonical": "oklch(63.8% 0.122 41.3)",
+        "tonalRamp": [
+          "#190501",
+          "#3e1809",
+          "#682f19",
+          "#94482b",
+          "#b96a4c",
+          "#d5937a",
+          "#efbca9",
+          "#ffe6da"
+        ]
+      },
+      "sky": {
+        "role": "secondary",
+        "displayName": "Faded Sky Ink",
+        "canonical": "oklch(72.6% 0.054 253.0)",
+        "tonalRamp": [
+          "#060c13",
+          "#1b2633",
+          "#334356",
+          "#4e637d",
+          "#6e849f",
+          "#95a7bd",
+          "#bdcbdc",
+          "#e6f0fb"
+        ]
+      },
+      "leaf": {
+        "role": "tertiary",
+        "displayName": "Bee Leaf",
+        "canonical": "oklch(61.0% 0.098 130.3)",
+        "tonalRamp": [
+          "#070e02",
+          "#1c2a0d",
+          "#35491f",
+          "#506b32",
+          "#708d53",
+          "#96ae80",
+          "#bed0ae",
+          "#e7f3dd"
+        ]
+      },
+      "honey-light": {
+        "role": "primary",
+        "displayName": "Light Honey",
+        "canonical": "oklch(76.7% 0.129 63.0)",
+        "tonalRamp": [
+          "#170600",
+          "#3b1c00",
+          "#633500",
+          "#8e4f00",
+          "#b3712d",
+          "#ce9867",
+          "#e9c09c",
+          "#ffe9d2"
+        ]
+      },
+      "honey-ink": {
+        "role": "primary",
+        "displayName": "Honey Ink",
+        "canonical": "oklch(48.9% 0.113 55.7)",
+        "tonalRamp": [
+          "#170600",
+          "#3a1c04",
+          "#623510",
+          "#8c501f",
+          "#b17143",
+          "#cd9874",
+          "#e8c0a5",
+          "#ffe9d7"
+        ]
+      },
+      "sky-ink": {
+        "role": "secondary",
+        "displayName": "Sky Ink",
+        "canonical": "oklch(44.4% 0.074 254.8)",
+        "tonalRamp": [
+          "#050c15",
+          "#182638",
+          "#2e435e",
+          "#476387",
+          "#6785aa",
+          "#8fa7c6",
+          "#b9cbe3",
+          "#e4f0ff"
+        ]
+      },
+      "terracotta-ink": {
+        "role": "tertiary",
+        "displayName": "Terracotta Ink",
+        "canonical": "oklch(47.1% 0.108 41.9)",
+        "tonalRamp": [
+          "#170602",
+          "#3b1a0d",
+          "#64321f",
+          "#8f4c32",
+          "#b46e52",
+          "#cf957f",
+          "#eabead",
+          "#ffe7dc"
+        ]
+      },
+      "leaf-ink": {
+        "role": "tertiary",
+        "displayName": "Leaf Ink",
+        "canonical": "oklch(45.4% 0.083 131.9)",
+        "tonalRamp": [
+          "#070e03",
+          "#1d2912",
+          "#364927",
+          "#516a3c",
+          "#728c5d",
+          "#97ad87",
+          "#bfd0b3",
+          "#e8f3e0"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Sticker White",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline and the closing call to action."
+      },
+      "display-tablet": {
+        "displayName": "Display (tablet)",
+        "purpose": "The display step at sm."
+      },
+      "title-lg": {
+        "displayName": "Title large",
+        "purpose": "Card and step headings."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Paragraph under a heading."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Secondary body."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Notes, dates, footnotes."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Inside device mock-ups and stamps only."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Counters and impact totals."
+      },
+      "figure-lg": {
+        "displayName": "Figure large",
+        "purpose": "The one big number."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card headings, link CTAs, row labels."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraphs, cocoa at 85%, about 65ch."
+      },
+      "label": {
+        "displayName": "Stamp Label",
+        "purpose": "Card labels, stamps, counters; uppercase only here, never above a heading."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sticker",
+        "value": "0 1px 0 rgba(255,255,255,0.8) inset, 0 6px 18px rgba(58,42,28,0.14)",
+        "purpose": "Stickers and sticker cards, with a 3px white outline."
+      },
+      {
+        "name": "honey-glow",
+        "value": "0 8px 22px rgba(224,138,46,0.38)",
+        "purpose": "Only under the primary honey button."
+      },
+      {
+        "name": "device",
+        "value": "0 24px 50px rgba(58,42,28,0.3)",
+        "purpose": "The phone mock-up."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-fan",
+        "value": "300ms ease-out",
+        "purpose": "Hero card fan opening on hover."
+      },
+      {
+        "name": "ease-lift",
+        "value": "180ms ease",
+        "purpose": "Hover lift on pointer devices."
+      },
+      {
+        "name": "bee-bob",
+        "value": "2s ease-in-out infinite",
+        "purpose": "The bee's gentle bob."
+      },
+      {
+        "name": "passport-pulse",
+        "value": "2.6s ease-in-out infinite",
+        "purpose": "Eco Passport nav link when the device has stamps."
+      },
+      {
+        "name": "ease-pop",
+        "value": "cubic-bezier(0.2, 0.9, 0.3, 1.2) 450ms",
+        "purpose": "Stamp and card pop-in."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one honey action in a view.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Join as a founding partner</a>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 24px;border-radius:9999px;background:var(--color-honey,#e08a2e);color:var(--color-cocoa,#3a2a1c);font-family: Nunito, system-ui, sans-serif;font-size:16px;font-weight:800;text-decoration:none;box-shadow:0 8px 22px rgba(224,138,46,0.38);transition:background .15s}.ds-btn-primary:hover{background:var(--color-honey-light,#eda055)}.ds-btn-primary:focus-visible{outline:3px solid #e8a317;outline-offset:2px}"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Secondary action inside a card.",
+      "html": "<a class=\"ds-btn-ink\" href=\"#\">Get yours</a>",
+      "css": ".ds-btn-ink{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:9999px;background:var(--color-cocoa,#3a2a1c);color:var(--color-paper,#f4e9d8);font-family: Nunito, system-ui, sans-serif;font-size:14px;font-weight:800;text-decoration:none;transition:background .15s}.ds-btn-ink:hover{background:var(--color-honey-ink,#8f4c10)}.ds-btn-ink:focus-visible{outline:3px solid #e8a317;outline-offset:2px}"
+    },
+    {
+      "name": "Link CTA",
+      "kind": "custom",
+      "refersTo": "link-underline",
+      "description": "Sky-underlined secondary action and proof link.",
+      "html": "<a class=\"ds-link\" href=\"#\">See a live passport</a>",
+      "css": ".ds-link{font-family: Nunito, system-ui, sans-serif;font-size:16px;font-weight:800;color:var(--color-cocoa,#3a2a1c);text-decoration:underline;text-decoration-color:var(--color-sky,#8fa9c8);text-decoration-thickness:3px;text-underline-offset:4px;transition:text-decoration-color .15s}.ds-link:hover{text-decoration-color:var(--color-honey,#e08a2e)}.ds-link:focus-visible{outline:3px solid #e8a317;outline-offset:2px}"
+    },
+    {
+      "name": "Sticker Card",
+      "kind": "card",
+      "refersTo": "card-sticker",
+      "description": "Paper sticker with white edge and soft shadow.",
+      "html": "<div class=\"ds-sticker\"><h3 class=\"ds-sticker-h\">Your impact page writes itself</h3><p class=\"ds-sticker-p\">Every verified order adds to it.</p></div>",
+      "css": ".ds-sticker{position:relative;max-width:320px;padding:24px;border-radius:20px;background:var(--color-paper,#f4e9d8);color:var(--color-cocoa,#3a2a1c);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 6px 18px rgba(58,42,28,.14),0 0 0 1px rgba(58,42,28,.1);outline:3px solid rgba(255,255,255,.85)}.ds-sticker-h{font-family: Fraunces, Georgia, serif;font-weight:700;font-size:22px;line-height:1.1;margin:0 0 8px}.ds-sticker-p{font-family: Nunito, system-ui, sans-serif;font-size:15px;margin:0;opacity:.8}"
+    },
+    {
+      "name": "Stitched Panel",
+      "kind": "card",
+      "refersTo": "card-stitched",
+      "description": "Kraft board with a dashed stitch and grain.",
+      "html": "<div class=\"ds-stitched\"><span class=\"ds-eyebrow\">Pricing</span><h3 class=\"ds-stitched-h\">Free for the first 50</h3></div>",
+      "css": ".ds-stitched{position:relative;padding:40px 24px;border-radius:20px;background-color:var(--color-kraft,#d9b88c);background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");background-blend-mode:multiply;color:var(--color-cocoa,#3a2a1c);outline:2px dashed rgba(58,42,28,.28);outline-offset:-10px;text-align:center}.ds-eyebrow{font-family: 'Bebas Neue', Impact, sans-serif;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-terracotta-ink,#8c4325)}.ds-stitched-h{font-family: Fraunces, Georgia, serif;font-weight:700;font-size:30px;line-height:1.08;margin:8px 0 0}"
+    },
+    {
+      "name": "Stamp Mark",
+      "kind": "custom",
+      "refersTo": "stamp-mark",
+      "description": "Inked double-ring rubber stamp; only on verified things.",
+      "html": "<span class=\"ds-stamp\">Verified</span>",
+      "css": ".ds-stamp{display:inline-block;transform:rotate(-6deg);padding:8px 16px;font-family: 'Bebas Neue', Impact, sans-serif;font-size:15px;letter-spacing:.08em;line-height:1;text-transform:uppercase;color:var(--color-sky-ink,#36557c);border:2.5px solid currentColor;border-radius:9999px;outline:1.5px dashed currentColor;outline-offset:-7px;mix-blend-mode:multiply;opacity:.92}"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Pill links in the sticky paper nav.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-a\" href=\"#\">How it works</a><a class=\"ds-nav-a\" href=\"#\">Pricing</a><a class=\"ds-nav-a ds-nav-live\" href=\"#\">Eco Passport</a></nav>",
+      "css": ".ds-nav{display:flex;gap:4px;padding:8px;background:rgba(244,233,216,.95);border-bottom:1px solid rgba(58,42,28,.1)}.ds-nav-a{padding:8px 14px;border-radius:9999px;font-family: Nunito, system-ui, sans-serif;font-size:15px;font-weight:700;color:rgba(58,42,28,.85);text-decoration:none;transition:background .15s,color .15s}.ds-nav-a:hover{background:rgba(217,184,140,.4);color:#3a2a1c}.ds-nav-a:focus-visible{outline:3px solid #e8a317;outline-offset:2px}.ds-nav-live{background:rgba(111,143,78,.14)}"
+    },
+    {
+      "name": "Code Snippet",
+      "kind": "custom",
+      "refersTo": "code-snippet",
+      "description": "Badge embed snippet on cocoa.",
+      "html": "<pre class=\"ds-code\">&lt;a href=\"https://ecoproof.superbee.me/places/…\"&gt;&lt;img src=\"…/api/badge/….svg\"&gt;&lt;/a&gt;</pre>",
+      "css": ".ds-code{margin:0;padding:12px;border-radius:12px;background:rgba(58,42,28,.9);color:rgba(244,233,216,.9);font-family:ui-monospace,monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-all}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Stamped Travel Journal",
+    "overview": "**Creative North Star: \"The Stamped Travel Journal\"**\n\nEcoProof looks like a well-used travel journal: warm paper pages, kraft board, rubber stamps inked a little crooked, stickers with a white edge, stitched borders. Each stamp is proof the person was really there, which is the product's whole promise. The material is honest and handmade, never glossy or techy. Solana shows up only as a quiet line of ink you can check, never as neon chrome.\n\nThe journal was built first on the landing page (`components/landing/`, tokens in `app/globals.css` under the travel-journal `@theme`), and it is the target for the whole product. The app screens still use an older \"passport glass\" look: frosted white panels on a sage-green gradient, Caprasimo and Figtree, terra and honey-500 buttons (`.passport-bg`, `.glass`, the `terra-*`, `sage-*`, `neutral-*` scales). Treat that look as legacy. Keep it working, but new app work moves toward the journal instead of extending the glass.\n\nAll art comes from one place: the cel-shaded Bee Guardian card set (five rank personas). Imagery is either that art, or photos with the real QR card, receipt or screen composited in. No other illustration style.",
+    "keyCharacteristics": [
+      "Warm paper and kraft surfaces with CSS grain; cocoa ink instead of black.",
+      "Honey as the one action colour; sky blue as the \"ink\" of links and stamps.",
+      "A characterful serif for headlines, a rounded sans for reading, condensed capitals only inside stamps and labels.",
+      "Depth from paper layering (stickers, stitching, vignette), not from glass or heavy shadows.",
+      "Real records and real numbers on the page, with links to their proof."
+    ],
+    "rules": [
+      {
+        "name": "The One Honey Rule",
+        "body": "Honey marks the single next action in a view. If two things are honey, one of them is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Leaf Is Small Rule",
+        "body": "Green is a detail (a leaf, a tick, a pulse), never a surface. The sage-green app backgrounds are legacy.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Rule",
+        "body": "Text in an accent colour always uses that accent's ink token (honey-ink, sky-ink, terracotta-ink, leaf-ink). The light accents are for fills, rings, underlines and icons. Every text pair meets 4.5:1, or 3:1 at headline size.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stamp-Only Capitals Rule",
+        "body": "Uppercase and tracking belong to Bebas inside stamps, card labels and counters. Headlines and body are never set in capitals.",
+        "section": "typography"
+      },
+      {
+        "name": "The Heading Stands Alone Rule",
+        "body": "No label, kicker or stamp sits directly above a section heading or the hero headline; the heading carries its own weight.",
+        "section": "typography"
+      },
+      {
+        "name": "The Numbers in Serif Rule",
+        "body": "Key figures (impact totals, counters) are set in Fraunces 700 so they read as written down, not as dashboard digits.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Glass Rule",
+        "body": "No `backdrop-filter` frosted panels in new work. The sticky nav's light blur on paper at 95% is the one allowed exception. `.glass` and `.lg-glass` are legacy.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** build new screens on paper and kraft with cocoa ink, using the journal tokens in `app/globals.css`.",
+      "**Do** give each view one honey action, with cocoa text; make secondary actions sky-underlined link CTAs or ink buttons.",
+      "**Do** use the ink token whenever an accent colour is text.",
+      "**Do** put grain (`.grain`) on paper and kraft surfaces, and multiply ink onto them.",
+      "**Do** link every shown number or record to its live proof, styled as a sky-underlined link.",
+      "**Do** keep all motion behind `prefers-reduced-motion` (fan, bob, pulse, pop), as the existing CSS does.",
+      "**Do** use only the cel-shaded Bee Guardian art, or photos with the real card, receipt or screen composited in."
+    ],
+    "donts": [
+      "**Don't** add frosted glass panels or the sage-green gradient to new work; they are legacy.",
+      "**Don't** use leaf green as a background or large fill.",
+      "**Don't** set headlines or body copy in uppercase; capitals belong to Bebas stamps and labels.",
+      "**Don't** use pure black or pure grey; text is cocoa, never lighter than 80%.",
+      "**Don't** put white text on honey, or set sky, terracotta or leaf as text.",
+      "**Don't** set text below 12px.",
+      "**Don't** put a small label or eyebrow above a heading.",
+      "**Don't** mix in other illustration styles, stock vectors or AI art in another style.",
+      "**Don't** stamp something that wasn't verified; the stamp means proof."
+    ]
+  }
+}
