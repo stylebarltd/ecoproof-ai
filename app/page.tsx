@@ -20,7 +20,7 @@ const who = cache(async () => {
 
 export async function generateMetadata(): Promise<Metadata> {
   const w = await who();
-  if (w === "visitor") return { title: "EcoProof AI · Verified eco impact for your customers", description: "Show your customers exactly how much plastic and CO₂ they saved with you, verified on Solana, not claimed. For eco shops, cafés, restaurants and hotels." };
+  if (w === "visitor") return { title: "EcoProof AI · Verified eco impact for your customers", description: "Show your customers an estimate of the plastic and CO₂ they saved with you, recorded on Solana: verified, not claimed. For eco shops, cafés, restaurants and hotels." };
   return { title: w === "owner" ? "My shop · EcoProof AI" : "My eco passport · EcoProof AI" };
 }
 
