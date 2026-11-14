@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import CopySnippet from "@/components/landing/CopySnippet";
-import StampJourney from "@/components/landing/StampJourney";
+import SolanaJourney from "@/components/landing/SolanaJourney";
 import HeroArt from "@/components/landing/HeroArt";
 import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
@@ -129,52 +129,6 @@ function RecordCard({ r }: { r: LandingRecord }) {
       </details>
       <CheckRecord id={r.id} />
       <p className="mt-3 text-[13px] font-bold text-cocoa/80"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link> · the newest proof in the system, whoever made it</p>
-    </div>
-  );
-}
-
-/** How a stamp lands on Solana, told the way a customer meets it: the QR in the order email, the phone working through its steps
- *  (StampJourney, a replay of the real claim screen), and the stamp staying checkable. The newest real record supplies the order. */
-const Cap = ({ children }: { children: React.ReactNode }) => <p className="mb-3 font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{children}</p>;
-function Journey({ r, qr }: { r: LandingRecord | null; qr: string }) {
-  const link = "font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey";
-  const promises = [
-    "Nobody can edit it later, not even us.",
-    "The same order can never become a second stamp.",
-    "Only a fingerprint goes on the chain. Never a name, an email or what they bought.",
-    "Your customers need no wallet and no coins. We pay the fee, a fraction of a cent.",
-    "Still readable if EcoProof closed tomorrow.",
-  ];
-  return (
-    <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto_1fr] lg:items-start lg:gap-10">
-      <div className="flex flex-col">
-        <Cap>1 · The QR in your order email</Cap>
-        <div className="sticker grain flex flex-col rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10">
-          <p className="text-[13px] font-bold text-cocoa/80">{r ? r.merchant : "Your shop"} · Your order is on its way</p>
-          <p className="mt-2 text-[18px] font-extrabold leading-snug">Thank you for choosing plastic-free.</p>
-          <div className="mt-4 flex items-center gap-5">
-            <div className="h-[140px] w-[140px] shrink-0 [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
-            <p className="text-[15px] leading-snug text-cocoa/80"><b className="font-extrabold">Collect your eco stamp.</b> Point your phone camera at the code. No app, no account.</p>
-          </div>
-          <p className="mt-5 text-[13px] font-bold text-cocoa/80">This code works: it opens our demo café.</p>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <Cap>2 · A few seconds on their phone</Cap>
-        <StampJourney r={r} />
-      </div>
-      <div className="flex flex-col">
-        <Cap>3 · And it stays that way</Cap>
-        <div className="sticker grain flex flex-col rounded-[16px] bg-kraft/60 p-5">
-          <p className="text-[18px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
-          <ul className="mt-4 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
-            {promises.map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf" /><span>{t}</span></li>)}
-          </ul>
-          <p className="pt-5 text-[15px]">
-            {r ? <><a href={r.txUrl} target="_blank" rel="noopener" className={link}>See this stamp on Solana</a> · <a href="#proof" className={link}>check it yourself</a></> : <a href="#proof" className={link}>Check one yourself</a>}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
@@ -411,8 +365,8 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Why a blockchain: how one record lands on the chain (with the real newest record), then why, then what goes on and what never does. */}
       <Section id="why-chain" className="py-12 lg:py-20">
         <H2>Why put a coffee stamp on Solana?</H2>
-        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. A proof has to hold up without either of us. This is what your customer sees in the seconds after scanning the QR in your order email:</Lead>
-        <Journey r={stats?.record ?? null} qr={qr} />
+        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. A proof has to hold up without either of us. This is what your customer sees in the seconds after scanning your QR:</Lead>
+        <SolanaJourney r={stats?.record ?? null} qr={qr} />
         <p className="mt-6 max-w-[68ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought. During the hackathon phase proofs are written to Solana devnet.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
       </Section>
 

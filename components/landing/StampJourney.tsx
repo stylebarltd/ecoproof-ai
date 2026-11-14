@@ -2,23 +2,36 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Check, Loader2, Pause, Play } from "lucide-react";
 import type { LandingRecord } from "@/lib/landingStats";
+import { GPS_RADIUS_M } from "@/lib/placeKinds";
+import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
 
 /** The phone is a fixed 504px screen, the height of its finished state (a longer order scrolls inside it); a phone cannot grow.
- *  What the customer sees on the phone in the seconds after scanning the QR on an order email, replayed on a loop: the same four steps
+ *  What the customer sees on the phone in the seconds after scanning a counter QR (`door="visit"`) or the QR on an order email, replayed on a loop: the same four steps
  *  the real claim screen shows (components/ClaimStamp.tsx), with the newest real record's own order and savings. Under
  *  prefers-reduced-motion the finished screen is shown still. The loop can be paused (it updates for longer than five seconds), and it is
  *  not a live region: a screen reader would otherwise announce it forever. */
 const REDUCE = "(prefers-reduced-motion: reduce)";
 const subscribe = (cb: () => void) => { const m = window.matchMedia(REDUCE); m.addEventListener("change", cb); return () => m.removeEventListener("change", cb); };
 
-export default function StampJourney({ r }: { r: LandingRecord | null }) {
+/** Which claim the phone replays: a visit (QR on a café or hotel counter) or an online order (QR in the order email). */
+export type Door = "visit" | "order";
+
+const ANCHOR = { label: "Writing the proof to Solana", detail: "One line on a public ledger. The slow part, a few seconds.", hint: "Nobody can edit it later, not even us." };
+
+export default function StampJourney({ r, door = "order" }: { r: LandingRecord | null; door?: Door }) {
   const items = r && r.items.length > 0 ? r.items.map((it) => `${it.quantity}× ${it.name}`).join(", ") : "your items";
   const saved = r ? `${r.plasticItems} plastic item${r.plasticItems === 1 ? "" : "s"} · ${r.co2Kg} kg CO₂e avoided` : "plastic and CO₂e avoided";
-  const steps = [
+  // The visit steps follow the real claim screen for a place QR (components/ClaimStamp.tsx): location check, stamp check, Solana, passport.
+  const steps: { label: string; detail: string; hint?: string }[] = door === "visit" ? [
+    { label: "Checking you're at the café", detail: `Your phone's location, within ${GPS_RADIUS_M} m` },
+    { label: "Checking your stamp", detail: "One per visit, once a day" },
+    ANCHOR,
+    { label: "Stamp in your passport", detail: `+${pointsLabel(POINTS_BY_KIND.cafe)} · café visit` },
+  ] : [
     { label: "Reading your order", detail: items },
     { label: "Working out what it saved", detail: saved },
-    { label: "Writing the proof to Solana", detail: "One line on a public ledger. The slow part, a few seconds.", hint: "Nobody can edit it later, not even us." },
-    { label: "Stamp in your passport", detail: "+5 points · verified purchase" },
+    ANCHOR,
+    { label: "Stamp in your passport", detail: `+${pointsLabel(POINTS_VERIFIED)} · verified purchase` },
   ];
   // phase 0..3 = that step is running, 4 = all done (the stamp shows), then it starts over
   const [state, setState] = useState({ phase: 4, still: true });
@@ -42,7 +55,7 @@ export default function StampJourney({ r }: { r: LandingRecord | null }) {
       <div className="absolute left-1/2 top-[9px] h-[18px] w-[84px] -translate-x-1/2 rounded-b-[12px] bg-[#1a1a1d]" aria-hidden />
       <div tabIndex={0} role="region" aria-label="The phone screen while a stamp is collected" className="flex h-[504px] flex-col overflow-y-auto rounded-[26px] bg-paper px-4 pb-5 pt-9">
         <p className="font-journal-display text-[18px] font-bold leading-none">Eco<span className="text-honey-ink">Proof</span></p>
-        <p className="mt-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-cocoa/80">{r ? `Order · ${r.merchant}` : "Order · your shop"}</p>
+        <p className="mt-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-cocoa/80">{door === "visit" ? "Visit · Demo Café" : r ? `Order · ${r.merchant}` : "Order · your shop"}</p>
         <ol className="mt-3 space-y-2.5">
           {steps.map((s, i) => {
             const state = i < phase ? "done" : i === phase ? "active" : "todo";
