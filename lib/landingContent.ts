@@ -11,5 +11,8 @@ export const PRICING: { name: string; price?: string; period?: string; note: str
  *  this" and one big order skews them (critique of 14 Nov 2026), so the hero says "early days" with the real counts instead. */
 export const COUNTERS_FROM = 100;
 
-/** "See a live passport": the public id of a passport worth showing (LANDING_DEMO_PASSPORT), else the guide. */
-export const demoPassportHref = () => (process.env.LANDING_DEMO_PASSPORT ? `/u/${process.env.LANDING_DEMO_PASSPORT}` : "/about#customers");
+/** The hero's secondary link: a real passport worth showing (LANDING_DEMO_PASSPORT); without one, the guide, and then it says so
+ *  instead of promising a live passport (critique run 8). */
+export const demoPassport = () => process.env.LANDING_DEMO_PASSPORT
+  ? { href: `/u/${process.env.LANDING_DEMO_PASSPORT}`, label: "See a live passport" }
+  : { href: "/about#customers", label: "How the passport works" };

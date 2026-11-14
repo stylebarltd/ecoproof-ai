@@ -9,7 +9,7 @@ import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
-import { COUNTERS_FROM, demoPassportHref, PRICING } from "@/lib/landingContent";
+import { COUNTERS_FROM, demoPassport, PRICING } from "@/lib/landingContent";
 import { badgeSvg, kg } from "@/lib/badge";
 import QRCode from "qrcode";
 import { appUrl } from "@/lib/nft";
@@ -52,7 +52,7 @@ function PhoneMockup() {
       <div className="mx-auto mb-3 h-5 w-24 rounded-full bg-cocoa" />
       <p className="font-journal-display text-[18px] font-bold leading-tight">My eco passport</p>
       <div className="mt-2 flex items-end justify-between rounded-2xl bg-kraft/60 px-3 py-2.5">
-        <span><span className="block text-[12px] font-bold uppercase tracking-wider text-cocoa/80">Points</span><span className="font-journal-display text-[26px] font-bold leading-none">{POINTS_BY_KIND.cafe + POINTS_VERIFIED + POINTS_BY_KIND.hotel}</span></span>
+        <span><span className="block text-[12px] font-bold text-cocoa/80">Points</span><span className="font-journal-display text-[26px] font-bold leading-none">{POINTS_BY_KIND.cafe + POINTS_VERIFIED + POINTS_BY_KIND.hotel}</span></span>
         <span className="text-right text-[12px] font-bold text-cocoa/80">3 stamps<br />3 proofs on Solana</span>
       </div>
       <ul className="mt-3 space-y-2">
@@ -127,7 +127,7 @@ function RecordCard({ r }: { r: LandingRecord }) {
     <div className="mt-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <p className="font-stamp text-[15px] uppercase tracking-[0.12em] text-sky-ink">Verified purchase · {r.merchant}</p>
-        <p className="text-[13px] font-bold text-cocoa/80">{fmtDate(r.date)} · {r.age}</p>
+        <p className="text-[13px] font-bold text-cocoa/80">{r.recent ? `${fmtDate(r.date)} · ${r.age}` : `written ${fmtDate(r.date)} · unchanged since`}</p>
       </div>
       <ul className="mt-3 divide-y divide-cocoa/10 border-y border-cocoa/10">
         {r.items.slice(0, 4).map((it, i) => (
@@ -192,13 +192,19 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
 
 /** The hospitality side of "your public page": a café, restaurant or hotel with published stars (a real place once one has published;
  *  until then a demo place, labelled as one). Stars come from its frozen declaration; the link proves it on Solana. */
+const KIND_PAGE: Record<string, string> = { cafe: "a café's", restaurant: "a restaurant's", hotel: "a hotel's" };
 function HospitalityCard({ h }: { h: Hospitality }) {
+  // A demo place is shown as a specimen (dashed, unfilled stars), never with the same weight as real data (critique run 8).
+  const on = h.demo ? "fill-transparent text-honey-deep" : "fill-honey text-honey-deep";
+  const half = h.demo ? "fill-transparent text-honey-deep" : "fill-honey/50 text-honey-deep";
   return (
-    <div className="sticker grain rounded-[18px] bg-paper p-5 ring-1 ring-cocoa/10 sm:p-6">
-      <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{h.demo ? `Example · ${h.name}, a demo place` : `${h.name} · published practices`}</p>
+    <div className={h.demo ? "rounded-[18px] border-2 border-dashed border-cocoa/25 p-5 sm:p-6" : "sticker grain rounded-[18px] bg-paper p-5 ring-1 ring-cocoa/10 sm:p-6"}>
+      {h.demo
+        ? <p className="text-[15px] font-extrabold">What {KIND_PAGE[h.kind] ?? "a place's"} page looks like <span className="font-bold text-cocoa/80">({h.name}, a demo place)</span></p>
+        : <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{h.name} · published practices</p>}
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="inline-flex" role="img" aria-label={`${h.stars} out of 5 eco stars`}>
-          {[1, 2, 3, 4, 5].map((k) => <StarIcon key={k} size={22} strokeWidth={2} aria-hidden className={k <= h.stars ? "fill-honey text-honey-deep" : k - 0.5 <= h.stars ? "fill-honey/50 text-honey-deep" : "fill-transparent text-cocoa/25"} />)}
+          {[1, 2, 3, 4, 5].map((k) => <StarIcon key={k} size={22} strokeWidth={2} aria-hidden className={k <= h.stars ? on : k - 0.5 <= h.stars ? half : "fill-transparent text-cocoa/25"} />)}
         </span>
         <span className="text-[15px] font-extrabold">{h.yes} of {h.total} practices, published {fmtDate(h.publishedAt)}</span>
       </div>
@@ -228,8 +234,9 @@ function HeroCopy({ center }: { center?: boolean }) {
       <p className={`${center ? "mx-auto " : ""}mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit or order becomes a stamp in your customer&apos;s eco passport, with an estimate of the plastic and CO₂ it saved, written to Solana so nobody can fake it. They share it; you get the credit.</p>
       <div className={`mt-7 flex flex-col items-center gap-3 sm:flex-row sm:gap-5 ${center ? "justify-center" : ""}`}>
         <Primary href="/join">Join as a business <ArrowRight size={18} /></Primary>
-        <Link href={demoPassportHref()} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See a live passport</Link>
+        <Link href={demoPassport().href} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">{demoPassport().label}</Link>
       </div>
+      <p className={`${center ? "text-center " : ""}mt-3 text-[15px] font-bold text-cocoa/85`}>Free for the first 50 businesses.</p>
     </>
   );
 }
@@ -384,8 +391,9 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
 
       {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}
       <Section id="impact" className="py-12 lg:py-20">
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-          <div className="min-w-0">
+        {/* Order in the DOM (phones): intro, the real shop widget, then the café card; desktop puts the card under the intro, left. */}
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-x-14">
+          <div className="min-w-0 lg:col-start-1 lg:row-start-1">
             <H2>Your public page writes itself</H2>
             <Lead>A shop&apos;s page adds up every verified order, and each number links to the proofs behind it. A café, restaurant or hotel shows eco stars from the practices it publishes, frozen on Solana so they can&apos;t quietly change. You never type a figure.</Lead>
             <div className="mt-8">
@@ -394,9 +402,9 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
               <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
               <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
             </div>
-            {stats?.hospitality && <div className="mt-8"><HospitalityCard h={stats.hospitality} /></div>}
           </div>
-          <ImpactWidget example={stats?.example ?? null} />
+          <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1"><ImpactWidget example={stats?.example ?? null} /></div>
+          {stats?.hospitality && <div className="lg:col-start-1 lg:row-start-2"><HospitalityCard h={stats.hospitality} /></div>}
         </div>
       </Section>
 

@@ -41,7 +41,7 @@ const steps = (kind?: string) => [
  *  signed in, the set-up form; after that, the new place's QR and what to do next. */
 // The heading when a business card on the landing sent the visitor here with ?kind=, worded like that card's link.
 const JOIN_AS: Record<string, string> = { cafe: "a café or restaurant", restaurant: "a café or restaurant", hotel: "a hotel or resort", eco_shop: "an eco shop" };
-const CHOICES = [{ label: "Café / Restaurant", kinds: ["cafe", "restaurant"] }, { label: "Hotel / resort", kinds: ["hotel"] }, { label: "Eco shop", kinds: ["eco_shop"] }];
+const CHOICES = [{ label: "Café / Restaurant", kinds: ["cafe", "restaurant"] }, { label: "Hotel / Resort", kinds: ["hotel"] }, { label: "Eco shop", kinds: ["eco_shop"] }];
 const SET_UP: Record<string, string> = { cafe: "café or restaurant", restaurant: "café or restaurant", hotel: "hotel or resort", eco_shop: "eco shop" };
 
 export default function JoinFlow({ initialKind, near = null }: { initialKind?: string; near?: { lat: number; lng: number } | null }) {
@@ -137,8 +137,8 @@ function SignIn({ social, onSignedIn }: { social: Social[]; onSignedIn: () => vo
         {social.length === 0 && <button onClick={() => setWallet(true)} className={ink}>Sign in with a Solana wallet</button>}
       </div>
       {err && <p className="mt-3 rounded-xl bg-terracotta/15 p-3 text-[15px] font-bold text-terracotta-ink" role="alert">{err}</p>}
-      {social.length > 0 && <button onClick={() => setWallet(true)} className={`${linkCta} mt-5`}>Other ways to sign in</button>}
-      <p className="mt-5 text-[15px] leading-[1.6] text-cocoa/85">After signing in: your place&apos;s name, type, logo and location, and the eco rules. About 5 minutes.</p>
+      {social.length > 0 && <button onClick={() => setWallet(true)} className={`${linkCta} mt-5`}>Other ways to sign in (Solana wallet)</button>}
+      <p className="mt-5 text-[15px] leading-[1.6] text-cocoa/85">After signing in: your place&apos;s name, type, logo and location, and the eco rules.</p>
       <p className={`${note} mt-5`}>What we keep and why: <Link href="/privacy" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">Privacy</Link></p>
       {wallet && <WalletSheet connect={false} onClose={() => setWallet(false)} onSignedIn={onSignedIn} />}
     </div>
@@ -275,7 +275,7 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
           {mapOpen && (
             <div className="mt-3">
               <PinPicker pin={loc} onPick={(p) => { setLoc(p); setErr(""); }} precise start={near} className="h-64 rounded-[16px] ring-1 ring-cocoa/15" />
-              <p className={`${note} mt-2`}>Zoom in until you can see your street, then tap your door. Tap again to move the pin.</p>
+              <p className={`${note} mt-2`}>Tap to zoom in until you can see your street, then tap your door. Tap again to move the pin.</p>
             </div>
           )}
         </div>

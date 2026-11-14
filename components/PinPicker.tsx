@@ -13,10 +13,18 @@ const icon = L.divIcon({
   html: `<span style="display:block;width:22px;height:22px;border-radius:999px;background:#e08a2e;border:3px solid #3a2a1c;box-shadow:0 2px 6px rgba(58,42,28,.3);box-sizing:border-box"></span>`,
 });
 
-function Clicks({ onPick }: { onPick: (p: Pin) => void }) {
-  useMapEvents({ click: (e) => onPick({ lat: Math.round(e.latlng.lat * 1e5) / 1e5, lng: Math.round(e.latlng.lng * 1e5) / 1e5 }) });
+/** A tap sets the pin. In precise mode a tap while zoomed out (below street level) zooms in on that spot instead, so one tap on the world
+ *  view can't pin a place in the wrong country (critique run 8). */
+function Clicks({ onPick, precise }: { onPick: (p: Pin) => void; precise: boolean }) {
+  const map = useMapEvents({
+    click: (e) => {
+      if (precise && map.getZoom() < PIN_ZOOM) { map.setView(e.latlng, Math.min(map.getZoom() + 4, PIN_ZOOM)); return; }
+      onPick({ lat: Math.round(e.latlng.lat * 1e5) / 1e5, lng: Math.round(e.latlng.lng * 1e5) / 1e5 });
+    },
+  });
   return null;
 }
+const PIN_ZOOM = 15;
 
 function Follow({ pin, zoom }: { pin: Pin | null; zoom: number }) {
   const map = useMap();
@@ -35,7 +43,7 @@ export default function PinPicker({ pin, onPick, disabled = false, precise = fal
     <MapContainer center={center} zoom={zoom} className={`isolate w-full ${className}`} zoomControl={precise} attributionControl>
       {/* OpenStreetMap's tile licence asks for the credit on the map. */}
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
-      {!disabled && <Clicks onPick={onPick} />}
+      {!disabled && <Clicks onPick={onPick} precise={precise} />}
       <Follow pin={pin} zoom={precise ? 17 : 9} />
       {pin && <Marker position={[pin.lat, pin.lng]} icon={icon} />}
     </MapContainer>
