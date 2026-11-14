@@ -50,9 +50,13 @@ export function normalise(n: { category: unknown; replaces?: unknown; co2PerUnit
   return { category, replaces, co2PerUnit, excluded: false };
 }
 
-/** Changes to these details trigger a fresh estimate. */
+/** Bump when the estimating rules (SYSTEM) change: every cached AI estimate is then redone on the next product sync. A shop's own
+ *  confirmed numbers live in their own column and are never touched by this. 2: count only disposables customers really buy (Nov 2026). */
+const RULES_VERSION = 2;
+
+/** Changes to these details, or to the rules, trigger a fresh estimate. */
 export const detailsHash = (p: ProductDetails) =>
-  createHash("sha256").update(JSON.stringify([p.name, p.shortDescription ?? "", p.description ?? "", p.attributes ?? {}, p.categories ?? [], p.weight ?? ""])).digest("hex");
+  createHash("sha256").update(JSON.stringify([RULES_VERSION, p.name, p.shortDescription ?? "", p.description ?? "", p.attributes ?? {}, p.categories ?? [], p.weight ?? ""])).digest("hex");
 
 const SCHEMA = {
   type: "object",
@@ -87,6 +91,7 @@ Rules:
 - Be conservative and concrete. Prefer numbers a shopper could check from the product details (pack sizes, number of washes or uses, sizes in a set).
 - Name the replaced items as physical things people recognise ("plastic detergent jug", "sheet of plastic cling film", "plastic toothbrush", "plastic bag"), not abstract units.
 - A bundle or kit counts each part it contains (up to 4 kinds of replaced items).
+- Count only disposables a typical customer would really have bought otherwise. Leave out items that depend on an appliance or habit many households don't have, unless the product details say the customer has it: for example disposable dryer sheets need a tumble dryer, which most homes in warm countries don't use. When unsure whether customers would buy the disposable at all, leave it out.
 - Compare with the disposable product of the same size a shopper would otherwise buy: a small or travel pack replaces a travel-size or sample item (14 toothpaste tabs replace 1 travel-size toothpaste tube), not a fraction of a full-size one. A plastic-free product always replaces at least 1 item; an empty list is only for "not_sustainable".
 - If the product doesn't replace anything disposable (decoration, food, raw material, fire starters, gift cards), use category "not_sustainable" with an empty list.
 - Reference factors per unit for each category (typical, not a limit): ${CATEGORIES.filter((c) => c !== "not_sustainable").map((c) => `${c}: ${FACTORS[c].plasticItems} items, ${FACTORS[c].co2Kg} kg CO2 (${FACTORS[c].label})`).join("; ")}.
