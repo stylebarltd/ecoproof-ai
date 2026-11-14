@@ -23,7 +23,7 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav page="join" />
       <main className="px-4 pb-20 pt-10 sm:px-6 lg:pt-14">
-        <div className="mx-auto max-w-[1000px]"><JoinFlow initialKind={kind && isKind(kind) ? kind : "cafe"} near={near} /></div>
+        <div className="mx-auto max-w-[1000px]"><JoinFlow initialKind={kind && isKind(kind) ? kind : undefined} near={near} /></div>
       </main>
     </div>
   );

@@ -152,7 +152,11 @@ function RecordCard({ r }: { r: LandingRecord }) {
 /** The impact page in miniature: the shop with the most verified purchases, or, before any shop has one, the empty page that the first order fills in. */
 function ImpactWidget({ example }: { example: LandingStats["example"] }) {
   const i = example?.impact;
-  const rows = [[i ? n(i.plasticItems) : "—", "single-use plastic items avoided"], [i ? `${kg(i.co2Kg)} kg` : "—", "CO₂e avoided"], [i ? `${n(Math.round(i.packagingG / 100) / 10)} kg` : "—", "packaging avoided"]] as const;
+  // While there are only a few orders (example.orders is set), one big order would make the plastic total the headline; then the
+  // highlighted figure is the count of verified orders, and the totals follow as ordinary rows.
+  const few = !!example?.orders;
+  const totals = [[i ? n(i.plasticItems) : "—", "single-use plastic items avoided"], [i ? `${kg(i.co2Kg)} kg` : "—", "CO₂e avoided"], [i ? `${n(Math.round(i.packagingG / 100) / 10)} kg` : "—", "packaging avoided"]] as const;
+  const rows = few && i ? [[n(i.purchases), i.purchases === 1 ? "verified order, on Solana" : "verified orders, each one on Solana"] as const, ...totals] : totals;
   const proofs = example ? `/places/${example.id}#proofs` : null;
   return (
     <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
@@ -166,14 +170,14 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
           </div>
         ))}
         <div className="flex items-baseline justify-between gap-4 py-3 text-[13px] font-bold text-cocoa/80">
-          <dt>{i ? `From ${n(i.purchases)} verified purchase${i.purchases === 1 ? "" : "s"} by ${n(i.customers)} customer${i.customers === 1 ? "" : "s"}` : "Fills in from your first verified order"}</dt>
+          <dt>{i ? (few ? `By ${n(i.customers)} customer${i.customers === 1 ? "" : "s"}` : `From ${n(i.purchases)} verified purchase${i.purchases === 1 ? "" : "s"} by ${n(i.customers)} customer${i.customers === 1 ? "" : "s"}`) : "Fills in from your first verified order"}</dt>
           <dd className="inline-flex items-center gap-1"><Link2 size={12} /> on Solana</dd>
         </div>
       </dl>
       {/* While there are only a few orders, show them: one big order (a 300-load laundry kit) explains a large total better than any footnote. */}
       {example?.orders && example.orders.length > 0 && (
         <div className="mt-2">
-          <p className="text-[13px] font-bold text-cocoa/80">The orders behind these numbers</p>
+          <p className="text-[13px] font-bold text-cocoa/80">The orders behind these numbers · <Link href="/about#proof" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">how products are counted</Link></p>
           <ul className="mt-2 space-y-1.5 text-[14px] leading-snug text-cocoa/85">
             {example.orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{n(o.plasticItems)} items</span></li>)}
           </ul>
@@ -347,6 +351,24 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <p className="mt-5 max-w-[68ch] text-[14px] font-bold leading-[1.6] text-cocoa/80">Cafés, restaurants and hotels earn eco stars from the practices they publish; shops show the impact of their orders instead. Every kind gets a public place page, a map pin and share images.</p>
       </Section>
 
+      {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}
+      <Section id="impact" className="py-12 lg:py-20">
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
+          <div className="min-w-0">
+            <H2>Your impact page writes itself</H2>
+            <Lead>Every verified purchase adds to one public page: plastic items avoided first, CO₂e second, packaging third. Each number links to the proofs behind it. You never type a figure.</Lead>
+            <p className="mt-3 text-[14px] font-bold text-cocoa/80">Impact figures are estimates from a transparent factor table, not audited lifecycle data, and the page says so.</p>
+            <div className="mt-8">
+              <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
+              <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
+              <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
+            </div>
+          </div>
+          <ImpactWidget example={stats?.example ?? null} />
+        </div>
+      </Section>
+
       {/* Pricing */}
       <Section id="pricing" className="py-12 lg:py-20">
         <H2>Free for the founding fifty</H2>
@@ -395,24 +417,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</Lead>
         <SolanaJourney r={stats?.record ?? null} qr={qr} />
         <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
-      </Section>
-
-      {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}
-      <Section id="impact" className="py-12 lg:py-20">
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-          <div className="min-w-0">
-            <H2>Your impact page writes itself</H2>
-            <Lead>Every verified purchase adds to one public page: plastic items avoided first, CO₂e second, packaging third. Each number links to the proofs behind it. You never type a figure.</Lead>
-            <p className="mt-3 text-[14px] font-bold text-cocoa/80">Impact figures are estimates from a transparent factor table, not audited lifecycle data, and the page says so.</p>
-            <div className="mt-8">
-              <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
-              <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
-              <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
-            </div>
-          </div>
-          <ImpactWidget example={stats?.example ?? null} />
-        </div>
       </Section>
 
       {/* Final CTA */}

@@ -38,9 +38,8 @@ function Qr({ qr }: { qr: string }) {
     <a href={DEMO} aria-label="Open the demo café's stamp page" className="block h-[140px] w-[140px] shrink-0 rounded-md [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
   );
 }
-const ScanHint = () => (
-  <><span className="lg:hidden">Tap the code to try it.</span><span className="hidden lg:inline">Point your phone camera at the code.</span> No app, no account.</>
-);
+// The QR card only shows from lg (a computer screen you can scan); phones get the "Try it" button under the replay instead.
+const ScanHint = () => <>Point your phone camera at the code. No app, no account.</>;
 
 export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: string }) {
   const [door, setDoor] = useState<Door>("visit");
@@ -83,6 +82,8 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
         <div className="flex flex-col">
           <Cap><span className="hidden lg:inline">2 · </span>A few seconds on their phone</Cap>
           <StampJourney key={door} door={door} r={r} />
+          {/* Phones can't scan their own screen and skip the QR card, so they get the demo as a button (critique run 5 found it missing). */}
+          <a href={DEMO} className="mx-auto mt-4 inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink lg:hidden">Try it: collect a demo stamp</a>
         </div>
         <div className="flex flex-col">
           <Cap><span className="hidden lg:inline">3 · </span>And it stays that way</Cap>

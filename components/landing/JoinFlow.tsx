@@ -26,13 +26,16 @@ const note = "text-[13px] font-bold leading-snug text-cocoa/80";
 
 const STEPS = [
   ["Sign in", "So the place has an owner who can always get back in. No password, and no wallet needed."],
-  ["Tell us about your place", "Its name, what kind of place it is, a logo and, if customers visit you, where it is."],
+  ["Tell us about your place", "Its name, what kind of place it is, a logo and, if customers visit you, where it is. You also confirm three eco rules: no drinks in single-use plastic, no plastic straws, cutlery or takeaway boxes, and genuinely eco-minded."],
   ["Put up your QR", "Print the counter card. Online shops send a QR in the order email or a card in the parcel instead."],
 ] as const;
 
 /** The /join page's content: signed out, what joining takes and the sign-in (Google and Facebook first, a wallet only under "other ways");
  *  signed in, the set-up form; after that, the new place's QR and what to do next. */
-export default function JoinFlow({ initialKind = "cafe", near = null }: { initialKind?: string; near?: { lat: number; lng: number } | null }) {
+// The heading when a business card on the landing sent the visitor here with ?kind=, worded like that card's link.
+const JOIN_AS: Record<string, string> = { cafe: "a café or restaurant", restaurant: "a café or restaurant", hotel: "a hotel or resort", eco_shop: "an eco store" };
+
+export default function JoinFlow({ initialKind, near = null }: { initialKind?: string; near?: { lat: number; lng: number } | null }) {
   const [signedIn, setSignedIn] = useState<boolean | undefined>(undefined);
   const [social, setSocial] = useState<Social[]>([]);
   const [mine, setMine] = useState<MyPlace[]>([]);
@@ -56,7 +59,7 @@ export default function JoinFlow({ initialKind = "cafe", near = null }: { initia
     return (
       <div className="grid gap-10 lg:grid-cols-[1fr_420px] lg:items-start lg:gap-14">
         <div>
-          <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Join as a business</h1>
+          <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Join as {(initialKind && JOIN_AS[initialKind]) || "a business"}</h1>
           <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Set up your café, restaurant, hotel or eco shop in about 10 minutes. The first 50 businesses join free, with everything included, for as long as EcoProof exists.</p>
           <ol className="mt-8 space-y-5">
             {STEPS.map(([title, text], i) => (
@@ -69,6 +72,7 @@ export default function JoinFlow({ initialKind = "cafe", near = null }: { initia
               </li>
             ))}
           </ol>
+          <p className="mt-6 text-[15px] leading-[1.6] text-cocoa/85">The rules are short: <Link href="/rules" className="font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">read them before you start</Link>.</p>
         </div>
         <SignIn social={social} onSignedIn={() => { announceAccountChange(); void refresh(); }} />
       </div>
@@ -79,7 +83,7 @@ export default function JoinFlow({ initialKind = "cafe", near = null }: { initia
     <div className="mx-auto max-w-[680px]">
       <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Set up your place</h1>
       <p className="mt-4 text-[18px] leading-[1.6] text-cocoa/85">You&apos;re signed in. Fill this in once and we make your QR. You can change everything later on your dashboard.</p>
-      <PlaceForm key={formKey} initialKind={initialKind} near={near} onCreated={async (c) => { setCreated(c); await refresh(); }} />
+      <PlaceForm key={formKey} initialKind={initialKind ?? "cafe"} near={near} onCreated={async (c) => { setCreated(c); await refresh(); }} />
       {mine.length > 0 && (
         <section className="mt-12">
           <h2 className="text-[22px] leading-[1.15]">Places you already run</h2>
