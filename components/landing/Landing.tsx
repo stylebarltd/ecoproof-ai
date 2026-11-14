@@ -207,9 +207,24 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
   );
 }
 
-/** Which hero art the landing shows: "island" (the full-bleed island world, components/landing/IslandHero.tsx) or "cards" (the card fan and the
- *  bee). Set NEXT_PUBLIC_LANDING_HERO to switch; the copy is the same in both. */
-const HERO = (process.env.NEXT_PUBLIC_LANDING_HERO ?? "island") as "island" | "cards";
+/** Which hero the landing shows: "island" (the island band, components/landing/IslandHero.tsx), "cards" (the card fan and the bee) or "proof"
+ *  (the newest real record with its live check beside the copy, tried after the critique of 14 Nov 2026 found the island says nothing about
+ *  the product). Set NEXT_PUBLIC_LANDING_HERO to switch; the copy is the same in all three. */
+const HERO = (process.env.NEXT_PUBLIC_LANDING_HERO ?? "island") as "island" | "cards" | "proof";
+
+/** The hero's words and actions, shared by every hero. `center` for the island, where the copy sits in the sky. */
+function HeroCopy({ center }: { center?: boolean }) {
+  return (
+    <>
+      <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco promise, proven by every customer. <span className="text-honey-ink">Verified, not claimed.</span></h1>
+      <p className={`${center ? "mx-auto " : ""}mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit or order becomes a stamp in your customer&apos;s eco passport, with an estimate of the plastic and CO₂ it saved, written to Solana so nobody can fake it. They share it; you get the credit.</p>
+      <div className={`mt-7 flex flex-col items-center gap-3 sm:flex-row sm:gap-5 ${center ? "justify-center" : ""}`}>
+        <Primary href="/join">Join as a business <ArrowRight size={18} /></Primary>
+        <Link href={demoPassportHref()} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See a live passport</Link>
+      </div>
+    </>
+  );
+}
 
 export default async function Landing({ stats }: { stats: LandingStats | null }) {
   // The QR in the "order email" picture: a real code that opens the demo café, so a reader can try it from the page
@@ -234,30 +249,35 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav />
 
-      {/* Hero: the copy is shared; HERO picks the art. "island": copy centred in the sky above the island plate. "cards": copy left, the card fan
-          and the bee right (design brief, section 3) on kraft paper with grain and a faint vignette. */}
+      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy centred in the sky above the island band.
+          "proof": copy left, the newest real record and its live check right, on kraft. "cards": copy left, the card fan and the bee right. */}
       {HERO === "island" ? (
         <IslandHero>
           <div className="mx-auto max-w-[880px] text-center">
-            <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco promise, proven by every customer. <span className="text-honey-ink">Verified, not claimed.</span></h1>
-            <p className="mx-auto mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Every visit or order becomes a stamp in your customer&apos;s eco passport, with an estimate of the plastic and CO₂ it saved, written to Solana so nobody can fake it. They share it; you get the credit.</p>
-            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5">
-              <Primary href="/join">Join as a business <ArrowRight size={18} /></Primary>
-              <Link href={demoPassportHref()} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See a live passport</Link>
-            </div>
+            <HeroCopy center />
             <CounterStrip stats={stats} className="mt-8 flex justify-center" />
           </div>
         </IslandHero>
+      ) : HERO === "proof" ? (
+      <Section className="vignette grain bg-kraft/60 pt-10 pb-12 sm:pt-14 lg:pt-16 lg:pb-16">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+          <div>
+            <HeroCopy />
+            <CounterStrip stats={stats} className="mt-8 flex" />
+          </div>
+          <div className="sticker grain rounded-[18px] bg-paper p-5 sm:p-6">
+            <p className="text-[15px] font-extrabold">The newest record. Check it yourself.</p>
+            {stats?.record ? <RecordCard r={stats.record} /> : (
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/80">The newest verified purchase appears here, with its line items, its impact, its hash and its Solana transaction, and a button that checks it against the chain while you watch.</p>
+            )}
+          </div>
+        </div>
+      </Section>
       ) : (
       <Section className="vignette grain overflow-hidden bg-kraft pt-10 pb-12 sm:pt-14 lg:flex lg:min-h-[86vh] lg:items-center lg:pt-16 lg:pb-16">
         <div className="relative grid items-center gap-10 lg:grid-cols-[6fr_6fr] lg:gap-10">
           <div>
-            <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco promise, proven by every customer. <span className="text-honey-ink">Verified, not claimed.</span></h1>
-            <p className="mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Every visit or order becomes a stamp in your customer&apos;s eco passport, with an estimate of the plastic and CO₂ it saved, written to Solana so nobody can fake it. They share it; you get the credit.</p>
-            <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:gap-5">
-              <Primary href="/join">Join as a business <ArrowRight size={18} /></Primary>
-              <Link href={demoPassportHref()} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See a live passport</Link>
-            </div>
+            <HeroCopy />
             <CounterStrip stats={stats} className="mt-8 hidden lg:flex" />
           </div>
           <HeroArt />
