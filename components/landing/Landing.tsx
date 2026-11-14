@@ -10,7 +10,7 @@ import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
-import { demoPassportHref, PRICING } from "@/lib/landingContent";
+import { COUNTERS_FROM, demoPassportHref, PRICING } from "@/lib/landingContent";
 import { badgeEmbed, badgeSvg, kg } from "@/lib/badge";
 import QRCode from "qrcode";
 import { appUrl } from "@/lib/nft";
@@ -76,6 +76,18 @@ function PhoneMockup() {
 /** Live totals as three square rubber stamps: proofs, single-use plastic items avoided (counted, not weighed), kg CO₂e. */
 function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; className?: string }) {
   if (!stats) return null;
+  if (stats.proofs < COUNTERS_FROM) {
+    // Early days: the real counts in one honest line, with the way to check them, instead of stamp tiles full of small numbers.
+    const count = (v: number, one: string, many: string) => `${n(v)} ${v === 1 ? one : many}`;
+    return (
+      <div className={`items-center ${className}`}>
+        <p className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-[18px] bg-paper/85 px-4 py-2 sm:rounded-full text-[15px] font-bold text-cocoa/85 ring-1 ring-cocoa/10">
+          <span>Early days: {count(stats.places, "place", "places")} and {count(stats.proofs, "stamp", "stamps")} so far, each one written to Solana.</span>
+          <a href="#proof" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Check one</a>
+        </p>
+      </div>
+    );
+  }
   const tiles = [[n(stats.proofs), "proofs", -2], [n(stats.plasticItems), "plastic items avoided", 1.5], [kg(stats.co2Kg), "kg CO₂e avoided", -1]] as const;
   return (
     <div className={`flex-wrap items-center gap-x-3 gap-y-3 lg:gap-x-4 ${className}`} aria-label="Verified so far">
@@ -134,7 +146,7 @@ function RecordCard({ r }: { r: LandingRecord }) {
       </dl>
       </details>
       <CheckRecord id={r.id} />
-      <p className="mt-3 text-[13px] font-bold text-cocoa/80"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link> · the newest proof in the system, whoever made it</p>
+      <p className="mt-3 text-[13px] font-bold text-cocoa/80"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link> · {r.recent ? "the newest proof in the system, whoever made it" : "a real proof from the system, checkable any time"}</p>
     </div>
   );
 }
@@ -226,7 +238,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <CounterStrip stats={stats} className="mt-8 flex" />
           </div>
           <div className="sticker grain rounded-[18px] bg-paper p-5 sm:p-6">
-            <p className="text-[15px] font-extrabold">The newest record. Check it yourself.</p>
+            <p className="text-[15px] font-extrabold">A real record. Check it yourself.</p>
             {stats?.record ? <RecordCard r={stats.record} /> : (
               <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/80">The newest verified purchase appears here, with its line items, its impact, its hash and its Solana transaction, and a button that checks it against the chain while you watch.</p>
             )}

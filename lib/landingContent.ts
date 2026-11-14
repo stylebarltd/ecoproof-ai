@@ -7,5 +7,9 @@ export const PRICING: { name: string; price?: string; period?: string; note: str
   { name: "After the first 50", note: "A simple yearly price per place. It will be shown here before anyone is asked to pay." },
 ];
 
+/** The hero shows its stamp-tile counters (proofs, plastic, CO2) only from this many proofs on. Below it, small totals read as "nobody uses
+ *  this" and one big order skews them (critique of 14 Nov 2026), so the hero says "early days" with the real counts instead. */
+export const COUNTERS_FROM = 100;
+
 /** "See a live passport": the public id of a passport worth showing (LANDING_DEMO_PASSPORT), else the guide. */
 export const demoPassportHref = () => (process.env.LANDING_DEMO_PASSPORT ? `/u/${process.env.LANDING_DEMO_PASSPORT}` : "/about#customers");
