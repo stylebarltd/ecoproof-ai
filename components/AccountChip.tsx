@@ -159,7 +159,7 @@ const SOCIAL_BUTTON: Record<Social, string> = {
   facebook: "bg-[#0866FF] text-white",
 };
 
-function SocialButton({ provider, onError }: { provider: Social; onError: (msg: string) => void }) {
+export function SocialButton({ provider, onError }: { provider: Social; onError: (msg: string) => void }) {
   const [busy, setBusy] = useState(false);
   return (
     <button
