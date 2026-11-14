@@ -88,8 +88,10 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
           <div className="sticker grain flex flex-col rounded-[16px] bg-kraft/60 p-5">
             <p className="text-[18px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
             <ul className="mt-4 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
-              {PROMISES[door].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf" aria-hidden /><span>{t}</span></li>)}
+              {PROMISES[door].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
             </ul>
+            {/* Honest limits: the promises hold on mainnet; the hackathon build writes to devnet, which can be reset. */}
+            <p className="mt-4 text-[14px] font-bold leading-snug text-cocoa/80">Today&apos;s demo proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
             <p className="pt-5 text-[15px]">
               {r ? <><a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> · <a href="#proof" className={link}>check it yourself</a></> : <a href="#proof" className={link}>Check one yourself</a>}
             </p>

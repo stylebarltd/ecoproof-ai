@@ -62,7 +62,7 @@ export default function StampJourney({ r, door = "order" }: { r: LandingRecord |
             return (
               <li key={s.label} className={`flex items-start gap-2.5 text-[13px] leading-snug transition-opacity duration-300 ${state === "todo" ? "opacity-60" : ""}`}>
                 <span className="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center">
-                  {state === "done" ? <Check size={17} strokeWidth={3} className="text-leaf" /> : state === "active" ? <Loader2 size={17} className="animate-spin text-honey-ink" /> : <span className="h-2.5 w-2.5 rounded-full bg-cocoa/30" />}
+                  {state === "done" ? <Check size={17} strokeWidth={3} className="text-leaf-ink" /> : state === "active" ? <Loader2 size={17} className="animate-spin text-honey-ink" /> : <span className="h-2.5 w-2.5 rounded-full bg-cocoa/30" />}
                 </span>
                 <span>
                   <span className={`font-bold ${state === "active" ? "text-cocoa" : "text-cocoa/90"}`}>{s.label}{state === "active" ? "…" : ""}</span>

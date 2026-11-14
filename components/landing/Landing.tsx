@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
-import CopySnippet from "@/components/landing/CopySnippet";
 import SolanaJourney from "@/components/landing/SolanaJourney";
 import MobileJoinBar from "@/components/landing/MobileJoinBar";
 import HeroArt from "@/components/landing/HeroArt";
@@ -11,7 +10,7 @@ import LandingNav from "@/components/landing/LandingNav";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
 import { COUNTERS_FROM, demoPassportHref, PRICING } from "@/lib/landingContent";
-import { badgeEmbed, badgeSvg, kg } from "@/lib/badge";
+import { badgeSvg, kg } from "@/lib/badge";
 import QRCode from "qrcode";
 import { appUrl } from "@/lib/nft";
 import type { LandingRecord, LandingStats } from "@/lib/landingStats";
@@ -331,6 +330,25 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <p className="mt-5 max-w-[68ch] text-[14px] font-bold leading-[1.6] text-cocoa/80">Cafés, restaurants and hotels have stars; stores have an impact page instead. Stars come from the practices you publish, and each published version is frozen with its fingerprint on Solana, so it can&apos;t be quietly changed later. Every kind gets a public place page, a map pin and share images.</p>
       </Section>
 
+      {/* Pricing */}
+      <Section id="pricing" className="py-12 lg:py-20">
+        <H2>Free for the founding fifty</H2>
+        <Lead>Stamps, proofs and the public impact page are always included. The chain fees are on us.</Lead>
+        <ul className="mt-8 grid max-w-[880px] gap-5 md:grid-cols-2">
+          {PRICING.map((p, i) => (
+            <li key={p.name} className={`flex flex-col rounded-[18px] p-6 ${i === 0 ? "sticker grain bg-honey/15 ring-2 ring-honey" : "bg-paper ring-1 ring-cocoa/15"}`}>
+              <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{p.name}</p>
+              {p.price && <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}{p.period && <span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span>}</p>}
+              <p className="mt-3 text-[15px] leading-[1.6] text-cocoa/80">{p.note}</p>
+              {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Claim a founding spot <ArrowRight size={18} /></Primary></div>}
+            </li>
+          ))}
+        </ul>
+        <ul className="mt-6 grid gap-x-8 gap-y-2.5 text-[15px] leading-snug text-cocoa/85 md:grid-cols-2 max-w-[880px]">
+          {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave. Today\u2019s demo proofs are on devnet, a test network; from launch they are written to mainnet."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
+        </ul>
+      </Section>
+
       {/* What customers get */}
       <Section id="customers" className="py-12 lg:py-20">
         <div className="stitched grain rounded-[20px] bg-kraft/55 px-5 py-10 sm:px-10 lg:px-14 lg:py-14">
@@ -370,6 +388,13 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             )}
           </div>
         </div>
+        {/* Where the record comes from, in the same section (the critique found two separate proof demos making one argument twice). */}
+        <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
+          <h3 className="text-[22px] leading-[1.15]">Why put a coffee stamp on Solana?</h3>
+          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</p>
+          <SolanaJourney r={stats?.record ?? null} qr={qr} />
+          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
+        </div>
       </Section>
 
       {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}
@@ -383,38 +408,11 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
               <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
               <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
-              <div className="mt-3"><CopySnippet code={badgeEmbed(stats?.example?.id ?? "your-shop", stats?.example?.name ?? "Your shop")} /></div>
+              <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
             </div>
           </div>
           <ImpactWidget example={stats?.example ?? null} />
         </div>
-      </Section>
-
-      {/* Why a blockchain: how one record lands on the chain (with the real newest record), then why, then what goes on and what never does. */}
-      <Section id="why-chain" className="py-12 lg:py-20">
-        <H2>Why put a coffee stamp on Solana?</H2>
-        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. A proof has to hold up without either of us. This is what your customer sees in the seconds after scanning your QR:</Lead>
-        <SolanaJourney r={stats?.record ?? null} qr={qr} />
-        <p className="mt-6 max-w-[68ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought. During the hackathon phase proofs are written to Solana devnet.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
-      </Section>
-
-      {/* Pricing */}
-      <Section id="pricing" className="py-12 lg:py-20">
-        <H2>Free for the founding fifty</H2>
-        <Lead>Stamps, proofs and the public impact page are included in every plan. The chain fees are on us.</Lead>
-        <ul className="mt-8 grid max-w-[880px] gap-5 md:grid-cols-2">
-          {PRICING.map((p, i) => (
-            <li key={p.name} className={`flex flex-col rounded-[18px] p-6 ${i === 0 ? "sticker grain bg-honey/15 ring-2 ring-honey" : "bg-paper ring-1 ring-cocoa/15"}`}>
-              <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{p.name}</p>
-              {p.price && <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}{p.period && <span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span>}</p>}
-              <p className="mt-3 text-[15px] leading-[1.6] text-cocoa/80">{p.note}</p>
-              {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Claim a founding spot <ArrowRight size={18} /></Primary></div>}
-            </li>
-          ))}
-        </ul>
-        <ul className="mt-6 grid gap-x-8 gap-y-2.5 text-[15px] leading-snug text-cocoa/85 md:grid-cols-2 max-w-[880px]">
-          {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
-        </ul>
       </Section>
 
       {/* Final CTA */}
