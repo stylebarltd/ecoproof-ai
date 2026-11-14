@@ -26,14 +26,15 @@ const note = "text-[13px] font-bold leading-snug text-cocoa/80";
 
 const STEPS = [
   ["Sign in", "So the place has an owner who can always get back in. No password, and no wallet needed."],
-  ["Tell us about your place", "Its name, what kind of place it is, a logo and, if customers visit you, where it is. You also confirm three eco rules: no drinks in single-use plastic, no plastic straws, cutlery or takeaway boxes, and genuinely eco-minded."],
+  ["Tell us about your place", "Its name, what kind of place it is, a logo and, if customers visit you, where it is. You also confirm a few short eco rules, like no drinks in single-use plastic and no plastic straws."],
   ["Put up your QR", "Print the counter card. Online shops send a QR in the order email or a card in the parcel instead."],
 ] as const;
 
 /** The /join page's content: signed out, what joining takes and the sign-in (Google and Facebook first, a wallet only under "other ways");
  *  signed in, the set-up form; after that, the new place's QR and what to do next. */
 // The heading when a business card on the landing sent the visitor here with ?kind=, worded like that card's link.
-const JOIN_AS: Record<string, string> = { cafe: "a café or restaurant", restaurant: "a café or restaurant", hotel: "a hotel or resort", eco_shop: "an eco store" };
+const JOIN_AS: Record<string, string> = { cafe: "a café or restaurant", restaurant: "a café or restaurant", hotel: "a hotel or resort", eco_shop: "an eco shop" };
+const SET_UP: Record<string, string> = { cafe: "café or restaurant", restaurant: "café or restaurant", hotel: "hotel or resort", eco_shop: "eco shop" };
 
 export default function JoinFlow({ initialKind, near = null }: { initialKind?: string; near?: { lat: number; lng: number } | null }) {
   const [signedIn, setSignedIn] = useState<boolean | undefined>(undefined);
@@ -57,14 +58,21 @@ export default function JoinFlow({ initialKind, near = null }: { initialKind?: s
 
   if (!signedIn) {
     return (
-      <div className="grid gap-10 lg:grid-cols-[1fr_420px] lg:items-start lg:gap-14">
-        <div>
+      // Phones: heading, then the sign-in (the one action), then the steps; desktop: heading and steps left, sign-in right (critique run 6
+      // found the sign-in below the fold on a phone).
+      <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-start lg:gap-x-14 lg:gap-y-0">
+        <div className="lg:col-start-1 lg:row-start-1">
           <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Join as {(initialKind && JOIN_AS[initialKind]) || "a business"}</h1>
-          <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Set up your café, restaurant, hotel or eco shop in about 10 minutes. The first 50 businesses join free, with everything included, for as long as EcoProof exists.</p>
-          <ol className="mt-8 space-y-5">
+          <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Set up your {(initialKind && SET_UP[initialKind]) || "café, restaurant, hotel or eco shop"} in about 10 minutes. The first 50 businesses join free, with everything included, for as long as EcoProof exists.</p>
+        </div>
+        <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <SignIn social={social} onSignedIn={() => { announceAccountChange(); void refresh(); }} />
+        </div>
+        <div className="lg:col-start-1 lg:row-start-2">
+          <ol className="space-y-5 lg:mt-8">
             {STEPS.map(([title, text], i) => (
               <li key={title} className="flex gap-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-journal-display text-[20px] font-bold text-cocoa ring-2 ring-cocoa/25" aria-hidden>{i + 1}</span>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-journal-display text-[22px] font-bold text-cocoa ring-2 ring-cocoa/25" aria-hidden>{i + 1}</span>
                 <span>
                   <span className="block text-[18px] font-extrabold leading-snug">{title}</span>
                   <span className="mt-0.5 block text-[15px] leading-[1.6] text-cocoa/85">{text}</span>
@@ -74,7 +82,6 @@ export default function JoinFlow({ initialKind, near = null }: { initialKind?: s
           </ol>
           <p className="mt-6 text-[15px] leading-[1.6] text-cocoa/85">The rules are short: <Link href="/rules" className="font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">read them before you start</Link>.</p>
         </div>
-        <SignIn social={social} onSignedIn={() => { announceAccountChange(); void refresh(); }} />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import { query, type RecordRow } from "./db";
 import { claimUrl } from "./claim";
 import { explorerUrl } from "./solana";
+import { FEW_ORDERS } from "./badge";
 import { listShops, shopProofs, type ShopListing, type ShopProof } from "./shops";
 
 /** The live numbers on the signed-out landing page: what EcoProof has verified so far, one real proof to look at, and the shop with the most
@@ -29,8 +30,8 @@ export type LandingRecord = {
   recent: boolean;
 };
 
-/** Below this many verified purchases the impact widget lists the orders themselves. */
-const ORDERS_SHOWN_BELOW = 10;
+/** Below this many verified purchases the impact widget lists the orders themselves (the badge follows the same rule). */
+const ORDERS_SHOWN_BELOW = FEW_ORDERS;
 
 export async function landingStats(): Promise<LandingStats | null> {
   try {

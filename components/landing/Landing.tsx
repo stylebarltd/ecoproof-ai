@@ -36,7 +36,7 @@ const DoorRow = ({ term, className = "", children }: { term: string; className?:
 /** A round rubber-stamp mark with a number and an icon. */
 function StampMark({ num, icon, label }: { num: number; icon: React.ReactNode; label: string }) {
   return (
-    <div className="stamp flex h-[120px] w-[120px] shrink-0 flex-col items-center justify-center text-sky-ink" style={{ transform: `rotate(${[-6, 4, -3][num - 1]}deg)` }}>
+    <div className="stamp flex h-[120px] w-[120px] shrink-0 flex-col items-center justify-center bg-paper/90 text-sky-ink" style={{ transform: `rotate(${[-6, 4, -3][num - 1]}deg)` }}>
       {icon}
       <span className="mt-1 text-[22px]">{label}</span>
       <span className="text-[12px] tracking-[0.2em]">step {num}</span>
@@ -129,7 +129,7 @@ function RecordCard({ r }: { r: LandingRecord }) {
         <p className="font-stamp text-[15px] uppercase tracking-[0.12em] text-sky-ink">Verified purchase · {r.merchant}</p>
         <p className="text-[13px] font-bold text-cocoa/80">{fmtDate(r.date)}</p>
       </div>
-      <ul className="mt-3 divide-y divide-cocoa/10 rounded-xl bg-paper/80 px-3.5 ring-1 ring-cocoa/10">
+      <ul className="mt-3 divide-y divide-cocoa/10 border-y border-cocoa/10">
         {r.items.slice(0, 4).map((it, i) => (
           <li key={i} className="flex items-baseline gap-3 py-2 text-[15px]"><span className="w-7 shrink-0 font-extrabold text-cocoa/80">{it.quantity}×</span><span className="min-w-0 flex-1 truncate font-bold">{it.name}</span></li>
         ))}
@@ -185,7 +185,7 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
       )}
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         {proofs ? <Link href={proofs} className="text-[15px] font-extrabold underline decoration-sky decoration-[3px] underline-offset-4">See the page and its proofs →</Link> : <span />}
-        <Link href="/join" className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[14px] font-extrabold text-paper hover:bg-honey-ink">Get yours</Link>
+        <Link href="/join" data-join className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[14px] font-extrabold text-paper hover:bg-honey-ink">Join free</Link>
       </div>
     </div>
   );
@@ -214,14 +214,14 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
   // The QR in the "order email" picture: a real code that opens the demo café, so a reader can try it from the page
   const qr = await QRCode.toString(`${appUrl()}/c/demo-cafe?src=qr`, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#3a2a1c", light: "#0000" } });
   // The three owner doors (images in public/landing/doors; cafés and restaurants share one door, a small café/restaurant switch is planned):
-  // how their customers collect a stamp, what each side gets, and setup. An eco store sells in store, online or both, so online selling
+  // how their customers collect a stamp, what each side gets, and setup. An eco shop sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
   const doors = [
     { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.cafe)} per visit, once a day`,
       you: "An eco star rating and a map pin, and regulars who have a reason to keep coming back.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
     { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `Presence stamp, ${pointsLabel(POINTS_BY_KIND.hotel)} per stay`,
       you: "An eco star rating from your published practices checklist, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
-    { img: "store", kind: "eco_shop", title: "Eco store", join: "an eco store", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified online order, with what it saved; ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
+    { img: "store", kind: "eco_shop", title: "Eco shop", join: "an eco shop", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified online order, with what it saved; ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
       you: "A public impact page that adds up every order, a listing in the eco shops directory, and referrals from cafés' and hotels' checklists.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
   ];
   const partners = [
@@ -314,7 +314,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
           {[
             { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "WooCommerce webhook for online orders, printable claim cards for parcels, a QR code for the counter or reception." },
-            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: `A café visit is worth ${pointsLabel(POINTS_BY_KIND.cafe)}, a hotel stay ${POINTS_BY_KIND.hotel}, a verified eco store purchase ${POINTS_VERIFIED}. Each stamp is one record, hashed and written to Solana.` },
+            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: `A café visit is worth ${pointsLabel(POINTS_BY_KIND.cafe)}, a hotel stay ${POINTS_BY_KIND.hotel}, a verified eco shop purchase ${POINTS_VERIFIED}. Each stamp is one record, hashed and written to Solana.` },
             { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Their passport names your business on every stamp. A share image is one tap away, and the proof is one tap further." },
           ].map((s, i) => (
             <li key={s.label} className="flex flex-col">
@@ -356,8 +356,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="min-w-0">
             <H2>Your impact page writes itself</H2>
-            <Lead>Every verified purchase adds to one public page: plastic items avoided first, CO₂e second, packaging third. Each number links to the proofs behind it. You never type a figure.</Lead>
-            <p className="mt-3 text-[14px] font-bold text-cocoa/80">Impact figures are estimates from a transparent factor table, not audited lifecycle data, and the page says so.</p>
+            <Lead>Every verified order adds to one public page, and each number on it links to the proofs behind it. You never type a figure.</Lead>
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
               <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
@@ -372,9 +371,9 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Pricing */}
       <Section id="pricing" className="py-12 lg:py-20">
         <H2>Free for the founding fifty</H2>
-        <Lead>Stamps, proofs and the public impact page are always included. The chain fees are on us.</Lead>
-        <ul className="mt-8 grid max-w-[880px] gap-5 md:grid-cols-2">
-          {PRICING.map((p, i) => (
+        <Lead>Stamps, proofs and the public impact page are always included. No wallet or coins for you or your customers: the chain fees are on us.</Lead>
+        <ul className="mt-8 grid max-w-[440px] gap-5">
+          {PRICING.filter((p) => p.price).map((p, i) => (
             <li key={p.name} className={`flex flex-col rounded-[18px] p-6 ${i === 0 ? "sticker grain bg-honey/15 ring-2 ring-honey" : "bg-paper ring-1 ring-cocoa/15"}`}>
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{p.name}</p>
               {p.price && <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}{p.period && <span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span>}</p>}
@@ -383,8 +382,10 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             </li>
           ))}
         </ul>
-        <ul className="mt-6 grid gap-x-8 gap-y-2.5 text-[15px] leading-snug text-cocoa/85 md:grid-cols-2 max-w-[880px]">
-          {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave. Today\u2019s demo proofs are on devnet, a test network; from launch they are written to mainnet."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
+        {/* A plan without a price yet is a line, not an empty card. */}
+        {PRICING.filter((p) => !p.price).map((p) => <p key={p.name} className="mt-5 max-w-xl text-[15px] leading-[1.6] text-cocoa/85"><b className="font-extrabold">{p.name}:</b> {p.note}</p>)}
+        <ul className="mt-5 grid max-w-xl gap-y-2.5 text-[15px] leading-snug text-cocoa/85">
+          {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave (from launch, on mainnet)."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
         </ul>
       </Section>
 

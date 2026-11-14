@@ -16,9 +16,15 @@ const num = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 /** kg with one decimal below 100 (5.4 kg), whole above: the same rounding as the landing page and the impact widget. */
 export const kg = (v: number) => new Intl.NumberFormat("en", { maximumFractionDigits: v < 100 ? 1 : 0 }).format(v);
 
-/** What the badge says on its right half: the verified numbers, or, before the first verified purchase, what the shop is. */
+/** Below this many verified orders the badge and the landing's impact widget lead with the order count: with a few orders, one big
+ *  order (a 300-load laundry kit) would make the totals look inflated (critique of 14 Nov 2026). */
+export const FEW_ORDERS = 10;
+
+/** What the badge says on its right half: the verified numbers, the order count while orders are few, or, before the first verified
+ *  purchase, what the shop is. */
 export function badgeText(impact: Pick<ShopImpact, "purchases" | "plasticItems" | "co2Kg">): string {
   if (impact.purchases === 0) return "verified eco shop · proofs on Solana";
+  if (impact.purchases < FEW_ORDERS) return `${num(impact.purchases)} verified order${impact.purchases === 1 ? "" : "s"} · proofs on Solana`;
   return `${num(impact.plasticItems)} plastic items · ${kg(impact.co2Kg)} kg CO₂e avoided`;
 }
 

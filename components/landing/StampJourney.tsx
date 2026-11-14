@@ -4,6 +4,7 @@ import { Check, Loader2, Pause, Play } from "lucide-react";
 import type { LandingRecord } from "@/lib/landingStats";
 import { GPS_RADIUS_M } from "@/lib/placeKinds";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
+import { JournalWordmark } from "@/components/landing/shared";
 
 /** The phone is a fixed 504px screen, the height of its finished state (a longer order scrolls inside it); a phone cannot grow.
  *  What the customer sees on the phone in the seconds after scanning a counter QR (`door="visit"`) or the QR on an order email, replayed on a loop: the same four steps
@@ -54,18 +55,18 @@ export default function StampJourney({ r, door = "order" }: { r: LandingRecord |
     <div className="relative rounded-[34px] bg-[#1a1a1d] p-[9px] shadow-[0_18px_40px_rgba(58,42,28,0.28)]">
       <div className="absolute left-1/2 top-[9px] h-[18px] w-[84px] -translate-x-1/2 rounded-b-[12px] bg-[#1a1a1d]" aria-hidden />
       <div tabIndex={0} role="region" aria-label="The phone screen while a stamp is collected" className="flex h-[504px] flex-col overflow-y-auto rounded-[26px] bg-paper px-4 pb-5 pt-9">
-        <p className="font-journal-display text-[18px] font-bold leading-none">Eco<span className="text-honey-ink">Proof</span></p>
+        <p><JournalWordmark className="text-[18px]" /></p>
         <p className="mt-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-cocoa/80">{door === "visit" ? "Visit · Demo Café" : r ? `Order · ${r.merchant}` : "Order · your shop"}</p>
         <ol className="mt-3 space-y-2.5">
           {steps.map((s, i) => {
             const state = i < phase ? "done" : i === phase ? "active" : "todo";
             return (
-              <li key={s.label} className={`flex items-start gap-2.5 text-[13px] leading-snug transition-opacity duration-300 ${state === "todo" ? "opacity-60" : ""}`}>
+              <li key={s.label} className="flex items-start gap-2.5 text-[13px] leading-snug">
                 <span className="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center">
                   {state === "done" ? <Check size={17} strokeWidth={3} className="text-leaf-ink" /> : state === "active" ? <Loader2 size={17} className="animate-spin text-honey-ink" /> : <span className="h-2.5 w-2.5 rounded-full bg-cocoa/30" />}
                 </span>
                 <span>
-                  <span className={`font-bold ${state === "active" ? "text-cocoa" : "text-cocoa/90"}`}>{s.label}{state === "active" ? "…" : ""}</span>
+                  <span className={`font-bold ${state === "active" ? "text-cocoa" : state === "todo" ? "text-cocoa/80" : "text-cocoa/90"}`}>{s.label}{state === "active" ? "…" : ""}</span>
                   {state !== "todo" && <span className="mt-0.5 block text-[12px] text-cocoa/80">{state === "active" && s.hint ? s.hint : s.detail}</span>}
                 </span>
               </li>
