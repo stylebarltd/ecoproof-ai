@@ -30,7 +30,7 @@ export function cleanSupplies(input: unknown): Supply[] | string {
     const product = typeof s.product === "string" ? s.product.trim().replace(/\s+/g, " ").slice(0, 60) : "";
     if (!product) return "Name the product for each practice you tick, like \"Glass straws\".";
     const url = typeof s.url === "string" ? s.url.trim().slice(0, 300) || null : null;
-    if (url && !isWebsite(url)) return `"${product}": enter the link as a full address, like https://superbee.me/glass-straws`;
+    if (url && !isWebsite(url)) return `"${product}": enter the link as a full address, like https://your-shop.com/glass-straws`;
     out.set(practiceId, { practiceId, product, url });
   }
   return [...out.values()];

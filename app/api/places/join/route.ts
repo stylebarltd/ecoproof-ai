@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   if (inStore && !validLoc) return Response.json({ error: "Add your location so customers can find you and stamps can be checked at your place." }, { status: 400 });
   const hasLoc = inStore && validLoc;
   const website = online && typeof b.website === "string" ? b.website.trim().slice(0, 200) || null : null;
-  if (website && !isWebsite(website)) return Response.json({ error: "Enter your website as a full address, like https://superbee.me" }, { status: 400 });
+  if (website && !isWebsite(website)) return Response.json({ error: "Enter your website as a full address, like https://your-shop.com" }, { status: 400 });
 
   const [{ n }] = await query<{ n: number }>("SELECT COUNT(DISTINCT place_id)::int n FROM place_members WHERE member_key = ANY($1) AND role='owner'", [s.keys]);
   if (n >= MAX_PLACES_PER_OWNER) return Response.json({ error: `You can set up up to ${MAX_PLACES_PER_OWNER} places for now.` }, { status: 409 });

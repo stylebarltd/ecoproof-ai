@@ -86,7 +86,7 @@ export async function savePractices(
 
   // An online shop's public details: website, and where it ships from (origins, each serving countries; lib/shipping.ts).
   const website = typeof input.website === "string" ? input.website.trim().slice(0, 200) || null : null;
-  if (website && !isWebsite(website)) throw new PracticeError("Enter your website as a full address, like https://superbee.me");
+  if (website && !isWebsite(website)) throw new PracticeError("Enter your website as a full address, like https://your-shop.com");
   const origins = input.origins === undefined ? null : cleanOrigins(input.origins); // null: leave them as they are
   if (typeof origins === "string") throw new PracticeError(origins);
   const supplies = input.supplies === undefined || !isShop(kind) ? null : cleanSupplies(input.supplies); // null: leave them as they are
