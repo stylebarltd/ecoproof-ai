@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, Camera, Coffee, Flag, Gift, Heart, MapPin, Package, QrCode, Share2, ShieldCheck, Smartphone, Store, Wallet } from "lucide-react";
+import { Check, Camera, Coffee, Flag, Gift, Heart, MapPin, Package, QrCode, Share2, ShieldCheck, Smartphone, Sparkles, Store, Wallet } from "lucide-react";
 import { RANKS, rankWebp } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED } from "@/lib/stampClasses";
 import InviteShop from "@/components/InviteShop";
@@ -58,7 +58,7 @@ export default function About() {
 
       {/* In-page navigation */}
       <nav aria-label="On this page" className="flex flex-wrap justify-center gap-2 py-1 text-[12px] font-bold">
-        {[["#idea", "The idea"], ["#customers", "For customers"], ["#points", "Points & ranks"], ["#owners", "For shops"], ["#help", "Help out"], ["#proof", "The proof"], ["#faq", "Questions"]].map(([href, label]) => (
+        {[["#idea", "The idea"], ["#ai", "The AI"], ["#customers", "For customers"], ["#points", "Points & ranks"], ["#owners", "For shops"], ["#help", "Help out"], ["#proof", "The proof"], ["#faq", "Questions"]].map(([href, label]) => (
           <a key={href} href={href} className="glass rounded-full px-3.5 py-1.5">{label}</a>
         ))}
       </nav>
@@ -74,6 +74,25 @@ export default function About() {
             return <li key={t as string} className="rounded-2xl bg-white/50 px-2 py-3 ring-1 ring-white/70"><I size={22} strokeWidth={2.4} className="mx-auto mb-1 text-sage-700" />{t as string}<span className="mt-0.5 block text-[10.5px] font-semibold text-ink/70">{s as string}</span></li>;
           })}
         </ul>
+      </Panel>
+
+      {/* The AI: why it is in the name, and what it does (2026-11-15) */}
+      <Panel id="ai">
+        <div className="mb-1 flex items-center gap-2"><Sparkles size={20} className="text-sage-700" /><H2>Why &ldquo;AI&rdquo;, and what it does</H2></div>
+        <P>A stamp is only worth something if the impact behind it is real. The hard part is not the blockchain, it is knowing what a beeswax wrap or a laundry pouch actually replaces. That is the AI&apos;s job, and it does it in two places.</P>
+        <H3>1. For connected shops: what one product replaces</H3>
+        <P>When a shop connects its catalogue, its plugin sends each product&apos;s public details once: the name, the descriptions and attributes such as pack size, number of washes or the sizes in a set. Never prices, never customer data. From that, the AI writes an estimate in everyday things: how many metres of cling film, zip-lock bags or toothpaste tubes one unit replaces over its life, and the CO₂ behind them.</P>
+        <P>The shop then <b>confirms, corrects or rejects</b> every estimate in its own admin. Orders use the shop&apos;s confirmed numbers; until a product is confirmed, its numbers are shown as an estimate. That is why a figure on a shop&apos;s site can read &ldquo;EcoProof AI · confirmed by the shop&rdquo;.</P>
+        <H3>2. For everything else: sorting into a table</H3>
+        <P>An order item with no confirmed numbers is sorted by the AI into one of a short list of categories (reusable bottle, beeswax wrap, plastic-free laundry, second-hand clothing and so on, or &ldquo;standard item&rdquo; when it is not eco at all). The numbers then come from a <b>transparent, hand-built factor table</b>, not from the model. The same sorting will read receipts from eco stores once receipt scanning launches.</P>
+        <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
+          <li><b>Guard rails.</b> No product can claim more than a plausible amount per unit, whatever the text says.</li>
+          <li><b>A person decides.</b> The AI proposes; the shop confirms. Nothing it writes reaches a passport unreviewed unless it is clearly labelled an estimate.</li>
+          <li><b>Estimates, not audits.</b> The factor table is published in the code and is our best honest reading, not certified lifecycle data.</li>
+        </ul>
+        <p className="mt-3 rounded-2xl bg-white/45 p-3 text-[12.5px] leading-relaxed ring-1 ring-white/70">
+          In short: the AI estimates, a person confirms, Solana proves. Three jobs, three tools.
+        </p>
       </Panel>
 
       {/* Customers */}

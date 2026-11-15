@@ -372,6 +372,12 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
               <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
               <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
             </div>
+            {/* Why "AI" (2026-11-15): the numbers' origin in two lines, the full account in the guide. */}
+            <div className="mt-8">
+              <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">Where the numbers come from</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">The AI reads what a shop already wrote about a product and estimates what one unit replaces: metres of cling film, zip-lock bags, toothpaste tubes, and the CO₂ behind them. The shop confirms or corrects before it counts. The AI estimates, a person confirms, Solana proves.</p>
+              <Link href="/about#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
+            </div>
           </div>
           <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1"><ImpactWidget example={stats?.example ?? null} /></div>
           {stats && (stats.hospitality.food || stats.hospitality.stay) && <div className="lg:col-start-1 lg:row-start-2"><HospitalityCard food={stats.hospitality.food} stay={stats.hospitality.stay} /></div>}
@@ -456,7 +462,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <li><Link href="/rules" className="hover:underline">Rules</Link> · <Link href="/privacy" className="hover:underline">Privacy</Link></li>
           </ul>
         </div>
-        <p className="mx-auto mt-8 max-w-[1200px] text-[12px] text-cocoa/80">Proofs are written to Solana devnet during the hackathon phase. Impact figures are estimates, not audited data.</p>
+        <p className="mx-auto mt-8 max-w-[1200px] text-[12px] text-cocoa/80">Proofs are written to Solana devnet during the hackathon phase. Impact figures are estimates, not audited data. <Link href="/about#ai" className="underline underline-offset-2">How the AI makes them</Link>.</p>
       </footer>
       <MobileJoinBar />
     </div>
