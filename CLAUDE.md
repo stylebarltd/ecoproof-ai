@@ -168,7 +168,8 @@ Local DB: Docker Postgres container `ecoproof-pg` (port 5433), database `ecoproo
 ## Gotchas
 - **Demo places are gone (2026-11-15):** the judges' no-GPS demo places (demo-cafe, demo-restaurant,
   demo-coffee, demo-hotel) were set to status `suspended` in production and dropped from
-  `data/stamp-places.json`; nothing may be collected by tapping any more. Remaining pre-launch
+  `data/stamp-places.json`, which is now empty: production was emptied on 2026-11-15 and every place, SuperBee included,
+  is set up through /join (the WooCommerce plugin on hive then needs the new place id and secret). Nothing may be collected by tapping any more. Remaining pre-launch
   hardening: durable rate limits, Sybil wallets, mainnet.
 - **Vercel blocks deploys whose commit author isn't on the team.** Commit as
   `echo@stylebar.de`, not the global `boom@stylebar.de`. Check `git log -1 --format=%ae`.

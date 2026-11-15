@@ -102,7 +102,7 @@ npm run dev                  # http://localhost:3000
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables come from `npm run db:migrate`; the launch place in `data/stamp-places.json` is seeded automatically. Migrations connect to the same database without Neon's pooler. |
+| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables come from `npm run db:migrate`; `data/stamp-places.json` can seed places; it is empty, every place is set up through /join. Migrations connect to the same database without Neon's pooler. |
 | `SOLANA_SECRET_KEY` | Base58 secret key of a **devnet** wallet that pays for proofs and NFT mints. Locally a key is generated in `.payer.json` if unset. It needs devnet SOL (faucet.solana.com). |
 | `SOLANA_RPC_URL` | Optional, defaults to public devnet. |
 | `NFT_TREE_ADDRESS`, `NFT_COLLECTION_ADDRESS` | Output of `npx tsx scripts/nft-setup.ts` (run once, with the same wallet as `SOLANA_SECRET_KEY`). Without them stamps still work, NFTs stay pending. |

@@ -37,7 +37,8 @@ async function init(p: Pool) {
   }
 }
 
-/** Launch-partner places (our own place-setup). Upserted on cold start so edits to the JSON take effect; secrets are kept. */
+/** Seeded places from data/stamp-places.json, upserted on cold start; secrets are kept. The list is empty since 2026-11-15:
+ *  every place, SuperBee included, is set up through /join like any other. */
 async function seedStampPlaces(p: Pool) {
   const { randomBytes } = await import("crypto");
   const list = (await import("../data/stamp-places.json")).default as { id: string; name: string; kind: string; image?: string; demo?: boolean; colour?: string; tagline?: string; impactNote?: string | null; lat?: number; lng?: number; gpsRadiusM?: number | null; locations?: { name?: string; lat: number; lng: number }[]; online?: boolean; practices?: Record<string, string> }[];
