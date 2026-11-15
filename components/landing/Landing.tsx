@@ -306,6 +306,13 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             )}
           </div>
         </div>
+        {/* Where the record comes from, as the second half of the same section: one proof story, not three (critique run 7; moved out and back in, 15 Nov 2026). */}
+        <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
+          <h3 className="text-[22px] leading-[1.15]">Why put a coffee stamp on Solana?</h3>
+          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</p>
+          <SolanaJourney r={stats?.record ?? null} qr={qr} />
+          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
+        </div>
       </Section>
 
       {/* How it works */}
@@ -369,14 +376,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1"><ImpactWidget example={stats?.example ?? null} /></div>
           {stats && (stats.hospitality.food || stats.hospitality.stay) && <div className="lg:col-start-1 lg:row-start-2"><HospitalityCard food={stats.hospitality.food} stay={stats.hospitality.stay} /></div>}
         </div>
-      </Section>
-
-      {/* Why Solana: its own section after the business and impact sections, so cost and "is it for me" come before the mechanism (critique run 8). */}
-      <Section id="why-chain" className="py-12 lg:py-20">
-        <H2>Why put a coffee stamp on Solana?</H2>
-        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</Lead>
-        <SolanaJourney r={stats?.record ?? null} qr={qr} />
-        <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
       </Section>
 
       {/* Pricing */}
