@@ -7,6 +7,7 @@ import { mplBubblegum, mintV2, setNonTransferableV2, parseLeafFromMintV2Transact
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import { payerKeypair, RPC } from "./solana";
+import { PRODUCTION_URL } from "./hosts";
 
 // Soulbound compressed NFTs (Metaplex Bubblegum V2).
 //  - One Merkle tree and one MPL-Core collection (with BubblegumV2 + PermanentFreezeDelegate plugins) are created once by
@@ -18,11 +19,13 @@ import { payerKeypair, RPC } from "./solana";
 
 export { BASE_MILESTONES, reachedMilestones, nextMilestone, tierFor, milestoneLabel, type Tier } from "./milestoneRules";
 
-/** Public base URL for links we hand out (QR codes, cards, order links, webhooks, NFT metadata). A preview links to its own branch URL,
- *  even when APP_URL is set for every environment: a QR scanned while testing v2 must stamp on the preview's database, not production. */
+/** Public base URL for links we hand out (QR codes, cards, order links, webhooks, NFT metadata). Production is always
+ *  ecoproofai.com: the domain is not a setting. A preview links to its own branch URL, even when APP_URL is set for every
+ *  environment: a QR scanned while testing must stamp on the preview's database, not production. APP_URL is for local dev. */
 export const appUrl = () => {
   const e = process.env;
-  const url = e.VERCEL_ENV === "preview" && e.VERCEL_BRANCH_URL ? `https://${e.VERCEL_BRANCH_URL}`
+  const url = e.VERCEL_ENV === "production" ? PRODUCTION_URL
+    : e.VERCEL_ENV === "preview" && e.VERCEL_BRANCH_URL ? `https://${e.VERCEL_BRANCH_URL}`
     : e.APP_URL || (e.VERCEL_PROJECT_PRODUCTION_URL ? `https://${e.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
   return url.replace(/\/$/, "");
 };

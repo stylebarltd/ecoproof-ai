@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Caprasimo, Figtree } from "next/font/google";
 import "./globals.css";
+import { PRODUCTION_URL } from "@/lib/hosts";
 
 const caprasimo = Caprasimo({ weight: "400", subsets: ["latin"], variable: "--font-caprasimo", display: "swap" });
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://ecoproof-ai.vercel.app"), // link-preview images must come from the host that serves them
+  metadataBase: new URL(process.env.VERCEL_ENV === "production" ? PRODUCTION_URL : process.env.APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://ecoproof-ai.vercel.app"), // link-preview images must come from the host that serves them
   title: "EcoProof AI",
   description: "Your verified environmental impact passport",
   manifest: "/manifest.webmanifest",

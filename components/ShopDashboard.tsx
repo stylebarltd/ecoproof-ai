@@ -189,6 +189,7 @@ function TeamPanel({ placeId, onLeft }: { placeId: string; onLeft: () => void })
 export default function ShopDashboard({ id }: { id: string }) {
   const [days, setDays] = useState(30);
   const [showAll, setShowAll] = useState(false);
+  const [setupOpen, setSetupOpen] = useState(false);
   const [data, setData] = useState<Data | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "signin" | "missing">("loading");
   const desktop = useDesktop();
@@ -235,6 +236,16 @@ export default function ShopDashboard({ id }: { id: string }) {
       </div>
       {place.status && place.status !== "active" && (
         <p className="rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">{place.status === "suspended" ? "This place was removed from EcoProof AI." : "This place is paused while we review reports."} {place.statusNote}</p>
+      )}
+      {role === "owner" && place.online && a.orders.sent === 0 && (
+        <section className="flex items-center gap-3 rounded-[28px] bg-honey-500 p-4 text-ink lg:gap-4 lg:p-5" aria-label="Set up the shop plugin">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-ink/10"><ShoppingBag size={22} strokeWidth={2.5} /></span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[17px] font-heading leading-tight">Connect your WooCommerce shop</span>
+            <span className="mt-0.5 block text-[12.5px] leading-snug">No orders have reached EcoProof AI yet. Your place id and secret for the plugin are under &ldquo;Give out stamps&rdquo;.</span>
+          </span>
+          <button type="button" onClick={() => { setSetupOpen(true); document.getElementById("give-out-stamps")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} className="shrink-0 rounded-full bg-ink px-3.5 py-2 text-xs font-bold text-cream lg:text-sm">Set up the plugin</button>
+        </section>
       )}
 
       <div className="flex items-center justify-between gap-2">
@@ -319,9 +330,9 @@ export default function ShopDashboard({ id }: { id: string }) {
         </div>
       </div>
 
-      <section className="space-y-3 lg:mx-auto lg:max-w-[560px]">
+      <section id="give-out-stamps" className="scroll-mt-4 space-y-3 lg:mx-auto lg:max-w-[560px]">
         <h2 className="text-[17px]">Give out stamps</h2>
-        <PlaceCard p={placeForTools} />
+        <PlaceCard p={placeForTools} openWoo={setupOpen} />
       </section>
     </div>
   );

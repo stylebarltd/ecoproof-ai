@@ -5,6 +5,7 @@ import { accountKey } from "./ids";
 import { authAccount, authSession, authUser, authVerification } from "./schema";
 import { secret } from "./secret";
 import { solanaWallet, socialPlaceholderEmail } from "./solanaAuth";
+import { PRODUCTION_URL } from "./hosts";
 
 // Accounts and sessions (Better Auth, stored in our Postgres). Sign-in methods: a Solana wallet (lib/solanaAuth.ts), Google and Facebook.
 // Its routes live under /api/account (app/api/account/[...all]); our own /api/auth routes handle the wallet's signature first.
@@ -17,7 +18,6 @@ const keys = (p: SocialProvider) => ({ clientId: process.env[`${p.toUpperCase()}
 /** The social sign-ins the site offers: each one only once both of its keys are set. */
 export const socialEnabled = (): SocialProvider[] => SOCIAL_PROVIDERS.filter((p) => { const k = keys(p); return !!(k.clientId && k.clientSecret); });
 
-const PRODUCTION = "https://ecoproofai.com";
 
 function create() {
   return betterAuth({
@@ -28,7 +28,7 @@ function create() {
     baseURL: {
       // ecoproofai.com is the project's final domain (2026-11-15); ecoproof.superbee.me stays answering for printed QR cards and the plugin.
       allowedHosts: ["ecoproofai.com", "www.ecoproofai.com", "ecoproof.superbee.me", "ecoproof-*-stylebar.vercel.app", "ecoproof-ai-*-stylebar.vercel.app", "localhost:*", "127.0.0.1:*"],
-      fallback: process.env.APP_URL || PRODUCTION,
+      fallback: process.env.VERCEL_ENV === "production" ? PRODUCTION_URL : process.env.APP_URL || PRODUCTION_URL,
     },
     database: drizzleAdapter(orm(), {
       provider: "pg",

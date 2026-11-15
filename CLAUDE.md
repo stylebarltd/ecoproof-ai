@@ -10,7 +10,8 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   CNAME www → 3bc5a83f7626c30d.vercel-dns-017.com., certificate issued with `vercel certs issue`). The old host
   ecoproof.superbee.me stays attached to the project forever: printed QR cards, parcel cards and the plugin on
   shops' servers point at it. `proxy.ts` sends visitors on the old host (and www) to ecoproofai.com with path and
-  query, but never API paths. `APP_URL` on Production must be https://ecoproofai.com. Repo `stylebarltd/ecoproof-ai`. The separate showcase site
+  query, but never API paths. Production links are always built on https://ecoproofai.com (`lib/hosts.ts`,
+  `appUrl()`); `APP_URL` is ignored there and only matters locally. Repo `stylebarltd/ecoproof-ai`. The separate showcase site
   (`../ecoproofai.stylebar.de`) is offline since 2026-11-15: the landing page and `/about#ai` explain the project.
 - Won Best Use of Solana at Colosseum Chiang Mai 2026.
 - Still in its hackathon-judging phase on **Solana devnet** (see Gotchas).
@@ -175,8 +176,10 @@ Local DB: Docker Postgres container `ecoproof-pg` (port 5433), database `ecoproo
   `echo@stylebar.de`, not the global `boom@stylebar.de`. Check `git log -1 --format=%ae`.
 - **`DATABASE_URL_UNPOOLED` in `.env.local` points at production.** Never use it locally.
   Previews read `PREVIEW_DATABASE_DATABASE_URL` and refuse to fall back to production.
-- Previews build their links (QR, cards, order links, webhooks) from `VERCEL_BRANCH_URL`, not
-  `APP_URL` (`appUrl()` in `lib/nft.ts`).
+- Previews build their links (QR, cards, order links, webhooks) from `VERCEL_BRANCH_URL`, production from
+  `PRODUCTION_URL`; `APP_URL` only counts locally (`appUrl()` in `lib/nft.ts`). The plugin has no URL field either:
+  ecoproofai.com is built in, `ECOPROOF_URL` in wp-config.php overrides it for local dev. The dashboard shows a
+  shop only place id and secret, plus a "Connect your WooCommerce shop" card until the first order arrives.
 - Port 5432 to Neon may be blocked from Pola's machine; use the Neon console SQL editor.
 - **`SESSION_SECRET` is required in production** (>= 32 chars); locally a dev-only
   fallback is used. `ADMIN_TOKEN` (>= 16 chars) enables `/admin` and the admin API.

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { PublicPlace } from "@/lib/stampPlaces";
 import type { PlaceStars } from "@/lib/placePractices";
 import type { ShopImpactData } from "@/components/ShopImpact";
@@ -26,31 +26,41 @@ export function CardsButton({ id }: { id: string }) {
   );
 }
 
+/** A copy link that says so: "Copied ✓" for a moment right where it was clicked, instead of a note somewhere else. */
+export function CopyButton({ text, label = "copy", className = "" }: { text: string; label?: string; className?: string }) {
+  const [state, setState] = useState<"idle" | "done" | "fail">("idle");
+  useEffect(() => { if (state === "idle") return; const t = setTimeout(() => setState("idle"), 1800); return () => clearTimeout(t); }, [state]);
+  const go = () => navigator.clipboard?.writeText(text).then(() => setState("done"), () => setState("fail")) ?? setState("fail");
+  return (
+    <button type="button" onClick={go} aria-live="polite" className={`shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-bold ring-1 ring-neutral-300 transition-colors ${state === "done" ? "bg-sage-500 text-cream ring-sage-500" : state === "fail" ? "bg-terra-100 text-terra-800 ring-terra-800/30" : "bg-white hover:bg-neutral-100"} ${className}`}>
+      {state === "done" ? "Copied ✓" : state === "fail" ? "Select and copy by hand" : label}
+    </button>
+  );
+}
+
 export type MyPlace = PublicPlace & { status?: string; statusNote?: string | null; role?: "owner" | "staff"; stars?: PlaceStars | null; impact?: ShopImpactData | null };
-type WooSetup = { plugin: { download: string; appUrl: string; placeId: string; secret: string }; webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
+type WooSetup = { plugin: { download: string; placeId: string; secret: string }; webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
 
-/** The plugin's own default; the URL step is only shown when this app runs somewhere else (staging, local). */
-const PLUGIN_DEFAULT_URL = "https://ecoproofai.com";
-
-export function WooOption({ id }: { id: string }) {
+/** `open` loads the setup steps straight away (the dashboard's "Set up the plugin" card lands here). The plugin already
+ *  knows the app's URL, so only place id and secret are shown. */
+export function WooOption({ id, open = false }: { id: string; open?: boolean }) {
   const [setup, setSetup] = useState<WooSetup | null>(null);
   const [msg, setMsg] = useState("");
-  async function load() {
-    const r = await fetch(`/api/places/mine/${id}/woo`);
+  const load = () => fetch(`/api/places/mine/${id}/woo`).then(async (r) => {
     const j = await r.json().catch(() => ({}));
     if (r.ok) setSetup(j); else setMsg(j.error || "Could not load the setup");
-  }
-  const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => setMsg("Copied"), () => setMsg("Select and copy it by hand"));
+  });
+  useEffect(() => { if (open && !setup) void load(); }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   const field = (label: string, value: string, secret = false) => (
     <span className="mt-1 flex items-center gap-2 rounded-lg bg-white px-2 py-1.5 ring-1 ring-neutral-300">
       <span className="shrink-0 text-neutral-600">{label}</span>
-      <code className="min-w-0 flex-1 truncate">{value}</code>
-      <button onClick={() => copy(value)} className="shrink-0 font-bold underline">copy</button>
+      <code className="min-w-0 flex-1 truncate select-all">{value}</code>
+      <CopyButton text={value} />
       {secret && <span className="sr-only">(keep it private)</span>}
     </span>
   );
   return (
-    <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
+    <div id="woo-setup" className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
       <p className="font-semibold">A. QR in your order email <span className="font-normal text-neutral-600">(WooCommerce shops)</span></p>
       <p className="text-xs text-neutral-600">Install the free EcoProof AI plugin. When an order is paid, your customer gets a personal button and QR in their order email. It&apos;s signed per order, so their stamp is a verified purchase with the real impact of what they bought.</p>
       {!setup ? (
@@ -61,7 +71,6 @@ export function WooOption({ id }: { id: string }) {
             <li><a href={setup.plugin.download} download className="inline-block rounded-full bg-honey-500 px-3 py-1.5 font-bold text-ink">Download the plugin</a></li>
             <li>In WordPress: <b>Plugins → Add New → Upload Plugin</b>, choose the file, <b>Install</b>, then <b>Activate</b>.</li>
             <li>Open <b>WooCommerce → Settings → EcoProof AI</b> and fill in:
-              {setup.plugin.appUrl !== PLUGIN_DEFAULT_URL && field("EcoProof AI URL", setup.plugin.appUrl)}
               {field("Place id", setup.plugin.placeId)}
               {field("Secret", setup.plugin.secret, true)}
               <span className="mt-1 block text-neutral-600">Keep the secret private: it signs every order and every claim link.</span>
@@ -73,11 +82,11 @@ export function WooOption({ id }: { id: string }) {
             <summary className="cursor-pointer font-semibold">Can&apos;t install plugins? Set it up by hand</summary>
             <ol className="mt-2 list-decimal space-y-2 pl-4">
               <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof AI, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
-              <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <button onClick={() => copy(setup.webhook.deliveryUrl)} className="font-bold underline">copy</button></li>
+              <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <CopyButton text={setup.webhook.deliveryUrl} /></li>
               <li>Secret: the one above.</li>
-              <li>Paste this into your <b>child theme&apos;s functions.php</b>: <button onClick={() => copy(setup.themeSnippet)} className="font-bold underline">copy snippet</button>
+              <li>Paste this into your <b>child theme&apos;s functions.php</b>: <CopyButton text={setup.themeSnippet} label="copy snippet" />
                 <textarea readOnly value={setup.themeSnippet} rows={5} className="mt-1 w-full rounded-lg bg-white p-2 font-mono text-[10px] ring-1 ring-neutral-300" /></li>
-              <li>If your order emails come from another plugin and the QR doesn&apos;t show up, use this snippet instead: it sends its own short email. <button onClick={() => copy(setup.themeSnippetOwnEmail)} className="font-bold underline">copy snippet B</button></li>
+              <li>If your order emails come from another plugin and the QR doesn&apos;t show up, use this snippet instead: it sends its own short email. <CopyButton text={setup.themeSnippetOwnEmail} label="copy snippet B" /></li>
             </ol>
             <p className="mt-2">This way only reacts to <b>completed</b> orders. The plugin also handles paid (processing) orders, refunds and retries.</p>
           </details>
@@ -90,7 +99,7 @@ export function WooOption({ id }: { id: string }) {
 
 /** A place's ways to give stamps, per channel: the counter QR in store, and the order email and parcel cards online. Staff see
  *  everything except the WooCommerce setup, which holds the shop's secret. */
-export function PlaceCard({ p }: { p: MyPlace }) {
+export function PlaceCard({ p, openWoo = false }: { p: MyPlace; openWoo?: boolean }) {
   const notice = p.status && p.status !== "active" ? <p className="rounded-xl bg-terra-100 p-2.5 text-xs text-terra-800">{p.status === "suspended" ? "This place was removed from EcoProof AI." : "This place is paused while we review reports."} {p.statusNote}</p> : null;
   return (
     <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
@@ -115,7 +124,7 @@ export function PlaceCard({ p }: { p: MyPlace }) {
           {p.inStore ? <p className="pt-2 text-left text-sm font-semibold">Online</p> : <p className="text-xs text-neutral-600">Two ways to give customers their stamp. Use one or both.</p>}
           {p.role === "staff" ? (
             <p className="rounded-2xl bg-sage-100 p-3 text-left text-xs text-neutral-600"><b>A. QR in your order email:</b> the WooCommerce setup holds the shop&apos;s secret, so only the owner sees it.</p>
-          ) : <WooOption id={p.id} />}
+          ) : <WooOption id={p.id} open={openWoo} />}
           <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
             <p className="font-semibold">B. Printed QR cards in the parcel <span className="font-normal text-neutral-600">(any channel: Amazon, Lazada, Shopee…)</span></p>
             <p className="text-xs text-neutral-600">No shop code needed. Print the cards and drop one in each parcel. Every card gives one stamp, once. It can&apos;t show the order&apos;s impact, because a card doesn&apos;t prove what was bought.</p>
