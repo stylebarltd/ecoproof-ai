@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Star as StarIcon, Trophy } from "lucide-react";
+import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import SolanaJourney from "@/components/landing/SolanaJourney";
+import HospitalityCard from "@/components/landing/HospitalityCard";
 import MobileJoinBar from "@/components/landing/MobileJoinBar";
 import HeroArt from "@/components/landing/HeroArt";
 import IslandHero from "@/components/landing/IslandHero";
@@ -13,7 +14,7 @@ import { COUNTERS_FROM, demoPassport, PRICING } from "@/lib/landingContent";
 import { badgeSvg, kg } from "@/lib/badge";
 import QRCode from "qrcode";
 import { appUrl } from "@/lib/nft";
-import type { Hospitality, LandingRecord, LandingStats } from "@/lib/landingStats";
+import type { LandingRecord, LandingStats } from "@/lib/landingStats";
 import { RANKS } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
 
@@ -125,10 +126,10 @@ function RecordCard({ r }: { r: LandingRecord }) {
   const short = (s: string) => `${s.slice(0, 10)}…${s.slice(-8)}`;
   return (
     <div className="mt-2">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <p className="font-stamp text-[15px] uppercase tracking-[0.12em] text-sky-ink">Verified purchase · {r.merchant}</p>
-        <p className="text-[13px] font-bold text-cocoa/80">{r.recent ? `${fmtDate(r.date)} · ${r.age}` : `written ${fmtDate(r.date)} · unchanged since`}</p>
-      </div>
+      {/* Durability is the headline (critique run 8): the point of a record is that it hasn't changed since the day it was written. */}
+      <p className="font-stamp text-[15px] uppercase tracking-[0.12em] text-sky-ink">Verified purchase · {r.merchant}</p>
+      <p className="mt-1 font-journal-display text-[24px] font-bold leading-tight sm:text-[26px]">Unchanged since {fmtDate(r.date)}</p>
+      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Fingerprinted on Solana the day it was written. The check below compares it again, now.</p>
       <ul className="mt-3 divide-y divide-cocoa/10 border-y border-cocoa/10">
         {r.items.slice(0, 4).map((it, i) => (
           <li key={i} className="flex items-baseline gap-3 py-2 text-[15px]"><span className="w-7 shrink-0 font-extrabold text-cocoa/80">{it.quantity}×</span><span className="min-w-0 flex-1 truncate font-bold">{it.name}</span></li>
@@ -186,37 +187,6 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
         )}
       </dl>
       {proofs && <Link href={proofs} className="mt-4 inline-flex items-center gap-1.5 text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See the page and its proofs <ArrowRight size={16} /></Link>}
-    </div>
-  );
-}
-
-/** The hospitality side of "your public page": a café, restaurant or hotel with published stars (a real place once one has published;
- *  until then a demo place, labelled as one). Stars come from its frozen declaration; the link proves it on Solana. */
-const KIND_PAGE: Record<string, string> = { cafe: "a café's", restaurant: "a restaurant's", hotel: "a hotel's" };
-function HospitalityCard({ h }: { h: Hospitality }) {
-  // A demo place is shown as a specimen (dashed, unfilled stars), never with the same weight as real data (critique run 8).
-  const on = h.demo ? "fill-transparent text-honey-deep" : "fill-honey text-honey-deep";
-  const half = h.demo ? "fill-transparent text-honey-deep" : "fill-honey/50 text-honey-deep";
-  return (
-    <div className={h.demo ? "rounded-[18px] border-2 border-dashed border-cocoa/25 p-5 sm:p-6" : "sticker grain rounded-[18px] bg-paper p-5 ring-1 ring-cocoa/10 sm:p-6"}>
-      {h.demo
-        ? <p className="text-[15px] font-extrabold">What {KIND_PAGE[h.kind] ?? "a place's"} page looks like <span className="font-bold text-cocoa/80">({h.name}, a demo place)</span></p>
-        : <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{h.name} · published practices</p>}
-      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="inline-flex" role="img" aria-label={`${h.stars} out of 5 eco stars`}>
-          {[1, 2, 3, 4, 5].map((k) => <StarIcon key={k} size={22} strokeWidth={2} aria-hidden className={k <= h.stars ? on : k - 0.5 <= h.stars ? half : "fill-transparent text-cocoa/25"} />)}
-        </span>
-        <span className="text-[15px] font-extrabold">{h.yes} of {h.total} practices, published {fmtDate(h.publishedAt)}</span>
-      </div>
-      {h.examples.length > 0 && (
-        <ul className="mt-3 space-y-1.5 text-[15px] leading-snug text-cocoa/85">
-          {h.examples.map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
-        </ul>
-      )}
-      <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[15px]">
-        <Link href={`/places/${h.id}`} className="font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">See its page</Link>
-        {h.txUrl && <a href={h.txUrl} target="_blank" rel="noopener" className="font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Its declaration on Solana</a>}
-      </p>
     </div>
   );
 }
@@ -336,13 +306,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             )}
           </div>
         </div>
-        {/* Where the record comes from, as the second half of the same section: one proof story, not three (critique run 7). */}
-        <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
-          <h3 className="text-[22px] leading-[1.15]">Why put a coffee stamp on Solana?</h3>
-          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</p>
-          <SolanaJourney r={stats?.record ?? null} qr={qr} />
-          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
-        </div>
       </Section>
 
       {/* How it works */}
@@ -404,8 +367,16 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             </div>
           </div>
           <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1"><ImpactWidget example={stats?.example ?? null} /></div>
-          {stats?.hospitality && <div className="lg:col-start-1 lg:row-start-2"><HospitalityCard h={stats.hospitality} /></div>}
+          {stats && (stats.hospitality.food || stats.hospitality.stay) && <div className="lg:col-start-1 lg:row-start-2"><HospitalityCard food={stats.hospitality.food} stay={stats.hospitality.stay} /></div>}
         </div>
+      </Section>
+
+      {/* Why Solana: its own section after the business and impact sections, so cost and "is it for me" come before the mechanism (critique run 8). */}
+      <Section id="why-chain" className="py-12 lg:py-20">
+        <H2>Why put a coffee stamp on Solana?</H2>
+        <Lead>Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</Lead>
+        <SolanaJourney r={stats?.record ?? null} qr={qr} />
+        <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
       </Section>
 
       {/* Pricing */}

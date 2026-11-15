@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Play } from "lucide-react";
 import StampJourney, { type Door } from "@/components/landing/StampJourney";
 import type { LandingRecord } from "@/lib/landingStats";
 
@@ -43,6 +43,8 @@ const ScanHint = () => <>Point your phone camera at the code. No app, no account
 
 export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: string }) {
   const [door, setDoor] = useState<Door>("visit");
+  // The replay is behind one tap (critique run 8): a closed card costs a few lines instead of a 520px phone on every visit.
+  const [open, setOpen] = useState(false);
   const link = "font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey";
   return (
     <div className="mt-8">
@@ -81,7 +83,18 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
         </div>
         <div className="flex flex-col">
           <Cap><span className="hidden lg:inline">2 · </span>A few seconds on their phone</Cap>
-          <StampJourney key={door} door={door} r={r} />
+          {open ? <StampJourney key={door} door={door} r={r} /> : (
+            <div className="sticker grain flex flex-col items-start rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10 lg:w-[260px]">
+              <ol className="space-y-1.5 text-[15px] leading-snug text-cocoa/85">
+                {(door === "visit" ? ["Their location is checked", "One stamp per visit, once a day"] : ["Their order is read", "What it saved is worked out"]).concat(["The proof is written to Solana", "The stamp lands in their passport"]).map((t, i) => (
+                  <li key={t} className="flex gap-2"><span className="w-4 shrink-0 font-extrabold text-cocoa/80">{i + 1}</span><span>{t}</span></li>
+                ))}
+              </ol>
+              <button type="button" onClick={() => setOpen(true)} className="mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-kraft/60 px-4 text-[15px] font-extrabold text-cocoa ring-1 ring-cocoa/15 hover:bg-kraft">
+                <Play size={15} aria-hidden /> Watch it on a phone
+              </button>
+            </div>
+          )}
           {/* Phones can't scan their own screen and skip the QR card, so they get the demo as a button (critique run 5 found it missing). */}
           <a href={DEMO} className="mx-auto mt-4 inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink lg:hidden">Try it: collect a demo stamp</a>
         </div>

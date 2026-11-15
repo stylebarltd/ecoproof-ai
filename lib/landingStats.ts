@@ -23,7 +23,7 @@ export type LandingStats = {
   record: LandingRecord | null;
   /** A café, restaurant or hotel with published stars, the hospitality counterpart of the shop's impact widget: a real place when one
    *  has published, else a demo place (flagged, the page says so). */
-  hospitality: Hospitality | null;
+  hospitality: { food: Hospitality | null; stay: Hospitality | null };
 };
 
 export type Hospitality = {
@@ -33,8 +33,9 @@ export type Hospitality = {
   publishedAt: string; txUrl: string | null;
 };
 
-/** The best published star rating among cafés, restaurants and hotels: real places first, then signed declarations, then most stars. */
-async function hospitality(): Promise<Hospitality | null> {
+/** The best published star rating for a café or restaurant (`food`) and for a hotel (`stay`), so a resort manager sees a hotel's page,
+ *  not a café's: real places first, then signed declarations, then most stars. */
+async function hospitality(): Promise<{ food: Hospitality | null; stay: Hospitality | null }> {
   const places = await query<{ id: string; name: string; kind: string; demo: boolean; also_cafe: boolean }>(
     "SELECT id, name, kind, demo, also_cafe FROM stamp_places WHERE kind IN ('cafe','restaurant','hotel') AND status = 'active'",
   );
@@ -48,8 +49,11 @@ async function hospitality(): Promise<Hospitality | null> {
     return [{ p, d, asked, yes }];
   });
   options.sort((a, b) => Number(a.p.demo) - Number(b.p.demo) || Number(a.d.pending) - Number(b.d.pending) || b.d.stars - a.d.stars);
-  const best = options[0];
-  if (!best) return null;
+  const pick = (hotel: boolean) => { const best = options.find((o) => (o.p.kind === "hotel") === hotel); return best ? card(best) : null; };
+  return { food: pick(false), stay: pick(true) };
+}
+
+function card(best: { p: { id: string; name: string; kind: string; demo: boolean }; d: ReturnType<typeof toDeclaration>; asked: { label: string }[]; yes: { label: string }[] }): Hospitality {
   return {
     id: best.p.id, name: best.p.name, kind: best.p.kind, demo: best.p.demo, stars: best.d.stars, score: best.d.score,
     yes: best.yes.length, total: best.asked.length, examples: best.yes.slice(0, 3).map((q) => q.label),
@@ -93,7 +97,7 @@ export async function landingStats(): Promise<LandingStats | null> {
       listShops(null),
       query<RecordRow>("SELECT * FROM records WHERE signature IS NOT NULL AND items <> '[]' AND (co2_kg > 0 OR plastic_items > 0) ORDER BY created_at DESC LIMIT 1"),
       query<{ places: number }>("SELECT COUNT(*)::int AS places FROM stamp_places WHERE NOT demo AND status = 'active'"),
-      hospitality().catch((e) => { console.error("landing hospitality failed", e); return null; }),
+      hospitality().catch((e) => { console.error("landing hospitality failed", e); return { food: null, stay: null }; }),
     ]);
     let items: LandingRecord["items"] = [];
     try { items = rec ? (JSON.parse(rec.items) as LandingRecord["items"]).map(({ name, quantity }) => ({ name, quantity })) : []; } catch { /* shown without its lines */ }
