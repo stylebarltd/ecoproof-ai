@@ -1,6 +1,7 @@
 import { ClaimError, claimStamp } from "@/lib/stamp";
 import { claimCard } from "@/lib/cards";
 import { claimOrder } from "@/lib/woo";
+import { claimReceipt } from "@/lib/receipts";
 import { afterProof } from "@/lib/milestones";
 import { getPassport } from "@/lib/passport";
 import { progressResponse, wantsProgress } from "@/lib/progress";
@@ -12,14 +13,15 @@ export const maxDuration = 60;
 type Step = "verify" | "anchor" | "save";
 
 /**
- * Claim doors: place QR { placeId, userId, lat?, lng? }, printed card { cardCode, userId }, or verified order { placeId, orderToken, userId }.
+ * Claim doors: place QR { placeId, userId, lat?, lng? }, printed card { cardCode, userId }, verified order { placeId, orderToken, userId },
+ * or a reviewed receipt { receiptToken, userId, lat, lng } (the token comes from POST /api/receipts/read).
  * One valid claim = one stamp + one Solana proof (+ a milestone NFT when one is reached).
  * Send `Accept: application/x-ndjson` to get live progress: one JSON object per line ({step}, then {done} or {error}).
  */
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
   if (rateLimited(`claims-ip:${ip}`, 600)) return Response.json({ error: "Too many requests, try again later" }, { status: 429 }); // generous: a venue's Wi-Fi is one address
-  const b = (await req.json().catch(() => ({}))) as { placeId?: unknown; cardCode?: unknown; orderToken?: unknown; userId?: unknown; lat?: unknown; lng?: unknown };
+  const b = (await req.json().catch(() => ({}))) as { placeId?: unknown; cardCode?: unknown; orderToken?: unknown; receiptToken?: unknown; userId?: unknown; lat?: unknown; lng?: unknown };
   let passportId: string;
   try { passportId = await resolveUser(req, String(b.userId ?? "")); }
   catch (e) { if (e instanceof AuthError) return Response.json({ error: e.message }, { status: 401 }); throw e; }
@@ -30,7 +32,8 @@ export async function POST(req: Request) {
 
   const run = async (emit: (e: Record<string, unknown>) => void) => {
     const onStep = (s: Step) => emit({ step: s });
-    const stamp = b.orderToken ? await claimOrder(String(b.placeId ?? ""), String(b.orderToken), passportId, onStep)
+    const stamp = b.receiptToken ? await claimReceipt(String(b.receiptToken), passportId, geo, onStep)
+      : b.orderToken ? await claimOrder(String(b.placeId ?? ""), String(b.orderToken), passportId, onStep)
       : b.cardCode ? await claimCard(String(b.cardCode), passportId, onStep)
       : await claimStamp({ placeId: String(b.placeId ?? ""), passportId, source: "qr", geo, onStep });
     emit({ step: "passport" });

@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Camera, Check, CircleHelp } from "lucide-react";
+import { Camera, Check, CircleHelp, ReceiptText } from "lucide-react";
 import QrScanner from "@/components/QrScanner";
+import ReceiptScanner from "@/components/ReceiptScanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import AccountChip from "@/components/AccountChip";
 import SharePassport from "@/components/SharePassport";
@@ -39,6 +40,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
   const slots = Math.max(0, 8 - (pass?.places.length ?? 0));
   const t = pass?.totals;
   const [scanning, setScanning] = useState(false);
+  const [receipting, setReceipting] = useState(false); // the receipt door (eco shops, in the shop)
   const desktop = useDesktop(); // on desktop the wallet chip sits in the top navbar
   useAccountChange(owner ? onAccountChange : undefined);
   const smallRanks = (
@@ -76,10 +78,14 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
               <Camera size={18} strokeWidth={2.5} /> Scan a QR to collect a stamp
             </button>
             <p className="mt-1.5 hidden text-[11.5px] text-sage-900 lg:block">On a computer? Scan with your phone&apos;s camera, or use a webcam here.</p>
+            <button onClick={() => setReceipting(true)} className="glass lift mt-2 flex w-full items-center justify-center gap-2 rounded-full py-2.5 text-[13.5px] font-bold text-ink lg:px-6">
+              <ReceiptText size={17} strokeWidth={2.5} /> Scan a receipt from an eco shop
+            </button>
           </div>
         </div>
       )}
       {scanning && <QrScanner onClose={() => setScanning(false)} />}
+      {receipting && <ReceiptScanner onClose={() => setReceipting(false)} />}
 
       {/* Phones: one column in this order. Desktop: left (sticky) hero + progress, right ranks row + stamps + proof trail. */}
       <div className="space-y-4 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start lg:gap-8 lg:space-y-0">

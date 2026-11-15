@@ -112,10 +112,21 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   if it matches the place's current type. Pending proofs are written on view
   (`/api/declarations/<id>/anchor`); demo places get a seeded declaration.
 
+- Receipt door (2026-11-15, in-shop only; `lib/receipts.ts`): "Scan a receipt from an eco shop" in the passport
+  (`components/ReceiptScanner.tsx`) photographs a receipt, downsizes it, and POSTs it with the position to
+  `/api/receipts/read`. The server picks the candidate eco shops within 400 m of the shopper, has Claude
+  (`RECEIPT_MODEL`, vision + JSON schema) read merchant, date (Buddhist years converted), number, total and item
+  lines and pick the matching shop among the candidates (a name-overlap guard behind it), rejects receipts older
+  than 7 days or already claimed (DB `receipt_fp` and the chain), sorts the lines with `matchItems` (the shop's
+  numbers, catalogue, then AI), needs at least one sustainable item, and returns a review with a signed token
+  (HMAC, 15 min, bound to the passport). The photo is never stored. `POST /api/claims { receiptToken, lat, lng }`
+  → `claimReceipt()` re-checks the position (place `gps_radius_m`, default 150 m, against the matched location) and
+  goes through `claimStamp` with `source: "receipt"` and the receipt's own fingerprint (number + date + total,
+  `receiptFingerprint`). `stampClass("receipt")` is verified: 5 points, impact line, same cards and proofs as an
+  order. Not built: at-home scans (3 pts) and the per-shop item memory.
+
 ### v2 plans, not built yet (agreed with Pola, in this order)
-- Receipt scanning for eco shops: in the shop (GPS, name matches) 5 pts, at home 3 pts, receipt
-  at most 7 days old, once per receipt on-chain; Claude sorts items into `lib/impact.ts`
-  categories, and a per-shop item memory builds itself (shops never enter products).
+- Receipt scanning at home (3 pts) and the per-shop item memory that builds itself from confirmed scans.
 - "Visitor-verified" (not "certified"): after a QR stamp, ask about one published practice
   (Yes / No / Didn't notice); a No becomes a report (`practice_reports`); badge after 3 visitors
   on 3 different days, shown with its count; any answer earns the reward, not only Yes.

@@ -84,7 +84,7 @@ export default function About() {
         <P>When a shop connects its catalogue, its plugin sends each product&apos;s public details once: the name, the descriptions and attributes such as pack size, number of washes or the sizes in a set. Never prices, never customer data. From that, the AI writes an estimate in everyday things: how many metres of cling film, zip-lock bags or toothpaste tubes one unit replaces over its life, and the CO₂ behind them.</P>
         <P>The shop then <b>confirms, corrects or rejects</b> every estimate in its own admin. Orders use the shop&apos;s confirmed numbers; until a product is confirmed, its numbers are shown as an estimate. That is why a figure on a shop&apos;s site can read &ldquo;EcoProof AI · confirmed by the shop&rdquo;.</P>
         <H3>2. For everything else: sorting into a table</H3>
-        <P>An order item with no confirmed numbers is sorted by the AI into one of a short list of categories (reusable bottle, beeswax wrap, plastic-free laundry, second-hand clothing and so on, or &ldquo;standard item&rdquo; when it is not eco at all). The numbers then come from a <b>transparent, hand-built factor table</b>, not from the model. The same sorting will read receipts from eco stores once receipt scanning launches.</P>
+        <P>An order item with no confirmed numbers is sorted by the AI into one of a short list of categories (reusable bottle, beeswax wrap, plastic-free laundry, second-hand clothing and so on, or &ldquo;standard item&rdquo; when it is not eco at all). The numbers then come from a <b>transparent, hand-built factor table</b>, not from the model. The same sorting reads the lines of a receipt scanned in an eco shop.</P>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
           <li><b>Guard rails.</b> No product can claim more than a plausible amount per unit, whatever the text says.</li>
           <li><b>A person decides.</b> The AI proposes; the shop confirms. Nothing it writes reaches a passport unreviewed unless it is clearly labelled an estimate.</li>
@@ -107,6 +107,7 @@ export default function About() {
           <li className="flex gap-3"><Store size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>At a shop or café:</b> scan the EcoProof QR code on the counter. Tap <b>Scan a QR to collect a stamp</b> in the app, or use your phone&apos;s own camera. One stamp per place per day. Some places check that you are really there and will ask for your location.</span></li>
           <li className="flex gap-3"><Package size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A card in your parcel:</b> brands that sell online (even on marketplaces) can put a card in the box. Scan it. Each card works once.</span></li>
           <li className="flex gap-3"><Gift size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>From an order email:</b> if a shop that uses EcoProof sends you an &ldquo;order completed&rdquo; email, it contains a personal QR and a <b>Collect my stamp</b> button. Tap it. This is the special one, see below.</span></li>
+          <li className="flex gap-3"><Camera size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A receipt in an eco shop:</b> bought something plastic-free in a shop that&apos;s on EcoProof? Tap <b>Scan a receipt</b> in your passport while you&apos;re still in the shop and photograph the receipt. EcoProof reads what you bought, you check it, and the stamp is a <b>verified purchase</b> too. Receipts up to 7 days old, each one once; we keep the items, never the photo.</span></li>
         </ul>
         <p className="mt-3 rounded-2xl bg-white/45 p-3 text-[12.5px] leading-relaxed ring-1 ring-white/70">
           <b>Just trying it out?</b> The demo places (Demo Café, Demo Restaurant and Demo Coffee Roasters) can be collected by tapping them in your passport or on the map. Real places can only be collected by scanning their QR code.
@@ -143,7 +144,7 @@ export default function About() {
       {/* Points and ranks */}
       <Panel id="points">
         <H2>Points and ranks</H2>
-        <P>Ranks are reached by <b>points</b>, not by how many times you scan: a verified purchase is worth {POINTS_VERIFIED}; a presence stamp is worth {POINTS_BY_KIND.cafe} at a café, restaurant or eco store till and {POINTS_BY_KIND.hotel} at a hotel or resort. Scanning a receipt in an eco store will count as a verified purchase once it launches. Every stamp records a proof on Solana, but only reaching a rank mints an NFT.</P>
+        <P>Ranks are reached by <b>points</b>, not by how many times you scan: a verified purchase is worth {POINTS_VERIFIED}; a presence stamp is worth {POINTS_BY_KIND.cafe} at a café, restaurant or eco store till and {POINTS_BY_KIND.hotel} at a hotel or resort. A receipt scanned in an eco shop counts as a verified purchase too. Every stamp records a proof on Solana, but only reaching a rank mints an NFT.</P>
         <div className="mt-4 grid grid-cols-2 gap-3 min-[420px]:grid-cols-3">
           {RANKS.map((r) => (
             <div key={r.key} className="text-center">
