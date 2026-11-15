@@ -15,7 +15,7 @@ export default function IslandHero({ children }: { children: React.ReactNode }) 
     <section className="island-hero relative overflow-hidden lg:flex lg:h-[calc(100svh-4rem)] lg:min-h-[600px] lg:flex-col">
       <Image src={`${DIR}/sky.webp`} alt="" fill priority sizes="100vw" className="object-cover object-bottom" />
       <div className="relative z-10 px-4 pt-10 pb-8 sm:px-6 sm:pt-14 lg:pt-16 lg:pb-10">{children}</div>
-      <div className="relative z-[5] -mt-[2vw] h-[clamp(300px,96vw,460px)] lg:-mt-[11vw] lg:h-auto lg:min-h-0 lg:flex-1" role="img" aria-label="The EcoProof island: a beekeeper's hut in a flower meadow, a waterfall between two mesas, trees and distant hills at golden hour">
+      <div className="relative z-[5] -mt-[2vw] h-[clamp(300px,96vw,460px)] lg:-mt-[11vw] lg:h-auto lg:min-h-0 lg:flex-1" role="img" aria-label="The EcoProof AI island: a beekeeper's hut in a flower meadow, a waterfall between two mesas, trees and distant hills at golden hour">
         <Image src={`${DIR}/main.webp`} alt="" width={2048} height={1024} priority sizes="100vw" className="absolute inset-x-0 top-0 hidden h-auto w-full lg:block" />
         <Image src={`${DIR}/mobile.webp`} alt="" width={1080} height={1350} priority sizes="100vw" className="absolute inset-x-0 top-0 h-auto w-full lg:hidden" />
         <Image src="/landing/bee.webp" alt="" width={944} height={880} sizes="(min-width: 1024px) 300px, 180px" className="bee-bob absolute -bottom-2 right-2 z-[6] h-[150px] w-auto lg:-right-10 lg:h-[clamp(160px,30vh,300px)]" style={{ filter: "drop-shadow(0 10px 18px rgba(58,42,28,0.3))" }} />

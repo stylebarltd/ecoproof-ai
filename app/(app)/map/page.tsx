@@ -67,7 +67,7 @@ export default function MapPage() {
       <div className="flex flex-col gap-2.5 px-5 pt-5 pb-3 md:px-8 lg-glass lg:w-[380px] lg:shrink-0 lg:rounded-[28px] lg:p-5 xl:w-[420px]">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-[22px] leading-tight lg:text-[26px]">EcoProof places</h1>
+            <h1 className="text-[22px] leading-tight lg:text-[26px]">EcoProof AI places</h1>
             <p className="text-[13px] text-neutral-600">{loaded ? `${new Set(places.map((p) => p.id)).size} place${new Set(places.map((p) => p.id)).size === 1 ? "" : "s"} you can collect stamps at` : "Loading…"}</p>
           </div>
           <Link href="/join" className="lift shrink-0 rounded-full bg-honey-500 px-3 py-1.5 text-[12px] font-bold text-ink">Run a place?</Link>
@@ -84,7 +84,7 @@ export default function MapPage() {
           {KINDS.map((k) => <span key={k.id} className="flex items-center gap-1.5">{dot(k.colour)} {k.label.toLowerCase()}</span>)}
           <span className="flex items-center gap-1.5"><span className="rounded-full bg-ink px-1 text-[10px] font-extrabold leading-4 text-honey-500">4★</span> eco stars</span>
         </div>
-        <p className="text-[11px] leading-snug text-neutral-500 lg:text-sage-900">Verified = claimed and set up on EcoProof by its owner. Independent vetting is on our roadmap. <Link href="/rules" className="underline">Eco rules and reporting</Link></p>
+        <p className="text-[11px] leading-snug text-neutral-500 lg:text-sage-900">Verified = claimed and set up on EcoProof AI by its owner. Independent vetting is on our roadmap. <Link href="/rules" className="underline">Eco rules and reporting</Link></p>
         {/* Desktop place list: picking a row centres it on the map, picking a marker highlights its row */}
         <div className="hidden min-h-0 flex-1 flex-col lg:flex">
           <div className="mb-1.5 mt-1 flex items-center justify-between border-t border-white/60 pt-3">
@@ -118,7 +118,7 @@ export default function MapPage() {
           <div className="absolute inset-4 z-[1000] flex flex-col items-center justify-center gap-2 rounded-[28px] bg-neutral-100 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cream text-sage-600"><MapPin size={22} strokeWidth={2.5} /></span>
             <p className="font-heading text-[15px]">No places yet</p>
-            <p className="max-w-[220px] text-[12.5px] text-neutral-600">Places appear here as they join EcoProof.</p>
+            <p className="max-w-[220px] text-[12.5px] text-neutral-600">Places appear here as they join EcoProof AI.</p>
           </div>
         )}
         {selected && <StampPlaceSheet key={sel} place={selected} onClose={() => setSel(null)} />}

@@ -3,18 +3,18 @@ import Link from "next/link";
 import { CORE_RULES, REPORT_WINDOW_DAYS, REVIEW_THRESHOLD } from "@/lib/ecoRules";
 import { SCALE } from "@/lib/practices";
 
-export const metadata = { title: "Eco rules | EcoProof" };
+export const metadata = { title: "Eco rules | EcoProof AI" };
 
 export default function Rules() {
   return (
     <div className="space-y-4 text-sm leading-relaxed lg:mx-auto lg:max-w-[720px]">
       <h1 className="text-[22px] leading-tight">Eco rules for places</h1>
-      <p>EcoProof is for places that really are eco. A place can only join if it agrees to these rules:</p>
+      <p>EcoProof AI is for places that really are eco. A place can only join if it agrees to these rules:</p>
       <ul className="list-disc space-y-1.5 pl-5">{CORE_RULES.map((r) => <li key={r}>{r}</li>)}</ul>
       <p>Eco shops also agree not to hand out single-use plastic bags, or pack online orders in single-use plastic, where an alternative exists.</p>
 
       <h2 className="pt-2 text-[17px]">Who checks?</h2>
-      <p>Joining is a promise: owners confirm the rules when they set up their place. We don&apos;t inspect places in person yet, so we rely on customers to tell us when a place doesn&apos;t keep it. &ldquo;Verified&rdquo; on the map means <b>claimed and set up on EcoProof</b>, not independently audited. Real vetting is on our roadmap.</p>
+      <p>Joining is a promise: owners confirm the rules when they set up their place. We don&apos;t inspect places in person yet, so we rely on customers to tell us when a place doesn&apos;t keep it. &ldquo;Verified&rdquo; on the map means <b>claimed and set up on EcoProof AI</b>, not independently audited. Real vetting is on our roadmap.</p>
 
       <h2 id="stars" className="scroll-mt-20 pt-2 text-[17px]">Eco stars</h2>
       <p>Cafés, restaurants and hotels get up to five eco stars, in half stars. The owner answers a checklist of practices a visitor can see for themselves, such as real cups for dine-in or no plastic water bottles. Each practice is worth points, out of 100.</p>

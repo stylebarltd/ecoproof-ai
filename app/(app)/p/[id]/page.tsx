@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const rec = (await query<RecordRow>("SELECT * FROM records WHERE id=$1", [id]))[0];
   if (!rec) return {};
-  const title = rec.place_id ? `Eco stamp collected at ${rec.merchant} | EcoProof` : `${rec.co2_kg} kg CO₂ saved · ${plasticsAvoided(rec.plastic_items)} | EcoProof`;
+  const title = rec.place_id ? `Eco stamp collected at ${rec.merchant} | EcoProof AI` : `${rec.co2_kg} kg CO₂ saved · ${plasticsAvoided(rec.plastic_items)} | EcoProof AI`;
   const description = `Verified environmental impact${rec.signature ? ", anchored on Solana" : ""}. Make your impact visible with EcoProof AI.`;
   const image = `/api/card/${id}`;
   return {

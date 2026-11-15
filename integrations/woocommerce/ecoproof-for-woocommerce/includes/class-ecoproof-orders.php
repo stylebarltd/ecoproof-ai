@@ -1,16 +1,16 @@
 <?php
 /**
- * Sends orders to EcoProof.
+ * Sends orders to EcoProof AI.
  *
  * When an order is paid (a "paid" status from the settings; processing and
- * completed by default) it goes to EcoProof straight away, inside the status
+ * completed by default) it goes to EcoProof AI straight away, inside the status
  * change, so the stamp link is live before the order email leaves. Later
  * statuses that matter are sent too: a refund, cancellation or failure voids
  * a stamp nobody has collected yet.
  *
  * The request uses WooCommerce's webhook format and signature
  * (X-WC-Webhook-Signature = base64 HMAC-SHA256 of the body with the shop's
- * EcoProof secret), but carries only the order id, status and line items:
+ * EcoProof AI secret), but carries only the order id, status and line items:
  * no customer data, no prices. A failed send retries through Action
  * Scheduler; until it lands, the claim page asks the customer to try again.
  *
@@ -35,7 +35,7 @@ class EcoProof_Orders {
 		add_action( self::RETRY_HOOK, array( __CLASS__, 'retry' ), 10, 2 );
 	}
 
-	/** What EcoProof is told: "processing"/"completed" for paid orders (a custom paid status counts as processing), or the void status. */
+	/** What EcoProof AI is told: "processing"/"completed" for paid orders (a custom paid status counts as processing), or the void status. */
 	private static function status_for( $status ) {
 		if ( in_array( $status, EcoProof_Config::paid_statuses(), true ) ) {
 			return in_array( $status, array( 'processing', 'completed' ), true ) ? $status : 'processing';
@@ -65,14 +65,14 @@ class EcoProof_Orders {
 
 	private static function schedule_retry( $order_id, $attempt ) {
 		if ( $attempt > self::MAX_ATTEMPTS || ! function_exists( 'as_schedule_single_action' ) ) {
-			self::log( sprintf( 'Gave up sending order %d to EcoProof.', $order_id ), 'error' );
+			self::log( sprintf( 'Gave up sending order %d to EcoProof AI.', $order_id ), 'error' );
 			return;
 		}
 		// 1, 2, 4, 8, 16, 32 minutes.
 		as_schedule_single_action( time() + 60 * ( 2 ** ( $attempt - 1 ) ), self::RETRY_HOOK, array( $order_id, $attempt ), 'ecoproof' );
 	}
 
-	/** Sends the order. True when EcoProof took it, or refused it for a reason a retry won't fix. */
+	/** Sends the order. True when EcoProof AI took it, or refused it for a reason a retry won't fix. */
 	public static function send( WC_Order $order ) {
 		$status = self::status_for( $order->get_status() );
 		$items  = array();
@@ -102,13 +102,13 @@ class EcoProof_Orders {
 		$code   = (int) wp_remote_retrieve_response_code( $response );
 		$result = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
-			self::log( sprintf( 'Order %d (%s) refused by EcoProof: HTTP %d', $order->get_id(), $status, $code ), 'error' );
+			self::log( sprintf( 'Order %d (%s) refused by EcoProof AI: HTTP %d', $order->get_id(), $status, $code ), 'error' );
 			return $code < 500; // a 4xx (wrong secret, unknown place) won't get better by retrying
 		}
 
 		$outcome = is_array( $result ) && isset( $result['result'] ) ? (string) $result['result'] : 'ok';
 		self::log( sprintf( 'Order %d (%s): %s', $order->get_id(), $status, $outcome ) );
-		// EcoProof's estimate of what the order avoids, for the stamp block ("Your order avoids about ...").
+		// EcoProof AI's estimate of what the order avoids, for the stamp block ("Your order avoids about ...").
 		if ( 'stored' === $outcome && isset( $result['impact'] ) && is_array( $result['impact'] ) ) {
 			$order->update_meta_data(
 				self::META_IMPACT,
@@ -123,21 +123,21 @@ class EcoProof_Orders {
 		if ( $order->get_meta( self::META_SENT ) !== $status ) {
 			$order->update_meta_data( self::META_SENT, $status );
 			if ( 'stored' === $outcome ) {
-				$order->add_order_note( __( 'EcoProof: eco stamp ready for the customer to collect.', 'ecoproof-for-woocommerce' ) );
+				$order->add_order_note( __( 'EcoProof AI: eco stamp ready for the customer to collect.', 'ecoproof-for-woocommerce' ) );
 			} elseif ( 'voided' === $outcome ) {
-				$order->add_order_note( __( 'EcoProof: uncollected eco stamp voided.', 'ecoproof-for-woocommerce' ) );
+				$order->add_order_note( __( 'EcoProof AI: uncollected eco stamp voided.', 'ecoproof-for-woocommerce' ) );
 			}
 			$order->save();
 		}
 		return true;
 	}
 
-	/** A signed POST of a raw body to the shop's EcoProof webhook. Also used by the settings page's connection test. */
+	/** A signed POST of a raw body to the shop's EcoProof AI webhook. Also used by the settings page's connection test. */
 	public static function post( $body ) {
 		return self::signed_post( '/api/woo/webhook/', $body, 8 );
 	}
 
-	/** A signed POST to one of EcoProof's shop endpoints (<path><place>). The signature is the same as the webhook's. */
+	/** A signed POST to one of EcoProof AI's shop endpoints (<path><place>). The signature is the same as the webhook's. */
 	public static function signed_post( $path, $body, $timeout ) {
 		return wp_remote_post(
 			EcoProof_Config::api_url() . $path . rawurlencode( EcoProof_Config::place() ),

@@ -46,7 +46,7 @@ export default function AcceptInvite({ params }: { params: Promise<{ token: stri
           <h1 className="text-[22px] leading-tight">{invite.role === "owner" ? `Take over ${invite.placeName}` : `Join ${invite.placeName}`}</h1>
           <p className="text-sm text-sage-900">
             {invite.role === "owner"
-              ? "You're being handed this place on EcoProof. You'll be its owner: its settings, QR codes, online shop connection and team. The current owner stays on as staff."
+              ? "You're being handed this place on EcoProof AI. You'll be its owner: its settings, QR codes, online shop connection and team. The current owner stays on as staff."
               : "You're invited as staff: you'll see customer activity and can show the QR code and print stamp cards."}
           </p>
           {signedIn ? (
@@ -60,7 +60,7 @@ export default function AcceptInvite({ params }: { params: Promise<{ token: stri
           {err && <p className="rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800">{err}</p>}
         </>
       )}
-      <Link href="/" className="inline-block text-xs font-bold text-sage-900 underline">Back to EcoProof</Link>
+      <Link href="/" className="inline-block text-xs font-bold text-sage-900 underline">Back to EcoProof AI</Link>
     </div>
   );
 }

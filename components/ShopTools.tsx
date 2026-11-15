@@ -52,7 +52,7 @@ export function WooOption({ id }: { id: string }) {
   return (
     <div className="space-y-2 rounded-2xl bg-sage-100 p-3 text-left text-sm">
       <p className="font-semibold">A. QR in your order email <span className="font-normal text-neutral-600">(WooCommerce shops)</span></p>
-      <p className="text-xs text-neutral-600">Install the free EcoProof plugin. When an order is paid, your customer gets a personal button and QR in their order email. It&apos;s signed per order, so their stamp is a verified purchase with the real impact of what they bought.</p>
+      <p className="text-xs text-neutral-600">Install the free EcoProof AI plugin. When an order is paid, your customer gets a personal button and QR in their order email. It&apos;s signed per order, so their stamp is a verified purchase with the real impact of what they bought.</p>
       {!setup ? (
         <button onClick={load} className="rounded-full bg-white px-3 py-1.5 text-xs font-bold ring-1 ring-neutral-300">Show setup steps</button>
       ) : (
@@ -60,19 +60,19 @@ export function WooOption({ id }: { id: string }) {
           <ol className="list-decimal space-y-2.5 pl-4 text-xs">
             <li><a href={setup.plugin.download} download className="inline-block rounded-full bg-honey-500 px-3 py-1.5 font-bold text-ink">Download the plugin</a></li>
             <li>In WordPress: <b>Plugins → Add New → Upload Plugin</b>, choose the file, <b>Install</b>, then <b>Activate</b>.</li>
-            <li>Open <b>WooCommerce → Settings → EcoProof</b> and fill in:
-              {setup.plugin.appUrl !== PLUGIN_DEFAULT_URL && field("EcoProof URL", setup.plugin.appUrl)}
+            <li>Open <b>WooCommerce → Settings → EcoProof AI</b> and fill in:
+              {setup.plugin.appUrl !== PLUGIN_DEFAULT_URL && field("EcoProof AI URL", setup.plugin.appUrl)}
               {field("Place id", setup.plugin.placeId)}
               {field("Secret", setup.plugin.secret, true)}
               <span className="mt-1 block text-neutral-600">Keep the secret private: it signs every order and every claim link.</span>
             </li>
-            <li>Click <b>Save changes</b>, then <b>Test connection</b>. It should say &ldquo;EcoProof is connected&rdquo;.</li>
+            <li>Click <b>Save changes</b>, then <b>Test connection</b>. It should say &ldquo;EcoProof AI is connected&rdquo;.</li>
           </ol>
           <p className="text-xs text-neutral-600">That&apos;s it. The stamp appears in WooCommerce&apos;s <b>Processing order</b> email (sent when an order is paid). Using <b>FunnelKit</b>? It shows below the Order Summary block automatically. Other email builders: add the <code>[ecoproof_stamp]</code> shortcode, or switch on the separate stamp email in the plugin settings.</p>
           <details className="text-xs text-neutral-600">
             <summary className="cursor-pointer font-semibold">Can&apos;t install plugins? Set it up by hand</summary>
             <ol className="mt-2 list-decimal space-y-2 pl-4">
-              <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
+              <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof AI, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
               <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <button onClick={() => copy(setup.webhook.deliveryUrl)} className="font-bold underline">copy</button></li>
               <li>Secret: the one above.</li>
               <li>Paste this into your <b>child theme&apos;s functions.php</b>: <button onClick={() => copy(setup.themeSnippet)} className="font-bold underline">copy snippet</button>
@@ -91,7 +91,7 @@ export function WooOption({ id }: { id: string }) {
 /** A place's ways to give stamps, per channel: the counter QR in store, and the order email and parcel cards online. Staff see
  *  everything except the WooCommerce setup, which holds the shop's secret. */
 export function PlaceCard({ p }: { p: MyPlace }) {
-  const notice = p.status && p.status !== "active" ? <p className="rounded-xl bg-terra-100 p-2.5 text-xs text-terra-800">{p.status === "suspended" ? "This place was removed from EcoProof." : "This place is paused while we review reports."} {p.statusNote}</p> : null;
+  const notice = p.status && p.status !== "active" ? <p className="rounded-xl bg-terra-100 p-2.5 text-xs text-terra-800">{p.status === "suspended" ? "This place was removed from EcoProof AI." : "This place is paused while we review reports."} {p.statusNote}</p> : null;
   return (
     <div className="space-y-3 rounded-[28px] bg-white p-4 text-center ring-1 ring-sage-300">
       {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -3,7 +3,7 @@
 /** Pricing cards. Only the founding offer has a price; the price after the first 50 is not decided yet (Nov 2026), so the page says how it
  *  will work instead of printing a number. Once it is decided, give the second card a `price` and `period` and it shows as a figure. */
 export const PRICING: { name: string; price?: string; period?: string; note: string }[] = [
-  { name: "Founding", price: "Free", note: "The first 50 businesses. Everything included, for as long as EcoProof exists. Founding businesses never pay." },
+  { name: "Founding", price: "Free", note: "The first 50 businesses. Everything included, for as long as EcoProof AI exists. Founding businesses never pay." },
   { name: "After the first 50", note: "A simple yearly price per place. It will be shown here before anyone is asked to pay." },
 ];
 

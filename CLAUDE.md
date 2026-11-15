@@ -135,6 +135,14 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (Yes / No / Didn't notice); a No becomes a report (`practice_reports`); badge after 3 visitors
   on 3 different days, shown with its count; any answer earns the reward, not only Yes.
 
+## Naming and ownership (Pola, 2026-11-15)
+- The product is always written **EcoProof AI**, never bare "EcoProof" (page titles, copy, plugin strings, emails).
+  Exceptions that must stay: identifiers and slugs (`ecoproof-for-woocommerce`, `ecoproof_stamp`, hostnames), the
+  on-chain NFT name `<Rank> Bee Guardian - EcoProof` (Bubblegum's 32-byte limit) and the logo markup, which renders
+  "EcoProof" + a coloured " AI" span.
+- EcoProof AI is run by **stylebar ltd**, Thailand; privacy contact privacy@ecoproofai.com. SuperBee is a shop that
+  uses it, not its maker: no "built by SuperBee", no founding-partner line, no SuperBee example addresses.
+
 ## Stack
 Next.js 16 (App Router; read `node_modules/next/dist/docs/` first, see AGENTS.md) ·
 React · Tailwind · `@solana/web3.js` (devnet) · Metaplex · PostgreSQL (Neon) via `pg`

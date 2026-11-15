@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce > Settings > EcoProof.
+ * WooCommerce > Settings > EcoProof AI.
  *
  * Connection (place id, secret), which statuses mean "paid",
  * and where the stamp shows. Fields set by a wp-config.php constant are
@@ -25,7 +25,7 @@ class EcoProof_Settings {
 	}
 
 	public static function add_tab( $tabs ) {
-		$tabs[ self::TAB ] = __( 'EcoProof', 'ecoproof-for-woocommerce' );
+		$tabs[ self::TAB ] = __( 'EcoProof AI', 'ecoproof-for-woocommerce' );
 		return $tabs;
 	}
 
@@ -52,7 +52,7 @@ class EcoProof_Settings {
 			array(
 				'title' => __( 'Connection', 'ecoproof-for-woocommerce' ),
 				'type'  => 'title',
-				'desc'  => __( 'Your shop\'s place on EcoProof. You get the place id and secret from EcoProof when your shop joins.', 'ecoproof-for-woocommerce' ),
+				'desc'  => __( 'Your shop\'s place on EcoProof AI. You get the place id and secret from EcoProof AI when your shop joins.', 'ecoproof-for-woocommerce' ),
 				'id'    => 'ecoproof_connection',
 			),
 			array(
@@ -78,7 +78,7 @@ class EcoProof_Settings {
 			array(
 				'title' => __( 'Orders', 'ecoproof-for-woocommerce' ),
 				'type'  => 'title',
-				'desc'  => __( 'An order earns its stamp when it reaches one of these statuses. Only product names, quantities and ids are sent to EcoProof, never customer details or prices. Refunded, cancelled or failed orders void a stamp that hasn\'t been collected.', 'ecoproof-for-woocommerce' ),
+				'desc'  => __( 'An order earns its stamp when it reaches one of these statuses. Only product names, quantities and ids are sent to EcoProof AI, never customer details or prices. Refunded, cancelled or failed orders void a stamp that hasn\'t been collected.', 'ecoproof-for-woocommerce' ),
 				'id'    => 'ecoproof_orders',
 			),
 			array(
@@ -149,7 +149,7 @@ class EcoProof_Settings {
 			$c   = EcoProof_Products::counts();
 			$all = wp_nonce_url( admin_url( 'admin-post.php?action=ecoproof_estimate_all' ), 'ecoproof_estimate_all' );
 			echo '<h2>' . esc_html__( 'What your products replace', 'ecoproof-for-woocommerce' ) . '</h2>';
-			echo '<p>' . esc_html__( 'EcoProof\'s AI estimates what one unit of each product replaces (for example "7 plastic detergent jugs") from its name, description and attributes. Review each one on the product (Product data > EcoProof): confirm it or correct it. Until you confirm, customers see it as an estimate.', 'ecoproof-for-woocommerce' ) . '</p>';
+			echo '<p>' . esc_html__( 'EcoProof AI estimates what one unit of each product replaces (for example "7 plastic detergent jugs") from its name, description and attributes. Review each one on the product (Product data > EcoProof AI): confirm it or correct it. Until you confirm, customers see it as an estimate.', 'ecoproof-for-woocommerce' ) . '</p>';
 			/* translators: 1: products, 2: estimated, 3: confirmed */
 			echo '<p><strong>' . esc_html( sprintf( __( '%1$d products · %2$d estimated · %3$d confirmed', 'ecoproof-for-woocommerce' ), $c['products'], $c['estimated'], $c['confirmed'] ) ) . '</strong> · <a href="' . esc_url( admin_url( 'edit.php?post_type=product' ) ) . '">' . esc_html__( 'Review in the Products list', 'ecoproof-for-woocommerce' ) . '</a></p>';
 			echo '<p><a class="button" href="' . esc_url( $all ) . '">' . esc_html__( 'Estimate all products', 'ecoproof-for-woocommerce' ) . '</a> ';
@@ -159,7 +159,7 @@ class EcoProof_Settings {
 		if ( EcoProof_Config::connected() ) {
 			$url = wp_nonce_url( admin_url( 'admin-post.php?action=ecoproof_test' ), 'ecoproof_test' );
 			echo '<p><a class="button" href="' . esc_url( $url ) . '">' . esc_html__( 'Test connection', 'ecoproof-for-woocommerce' ) . '</a> ';
-			esc_html_e( 'Sends a signed test message to EcoProof (save your changes first).', 'ecoproof-for-woocommerce' );
+			esc_html_e( 'Sends a signed test message to EcoProof AI (save your changes first).', 'ecoproof-for-woocommerce' );
 			echo '</p>';
 		}
 	}
@@ -169,7 +169,7 @@ class EcoProof_Settings {
 		WC_Admin_Settings::save_fields( $fields );
 	}
 
-	/** Sends a signed, non-order message: EcoProof answers 200 only if the place exists and the signature is right. */
+	/** Sends a signed, non-order message: EcoProof AI answers 200 only if the place exists and the signature is right. */
 	public static function test_connection() {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to do that.', 'ecoproof-for-woocommerce' ) );
@@ -179,14 +179,14 @@ class EcoProof_Settings {
 		$response = EcoProof_Orders::post( 'ecoproof-connection-test' );
 		$code     = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
 		if ( 200 === $code ) {
-			$result = array( 'success', __( 'EcoProof is connected: the place and secret are right.', 'ecoproof-for-woocommerce' ) );
+			$result = array( 'success', __( 'EcoProof AI is connected: the place and secret are right.', 'ecoproof-for-woocommerce' ) );
 		} elseif ( 401 === $code ) {
-			$result = array( 'error', __( 'EcoProof refused the secret. Check that it matches your place.', 'ecoproof-for-woocommerce' ) );
+			$result = array( 'error', __( 'EcoProof AI refused the secret. Check that it matches your place.', 'ecoproof-for-woocommerce' ) );
 		} elseif ( 404 === $code ) {
-			$result = array( 'error', __( 'EcoProof doesn\'t know this place id.', 'ecoproof-for-woocommerce' ) );
+			$result = array( 'error', __( 'EcoProof AI doesn\'t know this place id.', 'ecoproof-for-woocommerce' ) );
 		} else {
 			/* translators: %s: error message or HTTP status */
-			$result = array( 'error', sprintf( __( 'Could not reach EcoProof (%s).', 'ecoproof-for-woocommerce' ), is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . $code ) );
+			$result = array( 'error', sprintf( __( 'Could not reach EcoProof AI (%s).', 'ecoproof-for-woocommerce' ), is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . $code ) );
 		}
 		set_transient( 'ecoproof_test_' . get_current_user_id(), $result, 60 );
 		wp_safe_redirect( admin_url( 'admin.php?page=wc-settings&tab=' . self::TAB ) );
@@ -204,7 +204,7 @@ class EcoProof_Settings {
 		if ( ! EcoProof_Config::connected() && $screen && 'plugins' === $screen->id && current_user_can( 'manage_woocommerce' ) ) {
 			printf(
 				'<div class="notice notice-info"><p>%s <a href="%s">%s</a></p></div>',
-				esc_html__( 'EcoProof for WooCommerce is installed but not connected yet.', 'ecoproof-for-woocommerce' ),
+				esc_html__( 'EcoProof AI for WooCommerce is installed but not connected yet.', 'ecoproof-for-woocommerce' ),
 				esc_url( admin_url( 'admin.php?page=wc-settings&tab=' . self::TAB ) ),
 				esc_html__( 'Connect your shop', 'ecoproof-for-woocommerce' )
 			);

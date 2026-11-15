@@ -2,11 +2,11 @@
 /**
  * What each product replaces: the real proof behind a verified purchase.
  *
- * EcoProof's AI reads the product's public details (name, descriptions, attributes such as pack size or number of washes,
+ * EcoProof AI reads the product's public details (name, descriptions, attributes such as pack size or number of washes,
  * categories, weight; never prices or customer data) and estimates what ONE unit replaces, e.g. "7 plastic detergent jugs",
- * and the CO2 it saves, with a one-line reason. The shop reviews it on the product (Product data > EcoProof): confirm it,
+ * and the CO2 it saves, with a one-line reason. The shop reviews it on the product (Product data > EcoProof AI): confirm it,
  * correct it, or mark the product as not an eco product. Orders then use these numbers, and customers see them in their
- * order email, on their stamp and on their Bee Guardian. Until the shop confirms, EcoProof shows them as an estimate.
+ * order email, on their stamp and on their Bee Guardian. Until the shop confirms, EcoProof AI shows them as an estimate.
  *
  * Estimates run in the background (Action Scheduler), when a product is saved with new details and from
  * "Estimate all products" on the settings page, so saving a product never waits for the AI.
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 
 class EcoProof_Products {
 
-	const META_IMPACT = '_ecoproof_product_impact'; // the latest impact EcoProof returned for the product
+	const META_IMPACT = '_ecoproof_product_impact'; // the latest impact EcoProof AI returned for the product
 	const META_HASH   = '_ecoproof_details_hash';    // the details it was estimated from, to notice changes
 	const ESTIMATE    = 'ecoproof_estimate_product';
 	const MAX_ROWS    = 4;
@@ -40,9 +40,9 @@ class EcoProof_Products {
 		add_action( 'admin_post_ecoproof_estimate_all', array( __CLASS__, 'estimate_all' ) );
 	}
 
-	/* ---------------------------------------------------------------- EcoProof requests */
+	/* ---------------------------------------------------------------- EcoProof AI requests */
 
-	/** The product's public details, the only thing EcoProof sees of it. */
+	/** The product's public details, the only thing EcoProof AI sees of it. */
 	public static function details( WC_Product $product ) {
 		$attributes = array();
 		foreach ( $product->get_attributes() as $attribute ) {
@@ -95,7 +95,7 @@ class EcoProof_Products {
 		return md5( wp_json_encode( $details ) );
 	}
 
-	/** A signed request to EcoProof's product endpoint. Returns the decoded reply, or a WP_Error. */
+	/** A signed request to EcoProof AI's product endpoint. Returns the decoded reply, or a WP_Error. */
 	private static function request( array $body, $timeout = 60 ) {
 		$response = EcoProof_Orders::signed_post( '/api/woo/products/', wp_json_encode( $body ), $timeout );
 		if ( is_wp_error( $response ) ) {
@@ -105,7 +105,7 @@ class EcoProof_Products {
 		$data = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 || ! is_array( $data ) ) {
 			/* translators: %d: HTTP status */
-			return new WP_Error( 'ecoproof_http', is_array( $data ) && ! empty( $data['error'] ) ? (string) $data['error'] : sprintf( __( 'EcoProof answered HTTP %d', 'ecoproof-for-woocommerce' ), $code ) );
+			return new WP_Error( 'ecoproof_http', is_array( $data ) && ! empty( $data['error'] ) ? (string) $data['error'] : sprintf( __( 'EcoProof AI answered HTTP %d', 'ecoproof-for-woocommerce' ), $code ) );
 		}
 		return $data;
 	}
@@ -128,7 +128,7 @@ class EcoProof_Products {
 		}
 	}
 
-	/** Action Scheduler: estimate one product (EcoProof answers from its cache when the details haven't changed). */
+	/** Action Scheduler: estimate one product (EcoProof AI answers from its cache when the details haven't changed). */
 	public static function run_estimate( $product_id, $force = false ) {
 		$product = wc_get_product( $product_id );
 		if ( ! $product || ! EcoProof_Config::connected() || $product->get_parent_id() ) {
@@ -155,11 +155,11 @@ class EcoProof_Products {
 		self::store( $product, (array) $reply['impact'], self::hash( $details ) );
 	}
 
-	/* ---------------------------------------------------------------- Product data > EcoProof */
+	/* ---------------------------------------------------------------- Product data > EcoProof AI */
 
 	public static function tab( $tabs ) {
 		$tabs['ecoproof'] = array(
-			'label'    => __( 'EcoProof', 'ecoproof-for-woocommerce' ),
+			'label'    => __( 'EcoProof AI', 'ecoproof-for-woocommerce' ),
 			'target'   => 'ecoproof_product_data',
 			'class'    => array(),
 			'priority' => 75,
@@ -184,9 +184,9 @@ class EcoProof_Products {
 		<div id="ecoproof_product_data" class="panel woocommerce_options_panel" style="padding:0 12px 12px">
 			<p><?php esc_html_e( 'What one unit of this product replaces. Customers see it in their order email, on their verified stamp and on their Bee Guardian.', 'ecoproof-for-woocommerce' ); ?></p>
 			<?php if ( ! EcoProof_Config::connected() ) : ?>
-				<p><em><?php esc_html_e( 'Connect EcoProof first (WooCommerce > Settings > EcoProof).', 'ecoproof-for-woocommerce' ); ?></em></p>
+				<p><em><?php esc_html_e( 'Connect EcoProof AI first (WooCommerce > Settings > EcoProof AI).', 'ecoproof-for-woocommerce' ); ?></em></p>
 			<?php elseif ( ! $ai && ! $shop ) : ?>
-				<p><em><?php esc_html_e( 'No estimate yet. Save the product and EcoProof\'s AI estimates it in the background (about a minute).', 'ecoproof-for-woocommerce' ); ?></em></p>
+				<p><em><?php esc_html_e( 'No estimate yet. Save the product and EcoProof AI\'s AI estimates it in the background (about a minute).', 'ecoproof-for-woocommerce' ); ?></em></p>
 			<?php else : ?>
 				<p>
 					<strong><?php echo $shop ? esc_html__( 'Confirmed by you', 'ecoproof-for-woocommerce' ) : esc_html__( 'AI estimate, not confirmed yet', 'ecoproof-for-woocommerce' ); ?></strong>
@@ -320,7 +320,7 @@ class EcoProof_Products {
 			}
 			$reply = self::request( array( 'action' => 'confirm', 'productId' => $product->get_id(), 'name' => $product->get_name(), 'numbers' => $numbers ), 15 );
 			if ( is_wp_error( $reply ) ) {
-				WC_Admin_Meta_Boxes::add_error( __( 'EcoProof could not save the confirmed numbers:', 'ecoproof-for-woocommerce' ) . ' ' . $reply->get_error_message() );
+				WC_Admin_Meta_Boxes::add_error( __( 'EcoProof AI could not save the confirmed numbers:', 'ecoproof-for-woocommerce' ) . ' ' . $reply->get_error_message() );
 			} else {
 				$product->update_meta_data( self::META_IMPACT, (array) $reply['impact'] );
 			}
@@ -335,7 +335,7 @@ class EcoProof_Products {
 	/* ---------------------------------------------------------------- Products list column */
 
 	public static function column( $columns ) {
-		$columns['ecoproof'] = __( 'EcoProof', 'ecoproof-for-woocommerce' );
+		$columns['ecoproof'] = __( 'EcoProof AI', 'ecoproof-for-woocommerce' );
 		return $columns;
 	}
 

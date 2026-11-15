@@ -279,7 +279,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
       <Section id="proof" className="py-12 lg:py-20">
         <H2>Anyone can print a green badge</H2>
-        <Lead>EcoProof doesn&apos;t grade your marketing. It records what actually happened, one order at a time, and lets anyone check the record.</Lead>
+        <Lead>EcoProof AI doesn&apos;t grade your marketing. It records what actually happened, one order at a time, and lets anyone check the record.</Lead>
         <div className="mt-8 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
           <div className="flex flex-col items-center rounded-[18px] border-2 border-dashed border-cocoa/25 px-6 py-8 text-center">
             <FakeSticker />
@@ -308,8 +308,8 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <Lead>Cafés and hotels print one QR code. Online shops connect WooCommerce. Your customers need nothing but their phone: no app, no account, no wallet.</Lead>
         <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
           {[
-            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter or reception, our WooCommerce plugin for online orders, or printable cards for parcels." },
-            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: `A café visit is worth ${pointsLabel(POINTS_BY_KIND.cafe)}, a hotel stay ${POINTS_BY_KIND.hotel}, a verified eco shop purchase ${POINTS_VERIFIED}. Each stamp is one record, hashed and written to Solana.` },
+            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof AI QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter or reception, our WooCommerce plugin for online orders, or printable cards for parcels." },
+            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof AI QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: `A café visit is worth ${pointsLabel(POINTS_BY_KIND.cafe)}, a hotel stay ${POINTS_BY_KIND.hotel}, a verified eco shop purchase ${POINTS_VERIFIED}. Each stamp is one record, hashed and written to Solana.` },
             { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Their passport names your business on every stamp. A share image is one tap away, and the proof is one tap further." },
           ].map((s, i) => (
             <li key={s.label} className="flex flex-col">

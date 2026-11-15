@@ -67,7 +67,7 @@ type Read = {
   total: number; currency: string; items: { name: string; quantity: number }[]; confidence: number;
 };
 
-const SYSTEM = `You read shop receipts for EcoProof, an eco passport. Report only what is printed; never invent lines.
+const SYSTEM = `You read shop receipts for EcoProof AI, an eco passport. Report only what is printed; never invent lines.
 - date: the purchase date as YYYY-MM-DD. Thai receipts often print the Buddhist year (2569 = 2026): convert it. Empty string if no date is printed.
 - receipt_number: the printed receipt, bill, invoice or transaction number, or empty string.
 - total: the grand total paid as a number, or 0 if none is printed. currency: the ISO code when printed (THB, USD …), else empty.
@@ -79,7 +79,7 @@ const SYSTEM = `You read shop receipts for EcoProof, an eco passport. Report onl
 export async function readReceipt(opts: { imageBase64: string; mediaType: "image/jpeg" | "image/png" | "image/webp"; geo: { lat: number; lng: number }; passportId: string }): Promise<ReceiptReview> {
   const candidates = await nearbyEcoShops(opts.geo);
   if (!candidates.length) {
-    throw new ClaimError("There is no EcoProof eco shop at your location. Receipts can only be scanned in the shop, and the shop has to be on EcoProof.", 422, { noShopNearby: true });
+    throw new ClaimError("There is no EcoProof AI eco shop at your location. Receipts can only be scanned in the shop, and the shop has to be on EcoProof AI.", 422, { noShopNearby: true });
   }
   if (!process.env.ANTHROPIC_API_KEY) throw new ClaimError("Receipt scanning is not available right now.", 503);
 
@@ -128,7 +128,7 @@ export async function readReceipt(opts: { imageBase64: string; mediaType: "image
   const match = candidates.find((c) => c.place.id === read.matched_place_id);
   if (!match || !namesAgree(read.merchant_name, match.place.name)) {
     const who = clean(read.merchant_name, 60);
-    throw new ClaimError(who ? `This receipt is from ${who}, which isn't an EcoProof shop yet. Ask them to join!` : "We couldn't match this receipt to an EcoProof shop here.", 422, { noShop: true, merchant: who });
+    throw new ClaimError(who ? `This receipt is from ${who}, which isn't an EcoProof AI shop yet. Ask them to join!` : "We couldn't match this receipt to an EcoProof AI shop here.", 422, { noShop: true, merchant: who });
   }
   const date = /^\d{4}-\d{2}-\d{2}$/.test(read.date) ? read.date : "";
   if (!date) throw new ClaimError("We couldn't find the date on this receipt. Make sure the top of the receipt is in the photo.", 422, { retake: true });

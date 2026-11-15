@@ -55,7 +55,7 @@ function Choice({ value, allowNA, disabled, onChange, name }: { value: Status | 
   );
 }
 
-/** "Where to get it": the nearest eco shops on EcoProof whose products help with a practice. Never part of the stars. */
+/** "Where to get it": the nearest eco shops on EcoProof AI whose products help with a practice. Never part of the stars. */
 function WhereToGet({ list }: { list: Supplier[] | undefined }) {
   if (!list?.length) return null;
   return (
@@ -325,7 +325,7 @@ export default function PracticesEditor({ id }: { id: string }) {
           )}
           {!groups && <SuppliesEditor supplies={supplies} onChange={setSupplies} disabled={!canEdit} />}
           {groups && Object.keys(setup.suppliers).length > 0 && (
-            <p className="px-1 text-[11.5px] text-sage-900">&ldquo;Where to get it&rdquo; suggests eco shops on EcoProof, nearest first. Any shop can be listed, and suggestions never change your stars.</p>
+            <p className="px-1 text-[11.5px] text-sage-900">&ldquo;Where to get it&rdquo; suggests eco shops on EcoProof AI, nearest first. Any shop can be listed, and suggestions never change your stars.</p>
           )}
         </div>
         {desktop && <div className="sticky top-24 space-y-4">{status}{preview}</div>}

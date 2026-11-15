@@ -86,7 +86,7 @@ export function BeeCardOg({ rank, art, size, serial, edition, locked, minted, im
             <div style={{ display: "flex", fontWeight: 700, fontSize: 30 * k, color: CARD_INK }}>{locked ? `Unlocks at ${rank.at} point${rank.at === 1 ? "" : "s"}` : "Soulbound Bee Guardian"}</div>
             <div style={{ display: "flex", fontSize: 23 * k, color: CARD_MUTED, marginTop: 6 * k }}>{locked ? "Collect stamps to earn it" : minted ? "Minted on Solana" : "Earned · minting on Solana"}</div>
           </div>
-          <div style={{ display: "flex", fontFamily: "Caprasimo", fontSize: 34 * k, color: colour }}>EcoProof</div>
+          <div style={{ display: "flex", fontFamily: "Caprasimo", fontSize: 34 * k, color: colour }}>EcoProof AI</div>
         </div>
       </div>
     </div>

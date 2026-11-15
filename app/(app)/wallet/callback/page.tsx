@@ -18,7 +18,7 @@ export default function WalletCallback() {
       try {
         const q = new URLSearchParams(location.search);
         const sid = q.get("sid");
-        if (!sid) throw new Error("This sign-in link is incomplete. Please start again from EcoProof.");
+        if (!sid) throw new Error("This sign-in link is incomplete. Please start again from EcoProof AI.");
         q.delete("sid");
         const r = await fetch("/api/auth/dl/step", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sid, params: Object.fromEntries(q) }) });
         const j = await r.json().catch(() => ({}));
@@ -44,7 +44,7 @@ export default function WalletCallback() {
     <div className="flex flex-col items-center gap-4 pt-20 text-center">
       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-honey-500 text-ink ring-4 ring-white/70"><Check size={34} strokeWidth={3.2} /></span>
       <h1 className="text-2xl">You&apos;re connected</h1>
-      <p className="max-w-xs text-sm text-neutral-700">Switch back to the <b>EcoProof app</b> where you started. It signs in by itself within a few seconds. You can close this tab.</p>
+      <p className="max-w-xs text-sm text-neutral-700">Switch back to the <b>EcoProof AI app</b> where you started. It signs in by itself within a few seconds. You can close this tab.</p>
       <Link href={elsewhere} className="rounded-full border-[1.5px] border-neutral-300 bg-white px-5 py-2.5 text-sm font-bold">Or continue here</Link>
     </div>
   );
@@ -54,7 +54,7 @@ export default function WalletCallback() {
         <>
           <h1 className="text-2xl">Couldn&apos;t sign you in</h1>
           <p className="max-w-xs rounded-xl bg-terra-100 p-3 text-sm text-terra-800">{err}</p>
-          <Link href="/" className="rounded-full bg-sage-500 px-5 py-2.5 font-bold text-cream">Back to EcoProof</Link>
+          <Link href="/" className="rounded-full bg-sage-500 px-5 py-2.5 font-bold text-cream">Back to EcoProof AI</Link>
         </>
       ) : (
         <>

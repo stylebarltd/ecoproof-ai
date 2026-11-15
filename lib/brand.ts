@@ -1,4 +1,4 @@
-// Brand tokens from the EcoProof design handoff (Organic design system).
+// Brand tokens from the EcoProof AI design handoff (Organic design system).
 export const SAGE = "#8fa073"; // sage-500: badge/tile fill
 export const SAGE_DARK = "#56633f"; // sage-700
 export const SAGE_TINT = "#f0fae1"; // sage-100: screen background

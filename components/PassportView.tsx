@@ -70,7 +70,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
           {stamps === 0 && (
             <Link href="/about" className="glass lift flex items-center gap-3 rounded-2xl px-4 py-3 ring-2 ring-honey-400/70 lg:col-span-2">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-honey-500 text-ink"><CircleHelp size={20} strokeWidth={2.6} /></span>
-              <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof works</span><span className="block text-[11.5px] text-sage-900">Stamps, Bee Guardian NFTs and how to collect them, in one minute.</span></span>
+              <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof AI works</span><span className="block text-[11.5px] text-sage-900">Stamps, Bee Guardian NFTs and how to collect them, in one minute.</span></span>
             </Link>
           )}
           <div className="lg:col-start-2 lg:row-start-1 lg:text-right">
@@ -168,7 +168,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
                   <span className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-honey-700">Verified purchase <span className="rounded-full bg-honey-500 px-1.5 py-0.5 text-[9px] text-ink">+{POINTS_VERIFIED} pts</span></span>
                   <span className="block truncate font-heading text-[16px] leading-tight">{v.placeName}</span>
                   <span className="block text-[12px] font-bold leading-snug text-ink">{v.impactNote ?? `${v.plasticItems} single-use plastics avoided · ${v.co2Kg} kg CO₂ saved`}</span>
-                  {v.basis && <span className="block text-[10px] font-semibold text-sage-800">{v.basis === "shop" ? `Numbers confirmed by ${v.placeName}` : "EcoProof estimate"}</span>}
+                  {v.basis && <span className="block text-[10px] font-semibold text-sage-800">{v.basis === "shop" ? `Numbers confirmed by ${v.placeName}` : "EcoProof AI estimate"}</span>}
                   <span className="text-[10.5px] text-sage-900">{new Date(v.createdAt).toLocaleDateString()}</span>
                 </span>
               </Link>
@@ -242,7 +242,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
       </div>
 
       <p className="pb-1 pt-1 text-center text-[11.5px] font-semibold text-sage-900">
-        <Link href="/about" className="underline">How EcoProof works</Link> · <Link href="/about#owners" className="underline">For shops</Link> · <Link href="/rules" className="underline">Eco rules</Link>
+        <Link href="/about" className="underline">How EcoProof AI works</Link> · <Link href="/about#owners" className="underline">For shops</Link> · <Link href="/rules" className="underline">Eco rules</Link>
       </p>
     </div>
   );

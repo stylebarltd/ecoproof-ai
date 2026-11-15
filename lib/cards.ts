@@ -4,7 +4,7 @@ import { appUrl } from "./nft";
 import { ClaimError, claimStamp, type StampResult } from "./stamp";
 import { getPlace } from "./stampPlaces";
 
-// Printed-card door: unique single-use codes for the parcel. The shop needs no code; EcoProof generates the cards to print.
+// Printed-card door: unique single-use codes for the parcel. The shop needs no code; EcoProof AI generates the cards to print.
 // A card proves nothing about an order, so its stamp is generic: no impact number.
 
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no 0/O/1/I/L: easy to type from a card

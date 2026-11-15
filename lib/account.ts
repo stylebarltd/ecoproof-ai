@@ -63,9 +63,9 @@ export function takeSocialReturn(): { error: string | null } | null {
 }
 
 function socialError(name: string, code: string) {
-  if (/already_linked|linked_to_another/i.test(code)) return `That ${name} account already belongs to another EcoProof account.`;
+  if (/already_linked|linked_to_another/i.test(code)) return `That ${name} account already belongs to another EcoProof AI account.`;
   // An unverified email (Facebook) that matches an existing account isn't joined to it automatically.
-  if (/account_not_linked/i.test(code)) return `An EcoProof account already uses that ${name} email. Sign in the way you did before, then connect ${name} from the account menu.`;
+  if (/account_not_linked/i.test(code)) return `An EcoProof AI account already uses that ${name} email. Sign in the way you did before, then connect ${name} from the account menu.`;
   if (/access_denied|cancel/i.test(code)) return `${name} sign-in was cancelled.`;
   return `${name} sign-in didn't complete. Please try again.`;
 }

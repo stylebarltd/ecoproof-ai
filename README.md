@@ -4,7 +4,7 @@
 
 # 🌱 EcoProof AI
 
-**Scan → collect → unlock.** EcoProof gives sustainable shops, cafés, markets and online brands a way to turn real eco-friendly visits and purchases into shareable, verified social proof. A customer taps a link or scans a QR code and collects a **stamp** in their eco passport. Collect enough stamps and a **soulbound Bee Guardian NFT** unlocks. Every valid claim is anchored on **Solana**.
+**Scan → collect → unlock.** EcoProof AI gives sustainable shops, cafés, markets and online brands a way to turn real eco-friendly visits and purchases into shareable, verified social proof. A customer taps a link or scans a QR code and collects a **stamp** in their eco passport. Collect enough stamps and a **soulbound Bee Guardian NFT** unlocks. Every valid claim is anchored on **Solana**.
 
 > Status: hackathon build on **Solana devnet**. Impact figures are estimates (see [Honest limits](#honest-limits)).
 
@@ -20,7 +20,7 @@ Three presence stamps are 3 points, which unlocks your first two Bee Guardians (
 
 ## The idea
 
-Sustainable brands have no cheap way to show that real people really chose them, and customers have nothing to show for sustainable habits. EcoProof sits between the two:
+Sustainable brands have no cheap way to show that real people really chose them, and customers have nothing to show for sustainable habits. EcoProof AI sits between the two:
 
 - **Customers** get an eco passport: a collection of stamps and collectible Bee Guardian NFTs that level up (Sentinel → Warden → Guardian → Vanguard → Paragon). It's a travel passport crossed with a collectible-card game, and it's built to be shared.
 - **Brands** get new customers through that sharing, and a verified record that doesn't depend on trusting their own database.
@@ -53,13 +53,13 @@ The values are two constants in `lib/stampClasses.ts` (`POINTS_VERIFIED`, `POINT
 Milestones count **points**, not scans. Every claim writes a proof; only milestones mint. A **soulbound compressed NFT** (Metaplex Bubblegum V2, made non-transferable) is minted to the customer's wallet at each rank: **Sentinel (1 point), Warden (3), Guardian (10), Vanguard (25) and Paragon (50)**, and every further 50 points mints another Paragon edition (so one verified purchase reaches the first two ranks at once). Each rank has its own Bee Guardian artwork: a static PNG per rank in `public/nft/` (the NFT image), with 512px copies for the pages made by `npx tsx scripts/nft-webp.ts`; share images draw the new cel-shaded card set from `public/share/`. The NFT metadata is served from `/api/nft/<id>/metadata`, so artwork changes reach NFTs already minted. The on-chain name is `<Rank> Bee Guardian - EcoProof` (Bubblegum allows 32 bytes); the metadata name is `<Rank> Bee Guardian · EcoProof`. Customers who haven't connected a wallet yet get the NFT when they do.
 
 ### Proofs on Solana
-For each claim, EcoProof hashes the record (SHA-256) and writes `EcoProof AI proof v1: <hash>` to Solana as a Memo transaction, in the same transaction that creates a **claim account** derived from the claim's fingerprint (place + person + day, or card code, or order id). Solana refuses to create an account that already exists, so a repeat claim fails on-chain without a custom program. Each proof has a **Verify on-chain** button that recomputes the hash from the stored data and compares it with the memo.
+For each claim, EcoProof AI hashes the record (SHA-256) and writes `EcoProof AI proof v1: <hash>` to Solana as a Memo transaction, in the same transaction that creates a **claim account** derived from the claim's fingerprint (place + person + day, or card code, or order id). Solana refuses to create an account that already exists, so a repeat claim fails on-chain without a custom program. Each proof has a **Verify on-chain** button that recomputes the hash from the stored data and compares it with the memo.
 
 ### The passport (the hero screen)
 Frosted-glass panels over an earthy green gradient with a honey-gold accent: earned Bee Guardian NFTs as collectible cards (highest rank largest, with tier, serial number and a link to Solana Explorer; ranks not yet earned as silhouettes with the points they unlock at), the stamp collection (earned bright, not-yet-earned as dashed placeholders), a progress line to the next milestone, and the proof trail. A share button produces a polished image (NFT + stamps + numbers) with a link back to the live passport.
 
 ### The map
-Only places that have actually joined EcoProof are shown. "Verified" here means **claimed and set up on EcoProof**; independent vetting is on the roadmap.
+Only places that have actually joined EcoProof AI are shown. "Verified" here means **claimed and set up on EcoProof AI**; independent vetting is on the roadmap.
 
 ## Stack
 
@@ -80,7 +80,7 @@ Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devne
 app/page.tsx                  "/" by session: landing page for visitors (components/landing/), passport for customers, "My shop" for owners
 app/(app)/                    every app route, inside the app chrome (components/AppShell.tsx: navbars + column)
 app/(app)/passport/page.tsx   passport home (splash, hero NFTs, stamps, progress, proof trail); also "/" for a signed-in customer
-app/(app)/about/page.tsx      "How EcoProof works": the guide for customers and shops (linked from the passport and the bottom nav)
+app/(app)/about/page.tsx      "How EcoProof AI works": the guide for customers and shops (linked from the passport and the bottom nav)
 app/(app)/u/[id]/page.tsx     public read-only passport (the link a shared image points to)
 app/(app)/c/[id]/page.tsx     place QR claim page          app/(app)/k/[code]/page.tsx   printed card claim page
 app/(app)/o/[place]/[token]/page.tsx  verified-order claim page   app/(app)/map/page.tsx   joined places map

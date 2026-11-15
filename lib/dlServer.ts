@@ -32,7 +32,7 @@ export type StepResult = { next?: string; done?: { address: string; returnTo: st
 /** The wallet's answer arrived (query parameters of the callback). */
 export async function stepLogin(sid: string, params: URLSearchParams, ctx: { host: string; origin: string }): Promise<StepResult> {
   const row = await load(sid);
-  if (!row) return { error: "This sign-in has expired. Please start again from EcoProof." };
+  if (!row) return { error: "This sign-in has expired. Please start again from EcoProof AI." };
   if (row.status === "done") return { done: { address: row.address!, returnTo: row.return_to } }; // a reloaded page: report it, but never hand out a session again
   const st = JSON.parse(row.state) as DlState;
   try {

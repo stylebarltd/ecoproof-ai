@@ -234,7 +234,7 @@ export default function ShopDashboard({ id }: { id: string }) {
         </div>
       </div>
       {place.status && place.status !== "active" && (
-        <p className="rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">{place.status === "suspended" ? "This place was removed from EcoProof." : "This place is paused while we review reports."} {place.statusNote}</p>
+        <p className="rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">{place.status === "suspended" ? "This place was removed from EcoProof AI." : "This place is paused while we review reports."} {place.statusNote}</p>
       )}
 
       <div className="flex items-center justify-between gap-2">

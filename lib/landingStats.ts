@@ -6,11 +6,11 @@ import { latestDeclarations, toDeclaration } from "./declarations";
 import { checklist, practicesOf } from "./practices";
 import { listShops, shopProofs, type ShopListing, type ShopProof } from "./shops";
 
-/** The live numbers on the signed-out landing page: what EcoProof has verified so far, one real proof to look at, and the shop with the most
+/** The live numbers on the signed-out landing page: what EcoProof AI has verified so far, one real proof to look at, and the shop with the most
  *  verified purchases as the example impact widget. Everything is an estimate from lib/impact.ts, and the page says so. */
 export type LandingStats = {
   proofs: number;
-  /** Real places (not the judges' demo places) that are active on EcoProof. */
+  /** Real places (not the judges' demo places) that are active on EcoProof AI. */
   places: number;
   passports: number;
   plasticItems: number;

@@ -9,7 +9,7 @@ import { readProgress } from "@/lib/progress";
 import type { ReceiptReview } from "@/lib/receipts";
 
 /**
- * The receipt door (2026-11-15): photograph a receipt IN an eco shop, see what EcoProof read and what it counts, collect a
+ * The receipt door (2026-11-15): photograph a receipt IN an eco shop, see what EcoProof AI read and what it counts, collect a
  * verified stamp. Two calls: POST /api/receipts/read (photo + position → a review with a signed token), then POST /api/claims
  * { receiptToken } like every other door. The photo is downsized here and never stored anywhere.
  */
@@ -99,7 +99,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
         <div className="mx-auto max-w-md space-y-4">
           {phase === "idle" && (
             <>
-              <p className="text-[15px] leading-relaxed text-cream/90">Bought something plastic-free in an eco shop that&apos;s on EcoProof? Photograph the receipt <b>while you&apos;re in the shop</b> and it becomes a verified purchase: 5 points, with the real impact of what you bought.</p>
+              <p className="text-[15px] leading-relaxed text-cream/90">Bought something plastic-free in an eco shop that&apos;s on EcoProof AI? Photograph the receipt <b>while you&apos;re in the shop</b> and it becomes a verified purchase: 5 points, with the real impact of what you bought.</p>
               <ul className="list-disc space-y-1 pl-5 text-[13.5px] text-cream/75">
                 <li>Lay the receipt flat, whole receipt in the frame, good light.</li>
                 <li>Receipts up to 7 days old. Each receipt works once.</li>
@@ -110,7 +110,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
               {err && (
                 <div className="space-y-2 rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">
                   <p>{err.message}</p>
-                  {err.noShop && <p className="text-[13px]">Know the shop? <Link href="/about#help" className="font-bold underline" onClick={onClose}>Ask them to join EcoProof</Link>.</p>}
+                  {err.noShop && <p className="text-[13px]">Know the shop? <Link href="/about#help" className="font-bold underline" onClick={onClose}>Ask them to join EcoProof AI</Link>.</p>}
                 </div>
               )}
             </>
@@ -134,7 +134,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
                 ))}
               </ul>
               <p className="rounded-xl bg-honey-300/40 p-2.5 text-sm font-semibold">{review.line}</p>
-              <p className="text-[11.5px] leading-relaxed text-ink/60">{review.estimate ? "The impact is EcoProof's estimate for these items; the shop hasn't confirmed them yet. " : "Impact confirmed by the shop. "}Something wrong? Take the photo again.</p>
+              <p className="text-[11.5px] leading-relaxed text-ink/60">{review.estimate ? "The impact is EcoProof AI's estimate for these items; the shop hasn't confirmed them yet. " : "Impact confirmed by the shop. "}Something wrong? Take the photo again.</p>
               {phase === "review" ? (
                 <div className="space-y-2">
                   <button onClick={claim} className="lift w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">Collect my stamp · +{review.points} points</button>

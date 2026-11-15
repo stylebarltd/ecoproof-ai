@@ -31,12 +31,12 @@ class EcoProof_Display {
 
 	public static function register() {
 		add_action( 'woocommerce_email_after_order_table', array( __CLASS__, 'in_woocommerce_email' ), 20, 4 );
-		// After the order is sent to EcoProof (priority 5), so the link works when the email arrives.
+		// After the order is sent to EcoProof AI (priority 5), so the link works when the email arrives.
 		add_action( 'woocommerce_order_status_changed', array( __CLASS__, 'maybe_send_own_email' ), 30, 4 );
 		add_shortcode( 'ecoproof_stamp', array( __CLASS__, 'shortcode' ) );
 		add_action( 'woocommerce_thankyou', array( __CLASS__, 'on_order_page' ), 5 );
 		add_action( 'woocommerce_view_order', array( __CLASS__, 'on_order_page' ), 5 );
-		// Some email plugins (FunnelKit) skip links to hosts WordPress treats as internal; trust EcoProof's.
+		// Some email plugins (FunnelKit) skip links to hosts WordPress treats as internal; trust EcoProof AI's.
 		add_filter( 'http_request_host_is_external', array( __CLASS__, 'trust_ecoproof_host' ), 10, 2 );
 	}
 

@@ -1,4 +1,4 @@
-=== EcoProof for WooCommerce ===
+=== EcoProof AI for WooCommerce ===
 Contributors: ecoproof
 Tags: woocommerce, sustainability, loyalty, nft, solana
 Requires at least: 6.5
@@ -8,18 +8,18 @@ WC requires at least: 8.0
 Stable tag: 1.2.0
 License: GPLv2 or later
 
-Every paid order earns the customer a verified eco stamp in their EcoProof passport, proven on Solana.
+Every paid order earns the customer a verified eco stamp in their EcoProof AI passport, proven on Solana.
 
 == Description ==
 
-When an order is paid, the plugin tells EcoProof which products were bought, and the customer gets a "Collect your eco stamp" button and QR code. Collecting it adds the order's real impact to their EcoProof passport, for example "replaces about 7 plastic detergent jugs and saves 3 kg of CO2". Stamps add up to soulbound Bee Guardian NFTs.
+When an order is paid, the plugin tells EcoProof AI which products were bought, and the customer gets a "Collect your eco stamp" button and QR code. Collecting it adds the order's real impact to their EcoProof AI passport, for example "replaces about 7 plastic detergent jugs and saves 3 kg of CO2". Stamps add up to soulbound Bee Guardian NFTs.
 
 What each product replaces:
 
-* EcoProof's AI estimates what one unit of each product replaces, from its name, descriptions and attributes (pack size, number of washes, sizes in a set), with a one-line reason you can check. Only public product details are sent, never prices or customer data.
-* Review it on the product (Product data > EcoProof): confirm it, correct the numbers, or mark the product as not an eco product. Until you confirm, customers see the numbers as an estimate.
+* EcoProof AI estimates what one unit of each product replaces, from its name, descriptions and attributes (pack size, number of washes, sizes in a set), with a one-line reason you can check. Only public product details are sent, never prices or customer data.
+* Review it on the product (Product data > EcoProof AI): confirm it, correct the numbers, or mark the product as not an eco product. Until you confirm, customers see the numbers as an estimate.
 * Multilingual shops: a translated product uses the numbers of the product in your main language, so you review each product once. WPML and Polylang are recognised automatically; for other setups, see `ecoproof_main_product_id` below.
-* "Estimate all products" (WooCommerce > Settings > EcoProof) estimates the whole catalogue in the background; the Products list shows each product's numbers and whether they're confirmed. A product is estimated again when its details change.
+* "Estimate all products" (WooCommerce > Settings > EcoProof AI) estimates the whole catalogue in the background; the Products list shows each product's numbers and whether they're confirmed. A product is estimated again when its details change.
 
 Where the customer sees it (each can be switched on or off):
 
@@ -34,7 +34,7 @@ Privacy: only the order id, status, product ids, names and quantities are sent. 
 == Installation ==
 
 1. Upload the plugin and activate it.
-2. WooCommerce > Settings > EcoProof: enter the place id and secret you got from EcoProof, save, then click "Test connection".
+2. WooCommerce > Settings > EcoProof AI: enter the place id and secret you got from EcoProof AI, save, then click "Test connection".
 3. Check "Where customers see their stamp" matches how your shop sends order emails.
 
 The connection can also be set in wp-config.php, which keeps the secret out of the database:
@@ -47,8 +47,8 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 * `ecoproof_stamp_html` filter: change the stamp block's HTML.
 * `ecoproof_main_product_id` filter ( $main_id, WC_Product $product ): which product a translation takes its numbers from, for translation setups other than WPML and Polylang.
 * `ecoproof_shortcode_order_id` filter: tell the shortcode which order an email builder is rendering.
-* `ECOPROOF_URL` constant: point the plugin at another EcoProof server (local development). There is no settings field; the default is https://ecoproofai.com (ecoproof.superbee.me still answers for older installs).
-* `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof by another address than customers do (local development).
+* `ECOPROOF_URL` constant: point the plugin at another EcoProof AI server (local development). There is no settings field; the default is https://ecoproofai.com (ecoproof.superbee.me still answers for older installs).
+* `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof AI by another address than customers do (local development).
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
@@ -57,7 +57,7 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 * Translations use the numbers of the product in the main language (WPML, Polylang, or the `ecoproof_main_product_id` filter).
 
 = 1.1.0 =
-* What each product replaces: AI estimates per product, reviewed and confirmed by the shop (Product data > EcoProof), "Estimate all products", and an EcoProof column in the Products list.
+* What each product replaces: AI estimates per product, reviewed and confirmed by the shop (Product data > EcoProof AI), "Estimate all products", and an EcoProof AI column in the Products list.
 * The order email names what the order replaces ("Your order replaces about 7 plastic detergent jugs").
 
 = 1.0.0 =

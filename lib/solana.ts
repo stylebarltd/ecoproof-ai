@@ -40,7 +40,7 @@ export async function readMemo(signature: string): Promise<{ memo: string | null
   return { memo, slot: tx.slot, blockTime: tx.blockTime ?? null };
 }
 
-/** Public address of the wallet that signs proofs; its Explorer page lists every EcoProof memo. */
+/** Public address of the wallet that signs proofs; its Explorer page lists every EcoProof AI memo. */
 export function payerAddress(): string | null {
   try { return payerKeypair().publicKey.toBase58(); } catch { return null; }
 }
