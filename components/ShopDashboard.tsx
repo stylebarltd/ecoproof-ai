@@ -7,7 +7,7 @@ import ShopImpact from "@/components/ShopImpact";
 import CopySnippet from "@/components/landing/CopySnippet";
 import Stars from "@/components/Stars";
 import AccountChip from "@/components/AccountChip";
-import { PlaceCard, type MyPlace } from "@/components/ShopTools";
+import { StampTools, type MyPlace } from "@/components/ShopTools";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { isShop, kindOf } from "@/lib/placeKinds";
 import { explorerTx } from "@/lib/passportView";
@@ -330,9 +330,11 @@ export default function ShopDashboard({ id }: { id: string }) {
         </div>
       </div>
 
-      <section id="give-out-stamps" className="scroll-mt-4 space-y-3 lg:mx-auto lg:max-w-[560px]">
+      <section id="give-out-stamps" className="scroll-mt-4 space-y-3 lg:space-y-4">
         <h2 className="text-[17px]">Give out stamps</h2>
-        <PlaceCard p={placeForTools} openWoo={setupOpen} />
+        <div className={`space-y-4 lg:items-start lg:gap-6 lg:space-y-0 ${place.inStore && place.online ? "lg:grid lg:grid-cols-2" : "lg:max-w-[560px]"}`}>
+          <StampTools p={placeForTools} openWoo={setupOpen} />
+        </div>
       </section>
     </div>
   );
