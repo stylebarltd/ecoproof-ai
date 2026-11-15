@@ -6,8 +6,8 @@
 Eco passport app: customers scan a shop's QR, a parcel card or a verified-order
 link, collect stamps and soulbound Bee Guardian NFTs; every claim writes a proof
 on Solana. For sustainable shops, cafés, markets and online brands.
-- App: https://ecoproof.superbee.me · showcase site: `../ecoproofai.stylebar.de`
-  (https://ecoproofai.stylebar.de) · repo `stylebarltd/ecoproof-ai`.
+- App: https://ecoproof.superbee.me · repo `stylebarltd/ecoproof-ai`. The separate showcase site
+  (`../ecoproofai.stylebar.de`) is offline since 2026-11-15: the landing page and `/about#ai` explain the project.
 - Won Best Use of Solana at Colosseum Chiang Mai 2026.
 - Still in its hackathon-judging phase on **Solana devnet** (see Gotchas).
 
