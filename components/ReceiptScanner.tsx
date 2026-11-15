@@ -102,7 +102,8 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
               <p className="text-[15px] leading-relaxed text-cream/90">Bought something plastic-free in an eco shop that&apos;s on EcoProof AI? Photograph the receipt <b>while you&apos;re in the shop</b> and it becomes a verified purchase: 5 points, with the real impact of what you bought.</p>
               <ul className="list-disc space-y-1 pl-5 text-[13.5px] text-cream/75">
                 <li>Lay the receipt flat, whole receipt in the frame, good light.</li>
-                <li>Receipts up to 7 days old. Each receipt works once.</li>
+                <li>Only in the shop: we check your location against the shop&apos;s. The receipt itself can be from the last 7 days, so a forgotten one still counts on your next visit.</li>
+                <li>Each receipt works once.</li>
                 <li>We keep the items and their impact, never the photo.</li>
               </ul>
               <input ref={file} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => read(e.target.files?.[0])} />
