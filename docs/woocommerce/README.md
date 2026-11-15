@@ -1,7 +1,7 @@
 # WooCommerce connection (verified-purchase stamps)
 
-Shops connect with the **EcoProof for WooCommerce** plugin: `integrations/woocommerce/ecoproof-for-woocommerce/`.
-When an order is paid (processing, or any status the shop marks as paid), the plugin sends it to EcoProof and the customer
+Shops connect with the **EcoProof AI for WooCommerce** plugin: `integrations/woocommerce/ecoproof-for-woocommerce/`.
+When an order is paid (processing, or any status the shop marks as paid), the plugin sends it to EcoProof AI and the customer
 gets a "Collect your eco stamp" button and QR. Collecting it gives a **verified purchase** stamp with the order's real impact.
 
 ## Install
@@ -10,7 +10,7 @@ gets a "Collect your eco stamp" button and QR. Collecting it gives a **verified 
 cd integrations/woocommerce && zip -r ecoproof-for-woocommerce.zip ecoproof-for-woocommerce
 ```
 
-Upload the zip in wp-admin (Plugins > Add New > Upload), activate, then **WooCommerce > Settings > EcoProof**: enter the place id
+Upload the zip in wp-admin (Plugins > Add New > Upload), activate, then **WooCommerce > Settings > EcoProof AI**: enter the place id
 and secret, save, click **Test connection**. The place id and secret come from:
 
 ```
@@ -18,8 +18,8 @@ curl -H "x-admin-token: $ADMIN_TOKEN" https://<app>/api/stamp-places/<place>/woo
 ```
 
 The connection can also be set in `wp-config.php` (`ECOPROOF_PLACE`, `ECOPROOF_SECRET`), which keeps the
-secret out of the database. The EcoProof URL is fixed to `https://ecoproof.superbee.me` and has no settings field; for local development
-override it with `define( 'ECOPROOF_URL', ... )` in `wp-config.php`. `ECOPROOF_API_URL` is only for local development, where the shop's server reaches EcoProof by another
+secret out of the database. The EcoProof AI URL is fixed to `https://ecoproofai.com` and has no settings field; for local development
+override it with `define( 'ECOPROOF_URL', ... )` in `wp-config.php`. `ECOPROOF_API_URL` is only for local development, where the shop's server reaches EcoProof AI by another
 address than customers do (DDEV: `http://host.docker.internal:3000`).
 
 ## Where the customer sees the stamp
@@ -37,9 +37,9 @@ Shops send order emails in different ways, so each of these can be switched on o
 
 ## What each product replaces
 
-EcoProof's AI estimates what ONE unit of each product replaces ("7 plastic detergent jugs", "300 disposable dryer sheets") and the
+EcoProof AI's AI estimates what ONE unit of each product replaces ("7 plastic detergent jugs", "300 disposable dryer sheets") and the
 CO2 it saves, with a one-line reason, from the product's public details: name, descriptions, attributes, categories, weight.
-The shop reviews it on the product (Product data > EcoProof): confirm, correct, or mark as not an eco product. Orders use these
+The shop reviews it on the product (Product data > EcoProof AI): confirm, correct, or mark as not an eco product. Orders use these
 numbers; products without them fall back to the category estimates in `lib/impact.ts`. Unconfirmed numbers are shown as an
 estimate. Every number is capped (1,000 of one kind, 2,000 in total, 30 kg CO2 per unit). Code: `lib/productImpact.ts`,
 `app/api/woo/products/[place]`, and `includes/class-ecoproof-products.php` in the plugin.

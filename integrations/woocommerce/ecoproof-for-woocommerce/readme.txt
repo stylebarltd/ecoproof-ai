@@ -5,7 +5,7 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 
 Every paid order earns the customer a verified eco stamp in their EcoProof AI passport, proven on Solana.
@@ -47,11 +47,14 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 * `ecoproof_stamp_html` filter: change the stamp block's HTML.
 * `ecoproof_main_product_id` filter ( $main_id, WC_Product $product ): which product a translation takes its numbers from, for translation setups other than WPML and Polylang.
 * `ecoproof_shortcode_order_id` filter: tell the shortcode which order an email builder is rendering.
-* `ECOPROOF_URL` constant: point the plugin at another EcoProof AI server (local development). There is no settings field; the default is https://ecoproofai.com (ecoproof.superbee.me still answers for older installs).
+* `ECOPROOF_URL` constant: point the plugin at another EcoProof AI server (local development). There is no settings field; the default is https://ecoproofai.com.
 * `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof AI by another address than customers do (local development).
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
+
+= 1.2.1 =
+* EcoProof AI's address is built in. Wording in the stamp block.
 
 = 1.2.0 =
 * Translations use the numbers of the product in the main language (WPML, Polylang, or the `ecoproof_main_product_id` filter).

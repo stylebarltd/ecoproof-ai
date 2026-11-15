@@ -22,7 +22,7 @@ class EcoProof_Config {
 
 	/** Defaults for the saved settings. */
 	const DEFAULTS = array(
-		'url'             => 'https://ecoproofai.com',   // the app's domain since 2026-11-15; ecoproof.superbee.me still answers
+		'url'             => 'https://ecoproofai.com',   // the hosted service; not a setting
 		'place'           => '',
 		'secret'          => '',
 		'api_url'         => '',

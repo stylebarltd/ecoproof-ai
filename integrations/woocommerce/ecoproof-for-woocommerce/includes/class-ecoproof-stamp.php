@@ -36,7 +36,7 @@ class EcoProof_Stamp {
 			&& count( $order->get_items() ) > 0;
 	}
 
-	/** The shop's name in the explainer ("SuperBee is part of EcoProof AI"). */
+	/** The shop's name in the explainer ("<Shop> is part of EcoProof AI"). */
 	private static function shop_name() {
 		/** Filters the shop name used in the stamp block. */
 		return (string) apply_filters( 'ecoproof_shop_name', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
@@ -83,7 +83,7 @@ class EcoProof_Stamp {
 		$prove   = __( 'Now you can prove it.', 'ecoproof-for-woocommerce' );
 		$bullets = array(
 			__( 'Your own eco passport with stamps from the eco brands and cafés you support', 'ecoproof-for-woocommerce' ),
-			__( 'Bee Guardian collectibles: unlock your first one with this purchase (free wallet sign-in to claim), then rank up from Sentinel to Paragon', 'ecoproof-for-woocommerce' ),
+			__( 'Bee Guardian collectibles: unlock your first one with this purchase (connect a wallet to claim, free), then rank up from Sentinel to Paragon', 'ecoproof-for-woocommerce' ),
 			__( 'A shareable card to show friends you don’t just talk eco, you have proof', 'ecoproof-for-woocommerce' ),
 		);
 		$font  = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;";
