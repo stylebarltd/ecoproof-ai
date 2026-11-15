@@ -6,7 +6,11 @@
 Eco passport app: customers scan a shop's QR, a parcel card or a verified-order
 link, collect stamps and soulbound Bee Guardian NFTs; every claim writes a proof
 on Solana. For sustainable shops, cafés, markets and online brands.
-- App: https://ecoproof.superbee.me · repo `stylebarltd/ecoproof-ai`. The separate showcase site
+- App: https://ecoproofai.com (the final domain since 2026-11-15; DNS at Hetzner: A @ 216.198.79.1 + 64.29.17.1,
+  CNAME www → 3bc5a83f7626c30d.vercel-dns-017.com., certificate issued with `vercel certs issue`). The old host
+  ecoproof.superbee.me stays attached to the project forever: printed QR cards, parcel cards and the plugin on
+  shops' servers point at it. `proxy.ts` sends visitors on the old host (and www) to ecoproofai.com with path and
+  query, but never API paths. `APP_URL` on Production must be https://ecoproofai.com. Repo `stylebarltd/ecoproof-ai`. The separate showcase site
   (`../ecoproofai.stylebar.de`) is offline since 2026-11-15: the landing page and `/about#ai` explain the project.
 - Won Best Use of Solana at Colosseum Chiang Mai 2026.
 - Still in its hackathon-judging phase on **Solana devnet** (see Gotchas).

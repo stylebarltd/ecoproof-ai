@@ -30,7 +30,7 @@ export type MyPlace = PublicPlace & { status?: string; statusNote?: string | nul
 type WooSetup = { plugin: { download: string; appUrl: string; placeId: string; secret: string }; webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
 
 /** The plugin's own default; the URL step is only shown when this app runs somewhere else (staging, local). */
-const PLUGIN_DEFAULT_URL = "https://ecoproof.superbee.me";
+const PLUGIN_DEFAULT_URL = "https://ecoproofai.com";
 
 export function WooOption({ id }: { id: string }) {
   const [setup, setSetup] = useState<WooSetup | null>(null);

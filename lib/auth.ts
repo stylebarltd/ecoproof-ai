@@ -17,7 +17,7 @@ const keys = (p: SocialProvider) => ({ clientId: process.env[`${p.toUpperCase()}
 /** The social sign-ins the site offers: each one only once both of its keys are set. */
 export const socialEnabled = (): SocialProvider[] => SOCIAL_PROVIDERS.filter((p) => { const k = keys(p); return !!(k.clientId && k.clientSecret); });
 
-const PRODUCTION = "https://ecoproof.superbee.me";
+const PRODUCTION = "https://ecoproofai.com";
 
 function create() {
   return betterAuth({
