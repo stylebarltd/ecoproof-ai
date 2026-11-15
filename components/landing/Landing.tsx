@@ -225,11 +225,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
     { img: "store", kind: "eco_shop", title: "Eco shop", join: "an eco shop", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified online order, with what it saved; ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
       you: "A public impact page that adds up every order, a listing in the eco shops directory, and referrals from cafés' and hotels' checklists.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
   ];
-  const partners = [
-    { img: "superbee", name: "SuperBee", w: 142 },
-    { img: "freebird", name: "Free Bird Cafe", w: 160 },
-    { img: "studio-naenna", name: "Studio Naenna", w: 159 },
-  ];
   return (
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav />
@@ -271,18 +266,10 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       </Section>
       )}
 
-      {/* Partners: logos muted until hovered; the founding partner named in text. */}
+      {/* The award and the origin line (the partner logos and "founding partner" were dropped on 2026-11-15). */}
       <Section className="pb-12">
         <div className="border-y border-cocoa/10 py-6">
-          <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-5" aria-label="Partners">
-            <li className="text-[14px] font-bold text-cocoa/80">Founding partner: <a href="https://superbee.me" className="text-cocoa underline decoration-sky underline-offset-4" target="_blank" rel="noopener">SuperBee</a>, a Certified B Corp</li>
-            {partners.map((p) => (
-              <li key={p.img} className="transition [@media(hover:hover)]:opacity-75 [@media(hover:hover)]:grayscale [@media(hover:hover)]:hover:opacity-100 [@media(hover:hover)]:hover:grayscale-0" title={p.name}>
-                <Image src={`/landing/partners/${p.img}.webp`} alt={p.name} width={p.w} height={160} className="h-14 w-auto rounded-md" />
-              </li>
-            ))}
-          </ul>
-          <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[14px] font-bold text-cocoa/80">
+          <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[14px] font-bold text-cocoa/80">
             <li className="inline-flex items-center gap-1.5"><Trophy size={14} aria-hidden /> Winner · Best Use of Solana, Colosseum Chiang Mai 2026</li>
             <li>Made in Chiang Mai, Thailand</li>
           </ul>
