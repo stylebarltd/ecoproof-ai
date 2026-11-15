@@ -166,9 +166,10 @@ npx tsx scripts/nft-webp.ts    # 512px copies of the rank artwork in public/nft/
 Local DB: Docker Postgres container `ecoproof-pg` (port 5433), database `ecoproof`.
 
 ## Gotchas
-- **Hackathon phase:** the no-GPS demo places are intentional for the judges. Don't
-  remove or restrict them; production hardening (GPS everywhere, no demo points,
-  durable rate limits, Sybil wallets, mainnet) is a pre-launch checklist, not bugs.
+- **Demo places are gone (2026-11-15):** the judges' no-GPS demo places (demo-cafe, demo-restaurant,
+  demo-coffee, demo-hotel) were set to status `suspended` in production and dropped from
+  `data/stamp-places.json`; nothing may be collected by tapping any more. Remaining pre-launch
+  hardening: durable rate limits, Sybil wallets, mainnet.
 - **Vercel blocks deploys whose commit author isn't on the team.** Commit as
   `echo@stylebar.de`, not the global `boom@stylebar.de`. Check `git log -1 --format=%ae`.
 - **`DATABASE_URL_UNPOOLED` in `.env.local` points at production.** Never use it locally.

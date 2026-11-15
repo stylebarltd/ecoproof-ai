@@ -26,7 +26,7 @@ export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; o
       <Link href={`/places/${place.id}`} className="mt-3 flex items-center justify-between rounded-2xl bg-white px-3.5 py-2.5 text-sm font-bold ring-1 ring-sage-900/10">
         {place.stars ? "See its eco practices" : "About this place"} <ChevronRight size={18} strokeWidth={2.5} className="text-sage-700" />
       </Link>
-      <Link href={`/c/${place.id}`} className="lift mt-3 block rounded-full bg-terra-500 py-3 text-center font-bold text-cream">{place.demo ? "Collect a stamp (demo)" : "How to collect a stamp here"}</Link>
+      <Link href={`/c/${place.id}`} className="lift mt-3 block rounded-full bg-terra-500 py-3 text-center font-bold text-cream">{"How to collect a stamp here"}</Link>
       <p className="mt-2 text-center text-[11px] text-neutral-500">Stamps are anchored on Solana. Some places check your location.</p>
       <p className="mt-1 text-center text-[11px]"><Link href={`/report/${place.id}`} className="text-neutral-500 underline">Not eco? Report this place</Link></p>
     </div>

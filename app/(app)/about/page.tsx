@@ -109,9 +109,6 @@ export default function About() {
           <li className="flex gap-3"><Gift size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>From an order email:</b> if a shop that uses EcoProof AI sends you an &ldquo;order completed&rdquo; email, it contains a personal QR and a <b>Collect my stamp</b> button. Tap it. This is the special one, see below.</span></li>
           <li className="flex gap-3"><Camera size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A receipt in an eco shop:</b> bought something plastic-free in a shop that&apos;s on EcoProof AI? Tap <b>Scan a receipt</b> in your passport while you&apos;re still in the shop and photograph the receipt. EcoProof AI reads what you bought, you check it, and the stamp is a <b>verified purchase</b> too. Only in the shop (we check your location), with a receipt from the last 7 days; each receipt once; we keep the items, never the photo.</span></li>
         </ul>
-        <p className="mt-3 rounded-2xl bg-white/45 p-3 text-[12.5px] leading-relaxed ring-1 ring-white/70">
-          <b>Just trying it out?</b> The demo places (Demo Café, Demo Restaurant and Demo Coffee Roasters) can be collected by tapping them in your passport or on the map. Real places can only be collected by scanning their QR code.
-        </p>
 
         <H3>3. Two kinds of stamp</H3>
         <div className="mt-2 grid gap-3">
@@ -123,7 +120,7 @@ export default function About() {
           </div>
           <div className="rounded-2xl bg-white/45 p-3.5 ring-1 ring-white/70">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-sage-800">Presence stamp <span className="ml-1 rounded-full bg-white px-1.5 py-0.5 text-[9px]">+{POINTS_BY_KIND.cafe} to {POINTS_BY_KIND.hotel} pt</span></span>
-            <p className="mt-1 font-heading text-[16px]">Demo Café</p>
+            <p className="mt-1 font-heading text-[16px]">A café <span className="font-sans text-[11px] font-semibold text-ink/60">(example)</span></p>
             <p className="text-[12.5px] leading-snug text-ink/80">Comes from a counter QR or a parcel card. It proves you were there or that you received the parcel, nothing about what was bought, so there is no impact number. Worth <b>{POINTS_BY_KIND.cafe} point</b> at a café, restaurant or eco store till, <b>{POINTS_BY_KIND.hotel}</b> at a hotel or resort.</p>
           </div>
         </div>
@@ -223,7 +220,7 @@ export default function About() {
         <H2>Questions</H2>
         <Faq q="Do I need a wallet?">No, you can collect stamps without one. You need a wallet (Phantom or Solflare) to receive your Bee Guardian NFTs and to keep your passport on other devices.</Faq>
         <Faq q="Does it cost anything?">No. EcoProof AI is free, connecting a wallet costs nothing, and you never pay a network fee.</Faq>
-        <Faq q="I can't collect a stamp from my passport. Why?">At real places a stamp is collected by scanning the place&apos;s QR code, so it can only be done there. Tap <b>Scan a QR to collect a stamp</b> or use your camera. The demo places can be tapped.</Faq>
+        <Faq q="I can't collect a stamp from my passport. Why?">At real places a stamp is collected by scanning the place&apos;s QR code, so it can only be done there. Tap <b>Scan a QR to collect a stamp</b> or use your camera.</Faq>
         <Faq q="It says I already collected a stamp today.">A place gives one stamp per person per day. Come back tomorrow. Parcel cards and orders work once each.</Faq>
         <Faq q="Why does it ask for my location?">Places set up by their owners check that you are really there. Your location is used for that check only.</Faq>
         <Faq q="The camera doesn't open inside my wallet app.">Wallet apps often block the camera in their built-in browser. Open EcoProof AI in Safari or Chrome instead, or point your phone&apos;s own camera app at the QR code. Connecting your wallet from Safari or Chrome works too: the wallet app opens and brings you back.</Faq>

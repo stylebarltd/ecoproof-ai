@@ -5,8 +5,8 @@ import { Check, Star as StarIcon } from "lucide-react";
 import type { Hospitality } from "@/lib/landingStats";
 import { POINTS_BY_KIND, pointsLabel } from "@/lib/stampClasses";
 
-/** The hospitality side of "your public page": a café or restaurant and a hotel with published stars (a real place once one has
- *  published; until then a demo place, shown as a dashed specimen with unfilled stars, never with the weight of real data, critique run 8).
+/** The hospitality side of "your public page": a café or restaurant and a hotel with published stars (real places only; the demo
+ *  specimen shown before any had published was retired with the demo places on 2026-11-15).
  *  A switch picks which one, so a resort manager sees a hotel's page and what guests see of it before they book (critique run 8). */
 const KIND_PAGE: Record<string, string> = { cafe: "a café's", restaurant: "a restaurant's", hotel: "a hotel's" };
 const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
@@ -20,13 +20,11 @@ const BEFORE_BOOKING = [
 ];
 
 function Card({ h }: { h: Hospitality }) {
-  const on = h.demo ? "fill-transparent text-honey-deep" : "fill-honey text-honey-deep";
-  const half = h.demo ? "fill-transparent text-honey-deep" : "fill-honey/50 text-honey-deep";
+  const on = "fill-honey text-honey-deep";
+  const half = "fill-honey/50 text-honey-deep";
   return (
-    <div className={h.demo ? "rounded-[18px] border-2 border-dashed border-cocoa/25 p-5 sm:p-6" : "sticker grain rounded-[18px] bg-paper p-5 ring-1 ring-cocoa/10 sm:p-6"}>
-      {h.demo
-        ? <p className="text-[15px] font-extrabold">What {KIND_PAGE[h.kind] ?? "a place's"} page looks like <span className="font-bold text-cocoa/80">({h.name}, a demo place)</span></p>
-        : <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{h.name} · published practices</p>}
+    <div className="sticker grain rounded-[18px] bg-paper p-5 ring-1 ring-cocoa/10 sm:p-6">
+      <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{h.name} · published practices</p>
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="inline-flex" role="img" aria-label={`${h.stars} out of 5 eco stars`}>
           {[1, 2, 3, 4, 5].map((k) => <StarIcon key={k} size={22} strokeWidth={2} aria-hidden className={k <= h.stars ? on : k - 0.5 <= h.stars ? half : "fill-transparent text-cocoa/25"} />)}

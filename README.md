@@ -8,16 +8,6 @@
 
 > Status: hackathon build on **Solana devnet**. Impact figures are estimates (see [Honest limits](#honest-limits)).
 
-## Try it: scan the three demo QR codes
-
-Open **https://ecoproof.superbee.me** on your phone, then scan these QR codes one by one with the in-app **Scan a QR to collect a stamp** button (or your phone's camera). Each one opens a demo place; tap **Collect stamp**. The demo places have **no GPS check**, so this works from anywhere, and you can also just tap them in the passport or on the map.
-
-| 1. Demo Café | 2. Demo Restaurant | 3. Demo Coffee Roasters |
-|:---:|:---:|:---:|
-| <img src="docs/demo-qr/1-demo-cafe.png" width="200" alt="QR code: Demo Café"> | <img src="docs/demo-qr/2-demo-restaurant.png" width="200" alt="QR code: Demo Restaurant"> | <img src="docs/demo-qr/3-demo-coffee-roasters.png" width="200" alt="QR code: Demo Coffee Roasters"> |
-
-Three presence stamps are 3 points, which unlocks your first two Bee Guardians (Sentinel at 1 point, Warden at 3). Connect a wallet first (Phantom or Solflare, free signature) so the NFTs are minted to it. Each place gives one stamp per day. The codes are regenerated with `npx tsx scripts/demo-qr.ts`.
-
 ## The idea
 
 Sustainable brands have no cheap way to show that real people really chose them, and customers have nothing to show for sustainable habits. EcoProof AI sits between the two:
@@ -112,7 +102,7 @@ npm run dev                  # http://localhost:3000
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables come from `npm run db:migrate`; the demo places are added automatically. Migrations connect to the same database without Neon's pooler. |
+| `DATABASE_URL` | Postgres connection string (Neon, or local Docker). Tables come from `npm run db:migrate`; the launch place in `data/stamp-places.json` is seeded automatically. Migrations connect to the same database without Neon's pooler. |
 | `SOLANA_SECRET_KEY` | Base58 secret key of a **devnet** wallet that pays for proofs and NFT mints. Locally a key is generated in `.payer.json` if unset. It needs devnet SOL (faucet.solana.com). |
 | `SOLANA_RPC_URL` | Optional, defaults to public devnet. |
 | `NFT_TREE_ADDRESS`, `NFT_COLLECTION_ADDRESS` | Output of `npx tsx scripts/nft-setup.ts` (run once, with the same wallet as `SOLANA_SECRET_KEY`). Without them stamps still work, NFTs stay pending. |

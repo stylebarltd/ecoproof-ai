@@ -100,7 +100,7 @@ export default function MapPage() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.imageUrl} alt="" width={44} height={44} className="shrink-0 rounded-full" />
                     <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-1.5"><span className="truncate font-heading text-[15px] leading-tight">{p.name}</span>{p.demo ? <span className="shrink-0 rounded-full bg-white px-1.5 py-0.5 text-[9px] font-bold uppercase text-sage-800">demo</span> : <BadgeCheck size={15} strokeWidth={2.5} className="shrink-0 text-sage-700" aria-label="Verified" />}</span>
+                      <span className="flex items-center gap-1.5"><span className="truncate font-heading text-[15px] leading-tight">{p.name}</span><BadgeCheck size={15} strokeWidth={2.5} className="shrink-0 text-sage-700" aria-label="Verified" /></span>
                       <span className="flex items-center gap-1.5 truncate text-[11.5px] text-sage-900">{dot(kindOf(p.kind)?.colour ?? "#e8a317")}{kindOf(p.kind)?.label ?? "Place"}{p.locationName && p.locationName !== p.name ? ` · ${p.locationName}` : ""}</span>
                       {p.stars && <Stars stars={p.stars.stars} label={p.stars.label} size={12} showLabel className="mt-0.5" />}
                     </span>

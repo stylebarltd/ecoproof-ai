@@ -35,9 +35,9 @@ function position(): Promise<{ lat: number; lng: number }> {
 }
 
 export default function ClaimStamp({ place, cardCode, orderToken, orderLine, viaQr = true }: { place: PublicPlace; cardCode?: string; orderToken?: string; orderLine?: string | null; viaQr?: boolean }) {
-  // At a real place the stamp is collected by scanning its QR. Opened any other way (passport, map) the page only explains that,
-  // except demo places, which can be tapped. Cards and order links are always ready to collect.
-  const canTap = !!cardCode || !!orderToken || viaQr || place.demo;
+  // At a real place the stamp is collected by scanning its QR. Opened any other way (passport, map) the page only explains that.
+  // Cards and order links are always ready to collect. (The judges' demo places, which could be tapped, were retired on 2026-11-15.)
+  const canTap = !!cardCode || !!orderToken || viaQr;
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [done, setDone] = useState<Result | null>(null);
@@ -91,8 +91,7 @@ export default function ClaimStamp({ place, cardCode, orderToken, orderLine, via
             <div className="w-full space-y-2.5">
               {canTap ? (
                 <>
-                  <button onClick={claim} className="lift w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream lg:py-4 lg:text-lg">{!cardCode && !orderToken && !viaQr && place.demo ? "Collect stamp (demo)" : "Collect stamp"}</button>
-                  {!cardCode && !orderToken && !viaQr && place.demo && <p className="text-xs text-neutral-500 lg:text-sage-900">This is a demo place, so you can collect it by tapping. At real places you scan the QR code on the counter.</p>}
+                  <button onClick={claim} className="lift w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream lg:py-4 lg:text-lg">Collect stamp</button>
                 </>
               ) : (
                 <p className="rounded-2xl bg-cream p-3 text-sm text-neutral-700">To collect a stamp here, <b>scan the QR code</b> {place.inStore ? "at the counter" : "on your parcel card"}. Stamps can&apos;t be collected from this page.</p>

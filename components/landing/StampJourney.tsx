@@ -56,7 +56,7 @@ export default function StampJourney({ r, door = "order" }: { r: LandingRecord |
       <div className="absolute left-1/2 top-[9px] h-[18px] w-[84px] -translate-x-1/2 rounded-b-[12px] bg-[#1a1a1d]" aria-hidden />
       <div tabIndex={0} role="region" aria-label="The phone screen while a stamp is collected" className="flex h-[504px] flex-col overflow-y-auto rounded-[26px] bg-paper px-4 pb-5 pt-9">
         <p><JournalWordmark className="text-[18px]" /></p>
-        <p className="mt-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-cocoa/80">{door === "visit" ? "Visit · Demo Café" : r ? `Order · ${r.merchant}` : "Order · your shop"}</p>
+        <p className="mt-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-cocoa/80">{door === "visit" ? "Visit · your café" : r ? `Order · ${r.merchant}` : "Order · your shop"}</p>
         <ol className="mt-3 space-y-2.5">
           {steps.map((s, i) => {
             const state = i < phase ? "done" : i === phase ? "active" : "todo";

@@ -10,7 +10,7 @@ import { listShops, shopProofs, type ShopListing, type ShopProof } from "./shops
  *  verified purchases as the example impact widget. Everything is an estimate from lib/impact.ts, and the page says so. */
 export type LandingStats = {
   proofs: number;
-  /** Real places (not the judges' demo places) that are active on EcoProof AI. */
+  /** Places that are active on EcoProof AI (rows flagged demo, retired 2026-11-15, never count). */
   places: number;
   passports: number;
   plasticItems: number;
@@ -21,13 +21,12 @@ export type LandingStats = {
   example: (Pick<ShopListing, "id" | "name" | "impact"> & { orders: Pick<ShopProof, "id" | "summary" | "plasticItems">[] | null }) | null;
   /** The newest verified purchase with a proof: the one real record the landing shows and lets visitors check. */
   record: LandingRecord | null;
-  /** A café, restaurant or hotel with published stars, the hospitality counterpart of the shop's impact widget: a real place when one
-   *  has published, else a demo place (flagged, the page says so). */
+  /** A café, restaurant or hotel with published stars, the hospitality counterpart of the shop's impact widget (real places only). */
   hospitality: { food: Hospitality | null; stay: Hospitality | null };
 };
 
 export type Hospitality = {
-  id: string; name: string; kind: string; demo: boolean; stars: number; score: number;
+  id: string; name: string; kind: string; stars: number; score: number;
   /** Practices answered Yes, of how many asked, and a few of them by name. */
   yes: number; total: number; examples: string[];
   publishedAt: string; txUrl: string | null;
@@ -36,8 +35,8 @@ export type Hospitality = {
 /** The best published star rating for a café or restaurant (`food`) and for a hotel (`stay`), so a resort manager sees a hotel's page,
  *  not a café's: real places first, then signed declarations, then most stars. */
 async function hospitality(): Promise<{ food: Hospitality | null; stay: Hospitality | null }> {
-  const places = await query<{ id: string; name: string; kind: string; demo: boolean; also_cafe: boolean }>(
-    "SELECT id, name, kind, demo, also_cafe FROM stamp_places WHERE kind IN ('cafe','restaurant','hotel') AND status = 'active'",
+  const places = await query<{ id: string; name: string; kind: string; also_cafe: boolean }>(
+    "SELECT id, name, kind, also_cafe FROM stamp_places WHERE kind IN ('cafe','restaurant','hotel') AND status = 'active' AND NOT demo",
   );
   const latest = await latestDeclarations(places.map((p) => p.id));
   const options = places.flatMap((p) => {
@@ -48,14 +47,14 @@ async function hospitality(): Promise<{ food: Hospitality | null; stay: Hospital
     const yes = asked.filter((q) => d.answers[q.id] === "yes");
     return [{ p, d, asked, yes }];
   });
-  options.sort((a, b) => Number(a.p.demo) - Number(b.p.demo) || Number(a.d.pending) - Number(b.d.pending) || b.d.stars - a.d.stars);
+  options.sort((a, b) => Number(a.d.pending) - Number(b.d.pending) || b.d.stars - a.d.stars);
   const pick = (hotel: boolean) => { const best = options.find((o) => (o.p.kind === "hotel") === hotel); return best ? card(best) : null; };
   return { food: pick(false), stay: pick(true) };
 }
 
-function card(best: { p: { id: string; name: string; kind: string; demo: boolean }; d: ReturnType<typeof toDeclaration>; asked: { label: string }[]; yes: { label: string }[] }): Hospitality {
+function card(best: { p: { id: string; name: string; kind: string }; d: ReturnType<typeof toDeclaration>; asked: { label: string }[]; yes: { label: string }[] }): Hospitality {
   return {
-    id: best.p.id, name: best.p.name, kind: best.p.kind, demo: best.p.demo, stars: best.d.stars, score: best.d.score,
+    id: best.p.id, name: best.p.name, kind: best.p.kind, stars: best.d.stars, score: best.d.score,
     yes: best.yes.length, total: best.asked.length, examples: best.yes.slice(0, 3).map((q) => q.label),
     publishedAt: best.d.createdAt, txUrl: best.d.txUrl,
   };

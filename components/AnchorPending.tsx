@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Loader2 } from "lucide-react";
 
-/** A published declaration whose Solana proof hasn't been written yet (Solana was down, or a demo place's seed): writes it on view. */
+/** A published declaration whose Solana proof hasn't been written yet (Solana was down, or a seeded place's declaration): writes it on view. */
 export default function AnchorPending({ id }: { id: string }) {
   const [state, setState] = useState<"writing" | "failed" | { txUrl: string }>("writing");
 

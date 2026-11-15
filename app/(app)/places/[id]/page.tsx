@@ -50,7 +50,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
           <img src={p.imageUrl} alt="" width={88} height={88} className="h-16 w-16 shrink-0 lg:h-[88px] lg:w-[88px]" />
           <div className="min-w-0 flex-1">
             <h1 className="text-[24px] leading-tight lg:text-[32px]">{place.name}</h1>
-            <p className="text-[13px] text-sage-900">{kindOf(place.kind)?.label ?? "Place"}{place.kind === "restaurant" && place.also_cafe ? " and café" : ""}{shop ? ` · ${[p.inStore && "in store", p.online && "online"].filter(Boolean).join(" and ")}` : ""}{place.demo ? " · demo place" : ""}</p>
+            <p className="text-[13px] text-sage-900">{kindOf(place.kind)?.label ?? "Place"}{place.kind === "restaurant" && place.also_cafe ? " and café" : ""}{shop ? ` · ${[p.inStore && "in store", p.online && "online"].filter(Boolean).join(" and ")}` : ""}</p>
             {place.address && <p className="mt-1 flex items-start gap-1 text-[13px] text-sage-900"><MapPin size={14} strokeWidth={2.5} className="mt-0.5 shrink-0" /> {place.address}</p>}
             {place.tagline && <p className="mt-1.5 text-sm">{place.tagline}</p>}
           </div>
@@ -105,7 +105,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
         )}
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {place.in_store && <Link href={`/c/${place.id}`} className="lift rounded-full bg-terra-500 px-4 py-2.5 text-sm font-bold text-cream">{place.demo ? "Collect a stamp (demo)" : "How to collect a stamp here"}</Link>}
+          {place.in_store && <Link href={`/c/${place.id}`} className="lift rounded-full bg-terra-500 px-4 py-2.5 text-sm font-bold text-cream">{"How to collect a stamp here"}</Link>}
           {place.in_store && <Link href={`/map?place=${place.id}`} className="glass rounded-full px-4 py-2.5 text-sm font-bold">Show on the map</Link>}
         </div>
       </section>

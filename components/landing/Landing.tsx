@@ -212,8 +212,8 @@ function HeroCopy({ center }: { center?: boolean }) {
 }
 
 export default async function Landing({ stats }: { stats: LandingStats | null }) {
-  // The QR in the "order email" picture: a real code that opens the demo café, so a reader can try it from the page
-  const qr = await QRCode.toString(`${appUrl()}/c/demo-cafe?src=qr`, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#3a2a1c", light: "#0000" } });
+  // The QR in the "order email" picture: a real code that opens the guide to collecting stamps, so a reader can try it from the page
+  const qr = await QRCode.toString(`${appUrl()}/about#customers`, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#3a2a1c", light: "#0000" } });
   // The three owner doors (images in public/landing/doors; cafés and restaurants share one door, a small café/restaurant switch is planned):
   // how their customers collect a stamp, what each side gets, and setup. An eco shop sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.

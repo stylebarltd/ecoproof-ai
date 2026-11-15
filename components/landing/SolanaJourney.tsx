@@ -6,10 +6,10 @@ import type { LandingRecord } from "@/lib/landingStats";
 
 /** How a stamp lands on Solana, told the way a customer meets it, for the door the visitor runs: a visit (the QR on a café or hotel counter,
  *  the default, since most owners reading run one) or an online order (the QR in the order email). Each shows the QR, the phone replaying
- *  the real claim steps (StampJourney) and why the stamp stays checkable. The QR is the real demo café code: scannable on a computer screen,
- *  tappable on a phone, where you can't scan your own screen. */
+ *  the real claim steps (StampJourney) and why the stamp stays checkable. The QR is a real code that opens the guide to collecting
+ *  stamps (the demo café it used to open was retired on 2026-11-15): scannable on a computer screen, tappable on a phone. */
 const Cap = ({ children }: { children: React.ReactNode }) => <p className="mb-3 font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{children}</p>;
-const DEMO = "/c/demo-cafe?src=qr";
+const GUIDE = "/about#customers";
 
 const DOORS: { id: Door; label: string }[] = [
   { id: "visit", label: "A café or hotel visit" },
@@ -35,7 +35,7 @@ const PROMISES: Record<Door, string[]> = {
 
 function Qr({ qr }: { qr: string }) {
   return (
-    <a href={DEMO} aria-label="Open the demo café's stamp page" className="block h-[140px] w-[140px] shrink-0 rounded-md [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
+    <a href={GUIDE} aria-label="Open the guide to collecting stamps" className="block h-[140px] w-[140px] shrink-0 rounded-md [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
   );
 }
 // The QR card only shows from lg (a computer screen you can scan); phones get the "Try it" button under the replay instead.
@@ -60,7 +60,7 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
             <>
               <Cap>1 · The QR on your counter</Cap>
               <div className="sticker grain flex flex-col items-center rounded-[16px] bg-white p-5 text-center ring-1 ring-cocoa/10">
-                <p className="font-journal-display text-[22px] font-bold leading-tight">Demo Café</p>
+                <p className="font-journal-display text-[22px] font-bold leading-tight">Your café</p>
                 <p className="mt-1 text-[15px] font-extrabold">Collect your eco stamp</p>
                 <div className="mt-4"><Qr qr={qr} /></div>
                 <p className="mt-4 text-[15px] leading-snug text-cocoa/80"><ScanHint /></p>
@@ -79,7 +79,7 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
               </div>
             </>
           )}
-          <p className="mt-3 text-[13px] font-bold text-cocoa/80">This code works: it opens our demo café.</p>
+          <p className="mt-3 text-[13px] font-bold text-cocoa/80">This code works: it opens the guide to collecting stamps.</p>
         </div>
         <div className="flex flex-col">
           <Cap><span className="hidden lg:inline">2 · </span>A few seconds on their phone</Cap>
@@ -95,8 +95,8 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
               </button>
             </div>
           )}
-          {/* Phones can't scan their own screen and skip the QR card, so they get the demo as a button (critique run 5 found it missing). */}
-          <a href={DEMO} className="mx-auto mt-4 inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink lg:hidden">Try it: collect a demo stamp</a>
+          {/* Phones can't scan their own screen and skip the QR card, so they get the guide as a button (critique run 5 found it missing). */}
+          <a href={GUIDE} className="mx-auto mt-4 inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink lg:hidden">How to collect a stamp</a>
         </div>
         <div className="flex flex-col">
           <Cap><span className="hidden lg:inline">3 · </span>And it stays that way</Cap>
@@ -106,7 +106,7 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
               {PROMISES[door].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
             </ul>
             {/* Honest limits: the promises hold on mainnet; the hackathon build writes to devnet, which can be reset. */}
-            <p className="mt-4 text-[14px] font-bold leading-snug text-cocoa/80">Today&apos;s demo proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
+            <p className="mt-4 text-[14px] font-bold leading-snug text-cocoa/80">Today&apos;s proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
             <p className="pt-5 text-[15px]">
               {r ? <a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> : <a href="#proof" className={link}>Check a record yourself</a>}
             </p>
