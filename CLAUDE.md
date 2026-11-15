@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# EcoProof AI (ecoproof.superbee.me)
+# EcoProof AI (ecoproofai.com)
 
 ## What this is
 Eco passport app: customers scan a shop's QR, a parcel card or a verified-order
