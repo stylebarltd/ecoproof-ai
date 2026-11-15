@@ -26,7 +26,8 @@ function create() {
     secret: secret(),
     // The site answers on its own domain, Vercel previews and localhost: build links (e.g. Google's and Facebook's return address) from the host asked for.
     baseURL: {
-      allowedHosts: ["ecoproof.superbee.me", "ecoproof-*-stylebar.vercel.app", "ecoproof-ai-*-stylebar.vercel.app", "localhost:*", "127.0.0.1:*"],
+      // ecoproofai.com is the project's final domain (2026-11-15); ecoproof.superbee.me stays answering for printed QR cards and the plugin.
+      allowedHosts: ["ecoproofai.com", "www.ecoproofai.com", "ecoproof.superbee.me", "ecoproof-*-stylebar.vercel.app", "ecoproof-ai-*-stylebar.vercel.app", "localhost:*", "127.0.0.1:*"],
       fallback: process.env.APP_URL || PRODUCTION,
     },
     database: drizzleAdapter(orm(), {
