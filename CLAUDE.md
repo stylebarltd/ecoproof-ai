@@ -16,13 +16,13 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 - Won Best Use of Solana at Colosseum Chiang Mai 2026.
 - Still in its hackathon-judging phase on **Solana devnet** (see Gotchas).
 
-## Branches: what is live vs v2
-- **`main` = production** (live app). Deploys by pushing `main` (Vercel).
-- **`v2` = all v2 work**, one branch, no feature branches or PRs. Pushing `v2` only
-  updates the preview https://ecoproof-ai-git-v2-stylebar.vercel.app (own preview DB).
-  **Never merge into `main` or deploy production until Pola says v2 is ready.**
+## Branches
+- **`main` is the only working branch and it is production.** Commit straight to `main`; pushing it deploys the
+  live app (Vercel), so ask Pola before every push. No feature branches or PRs.
+- `v2` was the preview branch until 2026-11-15, when everything on it went live. It is no longer used; any other
+  branch pushed to GitHub still gets a Vercel preview with its own preview DB.
 
-### Live on `main` today
+### What is live
 - Three claim doors → one stamp + one Solana proof each: place QR (`/c/<id>`),
   printed card (`/k/<code>`), verified WooCommerce order (`/o/<place>/<token>`).
   One endpoint for all: `app/api/claims` (streams NDJSON); one claim function: `lib/stamp.ts`.
@@ -34,9 +34,6 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 - Passport (`components/PassportHome.tsx`), public passport `/u/[id]`, joined-places map, self-serve
   `/join`, share images (`next/og`), WooCommerce webhook ingest + plugin
   (`integrations/woocommerce/`, zipped by `scripts/plugin-zip.mjs` before dev/build).
-- Postgres: tables created at startup (`lib/db.ts`). No accounts.
-
-### Built on `v2`, not live yet
 - Drizzle migrations (`drizzle/`, `lib/schema.ts`); Vercel build runs `db:migrate` first.
 - Accounts via Better Auth: Solana wallet, Google or Facebook (`lib/auth.ts`). Each social
   button only appears when its `*_CLIENT_ID`/`*_CLIENT_SECRET` are set. Google keys are set
@@ -130,7 +127,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   `receiptFingerprint`). `stampClass("receipt")` is verified: 5 points, impact line, same cards and proofs as an
   order. Not built: at-home scans (3 pts) and the per-shop item memory.
 
-### v2 plans, not built yet (agreed with Pola, in this order)
+### Plans, not built yet (agreed with Pola, in this order)
 - Receipt scanning at home (3 pts) and the per-shop item memory that builds itself from confirmed scans.
 - "Visitor-verified" (not "certified"): after a QR stamp, ask about one published practice
   (Yes / No / Didn't notice); a No becomes a report (`practice_reports`); badge after 3 visitors
@@ -147,7 +144,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 ## Stack
 Next.js 16 (App Router; read `node_modules/next/dist/docs/` first, see AGENTS.md) ·
 React · Tailwind · `@solana/web3.js` (devnet) · Metaplex · PostgreSQL (Neon) via `pg`
-(+ Drizzle on v2) · Anthropic SDK (`CATEGORY_MODEL`, `PRODUCT_IMPACT_MODEL`) · Leaflet.
+(+ Drizzle) · Anthropic SDK (`CATEGORY_MODEL`, `PRODUCT_IMPACT_MODEL`) · Leaflet.
 Hosting: Vercel team "stylebar" (Hobby), project `ecoproof-ai`.
 
 ## Commands
@@ -158,8 +155,8 @@ npm run dev                    # http://localhost:3000
 npm run build
 npm run lint
 npm test                       # star engine tests (node --test, no extra deps)
-npm run db:generate            # v2: new migration from lib/schema.ts
-npm run db:migrate             # v2: apply migrations (reads .env.local)
+npm run db:generate            # new migration from lib/schema.ts
+npm run db:migrate             # apply migrations (reads .env.local)
 npx tsx scripts/nft-setup.ts   # one-time: Merkle tree + NFT collection
 npx tsx scripts/demo-qr.ts     # regenerate the demo QR codes
 npx tsx scripts/nft-webp.ts    # 512px copies of the rank artwork in public/nft/
