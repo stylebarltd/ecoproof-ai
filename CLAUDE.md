@@ -64,11 +64,13 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   the colour. No name inside it (unreadable at 44px, and the name always stands beside it), so never crop it with `rounded-full`.
   The owner changes logo and tagline in the dashboard's "Logo and tagline" panel (`components/ProfilePanel.tsx`,
   `PUT /api/places/mine/<id>/profile`, rules in `lib/placeLogo.ts`); the name can't be changed yet.
-- Postcard (`/place/<id>`, "Print your postcard" on the dashboard): what a place puts on its counter or tables instead of a bare QR.
-  It must explain EcoProof AI to someone who has never heard of it (Pola, 2026-11-16: nobody scans a QR without knowing what it is):
-  headline, one sentence on EcoProof AI, the claim QR, three steps, the Bee Guardian. Prints as four A6 postcards on one A4 sheet or as
-  one A4 poster (`?size=a4`); every measure in the card is in `cqw`, so both are the same design, and the card has a fixed height: new
-  text must fit, check the print PDF. White card (little ink), text only for now; a generated background image is a possible next step.
+- Postcard (`components/Postcard.tsx`): the one printed card, used for a place's counter or tables (`/place/<id>`, "Print your postcard")
+  and for an online shop's parcel cards (`/place/<id>/cards?batch=`, 20 single-use codes per batch). It must explain EcoProof AI to someone
+  who has never heard of it (Pola, 2026-11-16: nobody scans a QR without knowing what it is): headline, one sentence on EcoProof AI, the
+  claim QR, three steps, the Bee Guardian. Sizes come from `postcardCss({ cols, rows, landscape })`: cards fill an A4 page edge to edge
+  (counter: 4 x A6 or one A4 poster `?size=a4`; parcels: 4 x A6 or 8 x A7 `?size=a7`). Every measure in the card is in `cqw` and the
+  card has a fixed height, so new text must fit (a headline is two lines at most): check the print PDF. White card (little ink), text
+  only for now; a generated background image is a possible next step.
 - Photos: every place can show up to 3 (`MAX_PHOTOS`, `lib/photoRules.ts`): the place, its products, or screenshots of an online shop.
   The browser shrinks each to a 1600px JPEG (`lib/clientPhoto.ts`, which also drops the camera's location data); they are kept in
   Postgres (`place_photos`, `lib/placePhotos.ts`) because there is no file storage, and served with a permanent cache from
