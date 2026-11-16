@@ -1,15 +1,16 @@
-import type { PackagingType, ProductCategory } from "./productRules";
+import type { PackagingType, ProductCategory, ProductType } from "./productRules";
 
 // What a purchase is worth: grams of plastic and of CO2 avoided (docs/eco-product-standard.md). Every line's numbers come from
-// impact_factors by the product's category and packaging (lib/order.ts); nobody sets them per product.
+// impact_factors by the product's type, once per piece in the pack (lib/order.ts); nobody sets them per product.
 
 /**
- * One line of an order or a receipt. `category` and `packagingType` say which factor it got; `plasticG` and `co2G` are that factor, per
- * unit. "not_sustainable" is a line that counts nothing. `impactSource`: "shop" when the line is a product the shop declared, "ai" when
+ * One line of an order or a receipt. `productType` says which factor it got and `pieces` how many are in one pack; `plasticG` and
+ * `co2G` are that factor times the pieces, so per unit bought. "not_sustainable" is a line that counts nothing. `impactSource`: "shop" when the line is a product the shop declared, "ai" when
  * EcoProof AI estimated category and packaging from the name because the shop hasn't listed it yet.
  */
 export type LineItem = {
   name: string; quantity: number; category: ProductCategory | "not_sustainable"; packagingType?: PackagingType;
+  productType?: ProductType; pieces?: number;
   plasticG: number; co2G: number; confidence: number;
   productId?: string; // products.id when it matched one
   impactSource?: "shop" | "ai";

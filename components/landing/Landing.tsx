@@ -163,7 +163,7 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
   return (
     <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
       <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{example ? `${example.name} · verified impact` : "Your shop · verified impact"}</p>
-      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Rough averages per kind of product and packaging, from each verified purchase.</p>
+      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Rough averages per kind of product, from each verified purchase.</p>
       {orders && i && (
         <div className="mt-4">
           <p className="text-[15px] font-extrabold">{plural(i.purchases, "verified order")} by {plural(i.customers, "customer")}, each one on Solana</p>
@@ -363,7 +363,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             {/* Why "AI" (2026-11-15): the numbers' origin in two lines, the full account in the guide. */}
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">Where the numbers come from</p>
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">A shop lists what it sells without plastic. Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof AI for its kind and packaging, never by the shop. For a product the shop hasn&apos;t listed yet, the AI estimates kind and packaging from its name until the owner confirms it. Solana proves every purchase.</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">A shop lists what it sells without plastic. Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof AI for its kind, never by the shop. For a product the shop hasn&apos;t listed yet, the AI estimates its kind from its name until the owner confirms it. Solana proves every purchase.</p>
               <Link href="/about#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
             </div>
           </div>

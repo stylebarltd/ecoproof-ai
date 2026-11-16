@@ -2,9 +2,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Camera, Check, ImagePlus, Loader2, Plus, X } from "lucide-react";
+import { grams } from "@/lib/impact";
 import {
-  CATEGORY_LABELS, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_NAME_MAX,
-  type PackagingType, type Product, type ProductCategory,
+  asksType, CATEGORY_LABELS, MAX_PIECES, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_NAME_MAX, TYPE_LABELS, TYPES_BY_CATEGORY,
+  type PackagingType, type Product, type ProductCategory, type ProductSetupState, type ProductType,
 } from "@/lib/productRules";
 import { useProductSetup } from "./useProductSetup";
 
@@ -156,11 +157,11 @@ export default function ProductSetup({ id }: { id: string }) {
         ) : at === 3 ? (
           <>
             <h2 className="text-[17px] leading-tight">Your products</h2>
-            <p className="mt-1 text-[12.5px] leading-snug text-sage-900">Add your main products, each with its name <b>exactly as your receipt prints it</b>: that name is how a customer&apos;s receipt finds it. You don&apos;t enter any impact numbers; EcoProof AI works them out from the category and the packaging.</p>
+            <p className="mt-1 text-[12.5px] leading-snug text-sage-900">Add your main products, each with its name <b>exactly as your receipt prints it</b>: that name is how a customer&apos;s receipt finds it. You don&apos;t enter any impact numbers: each kind of product has a fixed figure from EcoProof AI, counted once per piece in the pack.</p>
             {shown.length === 0 && <p className="mt-3 rounded-2xl bg-white/60 p-3 text-[13px]">No category ticked yet. <button type="button" onClick={() => go(2)} className="font-bold underline underline-offset-2">Tick your categories first</button>.</p>}
             <div className="mt-3 space-y-4">
               {shown.map((c) => (
-                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} counted={s.d!.counted} owner={owner} busy={s.busy}
+                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} factors={s.d!.factors} owner={owner} busy={s.busy} onUpdate={s.updateProduct}
                   onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
               ))}
             </div>
@@ -222,17 +223,31 @@ function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; 
   );
 }
 
+/** What one pack of the product counts, in words, or why it counts nothing. */
+function worth(p: Product, factors: ProductSetupState["factors"]): string {
+  const f = factors[p.productType];
+  if (!f) return "no impact figure for this kind of product yet, so it counts nothing";
+  return `counts ${grams(f.plasticG * p.pieces)} plastic and ${grams(f.co2G * p.pieces)} CO₂${p.pieces > 1 ? ` (${p.pieces} pieces)` : ""}`;
+}
+
+const small = "rounded-lg bg-white px-2 py-1.5 text-[12.5px] text-ink ring-1 ring-sage-900/15";
+
 /** One category's products and the form that adds one. */
-function CategoryProducts({ category, products, counted, owner, busy, onAdd, onRemove, onPhoto, onAlias, onRemoveAlias }: {
-  category: ProductCategory; products: Product[]; counted: string[]; owner: boolean; busy: boolean;
-  onAdd: (b: { receiptName: string; packagingType: string; replaces?: string }) => Promise<boolean>;
+function CategoryProducts({ category, products, factors, owner, busy, onAdd, onUpdate, onRemove, onPhoto, onAlias, onRemoveAlias }: {
+  category: ProductCategory; products: Product[]; factors: ProductSetupState["factors"]; owner: boolean; busy: boolean;
+  onAdd: (b: { receiptName: string; packagingType: string; productType?: string; pieces: number; replaces?: string }) => Promise<boolean>;
+  onUpdate: (id: string, b: { productType?: string; pieces?: number }) => Promise<boolean>;
   onRemove: (id: string) => Promise<boolean>; onPhoto: (id: string, f?: File) => Promise<boolean>;
   onAlias: (id: string, name: string) => Promise<boolean>; onRemoveAlias: (id: string, name: string) => Promise<boolean>;
 }) {
   const [name, setName] = useState("");
   const [packaging, setPackaging] = useState<PackagingType | "">("");
+  const [type, setType] = useState<ProductType | "">("");
+  const [pieces, setPieces] = useState(1);
   const [replaces, setReplaces] = useState("");
-  const add = async () => { if (await onAdd({ receiptName: name, packagingType: packaging, replaces })) { setName(""); setReplaces(""); } };
+  const pick = asksType(category); // elsewhere the kind follows from the category and the packaging
+  const add = async () => { if (await onAdd({ receiptName: name, packagingType: packaging, productType: type || undefined, pieces, replaces })) { setName(""); setReplaces(""); setPieces(1); } };
+  const editable = (p: Product) => owner && (p.status === "declared" || p.status === "confirmed");
   return (
     <div className="rounded-2xl bg-white/60 p-3">
       <h3 className="text-[14px] font-bold leading-tight">{CATEGORY_LABELS[category].label}</h3>
@@ -241,37 +256,60 @@ function CategoryProducts({ category, products, counted, owner, busy, onAdd, onR
           {products.map((p) => (
             <li key={p.id} className="rounded-xl bg-white/80 p-2">
               <div className="flex items-center gap-2.5">
-              <label className={`relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-sage-200/70 text-sage-800 ${owner ? "" : "pointer-events-none"}`} title="Add a photo of the product">
-                {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
-                {p.photoUrl ? <img src={p.photoUrl} alt="" className="h-full w-full object-cover" /> : <ImagePlus size={18} strokeWidth={2.4} />}
-                <input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" aria-label={`Photo of ${p.receiptName}`} disabled={busy} onChange={(e) => { const f = e.target.files?.[0]; onPhoto(p.id, f).finally(() => { e.target.value = ""; }); }} />
-              </label>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13.5px] font-bold">{p.receiptName}</span>
-                <span className="block text-[11.5px] leading-snug text-sage-900">
-                  {PACKAGING_LABELS[p.packagingType]}{p.replaces ? ` · replaces ${p.replaces}` : ""}
-                  {!counted.includes(`${p.category}/${p.packagingType}`) && " · no impact figure for this packaging yet, so it counts nothing"}
-                  {p.status === "reported" && " · reported once"}{p.status === "removed" && " · removed after reports"}
+                <label className={`relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-sage-200/70 text-sage-800 ${owner ? "" : "pointer-events-none"}`} title="Add a photo of the product">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
+                  {p.photoUrl ? <img src={p.photoUrl} alt="" className="h-full w-full object-cover" /> : <ImagePlus size={18} strokeWidth={2.4} />}
+                  <input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" aria-label={`Photo of ${p.receiptName}`} disabled={busy} onChange={(e) => { const f = e.target.files?.[0]; onPhoto(p.id, f).finally(() => { e.target.value = ""; }); }} />
+                </label>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13.5px] font-bold">{p.receiptName}</span>
+                  <span className="block text-[11.5px] leading-snug text-sage-900">
+                    {TYPE_LABELS[p.productType].label} · {PACKAGING_LABELS[p.packagingType]}{p.replaces ? ` · replaces ${p.replaces}` : ""}
+                    {p.status === "reported" && " · reported once"}{p.status === "removed" && " · removed after reports"}
+                  </span>
+                  {p.status !== "removed" && <span className={`block text-[11.5px] leading-snug ${factors[p.productType] ? "font-bold text-sage-800" : "text-terra-800"}`}>{worth(p, factors)}</span>}
                 </span>
-              </span>
-              {owner && (p.status === "declared" || p.status === "confirmed") && (
-                <button type="button" disabled={busy} onClick={() => onRemove(p.id)} aria-label={`Remove ${p.receiptName}`} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink/10 disabled:opacity-50"><X size={15} strokeWidth={2.8} /></button>
-              )}
+                {editable(p) && (
+                  <button type="button" disabled={busy} onClick={() => onRemove(p.id)} aria-label={`Remove ${p.receiptName}`} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink/10 disabled:opacity-50"><X size={15} strokeWidth={2.8} /></button>
+                )}
               </div>
+              {editable(p) && (
+                <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-[54px] text-[11.5px] text-sage-900">
+                  {pick && (
+                    <select value={p.productType} disabled={busy} onChange={(e) => onUpdate(p.id, { productType: e.target.value })} aria-label={`What kind of product ${p.receiptName} is`} className={small}>
+                      {TYPES_BY_CATEGORY[category].map((t) => <option key={t} value={t}>{TYPE_LABELS[t].label}</option>)}
+                    </select>
+                  )}
+                  <label className="flex items-center gap-1.5">Pieces in the pack
+                    <input type="number" min={1} max={MAX_PIECES} defaultValue={p.pieces} key={p.pieces} disabled={busy} className={`${small} w-16`}
+                      onBlur={(e) => { const n = Math.round(Number(e.target.value)); if (n >= 1 && n <= MAX_PIECES && n !== p.pieces) onUpdate(p.id, { pieces: n }); else e.target.value = String(p.pieces); }} />
+                  </label>
+                </div>
+              )}
               {p.status !== "removed" && <Aliases product={p} owner={owner} busy={busy} onAdd={(n) => onAlias(p.id, n)} onRemove={(n) => onRemoveAlias(p.id, n)} />}
             </li>
           ))}
         </ul>
       )}
       {owner && (
-        <div className="mt-2.5 grid gap-2 sm:grid-cols-[1fr_auto]">
-          <input value={name} maxLength={PRODUCT_NAME_MAX} onChange={(e) => setName(e.target.value)} placeholder="Name exactly as on your receipt" aria-label="Receipt name" className={field} />
+        <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
+          <input value={name} maxLength={PRODUCT_NAME_MAX} onChange={(e) => setName(e.target.value)} placeholder="Name exactly as on your receipt" aria-label="Receipt name" className={`${field} sm:col-span-2`} />
+          {pick && (
+            <select value={type} onChange={(e) => setType(e.target.value as ProductType | "")} aria-label="What kind of product" className={field}>
+              <option value="">What is it?…</option>
+              {TYPES_BY_CATEGORY[category].map((t) => <option key={t} value={t}>{TYPE_LABELS[t].label} ({TYPE_LABELS[t].examples})</option>)}
+            </select>
+          )}
           <select value={packaging} onChange={(e) => setPackaging(e.target.value as PackagingType | "")} aria-label="Packaging" className={field}>
             <option value="">Packaging…</option>
             {PACKAGING_TYPES.map((t) => <option key={t} value={t}>{PACKAGING_LABELS[t]}</option>)}
           </select>
+          <label className="flex items-center gap-2 text-[12.5px] text-sage-900 sm:col-span-2">
+            <input type="number" min={1} max={MAX_PIECES} value={pieces} onChange={(e) => setPieces(Math.min(MAX_PIECES, Math.max(1, Math.round(Number(e.target.value)) || 1)))} aria-label="Pieces in the pack" className="w-16 shrink-0 rounded-xl bg-white/80 px-3 py-2.5 text-sm ring-1 ring-sage-900/15" />
+            <span>pieces in the pack. A set of 3 wraps is 3; a single item is 1.</span>
+          </label>
           {category === "reusables" && <input value={replaces} maxLength={PRODUCT_NAME_MAX} onChange={(e) => setReplaces(e.target.value)} placeholder="Optional: the single-use item it replaces, e.g. cling film" aria-label="What it replaces" className={`${field} sm:col-span-2`} />}
-          <button type="button" disabled={busy || name.trim().length < 2 || !packaging} onClick={add} className={`${primary} sm:col-span-2 sm:justify-self-start`}>
+          <button type="button" disabled={busy || name.trim().length < 2 || !packaging || (pick && !type)} onClick={add} className={`${primary} sm:col-span-2 sm:justify-self-start`}>
             {busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} strokeWidth={2.8} />} Add product
           </button>
         </div>

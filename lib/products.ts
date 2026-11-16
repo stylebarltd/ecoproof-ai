@@ -4,7 +4,7 @@ import { unmatchedLines } from "./match";
 import { MAX_PHOTO_BYTES } from "./photoRules";
 import { isJpeg } from "./placePhotos";
 import {
-  isCategory, isPackaging, MAX_ALIASES, MAX_PRODUCTS, PRODUCT_NAME_MAX, type Product, type ProductCategory, type ProductSetupState,
+  isCategory, isPackaging, MAX_ALIASES, MAX_PIECES, MAX_PRODUCTS, PRODUCT_NAME_MAX, typeOf, type Product, type ProductCategory, type ProductSetupState,
 } from "./productRules";
 
 // An eco shop's plastic-free products and their setup (docs/eco-product-standard.md): the owner declares, ticks categories, lists
@@ -15,10 +15,11 @@ export class ProductError extends Error { constructor(message: string, public st
 const clean = (v: unknown, n: number) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, n);
 const photoUrl = (placeId: string, productId: string, v: string) => `/api/places/${placeId}/products/${productId}/photo?v=${v}`;
 
-type Row = { id: string; receipt_name: string; display_name: string; category: string; packaging_type: string; replaces: string | null; photo_url: string | null; source: string; status: string };
+type Row = { id: string; receipt_name: string; display_name: string; category: string; packaging_type: string; product_type: string; pieces: number; replaces: string | null; photo_url: string | null; source: string; status: string };
 const toProduct = (r: Row, aliases: string[] = []): Product => ({
   aliases,
   id: r.id, receiptName: r.receipt_name, displayName: r.display_name, category: r.category as Product["category"], packagingType: r.packaging_type as Product["packagingType"],
+  productType: r.product_type as Product["productType"], pieces: r.pieces,
   replaces: r.replaces, photoUrl: r.photo_url, source: r.source as Product["source"], status: r.status as Product["status"],
 });
 
@@ -55,14 +56,14 @@ export async function productSetup(placeId: string, role: "owner" | "staff"): Pr
     query<Row>("SELECT * FROM products WHERE place_id=$1 ORDER BY category, lower(display_name)", [placeId]),
     unmatchedLines(placeId),
     query("SELECT 1 FROM receipt_samples WHERE place_id=$1", [placeId]),
-    query<{ pair: string }>("SELECT category || '/' || packaging_type AS pair FROM impact_factors"),
+    query<{ product_type: string; plastic_g: number; co2_g: number }>("SELECT product_type, plastic_g, co2_g FROM impact_factors"),
     aliasesOf(placeId),
   ]);
   return {
     role,
     setup: { categories: (place?.product_categories ?? []).filter(isCategory), refill: place?.refill ?? null, declaredAt: place?.products_declared_at ?? null, hasSample: sample.length > 0, inStore: !!place?.in_store },
     products: products.map((p) => toProduct(p, aliases.get(p.id))),
-    counted: factors.map((f) => f.pair),
+    factors: Object.fromEntries(factors.map((f) => [f.product_type, { plasticG: f.plastic_g, co2G: f.co2_g }])),
     // No customer photo path yet: a queued line has no photo until the app asks the scanner for one.
     queue: queue.map((q) => ({ ...q, photoUrl: null })),
   };
@@ -81,6 +82,24 @@ export async function saveSetup(placeId: string, b: { categories?: unknown; refi
   if (b.declared === true) await query("UPDATE stamp_places SET products_declared_at = COALESCE(products_declared_at, now()) WHERE id=$1", [placeId]);
 }
 
+/** How many of the thing are in one pack: a whole number from 1 to MAX_PIECES. */
+function piecesOf(v: unknown): number {
+  const n = Number(v);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_PIECES) throw new ProductError(`Pieces in the pack is a whole number from 1 to ${MAX_PIECES}.`);
+  return n;
+}
+
+/** Changes what kind of product it is, or how many pieces are in the pack: { productType?, pieces? }. Still no numbers: the figure
+ *  belongs to the type. */
+export async function updateProduct(placeId: string, id: string, b: Record<string, unknown>): Promise<void> {
+  const [p] = await query<Row>("SELECT * FROM products WHERE place_id=$1 AND id=$2", [placeId, id]);
+  if (!p) throw new ProductError("Unknown product.", 404);
+  if (p.status === "removed") throw new ProductError("This product was removed from the eco list after confirmed reports.", 409);
+  const productType = b.productType === undefined ? p.product_type : typeOf(p.category as Product["category"], p.packaging_type as Product["packagingType"], b.productType);
+  if (!productType) throw new ProductError("Pick what kind of product it is.");
+  await query("UPDATE products SET product_type=$3, pieces=$4 WHERE place_id=$1 AND id=$2", [placeId, id, productType, b.pieces === undefined ? p.pieces : piecesOf(b.pieces)]);
+}
+
 /** Adds a product to the shop's list. `fromQueue`: the owner confirmed a line customers scanned. Receipt lines already scanned with this
  *  name stop waiting in the queue. */
 export async function addProduct(placeId: string, b: Record<string, unknown>): Promise<void> {
@@ -90,6 +109,9 @@ export async function addProduct(placeId: string, b: Record<string, unknown>): P
   if (receiptName.length < 2) throw new ProductError("Enter the product's name exactly as your receipt prints it.");
   if (!isCategory(b.category)) throw new ProductError("Pick a category.");
   if (!isPackaging(b.packagingType)) throw new ProductError("Pick how it is packed.");
+  const productType = typeOf(b.category, b.packagingType, b.productType);
+  if (!productType) throw new ProductError("Pick what kind of product it is.");
+  const pieces = piecesOf(b.pieces ?? 1);
   const [place] = await query<{ products_declared_at: string | null; n: number }>(
     "SELECT products_declared_at, (SELECT COUNT(*)::int FROM products WHERE place_id=$1) AS n FROM stamp_places WHERE id=$1", [placeId],
   );
@@ -99,8 +121,8 @@ export async function addProduct(placeId: string, b: Record<string, unknown>): P
   if (taken) throw new ProductError(taken === "removed" ? "This product was removed from the eco list after confirmed reports, so it can't be added again." : "That name is already on your list.", 409);
   const id = randomBytes(9).toString("base64url");
   await query(
-    "INSERT INTO products (id, place_id, receipt_name, display_name, category, packaging_type, replaces, source, status) VALUES ($1,$2,$3,$4,$5,$6,$7,'owner',$8)",
-    [id, placeId, receiptName, displayName, b.category, b.packagingType, replaces, b.fromQueue === true ? "confirmed" : "declared"],
+    "INSERT INTO products (id, place_id, receipt_name, display_name, category, packaging_type, product_type, pieces, replaces, source, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'owner',$10)",
+    [id, placeId, receiptName, displayName, b.category, b.packagingType, productType, pieces, replaces, b.fromQueue === true ? "confirmed" : "declared"],
   );
   await claimLines(placeId, id, receiptName);
 }

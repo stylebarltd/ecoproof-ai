@@ -6,7 +6,7 @@ import { isClaimed, receiptFingerprint } from "./claim";
 import { recordLines } from "./match";
 import { matchItems, type Matched } from "./order";
 import { computeImpact, type Impact } from "./impact";
-import { CATEGORY_LABELS } from "./productRules";
+import { CATEGORY_LABELS, TYPE_LABELS } from "./productRules";
 import { impactLine } from "./woo";
 import { distanceM, getPlace, PLACE_COLS, stampDay, type StampPlace } from "./stampPlaces";
 
@@ -168,7 +168,7 @@ export async function readReceipt(opts: { imageBase64: string; mediaType: "image
   return {
     token: `${body}.${hmac("receipt", body)}`, expiresAt: new Date(exp).toISOString(),
     placeId: match.place.id, placeName: match.place.name, date, total: total || null, currency: clean(read.currency, 3).toUpperCase(), receiptNumber,
-    items: matched.map((i) => ({ name: i.name, quantity: i.quantity, category: i.category, label: i.category === "not_sustainable" ? "Not counted" : CATEGORY_LABELS[i.category].label, counts: i.category !== "not_sustainable" })),
+    items: matched.map((i) => ({ name: i.name, quantity: i.quantity, category: i.category, label: i.category === "not_sustainable" ? "Not counted" : i.productType ? TYPE_LABELS[i.productType].label : CATEGORY_LABELS[i.category].label, counts: i.category !== "not_sustainable" })),
     impact, line, estimate, points: 5,
   };
 }

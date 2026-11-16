@@ -1,6 +1,6 @@
 import { boolean, check, customType, doublePrecision, index, integer, pgTable, primaryKey, serial, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_SOURCES, PRODUCT_STATUSES } from "./productRules";
+import { MAX_PIECES, PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_SOURCES, PRODUCT_STATUSES, PRODUCT_TYPES } from "./productRules";
 
 // The database schema. Change it here, then run `npm run db:generate` to write a migration into drizzle/ and review the SQL.
 // Migrations run on deploy (`npm run db:migrate`). The app itself never creates or alters tables.
@@ -329,8 +329,8 @@ export const placePhotos = pgTable("place_photos", {
 // The eco product standard (docs/eco-product-standard.md): what a shop sells without plastic, and what a receipt line of it is worth.
 // The fixed lists live in lib/productRules.ts.
 
-/** A product a shop sells plastic-free. It carries no impact numbers: those are always looked up in impact_factors by category and
- *  packaging, so an owner has nothing to set or override. */
+/** A product a shop sells plastic-free. It carries no impact numbers: those are always looked up in impact_factors by its product
+ *  type (and counted once per piece in the pack), so an owner has nothing to set or override. */
 export const products = pgTable("products", {
   id: text().primaryKey(),
   placeId: text("place_id").notNull(),
@@ -338,6 +338,8 @@ export const products = pgTable("products", {
   displayName: text("display_name").notNull(),
   category: text().notNull(),
   packagingType: text("packaging_type").notNull(),
+  productType: text("product_type").default("other").notNull(), // which row of the impact table it is (lib/productRules.ts)
+  pieces: integer().default(1).notNull(), // how many of the thing are in the pack: a set of 3 wraps is 3
   replaces: text(), // the single-use item it replaces, for reusables
   photoUrl: text("photo_url"),
   source: text().notNull(),
@@ -347,6 +349,8 @@ export const products = pgTable("products", {
   unique("products_receipt_name").on(t.placeId, t.receiptName),
   check("products_category", oneOf(t.category, PRODUCT_CATEGORIES)),
   check("products_packaging_type", oneOf(t.packagingType, PACKAGING_TYPES)),
+  check("products_product_type", oneOf(t.productType, PRODUCT_TYPES)),
+  check("products_pieces", sql`${t.pieces} BETWEEN 1 AND ${sql.raw(String(MAX_PIECES))}`),
   check("products_source", oneOf(t.source, PRODUCT_SOURCES)),
   check("products_status", oneOf(t.status, PRODUCT_STATUSES)),
 ]);
@@ -358,18 +362,13 @@ export const productAliases = pgTable("product_aliases", {
   receiptNameVariant: text("receipt_name_variant").notNull(),
 }, (t) => [unique("product_aliases_variant").on(t.productId, t.receiptNameVariant)]);
 
-/** Plastic and CO2 avoided per purchase, by category and packaging. EcoProof AI's own table (seeded by the migration from section 5 of
- *  the standard): no owner-facing route may write it. A pair without a row is worth nothing. */
+/** Plastic and CO2 avoided per piece, by product type: the standard's table (section 5), seeded by the migration. EcoProof AI's own:
+ *  no owner-facing route may write it. A type without a row is worth nothing. */
 export const impactFactors = pgTable("impact_factors", {
-  category: text().notNull(),
-  packagingType: text("packaging_type").notNull(),
+  productType: text("product_type").primaryKey(),
   plasticG: integer("plastic_g").notNull(),
   co2G: integer("co2_g").notNull(),
-}, (t) => [
-  primaryKey({ columns: [t.category, t.packagingType], name: "impact_factors_pkey" }),
-  check("impact_factors_category", oneOf(t.category, PRODUCT_CATEGORIES)),
-  check("impact_factors_packaging_type", oneOf(t.packagingType, PACKAGING_TYPES)),
-]);
+}, (t) => [check("impact_factors_product_type", oneOf(t.productType, PRODUCT_TYPES))]);
 
 /** One line of a scanned receipt. A line without a matched product waits in the owner's "Confirm these products?" queue. */
 export const receiptLines = pgTable("receipt_lines", {

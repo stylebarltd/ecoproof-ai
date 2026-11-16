@@ -1,6 +1,6 @@
 import { query } from "./db";
 import { bestFuzzy, exactKey, type Named } from "./matchText";
-import type { PackagingType, ProductCategory } from "./productRules";
+import type { PackagingType, ProductCategory, ProductType } from "./productRules";
 
 // Which of a shop's declared products a receipt line is (docs/eco-product-standard.md): the exact receipt name, then an alias, then a
 // fuzzy match on the words (lib/matchText.ts). A removed product never matches. Lines that match nothing are kept in receipt_lines and
@@ -8,14 +8,16 @@ import type { PackagingType, ProductCategory } from "./productRules";
 
 export type Match = { productId: string; confidence: number; via: "name" | "alias" | "fuzzy" };
 
-export type KnownProduct = { category: ProductCategory; packagingType: PackagingType };
+export type KnownProduct = { category: ProductCategory; packagingType: PackagingType; productType: ProductType; pieces: number };
 type Known = { names: Named[]; aliases: Named[]; products: Map<string, KnownProduct>; blocked: Set<string> };
 
 /** A place's products that can still match, with their aliases; and the wordings that must count nothing: removed products (two
  *  confirmed reports) and receipt lines the owner dismissed as not plastic-free. */
 async function known(placeId: string): Promise<Known> {
   const [rows, aliases, dismissed] = await Promise.all([
-    query<{ id: string; receipt_name: string; category: ProductCategory; packaging_type: PackagingType; status: string }>("SELECT id, receipt_name, category, packaging_type, status FROM products WHERE place_id=$1", [placeId]),
+    query<{ id: string; receipt_name: string; category: ProductCategory; packaging_type: PackagingType; product_type: ProductType; pieces: number; status: string }>(
+      "SELECT id, receipt_name, category, packaging_type, product_type, pieces, status FROM products WHERE place_id=$1", [placeId],
+    ),
     query<{ product_id: string; receipt_name_variant: string }>("SELECT a.product_id, a.receipt_name_variant FROM product_aliases a JOIN products p ON p.id = a.product_id WHERE p.place_id=$1", [placeId]),
     query<{ raw_text: string }>("SELECT DISTINCT raw_text FROM receipt_lines WHERE place_id=$1 AND dismissed", [placeId]),
   ]);
@@ -24,7 +26,7 @@ async function known(placeId: string): Promise<Known> {
   return {
     names: live.map((r) => ({ productId: r.id, name: r.receipt_name })),
     aliases: aliases.filter((a) => !removed.has(a.product_id)).map((r) => ({ productId: r.product_id, name: r.receipt_name_variant })),
-    products: new Map(live.map((r) => [r.id, { category: r.category, packagingType: r.packaging_type }])),
+    products: new Map(live.map((r) => [r.id, { category: r.category, packagingType: r.packaging_type, productType: r.product_type, pieces: r.pieces }])),
     blocked: new Set([
       ...rows.filter((r) => removed.has(r.id)).map((r) => exactKey(r.receipt_name)),
       ...aliases.filter((a) => removed.has(a.product_id)).map((a) => exactKey(a.receipt_name_variant)),

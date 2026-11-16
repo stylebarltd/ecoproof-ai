@@ -40,7 +40,7 @@ export default function ShopImpact({ impact, compact = false, className = "" }: 
               <p className="text-[11.5px] text-sage-900">{split(impact.co2Kg * 1000)[1]}</p>
             </div>
           </div>
-          <p className="mt-2 text-[11.5px] text-sage-900">From {impact.purchases} verified purchase{impact.purchases === 1 ? "" : "s"}. Rough averages per kind of product and packaging, not audited figures.</p>
+          <p className="mt-2 text-[11.5px] text-sage-900">From {impact.purchases} verified purchase{impact.purchases === 1 ? "" : "s"}. Rough averages per kind of product, not audited figures.</p>
         </>
       )}
     </div>

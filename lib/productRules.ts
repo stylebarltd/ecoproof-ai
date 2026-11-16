@@ -9,6 +9,19 @@ export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 export const PACKAGING_TYPES = ["glass", "paper", "metal", "none", "refill"] as const;
 export type PackagingType = (typeof PACKAGING_TYPES)[number];
 
+/**
+ * What kind of product it is: the rows of the standard's impact table (section 5). The impact figure belongs to the type, never to the
+ * shop or the product. "other" is anything the table has no row for yet: it can be listed, and counts nothing.
+ */
+export const PRODUCT_TYPES = [
+  "reusable_wrap", "reusable_container", "reusable_cutlery_straw", "soap_bar", "toothpaste_tabs", "bamboo_toothbrush",
+  "refill", "glass_pack", "paper_metal_pack", "other",
+] as const;
+export type ProductType = (typeof PRODUCT_TYPES)[number];
+
+/** A pack can hold several of the same thing (a set of 3 wraps): each piece counts. */
+export const MAX_PIECES = 100;
+
 /** Who told us about the product: the shop, a customer's photo of an unknown receipt line, or an online order. */
 export const PRODUCT_SOURCES = ["owner", "customer_photo", "order_webhook"] as const;
 export type ProductSource = (typeof PRODUCT_SOURCES)[number];
@@ -30,6 +43,39 @@ export const CATEGORY_LABELS: Record<ProductCategory, { label: string; examples:
 };
 export const PACKAGING_LABELS: Record<PackagingType, string> = { glass: "Glass", paper: "Paper", metal: "Metal", none: "No packaging", refill: "Refill, customer's own container" };
 
+export const TYPE_LABELS: Record<ProductType, { label: string; examples: string }> = {
+  reusable_wrap: { label: "Reusable wrap", examples: "beeswax wrap, wax bag" },
+  reusable_container: { label: "Reusable container", examples: "bottle, cup, lunchbox" },
+  reusable_cutlery_straw: { label: "Reusable cutlery or straw", examples: "steel or bamboo set" },
+  soap_bar: { label: "Soap or shampoo bar", examples: "bar, solid conditioner" },
+  toothpaste_tabs: { label: "Toothpaste tabs", examples: "jar or tin of tabs" },
+  bamboo_toothbrush: { label: "Bamboo toothbrush", examples: "toothbrush" },
+  refill: { label: "Refill into the customer's own container", examples: "dry goods, liquids, cleaning products" },
+  glass_pack: { label: "In glass instead of plastic", examples: "jars, bottles" },
+  paper_metal_pack: { label: "In paper or metal instead of plastic", examples: "packs, tins" },
+  other: { label: "Something else", examples: "no impact figure yet" },
+};
+
+/** The types a category offers. A category with one type needs no question; food's type follows from its packaging (typeOf). */
+export const TYPES_BY_CATEGORY: Record<ProductCategory, readonly ProductType[]> = {
+  food_glass_paper_metal: ["glass_pack", "paper_metal_pack", "refill", "other"],
+  bulk_refill: ["refill"],
+  soap_cosmetics: ["soap_bar", "toothpaste_tabs", "refill", "glass_pack", "paper_metal_pack", "other"],
+  reusables: ["reusable_wrap", "reusable_container", "reusable_cutlery_straw", "other"],
+  household: ["bamboo_toothbrush", "other"],
+};
+/** Categories where the owner picks the type; in the others it follows from the category and the packaging. */
+export const asksType = (c: ProductCategory) => c === "soap_cosmetics" || c === "reusables" || c === "household";
+
+/** The product's type: the one the owner picked where the category asks, else what category and packaging say. Null when the pick
+ *  doesn't belong to the category. */
+export function typeOf(category: ProductCategory, packaging: PackagingType, picked: unknown): ProductType | null {
+  if (asksType(category)) return isType(picked) && TYPES_BY_CATEGORY[category].includes(picked) ? picked : null;
+  if (category === "bulk_refill" || packaging === "refill") return "refill";
+  return packaging === "glass" ? "glass_pack" : packaging === "paper" || packaging === "metal" ? "paper_metal_pack" : "other";
+}
+
+export const isType = (v: unknown): v is ProductType => (PRODUCT_TYPES as readonly unknown[]).includes(v);
 export const isCategory = (v: unknown): v is ProductCategory => (PRODUCT_CATEGORIES as readonly unknown[]).includes(v);
 export const isPackaging = (v: unknown): v is PackagingType => (PACKAGING_TYPES as readonly unknown[]).includes(v);
 
@@ -39,6 +85,7 @@ export const MAX_ALIASES = 10;
 
 export type Product = {
   id: string; receiptName: string; displayName: string; category: ProductCategory; packagingType: PackagingType;
+  productType: ProductType; /** how many of the thing are in the pack */ pieces: number;
   replaces: string | null; photoUrl: string | null; source: ProductSource; status: ProductStatus;
   /** Other names the same product is printed with (another language, the till's short name, an old name). */
   aliases: string[];
@@ -48,8 +95,8 @@ export type ProductSetupState = {
   /** categories ticked, refill answered (null = not yet), the declaration's date, and whether a sample receipt is stored */
   setup: { categories: ProductCategory[]; refill: boolean | null; declaredAt: string | null; hasSample: boolean; inStore: boolean };
   products: Product[];
-  /** The "category/packaging" pairs EcoProof AI has an impact figure for; a product outside them is listed but counts nothing yet. */
-  counted: string[];
+  /** EcoProof AI's impact figure per product type, in grams per piece; a type without one is listed but counts nothing yet. */
+  factors: Partial<Record<ProductType, { plasticG: number; co2G: number }>>;
   /** receipt lines customers scanned that match no product yet */
   queue: { rawText: string; times: number; lastSeen: string; photoUrl: string | null }[];
 };

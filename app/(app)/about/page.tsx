@@ -81,11 +81,11 @@ export default function About() {
         <div className="mb-1 flex items-center gap-2"><Sparkles size={20} className="text-sage-700" /><H2>Why &ldquo;AI&rdquo;, and what it does</H2></div>
         <P>A stamp is only worth something if the impact behind it is real. So the numbers are not the shop&apos;s and not the AI&apos;s: they come from one short table that EcoProof AI keeps.</P>
         <H3>1. The shop says what it sells without plastic</H3>
-        <P>An eco shop lists its plastic-free products by the name its receipts and orders print, and for each one says what kind of product it is (food, refill, soap and cosmetics, reusables, household) and how it is packed (glass, paper, metal, no packaging, refill). It declares that these are sold without plastic packaging. It never enters a number.</P>
+        <P>An eco shop lists its plastic-free products by the name its receipts and orders print, and for each one says what kind of product it is (a reusable wrap, a soap bar, food in glass and so on), how it is packed, and how many pieces are in a pack. It declares that these are sold without plastic packaging. It never enters a number.</P>
         <H3>2. One table gives the numbers</H3>
-        <P>Each kind of product and packaging has a fixed amount of <b>plastic avoided and CO₂ avoided, in grams</b>. A purchase is worth that amount, whichever shop sold it. No shop can change the table.</P>
+        <P>Each kind of product has a fixed amount of <b>plastic avoided and CO₂ avoided, in grams</b>, counted once for each piece in the pack. A purchase is worth that amount, whichever shop sold it. No shop can change the table.</P>
         <H3>3. The AI fills the gaps, as an estimate</H3>
-        <P>When a receipt or an order has a product the shop hasn&apos;t listed yet, the AI reads its kind and packaging off the name, and the same table gives the numbers. That stamp is labelled an <b>EcoProof AI estimate</b>, and the product waits for the owner to confirm it or say it isn&apos;t plastic-free. The AI also reads the receipt photo itself.</P>
+        <P>When a receipt or an order has a product the shop hasn&apos;t listed yet, the AI reads its kind off the name, the same table gives the numbers, and it counts as a single piece. That stamp is labelled an <b>EcoProof AI estimate</b>, and the product waits for the owner to confirm it or say it isn&apos;t plastic-free. The AI also reads the receipt photo itself.</P>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
           <li><b>Anyone can object.</b> Every listed product has a &ldquo;Not true?&rdquo; link on the shop&apos;s page. Two reports we confirm take the product off the list, and it stops counting.</li>
           <li><b>Rough averages, not audits.</b> The table is a first, cautious reading of what a product of that kind avoids. It is not certified lifecycle data, and we say so wherever the numbers appear.</li>

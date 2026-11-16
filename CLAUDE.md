@@ -145,8 +145,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   order. Not built: at-home scans (3 pts) and the per-shop item memory.
 - Eco product standard (2026-11-16, eco shops; `docs/eco-product-standard.md`, a copy of the Claude Doc Pola keeps): a shop lists what it sells
   without plastic (`products`, keyed on the receipt name, plus `product_aliases`); fixed lists in `lib/productRules.ts`. **Products never
-  carry impact numbers and no owner route accepts any**: impact is looked up in `impact_factors` by category + packaging (seeded in
-  `drizzle/0010`, lowest figure of the standard's table per pair; change it only by migration). Setup wizard `/shop/<id>/products`
+  carry impact numbers and no owner route accepts any**: impact is looked up in `impact_factors` by product type (change it only by migration). Setup wizard `/shop/<id>/products`
   (`components/ProductSetup.tsx`, `lib/products.ts`): sample receipt (skippable, stored in `receipt_samples`, nothing reads it yet),
   declaration (required before any product), then categories, products, refill, each with "Skip for now". `lib/match.ts` matches a receipt
   line: exact name, alias, then word overlap above 0.8 (`lib/matchText.ts`); `claimReceipt` records every line in `receipt_lines`, and the
@@ -156,10 +155,13 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   several printed names (Thai and English, the till's short name) be one product; a name is unique per shop across receipt names and
   aliases. The customer photo path for unknown lines isn't built.
 - Impact counting (switched 2026-11-16): **grams of plastic and grams of CO2 avoided, for receipts and online orders alike**
-  (`matchItems` in `lib/order.ts`). A line that matches one of the shop's products gets `impact_factors` for its category + packaging
-  (`impactSource: "shop"`); an unlisted line is estimated: the AI (`CATEGORY_MODEL`) reads category + packaging off the name, the same
-  table gives the numbers (`"ai"`, shown as "EcoProof AI estimate") and the line waits in the owner's queue (orders too, via
-  `ingestOrder`); a removed product or a dismissed wording counts nothing. A pair without a factor counts nothing (the wizard says so).
+  (`matchItems` in `lib/order.ts`). `impact_factors` is keyed by **product type** (`PRODUCT_TYPES` in `lib/productRules.ts`: the rows of
+  the standard's section 5, seeded row for row in `drizzle/0014`, low end of a range; `other` has no row and counts nothing). A product
+  has a category (grouping), a packaging (what it declares), a type (picked by the owner in soap/cosmetics, reusables and household;
+  elsewhere it follows from category + packaging, `typeOf`) and `pieces` per pack (1-100): a line counts factor x pieces x quantity
+  (`impactSource: "shop"`). An unlisted line is estimated: the AI (`CATEGORY_MODEL`) reads the type off the name, counts one piece
+  (`"ai"`, shown as "EcoProof AI estimate") and the line waits in the owner's queue (orders too, via `ingestOrder`); a removed product or
+  a dismissed wording counts nothing. A new kind of product needs a row in the standard first, then a migration: never a per-shop number.
   Records keep the old columns: `packaging_g` = grams of plastic, `co2_kg` to the gram, `plastic_items` always 0 (it is part of the
   proof's hash input, so it stays). Everything shown goes through `grams()` / `impactParts()` in `lib/impact.ts`; types carry
   `plasticG`. The first engine (per-product numbers, `product_impacts`, the SuperBee catalogue, `/api/woo/products`) was deleted on 2026-11-16. WooCommerce plugin 1.3.0 has no

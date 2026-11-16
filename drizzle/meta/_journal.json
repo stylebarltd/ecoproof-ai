@@ -92,6 +92,20 @@
       "when": 1794817500913,
       "tag": "0012_drop_product_impacts",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794823622681,
+      "tag": "0013_product_types",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794823624029,
+      "tag": "0014_impact_by_type",
+      "breakpoints": true
     }
   ]
 }

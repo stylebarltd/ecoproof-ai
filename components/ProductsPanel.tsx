@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, Loader2, PackageCheck } from "lucide-react";
-import { CATEGORY_LABELS, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, type ProductSetupState } from "@/lib/productRules";
+import { asksType, CATEGORY_LABELS, isCategory, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, TYPE_LABELS, TYPES_BY_CATEGORY, type ProductSetupState } from "@/lib/productRules";
 import { useProductSetup } from "./useProductSetup";
 
 /**
@@ -31,7 +31,7 @@ export default function ProductsPanel({ placeId }: { placeId: string }) {
       {queue.length > 0 && (
         <div className="mt-4 border-t border-sage-900/10 pt-3">
           <h3 className="text-[15px] font-bold leading-tight">Confirm these products?</h3>
-          <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">Customers bought these items, and they aren&apos;t on your list yet. Until you decide, EcoProof AI estimates them. Confirm the ones you sell without plastic packaging and they join your list.</p>
+          <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">Customers bought these items, and they aren&apos;t on your list yet. Until you decide, EcoProof AI estimates them. Confirm the ones you sell without plastic packaging and they join your list; set the pieces in the pack afterwards under &ldquo;Plastic-free products&rdquo;.</p>
           {owner && !setup.declaredAt && <p className="mt-2 rounded-xl bg-white/60 p-2.5 text-[12.5px]">To confirm products, <Link href={`/shop/${placeId}/products`} className="font-bold underline underline-offset-2">make your declaration first</Link>.</p>}
           <ul className="mt-2.5 space-y-2">
             {queue.map((q) => <QueueLine key={q.rawText} q={q} can={owner && !!setup.declaredAt} busy={s.busy} products={products.filter((p) => p.status !== "removed")}
@@ -46,11 +46,13 @@ export default function ProductsPanel({ placeId }: { placeId: string }) {
 
 function QueueLine({ q, can, busy, products, onConfirm, onSame, onDismiss }: {
   q: ProductSetupState["queue"][number]; can: boolean; busy: boolean; products: ProductSetupState["products"];
-  onConfirm: (b: { category: string; packagingType: string }) => Promise<boolean>; onSame: (productId: string) => Promise<boolean>; onDismiss: () => Promise<boolean>;
+  onConfirm: (b: { category: string; packagingType: string; productType?: string }) => Promise<boolean>; onSame: (productId: string) => Promise<boolean>; onDismiss: () => Promise<boolean>;
 }) {
   const [same, setSame] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [packaging, setPackaging] = useState("");
+  const pick = isCategory(category) && asksType(category); // elsewhere the kind follows from the category and the packaging
   const select = "min-w-0 flex-1 rounded-xl bg-white/80 px-2.5 py-2 text-[12.5px] ring-1 ring-sage-900/15";
   return (
     <li className="rounded-2xl bg-white/60 p-3">
@@ -65,17 +67,23 @@ function QueueLine({ q, can, busy, products, onConfirm, onSame, onDismiss }: {
       {can && (
         <>
           <div className="mt-2 flex flex-wrap gap-2">
-            <select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Category" className={select}>
+            <select value={category} onChange={(e) => { setCategory(e.target.value); setType(""); }} aria-label="Category" className={select}>
               <option value="">Category…</option>
               {PRODUCT_CATEGORIES.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c].label}</option>)}
             </select>
+            {pick && isCategory(category) && (
+              <select value={type} onChange={(e) => setType(e.target.value)} aria-label="What kind of product" className={select}>
+                <option value="">What is it?…</option>
+                {TYPES_BY_CATEGORY[category].map((t) => <option key={t} value={t}>{TYPE_LABELS[t].label}</option>)}
+              </select>
+            )}
             <select value={packaging} onChange={(e) => setPackaging(e.target.value)} aria-label="Packaging" className={select}>
               <option value="">Packaging…</option>
               {PACKAGING_TYPES.map((t) => <option key={t} value={t}>{PACKAGING_LABELS[t]}</option>)}
             </select>
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
-            <button type="button" disabled={busy || !category || !packaging} onClick={() => onConfirm({ category, packagingType: packaging })} className="inline-flex items-center gap-1.5 rounded-full bg-honey-500 px-3.5 py-2 text-xs font-bold text-ink disabled:opacity-50">
+            <button type="button" disabled={busy || !category || !packaging || (pick && !type)} onClick={() => onConfirm({ category, packagingType: packaging, productType: type || undefined })} className="inline-flex items-center gap-1.5 rounded-full bg-honey-500 px-3.5 py-2 text-xs font-bold text-ink disabled:opacity-50">
               {busy && <Loader2 size={14} className="animate-spin" />} Confirm as plastic-free
             </button>
             <button type="button" disabled={busy} onClick={onDismiss} className="glass rounded-full px-3.5 py-2 text-xs font-bold disabled:opacity-50">Not plastic-free</button>
