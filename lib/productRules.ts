@@ -14,7 +14,7 @@ export type PackagingType = (typeof PACKAGING_TYPES)[number];
  * shop or the product. "other" is anything the table has no row for yet: it can be listed, and counts nothing.
  */
 export const PRODUCT_TYPES = [
-  "reusable_wrap", "reusable_container", "reusable_cutlery_straw", "reusable_bag", "produce_bag",
+  "reusable_wrap", "reusable_container", "reusable_cutlery_straw", "reusable_bag", "produce_bag", "reusable_cloth",
   "soap_bar", "toothpaste_tabs", "toothpaste_tabs_travel", "plastic_free_floss", "bamboo_toothbrush",
   "laundry_pouch", "dryer_balls", "natural_sponge",
   "refill", "glass_pack", "paper_metal_pack", "other",
@@ -51,6 +51,7 @@ export const TYPE_LABELS: Record<ProductType, { label: string; examples: string 
   reusable_cutlery_straw: { label: "Reusable cutlery or straw", examples: "steel or bamboo set" },
   reusable_bag: { label: "Reusable shopping bag", examples: "tote, cloth bag" },
   produce_bag: { label: "Reusable produce bag", examples: "mesh bag for fruit and vegetables" },
+  reusable_cloth: { label: "Reusable kitchen cloth", examples: "washable cotton cloth used instead of throwaway dishcloths, each" },
   soap_bar: { label: "Soap or shampoo bar", examples: "bar, solid conditioner" },
   toothpaste_tabs: { label: "Toothpaste tabs", examples: "jar or box of about 100 tabs or more" },
   toothpaste_tabs_travel: { label: "Toothpaste tabs, travel size", examples: "small tin, about two weeks of tabs" },
@@ -70,7 +71,7 @@ export const TYPES_BY_CATEGORY: Record<ProductCategory, readonly ProductType[]> 
   food_glass_paper_metal: ["glass_pack", "paper_metal_pack", "refill", "other"],
   bulk_refill: ["refill"],
   soap_cosmetics: ["soap_bar", "toothpaste_tabs", "toothpaste_tabs_travel", "plastic_free_floss", "refill", "glass_pack", "paper_metal_pack", "other"],
-  reusables: ["reusable_wrap", "reusable_container", "reusable_cutlery_straw", "reusable_bag", "produce_bag", "other"],
+  reusables: ["reusable_wrap", "reusable_container", "reusable_cutlery_straw", "reusable_bag", "produce_bag", "reusable_cloth", "other"],
   household: ["bamboo_toothbrush", "natural_sponge", "laundry_pouch", "dryer_balls", "other"],
 };
 /** Categories where the owner picks the type; in the others it follows from the category and the packaging. */

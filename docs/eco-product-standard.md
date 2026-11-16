@@ -95,6 +95,7 @@ Rows added on 2026-11-16 (in the app's table; the Claude Doc needs the same rows
 | Natural sponge | Luffa dish scrubber | 20 | 60 | Replaces one foam scrub sponge of 20–40 g, one for one |
 | Plastic-free floss | Floss in glass, per spool | 10 | 30 | One plastic floss case, about 11.5 g |
 | Toothpaste tabs, travel size | Tin of about 14 tabs | 2 | 6 | One small hotel or travel toothpaste tube, 2–3 g empty |
+| Reusable kitchen cloth | Washable cotton cloth, each | 43 | 129 | One throwaway fleece dishcloth a month for two years = 24 cloths of about 10 g, 18% of it plastic (viscose with 18–50% polyester or polypropylene). Weight and count are working figures, not measured |
 
 Also decided on 2026-11-16: the figure belongs to the **product type** (one row of these tables), not to category and packaging; a product states its **pieces per pack**, and each piece counts; a **bundle** counts as the products it contains.
 

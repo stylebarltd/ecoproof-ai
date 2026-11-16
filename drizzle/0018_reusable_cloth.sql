@@ -1,0 +1,7 @@
+ALTER TABLE "impact_factors" DROP CONSTRAINT "impact_factors_product_type";--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT "products_product_type";--> statement-breakpoint
+ALTER TABLE "impact_factors" ADD CONSTRAINT "impact_factors_product_type" CHECK ("impact_factors"."product_type" IN ('reusable_wrap', 'reusable_container', 'reusable_cutlery_straw', 'reusable_bag', 'produce_bag', 'reusable_cloth', 'soap_bar', 'toothpaste_tabs', 'toothpaste_tabs_travel', 'plastic_free_floss', 'bamboo_toothbrush', 'laundry_pouch', 'dryer_balls', 'natural_sponge', 'refill', 'glass_pack', 'paper_metal_pack', 'other'));--> statement-breakpoint
+ALTER TABLE "products" ADD CONSTRAINT "products_product_type" CHECK ("products"."product_type" IN ('reusable_wrap', 'reusable_container', 'reusable_cutlery_straw', 'reusable_bag', 'produce_bag', 'reusable_cloth', 'soap_bar', 'toothpaste_tabs', 'toothpaste_tabs_travel', 'plastic_free_floss', 'bamboo_toothbrush', 'laundry_pouch', 'dryer_balls', 'natural_sponge', 'refill', 'glass_pack', 'paper_metal_pack', 'other'));--> statement-breakpoint
+-- A washable kitchen cloth instead of throwaway fleece dishcloths (viscose with 18-50% polyester or polypropylene): one fleece cloth
+-- of about 10 g a month for two years = 24 cloths x 10 g x 18% plastic. The 10 g and the 24 are working figures, not measured.
+INSERT INTO "impact_factors" ("product_type", "plastic_g", "co2_g") VALUES ('reusable_cloth', 43, 129);
