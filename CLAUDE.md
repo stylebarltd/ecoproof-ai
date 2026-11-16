@@ -162,6 +162,11 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (`impactSource: "shop"`). An unlisted line is estimated: the AI (`CATEGORY_MODEL`) reads the type off the name, counts one piece
   (`"ai"`, shown as "EcoProof AI estimate") and the line waits in the owner's queue (orders too, via `ingestOrder`); a removed product or
   a dismissed wording counts nothing. A new kind of product needs a row in the standard first, then a migration: never a per-shop number.
+  Online shops: an order line also matches by the shop's own product number, listed as a name or alias `woo:<product id>` or
+  `woo:<product id>:<variation id>` (`shopKeys` in `lib/match.ts`; the Woo webhook's `product_id` / `variation_id`), so translated
+  names and design variations find the product. `GET /api/places/<id>/products` is the public list with what each product counts
+  (a shop's own site reads it: superbee.me builds its product pages from it). A long list goes in through "Import a list" in the
+  wizard (`importProducts`, JSON; re-importing keeps what is there and adds the rest).
   Bundles (`product_parts`): a product can contain counts of other listed products and then counts as their sum (no nesting; a part
   removed after reports stops counting inside it).
   Records keep the old columns: `packaging_g` = grams of plastic, `co2_kg` to the gram, `plastic_items` always 0 (it is part of the

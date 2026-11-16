@@ -45,7 +45,16 @@ async function known(placeId: string): Promise<Known> {
   };
 }
 
-function matchIn(k: Known, rawText: string): Match | null {
+/** A line from an online shop also carries the shop system's own product number. Listed as a name or an alias ("woo:80318", or
+ *  "woo:80318:91234" for one variation), it identifies the product whatever language or variation the line's name is in. */
+export const shopKeys = (i: { productId?: number; variationId?: number }): string[] =>
+  i.productId ? [...(i.variationId ? [`woo:${i.productId}:${i.variationId}`] : []), `woo:${i.productId}`] : [];
+
+function matchIn(k: Known, rawText: string, keys: string[] = []): Match | null {
+  for (const id of keys) { // the most specific first: the variation, then the product
+    const hit = [...k.names, ...k.aliases].find((n) => exactKey(n.name) === id);
+    if (hit) return { productId: hit.productId, confidence: 1, via: "alias" };
+  }
   const key = exactKey(rawText);
   if (!key) return null;
   const name = k.names.find((n) => exactKey(n.name) === key);
@@ -67,22 +76,22 @@ export type LineMatch =
   | { kind: "unknown" }; // not on the shop's list yet
 
 /** What each line of a receipt or an order is at this shop, in one read of its product list. */
-export async function matchLines(placeId: string, texts: string[]): Promise<LineMatch[]> {
+export async function matchLines(placeId: string, texts: string[], keys: string[][] = []): Promise<LineMatch[]> {
   const k = await known(placeId);
-  return texts.map((t) => {
-    const m = matchIn(k, t);
+  return texts.map((t, i) => {
+    const m = matchIn(k, t, keys[i]);
     if (m) return { kind: "product", productId: m.productId, confidence: m.confidence, product: k.products.get(m.productId)! };
     return k.blocked.has(exactKey(t)) ? { kind: "blocked" } : { kind: "unknown" };
   });
 }
 
 /** Matches a receipt's lines and keeps them: the matched ones with their product, the others for the owner's queue. */
-export async function recordLines(placeId: string, claimId: string | null, lines: { rawText: string; price?: number | null }[]): Promise<(Match | null)[]> {
+export async function recordLines(placeId: string, claimId: string | null, lines: { rawText: string; price?: number | null; keys?: string[] }[]): Promise<(Match | null)[]> {
   if (!lines.length) return [];
   const k = await known(placeId);
   lines = lines.filter((l) => !k.blocked.has(exactKey(l.rawText))); // a removed product or a dismissed wording is settled: not queued again
   if (!lines.length) return [];
-  const matches = lines.map((l) => matchIn(k, l.rawText));
+  const matches = lines.map((l) => matchIn(k, l.rawText, l.keys));
   await query(
     `INSERT INTO receipt_lines (place_id, claim_id, raw_text, price, matched_product_id, confidence)
      SELECT $1, $2, * FROM unnest($3::text[], $4::float8[], $5::text[], $6::float8[])`,

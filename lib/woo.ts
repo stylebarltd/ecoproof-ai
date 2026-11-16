@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { query } from "./db";
 import { appUrl } from "./nft";
 import { computeImpact, impactParts, type Impact, type LineItem } from "./impact";
-import { recordLines } from "./match";
+import { recordLines, shopKeys } from "./match";
 import { matchItems } from "./order";
 import { ClaimError, claimStamp, type StampResult } from "./stamp";
 import { getPlace, type StampPlace } from "./stampPlaces";
@@ -37,15 +37,15 @@ export function verifyWebhook(secret: string, rawBody: string, signature: string
   return safeEq(signature, createHmac("sha256", secret).update(rawBody, "utf8").digest("base64"));
 }
 
-export type WooOrder = { orderId: string; status: string; items: { name: string; quantity: number; productId?: number }[] };
+export type WooOrder = { orderId: string; status: string; items: { name: string; quantity: number; productId?: number; variationId?: number }[] };
 /** Keeps only what the impact engine needs (order id, status, product ids, names and quantities). Everything else in the payload, including all customer data and prices, is dropped. */
 export function parseWoo(payload: unknown): WooOrder | null {
   const o = payload as { id?: unknown; status?: unknown; line_items?: unknown } | null;
   if (!o || typeof o !== "object" || o.id == null || typeof o.status !== "string" || !Array.isArray(o.line_items)) return null;
   const orderId = String(o.id);
   if (!/^[A-Za-z0-9_-]{1,40}$/.test(orderId)) return null;
-  const items = (o.line_items as { name?: unknown; quantity?: unknown; product_id?: unknown }[])
-    .map((l) => ({ name: String(l?.name ?? "").trim().slice(0, 200), quantity: Math.round(Number(l?.quantity)), productId: Number(l?.product_id) > 0 ? Math.round(Number(l?.product_id)) : undefined }))
+  const items = (o.line_items as { name?: unknown; quantity?: unknown; product_id?: unknown; variation_id?: unknown }[])
+    .map((l) => ({ name: String(l?.name ?? "").trim().slice(0, 200), quantity: Math.round(Number(l?.quantity)), productId: Number(l?.product_id) > 0 ? Math.round(Number(l?.product_id)) : undefined, variationId: Number(l?.variation_id) > 0 ? Math.round(Number(l?.variation_id)) : undefined }))
     .filter((l) => l.name && l.quantity >= 1 && l.quantity <= 1000);
   return { orderId, status: o.status, items };
 }
@@ -82,7 +82,7 @@ export async function ingestOrder(placeId: string, w: WooOrder): Promise<IngestR
     [placeId, w.orderId, JSON.stringify(items), JSON.stringify(impact), impactLine(impact)],
   );
   // An online shop's product list grows from its order lines: the ones not on it yet wait in the owner's queue, once per order.
-  if (!existing) await recordLines(placeId, null, w.items.map((i) => ({ rawText: i.name }))).catch((e) => console.error("order lines not recorded", e));
+  if (!existing) await recordLines(placeId, null, w.items.map((i) => ({ rawText: i.name, keys: shopKeys(i) }))).catch((e) => console.error("order lines not recorded", e));
   return {
     result: "stored",
     impact: {

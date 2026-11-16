@@ -165,6 +165,21 @@ export default function ProductSetup({ id }: { id: string }) {
                   onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
               ))}
             </div>
+            {owner && (
+              <div className="mt-4 rounded-2xl bg-white/60 p-3 text-[12.5px] leading-snug text-sage-900">
+                <p><b className="text-ink">Many products?</b> Import a prepared list instead of typing them: a .json file with each product&apos;s name, category, packaging, kind, pieces, other names and, for a bundle, its parts.</p>
+                <label className={`${quiet} mt-2 cursor-pointer ${s.busy ? "pointer-events-none opacity-50" : ""}`}>
+                  {s.busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} strokeWidth={2.8} />} Import a list
+                  <input type="file" accept="application/json,.json" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; s.importList(f).finally(() => { e.target.value = ""; }); }} />
+                </label>
+                {s.report && (
+                  <div className="mt-2" role="status">
+                    <p className="font-bold text-ink">{s.report.added} added, {s.report.kept} already on your list{s.report.problems.length ? `, ${s.report.problems.length} not added:` : "."}</p>
+                    {s.report.problems.length > 0 && <ul className="mt-1 list-disc space-y-0.5 pl-5">{s.report.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
+                  </div>
+                )}
+              </div>
+            )}
             <StepButtons ready={products.length > 0} onNext={next} onSkip={() => setSkipping(true)} />
           </>
         ) : (

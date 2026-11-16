@@ -11,6 +11,7 @@ export function useProductSetup(placeId: string) {
   const [state, setState] = useState<"loading" | "ok" | "signin" | "none">("loading");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [report, setReport] = useState<{ added: number; kept: number; problems: string[] } | null>(null);
 
   const load = useCallback(async () => {
     const r = await fetch(api, { cache: "no-store" });
@@ -26,6 +27,7 @@ export function useProductSetup(placeId: string) {
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.error || "Something went wrong. Try again.");
       setD(j);
+      if (j.report) setReport(j.report);
       return true;
     } catch (e) { setErr(e instanceof Error ? e.message : "Something went wrong"); return false; }
     finally { setBusy(false); }
@@ -41,7 +43,14 @@ export function useProductSetup(placeId: string) {
   }, [send]);
 
   return {
-    d, state, busy, err, setErr,
+    d, state, busy, err, setErr, report,
+    /** A prepared list as a .json file: { products: [...] } or the bare array (lib/products.ts importProducts). */
+    importList: async (f?: File) => {
+      if (!f) return false;
+      let products: unknown;
+      try { const j = JSON.parse(await f.text()); products = Array.isArray(j) ? j : j.products; } catch { setErr("That file isn't a product list (JSON)."); return false; }
+      return send("/import", json("POST", { products }));
+    },
     saveSetup: (b: { categories?: string[]; refill?: boolean; declared?: true }) => send("/setup", json("PUT", b)),
     addProduct: (b: { receiptName: string; category: string; packagingType: string; productType?: string; pieces?: number; replaces?: string; fromQueue?: boolean }) => send("", json("POST", b)),
     updateProduct: (id: string, b: { productType?: string; pieces?: number }) => send(`?product=${encodeURIComponent(id)}`, json("PATCH", b)),

@@ -215,3 +215,67 @@ export async function publicProducts(placeId: string): Promise<{ refill: boolean
   ]);
   return { refill: place?.refill ?? null, products: rows.map((r) => toProduct(r)) };
 }
+
+export type PublicImpact = {
+  /** The name on receipts and orders, and the other names the same product is printed with. */
+  name: string; aliases: string[]; type: Product["productType"]; pieces: number;
+  /** What one unit bought counts, in grams: the type's figure times the pieces, or for a bundle the sum of its parts. 0 = no figure yet. */
+  plasticG: number; co2G: number; bundle: boolean;
+};
+
+/** A shop's eco list with what each product counts, for the shop's own site to show EcoProof AI's numbers (not a copy of them). */
+export async function publicImpacts(placeId: string): Promise<PublicImpact[]> {
+  const [rows, aliases, parts, factors] = await Promise.all([
+    query<Row>("SELECT * FROM products WHERE place_id=$1 AND status <> 'removed' ORDER BY lower(receipt_name)", [placeId]),
+    aliasesOf(placeId),
+    query<{ product_id: string; part_id: string; count: number }>("SELECT pp.product_id, pp.part_id, pp.count FROM product_parts pp JOIN products p ON p.id = pp.product_id WHERE p.place_id=$1", [placeId]),
+    query<{ product_type: string; plastic_g: number; co2_g: number }>("SELECT product_type, plastic_g, co2_g FROM impact_factors"),
+  ]);
+  const f = new Map(factors.map((x) => [x.product_type, x]));
+  const own = (r: Row, n = 1) => { const x = f.get(r.product_type); return x ? { plasticG: x.plastic_g * r.pieces * n, co2G: x.co2_g * r.pieces * n } : { plasticG: 0, co2G: 0 }; };
+  return rows.map((r) => {
+    const mine = parts.filter((x) => x.product_id === r.id);
+    const sum = mine.length
+      ? mine.reduce((t, x) => { const part = rows.find((o) => o.id === x.part_id); const v = part ? own(part, x.count) : { plasticG: 0, co2G: 0 }; return { plasticG: t.plasticG + v.plasticG, co2G: t.co2G + v.co2G }; }, { plasticG: 0, co2G: 0 })
+      : own(r);
+    return { name: r.receipt_name, aliases: aliases.get(r.id) ?? [], type: r.product_type as Product["productType"], pieces: r.pieces, ...sum, bundle: mine.length > 0 };
+  });
+}
+
+export type ImportRow = { name?: unknown; category?: unknown; packaging?: unknown; type?: unknown; pieces?: unknown; replaces?: unknown; aliases?: unknown; parts?: unknown };
+
+/**
+ * Adds a prepared list in one go: [{ name, category, packaging, type?, pieces?, aliases?: string[], parts?: [{ name, count }] }].
+ * The same rules as adding by hand, one product at a time (still no numbers). A name already on the list is kept as it is and only
+ * gets its missing aliases and parts, so a list can be imported again after it grew. Says what happened per line.
+ */
+export async function importProducts(placeId: string, rows: unknown): Promise<{ added: number; kept: number; problems: string[] }> {
+  if (!Array.isArray(rows) || !rows.length || rows.length > MAX_PRODUCTS) throw new ProductError(`Send a list of 1 to ${MAX_PRODUCTS} products.`);
+  const report = { added: 0, kept: 0, problems: [] as string[] };
+  const idOf = async (name: string) => (await query<{ id: string }>("SELECT id FROM products WHERE place_id=$1 AND lower(receipt_name)=lower($2)", [placeId, name]))[0]?.id;
+  const list = rows as ImportRow[];
+  for (const r of list) { // products and their other names first, bundles after: a bundle's parts must exist
+    const name = clean(r.name, PRODUCT_NAME_MAX);
+    try {
+      let id = await idOf(name);
+      if (id) report.kept++;
+      else { await addProduct(placeId, { receiptName: name, category: r.category, packagingType: r.packaging, productType: r.type, pieces: r.pieces ?? 1, replaces: r.replaces }); id = (await idOf(name))!; report.added++; }
+      const have = (await aliasesOf(placeId)).get(id) ?? [];
+      for (const a of Array.isArray(r.aliases) ? r.aliases : []) {
+        const alias = clean(a, PRODUCT_NAME_MAX);
+        if (alias && !have.some((h) => h.toLowerCase() === alias.toLowerCase())) await addAlias(placeId, id, alias);
+      }
+    } catch (e) { if (!(e instanceof ProductError)) throw e; report.problems.push(`${name || "(no name)"}: ${e.message}`); }
+  }
+  for (const r of list) {
+    const name = clean(r.name, PRODUCT_NAME_MAX);
+    for (const p of Array.isArray(r.parts) ? (r.parts as { name?: unknown; count?: unknown }[]) : []) {
+      try {
+        const [id, partId] = [await idOf(name), await idOf(clean(p?.name, PRODUCT_NAME_MAX))];
+        if (!id || !partId) throw new ProductError(`"${clean(p?.name, PRODUCT_NAME_MAX)}" is not on the list.`);
+        await setPart(placeId, id, partId, p?.count ?? 1);
+      } catch (e) { if (!(e instanceof ProductError)) throw e; report.problems.push(`${name}: ${e.message}`); }
+    }
+  }
+  return report;
+}

@@ -2,14 +2,15 @@ import { createHash } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { query } from "./db";
 import type { LineItem } from "./impact";
-import { matchLines } from "./match";
+import { matchLines, shopKeys } from "./match";
 import { asksType, isType, PRODUCT_CATEGORIES, PRODUCT_TYPES, TYPE_LABELS, TYPES_BY_CATEGORY, type ProductCategory, type ProductType } from "./productRules";
 
 /**
  * The single entry point to the proof loop. Deliberately small: no prices, no customer personal data.
- * A line is its name and quantity; `category` and `productId` are accepted from older senders and ignored.
+ * A line is its name and quantity; an online shop also sends its own product number (`productId`, and `variationId` for one
+ * variation), which finds the product when the shop listed it under that number (lib/match.ts shopKeys). `category` is ignored.
  */
-export type OrderItem = { name: string; quantity: number; category?: string; productId?: number };
+export type OrderItem = { name: string; quantity: number; category?: string; productId?: number; variationId?: number };
 export type Order = { brandId: string; orderId: string; items: OrderItem[] };
 
 export function parseOrder(raw: unknown): Order {
@@ -56,7 +57,7 @@ export async function factors(): Promise<Map<string, { plasticG: number; co2G: n
  * from the queue). A removed product or a line the owner dismissed counts nothing. Nobody's own numbers are used anywhere.
  */
 export async function matchItems(order: Order): Promise<Matched[]> {
-  const [lines, table] = await Promise.all([matchLines(order.brandId, order.items.map((i) => i.name)), factors()]);
+  const [lines, table] = await Promise.all([matchLines(order.brandId, order.items.map((i) => i.name), order.items.map(shopKeys)), factors()]);
   const unknown = order.items.filter((_, i) => lines[i].kind === "unknown").map((i) => i.name);
   const guesses = await classify([...new Set(unknown)]);
   return order.items.map((it, i): Matched => {
