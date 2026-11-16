@@ -38,7 +38,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     <div style={{ display: "flex", gap: square ? 18 : 12, flexWrap: "wrap" }}>
       {show.map((p) => (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={p.id} src={uri(stampSvg(p, { labels: false }))} width={stampSize} height={stampSize} alt="" style={{ borderRadius: 999, opacity: earned.has(p.id) ? 1 : 0.3, border: earned.has(p.id) ? `3px solid ${CARD_INK}` : `3px dashed ${CARD_MUTED}` }} />
+        <img key={p.id} src={uri(stampSvg(p))} width={stampSize} height={stampSize} alt="" style={{ borderRadius: Math.round(stampSize * 0.27), opacity: earned.has(p.id) ? 1 : 0.3, border: earned.has(p.id) ? `3px solid ${CARD_INK}` : `3px dashed ${CARD_MUTED}` }} />
       ))}
     </div>
   );

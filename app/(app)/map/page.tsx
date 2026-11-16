@@ -98,7 +98,7 @@ export default function MapPage() {
                 <li key={k} id={`place-${k}`}>
                   <button onClick={() => { setSel(k); setFocus(p); }} aria-pressed={on} className={`flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition ${on ? "bg-white/85 ring-2 ring-honey-400 shadow-[0_8px_24px_rgba(232,163,23,0.3)]" : "bg-white/40 ring-1 ring-white/70 hover:bg-white/70 hover:shadow-[0_6px_18px_rgba(39,46,27,0.12)]"}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.imageUrl} alt="" width={44} height={44} className="shrink-0 rounded-full" />
+                    <img src={p.imageUrl} alt="" width={44} height={44} className="shrink-0" />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5"><span className="truncate font-heading text-[15px] leading-tight">{p.name}</span><BadgeCheck size={15} strokeWidth={2.5} className="shrink-0 text-sage-700" aria-label="Verified" /></span>
                       <span className="flex items-center gap-1.5 truncate text-[11.5px] text-sage-900">{dot(kindOf(p.kind)?.colour ?? "#e8a317")}{kindOf(p.kind)?.label ?? "Place"}{p.locationName && p.locationName !== p.name ? ` · ${p.locationName}` : ""}</span>

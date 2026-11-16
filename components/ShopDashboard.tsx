@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, ChevronRight, Copy, ExternalLink, Leaf, ListChecks, Loader2, QrCode, Sparkles, ShoppingBag, Ticket, UserPlus, Users } from "lucide-react";
 import PhotosPanel from "@/components/PhotosPanel";
+import ProfilePanel from "@/components/ProfilePanel";
 import ShopImpact from "@/components/ShopImpact";
 import CopySnippet from "@/components/landing/CopySnippet";
 import Stars from "@/components/Stars";
@@ -233,6 +234,7 @@ export default function ShopDashboard({ id }: { id: string }) {
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[22px] leading-tight lg:text-[30px]">{place.name}</h1>
           <p className="text-[13px] text-sage-900">{kindOf(place.kind)?.label ?? place.kind} · {role === "owner" ? "You're the owner" : "You're staff"}</p>
+          {place.tagline && <p className="mt-0.5 text-[13px] leading-snug">{place.tagline}</p>}
         </div>
       </div>
       {place.status && place.status !== "active" && (
@@ -327,6 +329,7 @@ export default function ShopDashboard({ id }: { id: string }) {
             </span>
             <ChevronRight size={20} strokeWidth={2.5} className="shrink-0 text-sage-700" />
           </Link>
+          {role === "owner" && <ProfilePanel place={place} onSaved={load} />}
           <PhotosPanel placeId={place.id} kind={place.kind} online={place.online} />
           <TeamPanel placeId={place.id} onLeft={() => router.push("/shop")} />
         </div>

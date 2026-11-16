@@ -14,7 +14,7 @@ export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; o
       {place.coverUrl && <img src={place.coverUrl} alt={place.name} className="mb-3 h-36 w-full rounded-2xl object-cover lg:h-44" />}
       <div className="flex items-start gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={place.imageUrl} alt="" width={64} height={64} className="shrink-0 rounded-full" />
+        <img src={place.imageUrl} alt="" width={64} height={64} className="shrink-0" />
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-lg">{place.name}</h2>
           <p className="text-xs text-neutral-600">{kindOf(place.kind)?.label ?? "Place"}{place.locationName && place.locationName !== place.name ? ` · ${place.locationName}` : ""}</p>

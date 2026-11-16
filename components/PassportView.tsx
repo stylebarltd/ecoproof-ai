@@ -160,7 +160,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
                 <span className="relative shrink-0">
                   {v.imageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={v.imageUrl} alt="" width={64} height={64} className="rounded-full ring-2 ring-honey-500 ring-offset-2 ring-offset-white/80" />
+                    <img src={v.imageUrl} alt="" width={64} height={64} className="rounded-[26%] ring-2 ring-honey-500 ring-offset-2 ring-offset-white/80" />
                   )}
                   <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-honey-500 text-ink ring-2 ring-white"><Check size={12} strokeWidth={3.4} /></span>
                 </span>
@@ -184,11 +184,11 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
               <span className="relative">
                 {pl.earned ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={pl.imageUrl} alt={pl.name} width={68} height={68} className="rounded-full shadow-sm ring-2 ring-white/80" />
+                  <img src={pl.imageUrl} alt={pl.name} width={68} height={68} className="rounded-[26%] shadow-sm ring-2 ring-white/80" />
                 ) : (
                   <span className="relative block h-[68px] w-[68px] rounded-full border-2 border-dashed border-white/90 bg-white/20">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={pl.imageUrl} alt={pl.name} width={64} height={64} className="absolute inset-0 m-auto rounded-full opacity-25 grayscale" />
+                    <img src={pl.imageUrl} alt={pl.name} width={64} height={64} className="absolute inset-0 m-auto opacity-25 grayscale" />
                   </span>
                 )}
                 {pl.count > 1 && <span className="absolute -right-1 -top-1 rounded-full bg-white px-1.5 text-[10px] font-extrabold text-sage-900 ring-2 ring-white/80">×{pl.count}</span>}
@@ -221,7 +221,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
               <li key={r.id} className="flex items-center gap-3 rounded-2xl bg-white/45 p-2.5 ring-1 ring-white/60 transition hover:bg-white/65">
                 {r.placeId && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={`/api/stamp-places/${r.placeId}/stamp`} alt="" width={36} height={36} className="shrink-0 rounded-full" />
+                  <img src={`/api/stamp-places/${r.placeId}/stamp`} alt="" width={36} height={36} className="shrink-0" />
                 )}
                 <Link href={`/p/${r.id}`} className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold">{r.merchant}{r.source === "card" && <em className="ml-1.5 rounded-full bg-white/70 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-sage-800">card</em>}{r.class === "verified" && <em className="ml-1.5 rounded-full bg-honey-300 px-1.5 py-0.5 align-middle text-[9px] font-bold not-italic text-ink">verified purchase</em>}</span>

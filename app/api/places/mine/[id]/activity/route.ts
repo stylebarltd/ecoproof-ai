@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   return Response.json(
     {
       place: {
-        ...toPublic(place), status: place.status, statusNote: place.status === "active" ? null : place.status_note,
+        ...toPublic(place), hasLogo: !!place.image, status: place.status, statusNote: place.status === "active" ? null : place.status_note,
         stars: (await publishedStars([place])).get(id) ?? null, // what the public sees
         impact: isShop(place.kind) ? (await shopImpact([id])).get(id)! : null, // eco shops: what customers saved, instead of stars
       },

@@ -75,7 +75,7 @@ export default function ShopsDirectory() {
                 )}
                 <Link href={`/places/${s.id}`} className="flex items-start gap-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={s.imageUrl} alt="" width={52} height={52} className="h-[52px] w-[52px] shrink-0 rounded-full" />
+                  <img src={s.imageUrl} alt="" width={52} height={52} className="h-[52px] w-[52px] shrink-0" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-heading text-[17px] leading-tight">{s.name}</span>
                     <span className="mt-0.5 flex flex-wrap gap-1.5">

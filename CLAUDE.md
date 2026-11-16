@@ -59,6 +59,11 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   website and shipping origins (`ship_origins`, `lib/shipping.ts`): one per warehouse, each
   serving listed countries or "everyone else". The visitor's country (`x-vercel-ip-country`,
   or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance.
+- Place badge (`stampSvg()` in `lib/stampPlaces.ts`, served at `/api/stamp-places/<id>/stamp`): a rounded-square tile like the EcoProof AI
+  mark, never round (Pola, 2026-11-16). With a logo: the logo on white inside a border of the place's colour; without: the kind's symbol on
+  the colour. No name inside it (unreadable at 44px, and the name always stands beside it), so never crop it with `rounded-full`.
+  The owner changes logo and tagline in the dashboard's "Logo and tagline" panel (`components/ProfilePanel.tsx`,
+  `PUT /api/places/mine/<id>/profile`, rules in `lib/placeLogo.ts`); the name can't be changed yet.
 - Postcard (`/place/<id>`, "Print your postcard" on the dashboard): what a place puts on its counter or tables instead of a bare QR.
   It must explain EcoProof AI to someone who has never heard of it (Pola, 2026-11-16: nobody scans a QR without knowing what it is):
   headline, one sentence on EcoProof AI, the claim QR, three steps, the Bee Guardian. Prints as four A6 postcards on one A4 sheet or as

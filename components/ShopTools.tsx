@@ -38,7 +38,7 @@ export function CopyButton({ text, label = "copy", className = "" }: { text: str
   );
 }
 
-export type MyPlace = PublicPlace & { status?: string; statusNote?: string | null; role?: "owner" | "staff"; stars?: PlaceStars | null; impact?: ShopImpactData | null };
+export type MyPlace = PublicPlace & { hasLogo?: boolean; status?: string; statusNote?: string | null; role?: "owner" | "staff"; stars?: PlaceStars | null; impact?: ShopImpactData | null };
 type WooSetup = { plugin: { download: string; placeId: string; secret: string }; webhook: { deliveryUrl: string; secret: string; topic: string }; themeSnippet: string; themeSnippetOwnEmail: string };
 
 const BLOCK = "space-y-2 rounded-2xl bg-white/60 p-3 text-sm";

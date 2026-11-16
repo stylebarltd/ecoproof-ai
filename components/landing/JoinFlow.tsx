@@ -237,8 +237,8 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
       <label className="flex cursor-pointer items-center gap-4 rounded-[16px] border-2 border-dashed border-cocoa/25 p-4 hover:bg-kraft/20">
         {logo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={logo} alt="" width={56} height={56} className="shrink-0 rounded-full" />
-        ) : <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-kraft/50"><ImagePlus size={24} className="text-cocoa/80" aria-hidden /></span>}
+          <img src={logo} alt="" width={56} height={56} className="shrink-0 rounded-[26%]" />
+        ) : <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[26%] bg-kraft/50"><ImagePlus size={24} className="text-cocoa/80" aria-hidden /></span>}
         <span>
           <span className="block text-[15px] font-extrabold">{logo ? "Logo added" : "Add your logo"}</span>
           <span className={note}>{logo ? "Tap to change it." : "Optional. PNG, JPEG or WebP. It goes on your QR and your map pin."}</span>
