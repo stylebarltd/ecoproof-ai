@@ -28,7 +28,7 @@ export async function photoBytes(placeId: string, id: string): Promise<Buffer | 
   return (await query<{ bytes: Buffer }>("SELECT bytes FROM place_photos WHERE place_id=$1 AND id=$2", [placeId, id]))[0]?.bytes ?? null;
 }
 
-const isJpeg = (b: Buffer) => b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+export const isJpeg = (b: Buffer) => b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
 
 /** Adds a photo at the end. The count is checked in the same statement, so two uploads at once can't go past the limit. */
 export async function addPhoto(placeId: string, bytes: Buffer): Promise<void> {

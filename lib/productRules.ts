@@ -20,3 +20,31 @@ export type ProductStatus = (typeof PRODUCT_STATUSES)[number];
 
 /** Confirmed reports that take a product off the eco list. */
 export const REPORTS_TO_REMOVE = 2;
+
+export const CATEGORY_LABELS: Record<ProductCategory, { label: string; examples: string }> = {
+  food_glass_paper_metal: { label: "Food in glass, paper or metal", examples: "jars, tins, paper packs" },
+  bulk_refill: { label: "Bulk and refill", examples: "dry goods, liquids, cleaning products" },
+  soap_cosmetics: { label: "Soap and cosmetics as bars or refills", examples: "soap, shampoo bars, toothpaste tabs" },
+  reusables: { label: "Reusables", examples: "wraps, bottles, cups, cutlery, bags" },
+  household: { label: "Household", examples: "brushes, cloths, sponges, loofahs" },
+};
+export const PACKAGING_LABELS: Record<PackagingType, string> = { glass: "Glass", paper: "Paper", metal: "Metal", none: "No packaging", refill: "Refill, customer's own container" };
+
+export const isCategory = (v: unknown): v is ProductCategory => (PRODUCT_CATEGORIES as readonly unknown[]).includes(v);
+export const isPackaging = (v: unknown): v is PackagingType => (PACKAGING_TYPES as readonly unknown[]).includes(v);
+
+export const PRODUCT_NAME_MAX = 120;
+export const MAX_PRODUCTS = 300;
+
+export type Product = {
+  id: string; receiptName: string; displayName: string; category: ProductCategory; packagingType: PackagingType;
+  replaces: string | null; photoUrl: string | null; source: ProductSource; status: ProductStatus;
+};
+export type ProductSetupState = {
+  role: "owner" | "staff";
+  /** categories ticked, refill answered (null = not yet), the declaration's date, and whether a sample receipt is stored */
+  setup: { categories: ProductCategory[]; refill: boolean | null; declaredAt: string | null; hasSample: boolean; inStore: boolean };
+  products: Product[];
+  /** receipt lines customers scanned that match no product yet */
+  queue: { rawText: string; times: number; lastSeen: string; photoUrl: string | null }[];
+};

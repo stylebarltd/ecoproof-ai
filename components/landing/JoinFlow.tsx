@@ -334,6 +334,7 @@ function Created({ place, onMap, onAnother }: { place: PublicPlace; onMap: boole
             ? <Link href={`/place/${place.id}`} className={honey}>Print your counter card <ArrowRight size={18} aria-hidden /></Link>
             : <Link href={`/shop/${place.id}`} className={honey}>Connect your online shop <ArrowRight size={18} aria-hidden /></Link>}
           {stars && <Link href={`/shop/${place.id}/practices`} className={ink}>Tick your eco practices to earn stars</Link>}
+          {isShop(place.kind) && <Link href={`/shop/${place.id}/products`} className={ink}>Add your plastic-free products</Link>}
         </div>
         <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-3">
           {place.inStore && <Link href={`/shop/${place.id}`} className={linkCta}>Open its dashboard</Link>}

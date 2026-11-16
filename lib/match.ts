@@ -58,7 +58,7 @@ export type QueuedLine = { rawText: string; times: number; lastSeen: string };
 export async function unmatchedLines(placeId: string, limit = 50): Promise<QueuedLine[]> {
   const rows = await query<{ raw_text: string; times: number; last_seen: string }>(
     `SELECT MIN(raw_text) AS raw_text, COUNT(*)::int AS times, MAX(created_at)::text AS last_seen FROM receipt_lines
-     WHERE place_id=$1 AND matched_product_id IS NULL GROUP BY lower(btrim(raw_text)) ORDER BY times DESC, MAX(created_at) DESC LIMIT $2`,
+     WHERE place_id=$1 AND matched_product_id IS NULL GROUP BY lower(btrim(raw_text)) HAVING NOT bool_or(dismissed) ORDER BY times DESC, MAX(created_at) DESC LIMIT $2`,
     [placeId, limit],
   );
   return rows.map((r) => ({ rawText: r.raw_text, times: r.times, lastSeen: r.last_seen }));

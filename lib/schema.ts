@@ -75,6 +75,11 @@ export const stampPlaces = pgTable("stamp_places", {
   alsoCafe: boolean("also_cafe").default(false).notNull(), // a restaurant that is a café too: its checklist adds the café's serving practices
   sellsOnline: boolean("sells_online").default(false).notNull(), // an eco shop's online channel (orders, parcel cards); in store = it has locations
   website: text(), // an online shop's website; where it ships from is in ship_origins
+  // An eco shop's product setup (lib/products.ts): the categories it sells plastic-free, whether customers may bring their own
+  // containers (null = not answered yet), and when the owner declared that the listed products are sold without plastic packaging.
+  productCategories: text("product_categories").array().default(sql`'{}'::text[]`).notNull(),
+  refill: boolean(),
+  productsDeclaredAt: at("products_declared_at"),
 }, (t) => [
   index("stamp_places_owner").on(t.owner).where(sql`(owner IS NOT NULL)`),
   check("stamp_places_kind", sql`${t.kind} IN ('cafe', 'restaurant', 'hotel', 'eco_shop')`),
@@ -388,6 +393,7 @@ export const receiptLines = pgTable("receipt_lines", {
   price: doublePrecision(),
   matchedProductId: text("matched_product_id").references(() => products.id, { onDelete: "set null" }),
   confidence: doublePrecision(), // 1 for an exact or alias match, the fuzzy score otherwise
+  dismissed: boolean().default(false).notNull(), // the owner said "not plastic-free": this wording leaves the queue for good
   createdAt: at("created_at").defaultNow().notNull(),
 }, (t) => [
   index("receipt_lines_claim").on(t.claimId),
@@ -403,3 +409,16 @@ export const productReports = pgTable("product_reports", {
   confirmed: boolean().default(false).notNull(),
   createdAt: at("created_at").defaultNow().notNull(),
 }, (t) => [unique("product_reports_reporter").on(t.productId, t.reporterId)]);
+
+/** A product's photo: one JPEG, shrunk in the browser like a place photo. products.photo_url points at the route that serves it. */
+export const productPhotos = pgTable("product_photos", {
+  productId: text("product_id").primaryKey().references(() => products.id, { onDelete: "cascade" }),
+  bytes: bytea().notNull(),
+});
+
+/** The shop's sample receipt from onboarding: how its receipts print the shop name and the lines. Only the owner and EcoProof AI see it. */
+export const receiptSamples = pgTable("receipt_samples", {
+  placeId: text("place_id").primaryKey(),
+  bytes: bytea().notNull(),
+  createdAt: at("created_at").defaultNow().notNull(),
+});

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, ChevronRight, Copy, ExternalLink, Leaf, ListChecks, Loader2, QrCode, Sparkles, ShoppingBag, Ticket, UserPlus, Users } from "lucide-react";
 import PhotosPanel from "@/components/PhotosPanel";
+import ProductsPanel from "@/components/ProductsPanel";
 import ProfilePanel from "@/components/ProfilePanel";
 import ShopImpact from "@/components/ShopImpact";
 import CopySnippet from "@/components/landing/CopySnippet";
@@ -329,6 +330,7 @@ export default function ShopDashboard({ id }: { id: string }) {
             </span>
             <ChevronRight size={20} strokeWidth={2.5} className="shrink-0 text-sage-700" />
           </Link>
+          {isShop(place.kind) && <ProductsPanel placeId={place.id} />}
           {role === "owner" && <ProfilePanel place={place} onSaved={load} />}
           <PhotosPanel placeId={place.id} kind={place.kind} online={place.online} />
           <TeamPanel placeId={place.id} onLeft={() => router.push("/shop")} />
