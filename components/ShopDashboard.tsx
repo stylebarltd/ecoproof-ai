@@ -13,7 +13,7 @@ import AccountChip from "@/components/AccountChip";
 import { StampTools, type MyPlace } from "@/components/ShopTools";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
 import { grams } from "@/lib/impact";
-import { isShop, kindOf } from "@/lib/placeKinds";
+import { isShop, placeTypeLabel } from "@/lib/placeKinds";
 import { explorerTx } from "@/lib/passportView";
 import type { ShopActivity, Source } from "@/lib/shopActivity";
 import type { Member, Role } from "@/lib/members";
@@ -235,7 +235,7 @@ export default function ShopDashboard({ id }: { id: string }) {
         <img src={place.imageUrl} alt="" width={64} height={64} className="h-14 w-14 shrink-0 lg:h-16 lg:w-16" />
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[22px] leading-tight lg:text-[30px]">{place.name}</h1>
-          <p className="text-[13px] text-sage-900">{kindOf(place.kind)?.label ?? place.kind} · {role === "owner" ? "You're the owner" : "You're staff"}</p>
+          <p className="text-[13px] text-sage-900">{placeTypeLabel(place)} · {role === "owner" ? "You're the owner" : "You're staff"}</p>
           {place.tagline && <p className="mt-0.5 text-[13px] leading-snug">{place.tagline}</p>}
         </div>
       </div>

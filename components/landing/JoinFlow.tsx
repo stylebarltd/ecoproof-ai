@@ -8,7 +8,7 @@ import Postcard, { counterCard, postcardCss } from "@/components/Postcard";
 import { currentAccount, type Social } from "@/lib/account";
 import { announceAccountChange, useAccountChange } from "@/lib/desktop";
 import { hasStars } from "@/lib/practices";
-import { GPS_RADIUS_M, PLACE_KINDS, isShop } from "@/lib/placeKinds";
+import { GPS_RADIUS_M, PLACE_KINDS, isShop, placeTypeLabel } from "@/lib/placeKinds";
 import { CORE_RULES, rulesFor } from "@/lib/ecoRules";
 import { prepareLogo } from "@/lib/clientLogo";
 import type { PublicPlace } from "@/lib/stampPlaces";
@@ -111,7 +111,7 @@ export default function JoinFlow({ initialKind, near = null }: { initialKind?: s
                   <img src={p.imageUrl} alt="" width={44} height={44} className="shrink-0" />
                   <span className="min-w-0 flex-1">
                     <span className="block text-[16px] font-extrabold leading-tight">{p.name}</span>
-                    <span className="block text-[13px] font-bold text-cocoa/80">{p.role === "staff" ? "Staff" : "Owner"} · customer activity, QR codes, team</span>
+                    <span className="block text-[13px] font-bold text-cocoa/80">{placeTypeLabel(p)} · {p.role === "staff" ? "Staff" : "Owner"}</span>
                   </span>
                   <ChevronRight size={20} strokeWidth={2.5} className="shrink-0 text-cocoa/80" aria-hidden />
                 </Link>

@@ -6,7 +6,7 @@ import AccountChip from "@/components/AccountChip";
 import type { MyPlace } from "@/components/ShopTools";
 import { currentAccount } from "@/lib/account";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
-import { kindOf } from "@/lib/placeKinds";
+import { placeTypeLabel } from "@/lib/placeKinds";
 
 /** "My shop": the places the signed-in person runs, as owner or staff. Their home at "/" and the /shop page. */
 export default function MyShops() {
@@ -42,7 +42,11 @@ export default function MyShops() {
                   <img src={p.imageUrl} alt="" width={52} height={52} className="shrink-0" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-heading text-[17px] leading-tight">{p.name}</span>
-                    <span className="block text-xs text-sage-900">{kindOf(p.kind)?.label ?? p.kind} · {p.role === "staff" ? "Staff" : "Owner"}{p.status && p.status !== "active" ? " · paused" : ""}</span>
+                    {/* The type first and bold: two places can share a name (an eco store and its online shop). */}
+                    <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-sage-900">
+                      <span className="rounded-full bg-honey-300/70 px-2 py-0.5 font-bold text-ink">{placeTypeLabel(p)}</span>
+                      <span>{p.role === "staff" ? "Staff" : "Owner"}{p.status && p.status !== "active" ? " · paused" : ""}</span>
+                    </span>
                   </span>
                   <span className="text-sm font-bold text-sage-700">Open →</span>
                 </Link>

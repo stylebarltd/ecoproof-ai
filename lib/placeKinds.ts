@@ -10,6 +10,11 @@ export const PLACE_KINDS = [
 ] as const;
 export type PlaceKind = (typeof PLACE_KINDS)[number]["id"];
 export const kindOf = (id: string) => PLACE_KINDS.find((k) => k.id === id);
+/** What a place is, in the words its owner would use: an eco shop is an eco store (customers walk in), an online shop, or both. */
+export function placeTypeLabel(p: { kind: string; inStore?: boolean; online?: boolean }): string {
+  if (p.kind !== "eco_shop") return kindOf(p.kind)?.label ?? p.kind;
+  return p.online ? (p.inStore ? "Eco store and online shop" : "Online shop") : "Eco store";
+}
 export const isKind = (id: string): id is PlaceKind => !!kindOf(id);
 /** Eco shops have channels (in store, online); every other kind is a place you visit, so it always has a location. */
 export const isShop = (kind: string) => kind === "eco_shop";
