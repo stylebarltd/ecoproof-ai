@@ -5,7 +5,7 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 
 Every paid order earns the customer a verified eco stamp in their EcoProof AI passport, proven on Solana.
@@ -51,6 +51,9 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
+
+= 1.4.1 =
+* Product names are sent as they read ("5 & 9 Pack", not "5 &amp; 9 Pack").
 
 = 1.4.0 =
 * "Send my products to EcoProof AI": your product list goes to EcoProof AI with a proposal for each product, so you confirm instead of typing. Translations (WPML, Polylang, or the `ecoproof_main_product_id` filter) follow their main product.

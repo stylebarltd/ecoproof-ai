@@ -79,7 +79,7 @@ class EcoProof_Orders {
 		foreach ( $order->get_items() as $item ) {
 			if ( $item instanceof WC_Order_Item_Product ) {
 				$items[] = array(
-					'name'         => $item->get_name(),
+					'name'         => wp_strip_all_tags( html_entity_decode( $item->get_name(), ENT_QUOTES, 'UTF-8' ) ), // WooCommerce keeps "5 &amp; 9 Pack": send the name as it reads
 					'quantity'     => (int) $item->get_quantity(),
 					'product_id'   => (int) $item->get_product_id(),
 					'variation_id' => (int) $item->get_variation_id(), // with product_id, how EcoProof AI finds the product whatever the line is called

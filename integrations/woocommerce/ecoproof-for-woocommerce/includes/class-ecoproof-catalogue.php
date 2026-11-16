@@ -72,7 +72,7 @@ class EcoProof_Catalogue {
 			}
 			$row  = array(
 				'id'   => (int) $id,
-				'name' => wp_strip_all_tags( $product->get_name() ),
+				'name' => wp_strip_all_tags( html_entity_decode( $product->get_name(), ENT_QUOTES, 'UTF-8' ) ),
 			);
 			$main = self::main_id( $product );
 			if ( $main !== (int) $id ) {
@@ -87,7 +87,7 @@ class EcoProof_Catalogue {
 						$term  = wc_get_formatted_variation( $variation, true, false, false );
 						$variations[] = array(
 							'id'    => (int) $variation_id,
-							'label' => wp_strip_all_tags( '' !== $term ? $term : $label ),
+							'label' => wp_strip_all_tags( html_entity_decode( '' !== $term ? $term : $label, ENT_QUOTES, 'UTF-8' ) ),
 						);
 					}
 				}
