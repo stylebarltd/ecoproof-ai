@@ -59,6 +59,11 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   website and shipping origins (`ship_origins`, `lib/shipping.ts`): one per warehouse, each
   serving listed countries or "everyone else". The visitor's country (`x-vercel-ip-country`,
   or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance.
+- Postcard (`/place/<id>`, "Print your postcard" on the dashboard): what a place puts on its counter or tables instead of a bare QR.
+  It must explain EcoProof AI to someone who has never heard of it (Pola, 2026-11-16: nobody scans a QR without knowing what it is):
+  headline, one sentence on EcoProof AI, the claim QR, three steps, the Bee Guardian. Prints as four A6 postcards on one A4 sheet or as
+  one A4 poster (`?size=a4`); every measure in the card is in `cqw`, so both are the same design, and the card has a fixed height: new
+  text must fit, check the print PDF. White card (little ink), text only for now; a generated background image is a possible next step.
 - Photos: every place can show up to 3 (`MAX_PHOTOS`, `lib/photoRules.ts`): the place, its products, or screenshots of an online shop.
   The browser shrinks each to a 1600px JPEG (`lib/clientPhoto.ts`, which also drops the camera's location data); they are kept in
   Postgres (`place_photos`, `lib/placePhotos.ts`) because there is no file storage, and served with a permanent cache from

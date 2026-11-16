@@ -114,7 +114,7 @@ export function StampTools({ p, openWoo = false }: { p: MyPlace; openWoo?: boole
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={p.qrUrl} alt={`QR code to collect a ${p.name} stamp`} width={140} height={140} className="h-[120px] w-[120px] shrink-0 rounded-xl bg-white p-1.5 lg:h-[140px] lg:w-[140px]" />
             <div className="flex min-w-0 flex-1 flex-col gap-2 text-sm font-semibold">
-              <Link href={`/place/${p.id}`} className="rounded-full bg-honey-500 py-2.5 text-center text-ink">Print counter card</Link>
+              <Link href={`/place/${p.id}`} className="rounded-full bg-honey-500 py-2.5 text-center text-ink">Print your postcard</Link>
               <Link href={`/c/${p.id}`} className="rounded-full border-[1.5px] border-sage-900/20 bg-white/70 py-2.5 text-center">Preview stamp page</Link>
               <p className="hidden text-[11.5px] font-normal leading-snug text-sage-900 lg:block">Try it: scan the QR with your phone&apos;s camera to see what customers see.</p>
             </div>
