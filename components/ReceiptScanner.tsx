@@ -104,7 +104,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
                 <li>Lay the receipt flat, whole receipt in the frame, good light.</li>
                 <li>Only in the shop: we check your location against the shop&apos;s. The receipt itself can be from the last 7 days, so a forgotten one still counts on your next visit.</li>
                 <li>Each receipt works once.</li>
-                <li>We keep the items and their impact, never the photo.</li>
+                <li>An AI reads your photo once to find the items. We keep the items and their impact, never the photo. <Link href="/privacy" className="underline" onClick={onClose}>Privacy</Link></li>
               </ul>
               <input ref={file} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => read(e.target.files?.[0])} />
               <button onClick={() => file.current?.click()} className="lift flex w-full items-center justify-center gap-2 rounded-full bg-honey-500 py-3.5 text-base font-bold text-ink"><Camera size={18} strokeWidth={2.5} /> Take a photo of the receipt</button>

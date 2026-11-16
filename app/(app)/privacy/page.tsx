@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 const PRIVACY_EMAIL = "privacy@ecoproofai.com";
-const UPDATED = "18 October 2026";
+const UPDATED = "16 November 2026";
 
 const H2 = ({ id, children }: { id?: string; children: React.ReactNode }) => <h2 id={id} className="scroll-mt-20 pt-2 text-[17px]">{children}</h2>;
 const Mail = () => <a href={`mailto:${PRIVACY_EMAIL}`} className="font-bold underline">{PRIVACY_EMAIL}</a>;
@@ -27,6 +27,7 @@ export default function Privacy() {
           <li>You can collect stamps without an account. Then we only know a random ID stored in your browser.</li>
           <li>Signing in with Google or Facebook gives us your name, email and profile picture. Signing in with a wallet gives us only its public address.</li>
           <li>Your location is used once, to check you are at a place when you collect its stamp. We don&apos;t store it.</li>
+          <li>A photo of a receipt is read once by an AI and not stored. We keep the items on it, not the picture.</li>
           <li>Each stamp&apos;s proof on Solana is a fingerprint (a hash): it contains no name, email or location.</li>
           <li>No ads, no tracking or analytics tools, and we never sell your data.</li>
         </ul>
@@ -36,12 +37,19 @@ export default function Privacy() {
       <ul className="list-disc space-y-1.5 pl-5">
         <li>
           <b>Your passport.</b> Without an account, a random ID is created in your browser and keeps your passport. With each stamp we store the
-          place, the date and time, how it was collected (QR code, printed card or online order) and the points it earns. We need this to run your
+          place, the date and time, how it was collected (QR code, printed card, online order or receipt) and the points it earns. We need this to run your
           passport and to stop the same stamp being collected twice.
         </li>
         <li>
           <b>Online orders.</b> When a shop connects its online store, it sends us the order number, the products and quantities, and we work out
           their eco impact. Shops never send us your name, email, address, payment details or prices.
+        </li>
+        <li>
+          <b>Receipts.</b> When you scan a receipt in an eco shop, your browser shrinks the photo and sends it to us with your location. An AI
+          service (Anthropic) reads the shop&apos;s name, the date, the receipt number, the total and the item lines from it. We do not store the
+          photo. We keep the names and quantities of the items, the plastic and CO₂ they count, and a fingerprint of the receipt so it cannot be
+          used twice. A receipt can show more than that, such as a name, a loyalty number or the last digits of a card: we don&apos;t read those
+          out or keep them, but they are in the picture the AI service sees, so cover them if you prefer.
         </li>
         <li>
           <b>Location.</b> A place on the map only gives its stamp to people who are there. When you collect one, your browser asks to share your
@@ -90,7 +98,12 @@ export default function Privacy() {
       <ul className="list-disc space-y-1.5 pl-5">
         <li><b>Vercel</b> runs the website, and <b>Neon</b> runs our database. Both store data in the United States.</li>
         <li><b>Google</b> or <b>Meta</b> (Facebook), only if you choose to sign in with them.</li>
-        <li><b>Anthropic</b> (AI) estimates what a shop&apos;s products replace, from product names and descriptions. No customer data is sent.</li>
+        <li>
+          <b>Anthropic</b> (AI) reads the receipt photos you scan, as described above, and works out what kind of product a name on a receipt, an
+          order or a shop&apos;s product list is. With a receipt photo it also gets the names of the EcoProof AI shops near you and how far away
+          they are, to tell which shop the receipt is from. Apart from that and what the photo shows, no customer data is sent: no name,
+          email or account.
+        </li>
         <li><b>Solana</b> network nodes receive the proofs and NFTs described above.</li>
         <li><b>OpenStreetMap</b> supplies the map images. Your browser loads them directly, so OpenStreetMap sees your IP address.</li>
         <li><b>Phantom</b> or <b>Solflare</b>, if you use their wallet apps. Their own privacy policies apply.</li>
