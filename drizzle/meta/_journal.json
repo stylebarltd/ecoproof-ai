@@ -64,6 +64,13 @@
       "when": 1792475836356,
       "tag": "0008_shop_supplies",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794793026536,
+      "tag": "0009_place_photos",
+      "breakpoints": true
     }
   ]
 }

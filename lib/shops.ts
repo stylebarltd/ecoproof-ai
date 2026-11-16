@@ -3,6 +3,7 @@
 // online orders today, receipts later. QR and card stamps count as visits. All figures are estimates from lib/impact.ts.
 import { query } from "./db";
 import { isShop } from "./placeKinds";
+import { coversOf } from "./placePhotos";
 import { originFor, type ShipOrigin } from "./shipping";
 import { explorerUrl } from "./solana";
 import { listPlaces, toPublic, type PublicPlace } from "./stampPlaces";
@@ -55,7 +56,7 @@ export async function originsOf(placeIds: string[]): Promise<Map<string, ShipOri
 }
 
 export type ShopListing = PublicPlace & {
-  website: string | null; locations: number; impact: ShopImpact;
+  website: string | null; coverUrl: string | null; locations: number; impact: ShopImpact;
   /** All of the shop's shipping origins, and the one that serves the visitor's country (shipsHere false: it doesn't ship there). */
   origins: ShipOrigin[]; origin: ShipOrigin | null; shipsHere: boolean | null;
   /** Every point the shop can be measured from: its shop locations, and the pin of the origin that serves the visitor. */
@@ -67,9 +68,10 @@ export async function listShops(country: string | null): Promise<ShopListing[]> 
   const shops = (await listPlaces()).filter((p) => isShop(p.kind));
   if (!shops.length) return [];
   const ids = shops.map((s) => s.id);
-  const [impact, origins, locs] = await Promise.all([
+  const [impact, origins, covers, locs] = await Promise.all([
     shopImpact(ids),
     originsOf(ids),
+    coversOf(ids),
     query<{ place_id: string; lat: number; lng: number }>("SELECT place_id, lat, lng FROM stamp_place_locations WHERE place_id = ANY($1) ORDER BY id", [ids]),
   ]);
   return shops.map((s) => {
@@ -78,7 +80,7 @@ export async function listShops(country: string | null): Promise<ShopListing[]> 
     const all = p.online ? origins.get(s.id)! : [];
     const { origin, shipsHere } = originFor(all, country);
     return {
-      ...p, website: p.online ? s.website : null, locations: mine.length, impact: impact.get(s.id)!, origins: all, origin, shipsHere,
+      ...p, website: p.online ? s.website : null, coverUrl: covers.get(s.id) ?? null, locations: mine.length, impact: impact.get(s.id)!, origins: all, origin, shipsHere,
       points: [...mine, ...(origin?.lat != null && origin.lng != null ? [{ lat: origin.lat, lng: origin.lng }] : [])],
     };
   });

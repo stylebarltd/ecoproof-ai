@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, ChevronRight, Copy, ExternalLink, Leaf, ListChecks, Loader2, QrCode, Sparkles, ShoppingBag, Ticket, UserPlus, Users } from "lucide-react";
+import PhotosPanel from "@/components/PhotosPanel";
 import ShopImpact from "@/components/ShopImpact";
 import CopySnippet from "@/components/landing/CopySnippet";
 import Stars from "@/components/Stars";
@@ -326,6 +327,7 @@ export default function ShopDashboard({ id }: { id: string }) {
             </span>
             <ChevronRight size={20} strokeWidth={2.5} className="shrink-0 text-sage-700" />
           </Link>
+          <PhotosPanel placeId={place.id} kind={place.kind} online={place.online} />
           <TeamPanel placeId={place.id} onLeft={() => router.push("/shop")} />
         </div>
       </div>

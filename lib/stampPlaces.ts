@@ -1,6 +1,7 @@
 import { query } from "./db";
 import { appUrl } from "./nft";
 import { isShop } from "./placeKinds";
+import { coversOf } from "./placePhotos";
 import { publishedStars, type PlaceStars } from "./placePractices";
 import { shopImpact, type ShopImpact } from "./shops";
 
@@ -64,7 +65,7 @@ export function stampSvg(p: Pick<StampPlace, "name" | "kind" | "colour" | "image
 }
 
 /** stars: null for kinds without stars (eco shops); from the place's published declaration. impact: eco shops only, instead of stars. */
-export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; lat: number; lng: number; stars: PlaceStars | null; impact: ShopImpact | null };
+export type MapPlace = { demo: boolean; id: string; locationId: number; name: string; locationName: string | null; kind: string; tagline: string | null; imageUrl: string; coverUrl: string | null; lat: number; lng: number; stars: PlaceStars | null; impact: ShopImpact | null };
 
 /** Places that have actually joined EcoProof AI and have a location (online-only shops have none), one entry per location. "Verified" on the map means
  *  claimed and set up on EcoProof AI (a real owner or partner created it); independent vetting is roadmap. */
@@ -73,9 +74,9 @@ export async function listMapPlaces(): Promise<MapPlace[]> {
     "SELECT p.id, p.name, p.kind, p.also_cafe, p.tagline, p.demo, l.id AS lid, l.name AS lname, l.lat, l.lng FROM stamp_places p JOIN stamp_place_locations l ON l.place_id = p.id WHERE p.status = 'active' ORDER BY p.created_at, l.id",
   );
   const ids = [...new Set(rows.map((r) => r.id))];
-  const [stars, impact] = await Promise.all([publishedStars(rows), shopImpact(ids.filter((id) => isShop(rows.find((r) => r.id === id)!.kind)))]);
+  const [stars, impact, covers] = await Promise.all([publishedStars(rows), shopImpact(ids.filter((id) => isShop(rows.find((r) => r.id === id)!.kind))), coversOf(ids)]);
   return rows.map((r) => ({
-    demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`,
+    demo: r.demo, id: r.id, locationId: r.lid, name: r.name, locationName: r.lname, kind: r.kind, tagline: r.tagline, imageUrl: `/api/stamp-places/${r.id}/stamp`, coverUrl: covers.get(r.id) ?? null,
     lat: r.lat, lng: r.lng, stars: stars.get(r.id) ?? null, impact: impact.get(r.id) ?? null,
   }));
 }

@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Check, ExternalLink, Globe, Link2, MapPin, Truck } from "lucide-react";
 import AnchorPending from "@/components/AnchorPending";
+import PhotoGallery from "@/components/PhotoGallery";
 import ShopImpact from "@/components/ShopImpact";
 import Stars from "@/components/Stars";
 import VerifyButton from "@/components/VerifyButton";
@@ -11,6 +12,7 @@ import { declarationsOf, publishedAnswers, toDeclaration } from "@/lib/declarati
 import { isShop, kindOf } from "@/lib/placeKinds";
 import { countryName, originFor, pickCountry, servesText } from "@/lib/shipping";
 import { originsOf, shopImpact, shopProofs } from "@/lib/shops";
+import { photosOf } from "@/lib/placePhotos";
 import { checklist, rating } from "@/lib/practices";
 import { getPlace, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
@@ -29,6 +31,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
   if (!visible(place)) notFound();
   const p = toPublic(place);
   const history = await declarationsOf(place.id);
+  const photos = await photosOf(place.id);
   const answers = publishedAnswers(place, history[0]);
   const current = history[0] && history[0].kind === place.kind && history[0].also_cafe === place.also_cafe ? toDeclaration(history[0]) : null;
   const origins = p.online ? (await originsOf([place.id])).get(place.id)! : [];
@@ -55,6 +58,8 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
             {place.tagline && <p className="mt-1.5 text-sm">{place.tagline}</p>}
           </div>
         </div>
+
+        {photos.length > 0 && <div className="mt-4"><PhotoGallery photos={photos} name={place.name} /></div>}
 
         {r && (
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/60 p-3 lg:p-4">

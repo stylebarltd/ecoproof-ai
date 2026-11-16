@@ -1,10 +1,11 @@
-import { boolean, check, doublePrecision, index, integer, pgTable, primaryKey, serial, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
+import { boolean, check, customType, doublePrecision, index, integer, pgTable, primaryKey, serial, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 // The database schema. Change it here, then run `npm run db:generate` to write a migration into drizzle/ and review the SQL.
 // Migrations run on deploy (`npm run db:migrate`). The app itself never creates or alters tables.
 
 const at = (name: string) => timestamp(name, { withTimezone: true, mode: "string" });
+const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
 
 export const records = pgTable("records", {
   id: text().primaryKey(),
@@ -319,3 +320,13 @@ export const practiceReports = pgTable("practice_reports", {
   status: text().default("open").notNull(), // open | confirmed | rejected
   resolvedAt: at("resolved_at"),
 }, (t) => [index("practice_reports_place").on(t.placeId, t.practiceId)]);
+
+/** Up to five photos per place, picked by its owner: the place itself, its products, or screenshots of an online shop. The JPEG is
+ *  shrunk in the browser and kept here (no file storage yet); the lowest position is the cover. lib/placePhotos.ts */
+export const placePhotos = pgTable("place_photos", {
+  id: text().primaryKey(), // random: it is the photo's URL, so a replaced photo never shows a cached old one
+  placeId: text("place_id").notNull(),
+  position: integer().notNull(),
+  bytes: bytea().notNull(),
+  createdAt: at("created_at").defaultNow().notNull(),
+}, (t) => [index("place_photos_place").on(t.placeId, t.position)]);

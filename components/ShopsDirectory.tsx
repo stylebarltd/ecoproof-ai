@@ -67,6 +67,12 @@ export default function ShopsDirectory() {
             const d = here ? nearest(s, here) : Infinity;
             return (
               <li key={s.id} className="glass flex flex-col gap-2.5 rounded-[24px] p-4">
+                {s.coverUrl && (
+                  <Link href={`/places/${s.id}`} tabIndex={-1} aria-hidden>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
+                    <img src={s.coverUrl} alt="" loading="lazy" className="aspect-[16/9] w-full rounded-2xl object-cover" />
+                  </Link>
+                )}
                 <Link href={`/places/${s.id}`} className="flex items-start gap-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={s.imageUrl} alt="" width={52} height={52} className="h-[52px] w-[52px] shrink-0 rounded-full" />

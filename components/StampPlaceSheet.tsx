@@ -10,6 +10,8 @@ import type { MapPlace } from "@/lib/stampPlaces";
 export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; onClose: () => void }) {
   return (
     <div className="absolute inset-x-0 bottom-0 z-[1100] max-h-[70%] overflow-y-auto rounded-t-[28px] bg-neutral-100 p-4 pb-6 shadow-[0_-8px_30px_rgba(0,0,0,0.15)] lg:inset-x-auto lg:top-4 lg:right-4 lg:bottom-auto lg:max-h-[calc(100%-2rem)] lg:w-[360px] lg:rounded-[28px] lg:bg-neutral-100/90 lg:p-5 lg:shadow-[0_12px_40px_rgba(39,46,27,0.25)] lg:backdrop-blur-xl">
+      {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
+      {place.coverUrl && <img src={place.coverUrl} alt={place.name} className="mb-3 h-36 w-full rounded-2xl object-cover lg:h-44" />}
       <div className="flex items-start gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={place.imageUrl} alt="" width={64} height={64} className="shrink-0 rounded-full" />
