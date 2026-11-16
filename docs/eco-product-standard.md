@@ -90,9 +90,9 @@ Rows added on 2026-11-16 (in the app's table; the Claude Doc needs the same rows
 |---|---|---|---|---|
 | Reusable laundry pouch | Magnesium laundry pouch, 300 loads | 420 | 1260 | 300 loads = 6 detergent bottles of 50 loads; an empty 1.5 l bottle is 70–100 g |
 | Wool dryer balls | Set of dryer balls | 150 | 450 | One year at 3 loads a week = about 150 dryer sheets; a used sheet is about 1 g of polyester |
-| Reusable shopping bag | Tote, cloth bag | 310 | 930 | One carrier bag a week for a year = 52 bags of 6–8 g |
-| Reusable produce bag | Mesh bag, each | 100 | 300 | One produce bag a week for a year = 52 bags of 2–4 g |
-| Natural sponge | Luffa dish scrubber | 60 | 180 | Replaces 3 foam scrub sponges of 20–40 g |
+| Reusable shopping bag | Tote, cloth bag | 1560 | 4680 | One carrier bag a week for five years = 260 bags of 6–8 g |
+| Reusable produce bag | Mesh bag, each | 520 | 1560 | One produce bag a week for five years = 260 bags of 2–4 g |
+| Natural sponge | Luffa dish scrubber | 20 | 60 | Replaces one foam scrub sponge of 20–40 g, one for one |
 | Plastic-free floss | Floss in glass, per spool | 10 | 30 | One plastic floss case, about 11.5 g |
 | Toothpaste tabs, travel size | Tin of about 14 tabs | 2 | 6 | One small hotel or travel toothpaste tube, 2–3 g empty |
 

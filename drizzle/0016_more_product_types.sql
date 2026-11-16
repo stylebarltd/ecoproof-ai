@@ -7,8 +7,8 @@ ALTER TABLE "products" ADD CONSTRAINT "products_product_type" CHECK ("products".
 INSERT INTO "impact_factors" ("product_type", "plastic_g", "co2_g") VALUES
 	('laundry_pouch', 420, 1260),          -- 300 loads = 6 detergent bottles of 50 loads, 70 g of plastic each
 	('dryer_balls', 150, 450),             -- one year, 3 loads a week: about 150 dryer sheets, 1 g of polyester each
-	('reusable_bag', 310, 930),            -- one year, one carrier bag a week: 52 bags of 6 g
-	('produce_bag', 100, 300),             -- one year, one produce bag a week: 52 bags of 2 g
-	('natural_sponge', 60, 180),           -- 3 foam scrub sponges of 20 g
+	('reusable_bag', 1560, 4680),          -- five years, one carrier bag a week: 260 bags of 6 g
+	('produce_bag', 520, 1560),            -- five years, one produce bag a week: 260 bags of 2 g
+	('natural_sponge', 20, 60),            -- one foam scrub sponge of 20 g, one for one
 	('plastic_free_floss', 10, 30),        -- per spool: one plastic floss case, about 11 g
 	('toothpaste_tabs_travel', 2, 6);      -- one small plastic toothpaste tube, about 2 g empty
