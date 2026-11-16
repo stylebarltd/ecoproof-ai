@@ -48,3 +48,11 @@ export type ProductSetupState = {
   /** receipt lines customers scanned that match no product yet */
   queue: { rawText: string; times: number; lastSeen: string; photoUrl: string | null }[];
 };
+
+/** What a customer can say about a listed product ("Not true"). */
+export const PRODUCT_REPORT_REASONS = [
+  { id: "plastic_packaging", label: "It is sold in plastic packaging" },
+  { id: "not_sold", label: "This shop doesn't sell it" },
+  { id: "other", label: "Something else" },
+] as const;
+export const isProductReason = (r: string) => PRODUCT_REPORT_REASONS.some((x) => x.id === r);

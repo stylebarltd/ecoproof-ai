@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { query } from "./db";
 import { identityGroup } from "./users";
 import { REPORT_WINDOW_DAYS, REVIEW_THRESHOLD, isReason, type PlaceStatus } from "./ecoRules";
+import { isProductReason, REPORTS_TO_REMOVE, type ProductStatus } from "./productRules";
 
 export class ReportError extends Error { constructor(message: string, public status = 400) { super(message); } }
 
@@ -38,6 +39,48 @@ export async function reportPlace(placeId: string, passportId: string, reason: s
     }
   }
   return { underReview };
+}
+
+/**
+ * "Not true" about one product on a shop's eco list: the same report flow with a product as its target (product_reports).
+ * One report per person per product, never from the shop's own people. Nothing changes until we confirm it (decideProductReport).
+ */
+export async function reportProduct(placeId: string, productId: string, passportId: string, reason: string, details: string): Promise<void> {
+  if (!isProductReason(reason)) throw new ReportError("Pick a reason.");
+  const product = (await query<{ id: string }>("SELECT id FROM products WHERE id=$1 AND place_id=$2 AND status <> 'removed'", [productId, placeId]))[0];
+  if (!product) throw new ReportError("Unknown product", 404);
+  const group = await identityGroup(passportId);
+  const runsIt = await query("SELECT 1 FROM place_members WHERE place_id=$1 AND member_key = ANY($2) LIMIT 1", [placeId, group]);
+  if (runsIt.length) throw new ReportError("You can't report your own shop's products.", 403);
+  const before = await query("SELECT 1 FROM product_reports WHERE product_id=$1 AND reporter_id = ANY($2)", [productId, group]);
+  if (before.length) throw new ReportError("You've already reported this product. Thank you, we're looking at it.", 409);
+  const text = details.slice(0, 400);
+  await query("INSERT INTO product_reports (product_id, reporter_id, reason) VALUES ($1,$2,$3)", [productId, group[0], text ? `${reason}: ${text}` : reason]);
+}
+
+/** Our decision on one product report. Confirmed: the product is "reported", and with the second confirmed report "removed", which takes
+ *  it out of receipt matching (lib/match.ts). Not confirmed: the report is dropped. */
+export async function decideProductReport(reportId: number, confirmed: boolean): Promise<{ productId: string; status: ProductStatus } | null> {
+  if (!confirmed) { await query("DELETE FROM product_reports WHERE id=$1 AND NOT confirmed", [reportId]); return null; }
+  const [report] = await query<{ product_id: string }>("UPDATE product_reports SET confirmed=true WHERE id=$1 RETURNING product_id", [reportId]);
+  if (!report) throw new ReportError("Unknown report", 404);
+  const [{ n }] = await query<{ n: number }>("SELECT COUNT(*)::int n FROM product_reports WHERE product_id=$1 AND confirmed", [report.product_id]);
+  const status: ProductStatus = n >= REPORTS_TO_REMOVE ? "removed" : "reported";
+  await query("UPDATE products SET status=$2 WHERE id=$1 AND status <> 'removed'", [report.product_id, status]);
+  return { productId: report.product_id, status };
+}
+
+export type OpenProductReport = { id: number; productId: string; product: string; placeId: string; place: string; status: ProductStatus; photoUrl: string | null; reason: string; confirmedSoFar: number; createdAt: string };
+
+/** Product reports waiting for our decision, oldest first. */
+export async function listProductReports(): Promise<OpenProductReport[]> {
+  const rows = await query<{ id: number; product_id: string; receipt_name: string; place_id: string; place: string; status: ProductStatus; photo_url: string | null; reason: string; confirmed_so_far: number; created_at: string }>(
+    `SELECT r.id, r.product_id, p.receipt_name, p.place_id, s.name AS place, p.status, p.photo_url, r.reason, r.created_at,
+            (SELECT COUNT(*)::int FROM product_reports c WHERE c.product_id = p.id AND c.confirmed) AS confirmed_so_far
+     FROM product_reports r JOIN products p ON p.id = r.product_id JOIN stamp_places s ON s.id = p.place_id
+     WHERE NOT r.confirmed AND p.status <> 'removed' ORDER BY r.created_at`,
+  );
+  return rows.map((r) => ({ id: r.id, productId: r.product_id, product: r.receipt_name, placeId: r.place_id, place: r.place, status: r.status, photoUrl: r.photo_url, reason: r.reason, confirmedSoFar: r.confirmed_so_far, createdAt: new Date(r.created_at).toISOString() }));
 }
 
 export type ModerationAction = "suspend" | "restore" | "review";

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { listReports } from "@/lib/moderation";
+import { listProductReports, listReports } from "@/lib/moderation";
 import ReportsAdmin from "@/components/ReportsAdmin";
 
 export const dynamic = "force-dynamic";
@@ -9,5 +9,5 @@ export const metadata = { title: "Reports", robots: { index: false } };
 export default async function AdminReports({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
   const { token } = await searchParams;
   if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) notFound();
-  return <ReportsAdmin token={token!} initial={await listReports()} />;
+  return <ReportsAdmin token={token!} initial={await listReports()} initialProducts={await listProductReports()} />;
 }

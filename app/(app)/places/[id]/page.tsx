@@ -13,6 +13,8 @@ import { isShop, kindOf } from "@/lib/placeKinds";
 import { countryName, originFor, pickCountry, servesText } from "@/lib/shipping";
 import { originsOf, shopImpact, shopProofs } from "@/lib/shops";
 import { photosOf } from "@/lib/placePhotos";
+import { publicProducts } from "@/lib/products";
+import { CATEGORY_LABELS, PACKAGING_LABELS, PRODUCT_CATEGORIES } from "@/lib/productRules";
 import { checklist, rating } from "@/lib/practices";
 import { getPlace, toPublic, type StampPlace } from "@/lib/stampPlaces";
 
@@ -36,6 +38,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
   const current = history[0] && history[0].kind === place.kind && history[0].also_cafe === place.also_cafe ? toDeclaration(history[0]) : null;
   const origins = p.online ? (await originsOf([place.id])).get(place.id)! : [];
   const shop = isShop(place.kind) ? { impact: (await shopImpact([place.id])).get(place.id)!, online: p.online, proofs: await shopProofs(place.id) } : null;
+  const eco = shop ? await publicProducts(place.id) : null;
   // Which origin ships to this visitor (Vercel's IP country, or ?country=US to test), listed first.
   const country = pickCountry((await searchParams).country as string | undefined, (await headers()).get("x-vercel-ip-country"));
   const { origin: yours, shipsHere } = originFor(origins, country);
@@ -167,6 +170,36 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
               </ul>
             </details>
           )}
+        </section>
+      )}
+
+      {eco && (eco.products.length > 0 || eco.refill) && (
+        <section className="glass space-y-3 rounded-[24px] p-4 lg:p-5">
+          <div>
+            <h2 className="text-[17px] leading-tight">Sold without plastic packaging</h2>
+            <p className="text-[12.5px] leading-snug text-sage-900">
+              {eco.products.length > 0 && `${place.name} declares these products. EcoProof AI doesn't inspect them; if one isn't true, tell us. `}
+              {eco.refill && <b className="text-ink">You can bring your own containers for a refill.</b>}
+            </p>
+          </div>
+          {PRODUCT_CATEGORIES.map((c) => ({ c, items: eco.products.filter((x) => x.category === c) })).filter((g) => g.items.length).map((g) => (
+            <div key={g.c}>
+              <h3 className="text-[13px] font-bold text-sage-900">{CATEGORY_LABELS[g.c].label}</h3>
+              <ul className="mt-1.5 grid gap-1.5 lg:grid-cols-2">
+                {g.items.map((x) => (
+                  <li key={x.id} className="flex items-center gap-2.5 rounded-xl bg-white/60 p-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
+                    {x.photoUrl && <img src={x.photoUrl} alt="" loading="lazy" className="h-11 w-11 shrink-0 rounded-lg object-cover" />}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[13.5px] font-bold leading-tight">{x.displayName}</span>
+                      <span className="block text-[11.5px] text-sage-900">{PACKAGING_LABELS[x.packagingType]}{x.replaces ? ` · replaces ${x.replaces}` : ""}</span>
+                    </span>
+                    <Link href={`/report/${place.id}?product=${x.id}`} className="shrink-0 text-[11.5px] font-bold text-sage-900 underline underline-offset-2">Not true?</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </section>
       )}
 

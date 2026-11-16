@@ -113,3 +113,12 @@ export async function saveSample(placeId: string, bytes: Buffer): Promise<void> 
 export async function dismissLine(placeId: string, rawText: string): Promise<void> {
   await query("UPDATE receipt_lines SET dismissed=true WHERE place_id=$1 AND matched_product_id IS NULL AND lower(btrim(raw_text))=lower(btrim($2))", [placeId, rawText]);
 }
+
+/** What visitors see on the shop's page: its eco list (removed products are gone), and whether it refills. */
+export async function publicProducts(placeId: string): Promise<{ refill: boolean | null; products: Product[] }> {
+  const [[place], rows] = await Promise.all([
+    query<{ refill: boolean | null }>("SELECT refill FROM stamp_places WHERE id=$1", [placeId]),
+    query<Row>("SELECT * FROM products WHERE place_id=$1 AND status <> 'removed' ORDER BY category, lower(display_name)", [placeId]),
+  ]);
+  return { refill: place?.refill ?? null, products: rows.map(toProduct) };
+}
