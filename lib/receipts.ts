@@ -3,6 +3,7 @@ import { query } from "./db";
 import { hmac } from "./secret";
 import { ClaimError, claimStamp, type StampResult } from "./stamp";
 import { isClaimed, receiptFingerprint } from "./claim";
+import { recordLines } from "./match";
 import { matchItems, type Matched } from "./order";
 import { computeImpact, FACTORS, type Impact } from "./impact";
 import { impactLine } from "./woo";
@@ -189,11 +190,15 @@ export async function claimReceipt(token: string, passportId: string, geo: { lat
 
   // claimStamp re-checks the position against the place's own point; give it the matched location, so a shop with
   // several locations is checked at the one the shopper is standing in.
-  return claimStamp({
+  const stamp = await claimStamp({
     placeId: place.id, passportId, source: "receipt", geo, onStep,
     place: { ...place, lat: p.lat, lng: p.lng, gps_radius_m: radius },
     receipt: { fp: p.fp, items: p.items, impact: p.impact, line: p.line },
   });
+  // Keep the lines against the shop's declared products: the ones that match nothing go to the owner's queue (lib/match.ts). The stamp
+  // and its impact don't depend on it yet, so a failure here never loses the stamp.
+  await recordLines(place.id, stamp.recordId, p.items.map((i) => ({ rawText: i.name }))).catch((e) => console.error("receipt lines not recorded", e));
+  return stamp;
 }
 
 // ---- helpers ------------------------------------------------------------------------------------------------------
