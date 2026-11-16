@@ -158,16 +158,9 @@ export default function ProductSetup({ id }: { id: string }) {
           <>
             <h2 className="text-[17px] leading-tight">Your products</h2>
             <p className="mt-1 text-[12.5px] leading-snug text-sage-900">Add your main products, each with its name <b>exactly as your receipt prints it</b>: that name is how a customer&apos;s receipt finds it. You don&apos;t enter any impact numbers: each kind of product has a fixed figure from EcoProof AI, counted once per piece in the pack.</p>
-            {shown.length === 0 && <p className="mt-3 rounded-2xl bg-white/60 p-3 text-[13px]">No category ticked yet. <button type="button" onClick={() => go(2)} className="font-bold underline underline-offset-2">Tick your categories first</button>.</p>}
-            <div className="mt-3 space-y-4">
-              {shown.map((c) => (
-                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} factors={s.d!.factors} all={products} owner={owner} busy={s.busy} onUpdate={s.updateProduct} onPart={s.setPart}
-                  onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
-              ))}
-            </div>
             {owner && (
-              <div className="mt-4 rounded-2xl bg-white/60 p-3 text-[12.5px] leading-snug text-sage-900">
-                <p><b className="text-ink">Many products?</b> Import a prepared list instead of typing them: a .json file with each product&apos;s name, category, packaging, kind, pieces, other names and, for a bundle, its parts.</p>
+              <div className="mt-3 rounded-2xl bg-honey-300/40 p-3 text-[12.5px] leading-snug text-sage-900">
+                <p><b className="text-ink">Have a product list already?</b> Import it and skip the typing: a .json file with each product&apos;s name, category, packaging, kind, pieces, other names and, for a bundle, its parts.</p>
                 <label className={`${quiet} mt-2 cursor-pointer ${s.busy ? "pointer-events-none opacity-50" : ""}`}>
                   {s.busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} strokeWidth={2.8} />} Import a list
                   <input type="file" accept="application/json,.json" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; s.importList(f).finally(() => { e.target.value = ""; }); }} />
@@ -180,6 +173,13 @@ export default function ProductSetup({ id }: { id: string }) {
                 )}
               </div>
             )}
+            {shown.length === 0 && <p className="mt-3 rounded-2xl bg-white/60 p-3 text-[13px]">No category ticked yet. <button type="button" onClick={() => go(2)} className="font-bold underline underline-offset-2">Tick your categories first</button>.</p>}
+            <div className="mt-3 space-y-4">
+              {shown.map((c) => (
+                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} factors={s.d!.factors} all={products} owner={owner} busy={s.busy} onUpdate={s.updateProduct} onPart={s.setPart}
+                  onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
+              ))}
+            </div>
             <StepButtons ready={products.length > 0} onNext={next} onSkip={() => setSkipping(true)} />
           </>
         ) : (
