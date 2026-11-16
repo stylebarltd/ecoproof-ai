@@ -10,7 +10,8 @@ import {
 } from "@/lib/productRules";
 import { useProductSetup } from "./useProductSetup";
 
-const STEPS = ["Your shop", "Declaration", "Categories", "Products", "Refill"] as const;
+/** The last step, refill, is only for a shop customers can walk into: bringing your own container means nothing online. */
+const ALL_STEPS = ["Your shop", "Declaration", "Categories", "Products", "Refill"] as const;
 /** Steps 3 to 5 can be skipped; the skip screen says what the shop gains by coming back. */
 const SKIP_TEXT = "The more products you add, the more impact your customers collect and the more your store shows on the map.";
 
@@ -49,6 +50,7 @@ export default function ProductSetup({ id }: { id: string }) {
   const shown = PRODUCT_CATEGORIES.filter((c) => setup.categories.includes(c) || products.some((p) => p.category === c));
   const at = step ?? (declared ? 3 : 0);
   const go = (n: number) => { s.setErr(""); setSkipping(false); setStep(n); };
+  const STEPS = setup.inStore ? ALL_STEPS : ALL_STEPS.slice(0, 4);
   const next = () => (at >= STEPS.length - 1 ? setDone(true) : go(at + 1));
 
   if (done) {
@@ -182,12 +184,12 @@ export default function ProductSetup({ id }: { id: string }) {
                   onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
               ))}
             </div>
-            <StepButtons ready={products.length > 0} onNext={next} onSkip={() => setSkipping(true)} />
+            <StepButtons ready={products.length > 0} onNext={next} onSkip={() => setSkipping(true)} last={!setup.inStore} />
           </>
         ) : (
           <>
             <h2 className="text-[17px] leading-tight">Refill</h2>
-            <p className="mt-1 text-[14px] leading-snug">May customers bring their own containers?</p>
+            <p className="mt-1 text-[14px] leading-snug">May customers bring their own containers to your shop?</p>
             <p className="mt-1 text-[12.5px] leading-snug text-sage-900">It is shown on the map with your shop.</p>
             <div className="mt-3 flex gap-2" role="radiogroup" aria-label="Customers may bring their own containers">
               {([true, false] as const).map((v) => (

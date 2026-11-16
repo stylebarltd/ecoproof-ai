@@ -15,7 +15,7 @@ export default function ProductsPanel({ placeId }: { placeId: string }) {
   const { setup, products, queue } = s.d;
   const owner = s.d.role === "owner";
   const listed = products.filter((p) => p.status !== "removed").length;
-  const open = [!setup.declaredAt && "declaration", listed === 0 && "products", setup.refill === null && "refill"].filter(Boolean);
+  const open = [!setup.declaredAt && "declaration", listed === 0 && "products", setup.inStore && setup.refill === null && "refill"].filter(Boolean);
   return (
     <section className="glass rounded-[28px] p-4 lg:p-5">
       <Link href={`/shop/${placeId}/products`} className="flex items-center gap-3">

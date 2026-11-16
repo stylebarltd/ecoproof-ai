@@ -174,13 +174,13 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
         </section>
       )}
 
-      {eco && (eco.products.length > 0 || eco.refill) && (
+      {eco && (eco.products.length > 0 || (eco.refill && place.in_store)) && (
         <section className="glass space-y-3 rounded-[24px] p-4 lg:p-5">
           <div>
             <h2 className="text-[17px] leading-tight">Sold without plastic packaging</h2>
             <p className="text-[12.5px] leading-snug text-sage-900">
               {eco.products.length > 0 && `${place.name} declares these products. EcoProof AI doesn't inspect them; if one isn't true, tell us. `}
-              {eco.refill && <b className="text-ink">You can bring your own containers for a refill.</b>}
+              {eco.refill && place.in_store && <b className="text-ink">In the shop you can bring your own containers for a refill.</b>}
             </p>
           </div>
           {PRODUCT_CATEGORIES.map((c) => ({ c, items: eco.products.filter((x) => x.category === c) })).filter((g) => g.items.length).map((g) => (
