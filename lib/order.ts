@@ -64,9 +64,13 @@ export async function matchItems(order: Order): Promise<Matched[]> {
     const m = lines[i];
     if (m.kind === "blocked") return { ...base, ...NOTHING, confidence: 1, source: "none" };
     if (m.kind === "product") {
-      const { category, packagingType, productType, pieces } = m.product;
-      const f = table.get(productType);
+      const { category, packagingType, productType, pieces, parts } = m.product;
       const own = { productId: m.productId, impactSource: "shop" as const, source: "product" as const, confidence: m.confidence };
+      if (parts) { // a bundle: the sum of what it contains
+        const sum = parts.reduce((t, x) => { const f = table.get(x.productType); return f ? { plasticG: t.plasticG + f.plasticG * x.pieces * x.count, co2G: t.co2G + f.co2G * x.pieces * x.count } : t; }, { plasticG: 0, co2G: 0 });
+        return sum.plasticG > 0 || sum.co2G > 0 ? { ...base, category, packagingType, ...sum, ...own } : { ...base, ...NOTHING, ...own };
+      }
+      const f = table.get(productType);
       if (!f) return { ...base, ...NOTHING, ...own }; // listed, but its type has no figure yet
       return { ...base, category, packagingType, productType, pieces, plasticG: f.plasticG * pieces, co2G: f.co2G * pieces, ...own };
     }

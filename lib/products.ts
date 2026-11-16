@@ -4,7 +4,7 @@ import { unmatchedLines } from "./match";
 import { MAX_PHOTO_BYTES } from "./photoRules";
 import { isJpeg } from "./placePhotos";
 import {
-  isCategory, isPackaging, MAX_ALIASES, MAX_PIECES, MAX_PRODUCTS, PRODUCT_NAME_MAX, typeOf, type Product, type ProductCategory, type ProductSetupState,
+  isCategory, isPackaging, MAX_ALIASES, MAX_PARTS, MAX_PIECES, MAX_PRODUCTS, PRODUCT_NAME_MAX, typeOf, type Product, type ProductCategory, type ProductSetupState,
 } from "./productRules";
 
 // An eco shop's plastic-free products and their setup (docs/eco-product-standard.md): the owner declares, ticks categories, lists
@@ -16,8 +16,8 @@ const clean = (v: unknown, n: number) => String(v ?? "").replace(/\s+/g, " ").tr
 const photoUrl = (placeId: string, productId: string, v: string) => `/api/places/${placeId}/products/${productId}/photo?v=${v}`;
 
 type Row = { id: string; receipt_name: string; display_name: string; category: string; packaging_type: string; product_type: string; pieces: number; replaces: string | null; photo_url: string | null; source: string; status: string };
-const toProduct = (r: Row, aliases: string[] = []): Product => ({
-  aliases,
+const toProduct = (r: Row, aliases: string[] = [], parts: Product["parts"] = []): Product => ({
+  aliases, parts,
   id: r.id, receiptName: r.receipt_name, displayName: r.display_name, category: r.category as Product["category"], packagingType: r.packaging_type as Product["packagingType"],
   productType: r.product_type as Product["productType"], pieces: r.pieces,
   replaces: r.replaces, photoUrl: r.photo_url, source: r.source as Product["source"], status: r.status as Product["status"],
@@ -49,7 +49,7 @@ const claimLines = (placeId: string, productId: string, name: string) =>
 
 /** Everything the setup wizard and the dashboard show. */
 export async function productSetup(placeId: string, role: "owner" | "staff"): Promise<ProductSetupState> {
-  const [[place], products, queue, sample, factors, aliases] = await Promise.all([
+  const [[place], products, queue, sample, factors, aliases, parts] = await Promise.all([
     query<{ product_categories: string[]; refill: boolean | null; products_declared_at: string | null; in_store: boolean }>(
       "SELECT product_categories, refill, products_declared_at::text, (lat IS NOT NULL) AS in_store FROM stamp_places WHERE id=$1", [placeId],
     ),
@@ -58,11 +58,14 @@ export async function productSetup(placeId: string, role: "owner" | "staff"): Pr
     query("SELECT 1 FROM receipt_samples WHERE place_id=$1", [placeId]),
     query<{ product_type: string; plastic_g: number; co2_g: number }>("SELECT product_type, plastic_g, co2_g FROM impact_factors"),
     aliasesOf(placeId),
+    query<{ product_id: string; part_id: string; name: string; count: number }>(
+      "SELECT pp.product_id, pp.part_id, part.receipt_name AS name, pp.count FROM product_parts pp JOIN products part ON part.id = pp.part_id WHERE part.place_id=$1 AND part.status <> 'removed' ORDER BY lower(part.receipt_name)", [placeId],
+    ),
   ]);
   return {
     role,
     setup: { categories: (place?.product_categories ?? []).filter(isCategory), refill: place?.refill ?? null, declaredAt: place?.products_declared_at ?? null, hasSample: sample.length > 0, inStore: !!place?.in_store },
-    products: products.map((p) => toProduct(p, aliases.get(p.id))),
+    products: products.map((p) => toProduct(p, aliases.get(p.id), parts.filter((x) => x.product_id === p.id).map((x) => ({ id: x.part_id, name: x.name, count: x.count })))),
     factors: Object.fromEntries(factors.map((f) => [f.product_type, { plasticG: f.plastic_g, co2G: f.co2_g }])),
     // No customer photo path yet: a queued line has no photo until the app asks the scanner for one.
     queue: queue.map((q) => ({ ...q, photoUrl: null })),
@@ -142,6 +145,27 @@ export async function addAlias(placeId: string, productId: string, raw: unknown)
   if (taken) throw new ProductError(taken === "removed" ? "That name belongs to a product that was removed after confirmed reports." : "That name is already on your list.", 409);
   await query("INSERT INTO product_aliases (product_id, receipt_name_variant) VALUES ($1,$2)", [productId, name]);
   await claimLines(placeId, productId, name);
+}
+
+/** A bundle's contents: `count` of another product on the list (0 takes it out). Bundles don't nest: a part has no parts of its own,
+ *  and a product that is a part of something can't become a bundle. */
+export async function setPart(placeId: string, productId: string, partId: unknown, rawCount: unknown): Promise<void> {
+  const count = Number(rawCount);
+  if (typeof partId !== "string" || !partId || partId === productId) throw new ProductError("Pick another product from your list.");
+  if (!Number.isInteger(count) || count < 0 || count > MAX_PIECES) throw new ProductError(`How many is a whole number from 1 to ${MAX_PIECES}.`);
+  if (count === 0) { await query("DELETE FROM product_parts pp USING products p WHERE p.id = pp.product_id AND p.place_id=$1 AND pp.product_id=$2 AND pp.part_id=$3", [placeId, productId, partId]); return; }
+  const both = await query<{ id: string; status: string; has_parts: boolean; is_part: boolean; n: number }>(
+    `SELECT id, status, EXISTS (SELECT 1 FROM product_parts WHERE product_id = p.id) AS has_parts, EXISTS (SELECT 1 FROM product_parts WHERE part_id = p.id) AS is_part,
+            (SELECT COUNT(*)::int FROM product_parts WHERE product_id = p.id) AS n
+     FROM products p WHERE place_id=$1 AND id = ANY($2)`, [placeId, [productId, partId]],
+  );
+  const bundle = both.find((p) => p.id === productId), part = both.find((p) => p.id === partId);
+  if (!bundle || !part) throw new ProductError("Unknown product.", 404);
+  if (bundle.status === "removed" || part.status === "removed") throw new ProductError("A product that was removed after confirmed reports can't be in a bundle.", 409);
+  if (bundle.is_part) throw new ProductError("This product is part of a bundle itself, so it can't be a bundle.");
+  if (part.has_parts) throw new ProductError("A bundle can't contain another bundle. Add that bundle's products instead.");
+  if (bundle.n >= MAX_PARTS) throw new ProductError(`A bundle can have ${MAX_PARTS} different products.`);
+  await query("INSERT INTO product_parts (product_id, part_id, count) VALUES ($1,$2,$3) ON CONFLICT (product_id, part_id) DO UPDATE SET count=EXCLUDED.count", [productId, partId, count]);
 }
 
 export async function removeAlias(placeId: string, productId: string, name: string): Promise<void> {

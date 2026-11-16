@@ -82,6 +82,7 @@ export const isPackaging = (v: unknown): v is PackagingType => (PACKAGING_TYPES 
 export const PRODUCT_NAME_MAX = 120;
 export const MAX_PRODUCTS = 300;
 export const MAX_ALIASES = 10;
+export const MAX_PARTS = 20;
 
 export type Product = {
   id: string; receiptName: string; displayName: string; category: ProductCategory; packagingType: PackagingType;
@@ -89,6 +90,8 @@ export type Product = {
   replaces: string | null; photoUrl: string | null; source: ProductSource; status: ProductStatus;
   /** Other names the same product is printed with (another language, the till's short name, an old name). */
   aliases: string[];
+  /** A bundle's contents: other products on the list, and how many of each. A bundle counts as the sum of its parts. */
+  parts: { id: string; name: string; count: number }[];
 };
 export type ProductSetupState = {
   role: "owner" | "staff";

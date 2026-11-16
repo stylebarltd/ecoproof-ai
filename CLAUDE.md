@@ -162,6 +162,8 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (`impactSource: "shop"`). An unlisted line is estimated: the AI (`CATEGORY_MODEL`) reads the type off the name, counts one piece
   (`"ai"`, shown as "EcoProof AI estimate") and the line waits in the owner's queue (orders too, via `ingestOrder`); a removed product or
   a dismissed wording counts nothing. A new kind of product needs a row in the standard first, then a migration: never a per-shop number.
+  Bundles (`product_parts`): a product can contain counts of other listed products and then counts as their sum (no nesting; a part
+  removed after reports stops counting inside it).
   Records keep the old columns: `packaging_g` = grams of plastic, `co2_kg` to the gram, `plastic_items` always 0 (it is part of the
   proof's hash input, so it stays). Everything shown goes through `grams()` / `impactParts()` in `lib/impact.ts`; types carry
   `plasticG`. The first engine (per-product numbers, `product_impacts`, the SuperBee catalogue, `/api/woo/products`) was deleted on 2026-11-16. WooCommerce plugin 1.3.0 has no

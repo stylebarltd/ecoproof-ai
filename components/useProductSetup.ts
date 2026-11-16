@@ -48,6 +48,7 @@ export function useProductSetup(placeId: string) {
     removeProduct: (id: string) => send(`?product=${encodeURIComponent(id)}`, { method: "DELETE" }),
     addAlias: (id: string, name: string) => send(`/${encodeURIComponent(id)}/aliases`, json("POST", { name })),
     removeAlias: (id: string, name: string) => send(`/${encodeURIComponent(id)}/aliases?name=${encodeURIComponent(name)}`, { method: "DELETE" }),
+    setPart: (id: string, partId: string, count: number) => send(`/${encodeURIComponent(id)}/parts`, json("PUT", { partId, count })),
     dismiss: (rawText: string) => send("/queue", json("POST", { dismiss: rawText })),
     sample: (f?: File) => photo("/sample", f),
     productPhoto: (id: string, f?: File) => photo(`/${encodeURIComponent(id)}/photo`, f),

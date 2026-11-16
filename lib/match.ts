@@ -8,25 +8,35 @@ import type { PackagingType, ProductCategory, ProductType } from "./productRules
 
 export type Match = { productId: string; confidence: number; via: "name" | "alias" | "fuzzy" };
 
-export type KnownProduct = { category: ProductCategory; packagingType: PackagingType; productType: ProductType; pieces: number };
+export type KnownProduct = {
+  category: ProductCategory; packagingType: PackagingType; productType: ProductType; pieces: number;
+  /** A bundle's contents (still on the list): the bundle counts as their sum, and its own type and pieces don't count. */
+  parts?: { productType: ProductType; pieces: number; count: number }[];
+};
 type Known = { names: Named[]; aliases: Named[]; products: Map<string, KnownProduct>; blocked: Set<string> };
 
 /** A place's products that can still match, with their aliases; and the wordings that must count nothing: removed products (two
  *  confirmed reports) and receipt lines the owner dismissed as not plastic-free. */
 async function known(placeId: string): Promise<Known> {
-  const [rows, aliases, dismissed] = await Promise.all([
+  const [rows, aliases, dismissed, parts] = await Promise.all([
     query<{ id: string; receipt_name: string; category: ProductCategory; packaging_type: PackagingType; product_type: ProductType; pieces: number; status: string }>(
       "SELECT id, receipt_name, category, packaging_type, product_type, pieces, status FROM products WHERE place_id=$1", [placeId],
     ),
     query<{ product_id: string; receipt_name_variant: string }>("SELECT a.product_id, a.receipt_name_variant FROM product_aliases a JOIN products p ON p.id = a.product_id WHERE p.place_id=$1", [placeId]),
     query<{ raw_text: string }>("SELECT DISTINCT raw_text FROM receipt_lines WHERE place_id=$1 AND dismissed", [placeId]),
+    query<{ product_id: string; part_id: string; count: number }>("SELECT pp.product_id, pp.part_id, pp.count FROM product_parts pp JOIN products p ON p.id = pp.product_id WHERE p.place_id=$1", [placeId]),
   ]);
   const live = rows.filter((r) => r.status !== "removed");
   const removed = new Set(rows.filter((r) => r.status === "removed").map((r) => r.id));
   return {
     names: live.map((r) => ({ productId: r.id, name: r.receipt_name })),
     aliases: aliases.filter((a) => !removed.has(a.product_id)).map((r) => ({ productId: r.product_id, name: r.receipt_name_variant })),
-    products: new Map(live.map((r) => [r.id, { category: r.category, packagingType: r.packaging_type, productType: r.product_type, pieces: r.pieces }])),
+    products: new Map(live.map((r) => {
+      const mine = parts.filter((x) => x.product_id === r.id);
+      // A part that was removed after reports no longer counts inside the bundle either.
+      const contents = mine.flatMap((x) => { const part = live.find((l) => l.id === x.part_id); return part ? [{ productType: part.product_type, pieces: part.pieces, count: x.count }] : []; });
+      return [r.id, { category: r.category, packagingType: r.packaging_type, productType: r.product_type, pieces: r.pieces, ...(mine.length ? { parts: contents } : {}) }];
+    })),
     blocked: new Set([
       ...rows.filter((r) => removed.has(r.id)).map((r) => exactKey(r.receipt_name)),
       ...aliases.filter((a) => removed.has(a.product_id)).map((a) => exactKey(a.receipt_name_variant)),

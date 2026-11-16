@@ -161,7 +161,7 @@ export default function ProductSetup({ id }: { id: string }) {
             {shown.length === 0 && <p className="mt-3 rounded-2xl bg-white/60 p-3 text-[13px]">No category ticked yet. <button type="button" onClick={() => go(2)} className="font-bold underline underline-offset-2">Tick your categories first</button>.</p>}
             <div className="mt-3 space-y-4">
               {shown.map((c) => (
-                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} factors={s.d!.factors} owner={owner} busy={s.busy} onUpdate={s.updateProduct}
+                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} factors={s.d!.factors} all={products} owner={owner} busy={s.busy} onUpdate={s.updateProduct} onPart={s.setPart}
                   onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
               ))}
             </div>
@@ -198,6 +198,39 @@ function StepButtons({ ready, onNext, onSkip, last = false }: { ready: boolean; 
   );
 }
 
+/** A bundle's contents: other products on the shop's list and how many of each. The bundle then counts as their sum. */
+function Bundle({ product, all, busy, onPart }: { product: Product; all: Product[]; busy: boolean; onPart: (partId: string, count: number) => Promise<boolean> }) {
+  const [open, setOpen] = useState(false);
+  const [part, setPart] = useState("");
+  const [count, setCount] = useState(1);
+  // What can go in: listed products that are not bundles themselves; and a product inside a bundle can't become one.
+  const inAnother = all.some((o) => o.parts.some((x) => x.id === product.id));
+  const choices = all.filter((o) => o.id !== product.id && o.status !== "removed" && o.parts.length === 0 && !product.parts.some((x) => x.id === o.id));
+  if (inAnother || (!product.parts.length && !choices.length)) return null;
+  return (
+    <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-[54px] text-[11.5px] text-sage-900">
+      {product.parts.length > 0 && <span>Contains</span>}
+      {product.parts.map((x) => (
+        <span key={x.id} className="inline-flex items-center gap-1 rounded-full bg-honey-300/60 py-0.5 pl-2 pr-1 font-bold text-ink">
+          {x.count} × {x.name}
+          <button type="button" disabled={busy} onClick={() => onPart(x.id, 0)} aria-label={`Take ${x.name} out of the bundle`} className="flex h-4 w-4 items-center justify-center rounded-full bg-ink/10"><X size={10} strokeWidth={3} /></button>
+        </span>
+      ))}
+      {open && choices.length > 0 ? (
+        <form className="flex w-full flex-wrap gap-1.5" onSubmit={async (e) => { e.preventDefault(); if (part && await onPart(part, count)) { setPart(""); setCount(1); setOpen(false); } }}>
+          <input type="number" min={1} max={MAX_PIECES} value={count} onChange={(e) => setCount(Math.min(MAX_PIECES, Math.max(1, Math.round(Number(e.target.value)) || 1)))} aria-label="How many" className={`${small} w-14`} />
+          <select value={part} onChange={(e) => setPart(e.target.value)} aria-label={`A product inside ${product.receiptName}`} className={`${small} min-w-0 flex-1`}>
+            <option value="">Product on your list…</option>
+            {choices.map((o) => <option key={o.id} value={o.id}>{o.receiptName}</option>)}
+          </select>
+          <button type="submit" disabled={busy || !part} className="rounded-full bg-honey-500 px-3 py-1.5 text-[11.5px] font-bold text-ink disabled:opacity-50">Add</button>
+          <button type="button" onClick={() => setOpen(false)} className="rounded-full px-2 py-1.5 text-[11.5px] font-bold">Cancel</button>
+        </form>
+      ) : choices.length > 0 && <button type="button" onClick={() => setOpen(true)} className="font-bold underline underline-offset-2">{product.parts.length ? "Add another product to the bundle" : "A bundle of other products?"}</button>}
+    </div>
+  );
+}
+
 /** A product's other printed names: the same product in another language, on the till, or under an old name. */
 function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; owner: boolean; busy: boolean; onAdd: (name: string) => Promise<boolean>; onRemove: (name: string) => Promise<boolean> }) {
   const [open, setOpen] = useState(false);
@@ -224,7 +257,12 @@ function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; 
 }
 
 /** What one pack of the product counts, in words, or why it counts nothing. */
-function worth(p: Product, factors: ProductSetupState["factors"]): string {
+function worth(p: Product, factors: ProductSetupState["factors"], all: Product[]): string {
+  if (p.parts.length) { // a bundle: the sum of what it contains
+    let plastic = 0, co2 = 0;
+    for (const x of p.parts) { const part = all.find((o) => o.id === x.id); const f = part && factors[part.productType]; if (part && f) { plastic += f.plasticG * part.pieces * x.count; co2 += f.co2G * part.pieces * x.count; } }
+    return plastic > 0 ? `counts ${grams(plastic)} plastic and ${grams(co2)} CO₂, the sum of what it contains` : "nothing in this bundle has an impact figure yet, so it counts nothing";
+  }
   const f = factors[p.productType];
   if (!f) return "no impact figure for this kind of product yet, so it counts nothing";
   return `counts ${grams(f.plasticG * p.pieces)} plastic and ${grams(f.co2G * p.pieces)} CO₂${p.pieces > 1 ? ` (${p.pieces} pieces)` : ""}`;
@@ -233,8 +271,9 @@ function worth(p: Product, factors: ProductSetupState["factors"]): string {
 const small = "rounded-lg bg-white px-2 py-1.5 text-[12.5px] text-ink ring-1 ring-sage-900/15";
 
 /** One category's products and the form that adds one. */
-function CategoryProducts({ category, products, factors, owner, busy, onAdd, onUpdate, onRemove, onPhoto, onAlias, onRemoveAlias }: {
-  category: ProductCategory; products: Product[]; factors: ProductSetupState["factors"]; owner: boolean; busy: boolean;
+function CategoryProducts({ category, products, factors, all, owner, busy, onAdd, onUpdate, onPart, onRemove, onPhoto, onAlias, onRemoveAlias }: {
+  category: ProductCategory; products: Product[]; factors: ProductSetupState["factors"]; all: Product[]; owner: boolean; busy: boolean;
+  onPart: (id: string, partId: string, count: number) => Promise<boolean>;
   onAdd: (b: { receiptName: string; packagingType: string; productType?: string; pieces: number; replaces?: string }) => Promise<boolean>;
   onUpdate: (id: string, b: { productType?: string; pieces?: number }) => Promise<boolean>;
   onRemove: (id: string) => Promise<boolean>; onPhoto: (id: string, f?: File) => Promise<boolean>;
@@ -267,13 +306,13 @@ function CategoryProducts({ category, products, factors, owner, busy, onAdd, onU
                     {TYPE_LABELS[p.productType].label} · {PACKAGING_LABELS[p.packagingType]}{p.replaces ? ` · replaces ${p.replaces}` : ""}
                     {p.status === "reported" && " · reported once"}{p.status === "removed" && " · removed after reports"}
                   </span>
-                  {p.status !== "removed" && <span className={`block text-[11.5px] leading-snug ${factors[p.productType] ? "font-bold text-sage-800" : "text-terra-800"}`}>{worth(p, factors)}</span>}
+                  {p.status !== "removed" && <span className={`block text-[11.5px] leading-snug ${worth(p, factors, all).startsWith("counts") ? "font-bold text-sage-800" : "text-terra-800"}`}>{worth(p, factors, all)}</span>}
                 </span>
                 {editable(p) && (
                   <button type="button" disabled={busy} onClick={() => onRemove(p.id)} aria-label={`Remove ${p.receiptName}`} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink/10 disabled:opacity-50"><X size={15} strokeWidth={2.8} /></button>
                 )}
               </div>
-              {editable(p) && (
+              {editable(p) && p.parts.length === 0 && (
                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-[54px] text-[11.5px] text-sage-900">
                   {pick && (
                     <select value={p.productType} disabled={busy} onChange={(e) => onUpdate(p.id, { productType: e.target.value })} aria-label={`What kind of product ${p.receiptName} is`} className={small}>
@@ -286,6 +325,7 @@ function CategoryProducts({ category, products, factors, owner, busy, onAdd, onU
                   </label>
                 </div>
               )}
+              {editable(p) && <Bundle product={p} all={all} busy={busy} onPart={(partId, count) => onPart(p.id, partId, count)} />}
               {p.status !== "removed" && <Aliases product={p} owner={owner} busy={busy} onAdd={(n) => onAlias(p.id, n)} onRemove={(n) => onRemoveAlias(p.id, n)} />}
             </li>
           ))}

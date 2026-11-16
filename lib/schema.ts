@@ -355,6 +355,17 @@ export const products = pgTable("products", {
   check("products_status", oneOf(t.status, PRODUCT_STATUSES)),
 ]);
 
+/** A bundle's contents: `count` of another product on the same shop's list. A product with parts counts as the sum of its parts
+ *  (its own type and pieces are ignored); parts are never bundles themselves. lib/products.ts */
+export const productParts = pgTable("product_parts", {
+  productId: text("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+  partId: text("part_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+  count: integer().notNull(),
+}, (t) => [
+  primaryKey({ columns: [t.productId, t.partId], name: "product_parts_pkey" }),
+  check("product_parts_count", sql`${t.count} BETWEEN 1 AND ${sql.raw(String(MAX_PIECES))}`),
+]);
+
 /** The same product printed differently on other receipts, so it stays one product. */
 export const productAliases = pgTable("product_aliases", {
   id: serial().primaryKey(),

@@ -106,6 +106,13 @@
       "when": 1794823624029,
       "tag": "0014_impact_by_type",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794824972282,
+      "tag": "0015_product_parts",
+      "breakpoints": true
     }
   ]
 }
