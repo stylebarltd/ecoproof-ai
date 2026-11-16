@@ -143,6 +143,17 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   goes through `claimStamp` with `source: "receipt"` and the receipt's own fingerprint (number + date + total,
   `receiptFingerprint`). `stampClass("receipt")` is verified: 5 points, impact line, same cards and proofs as an
   order. Not built: at-home scans (3 pts) and the per-shop item memory.
+- Eco product standard (2026-11-16, eco shops; the standard is a Claude Doc Pola keeps, not in the repo): a shop lists what it sells
+  without plastic (`products`, keyed on the receipt name, plus `product_aliases`); fixed lists in `lib/productRules.ts`. **Products never
+  carry impact numbers and no owner route accepts any**: impact is looked up in `impact_factors` by category + packaging (seeded in
+  `drizzle/0010`, lowest figure of the standard's table per pair; change it only by migration). Setup wizard `/shop/<id>/products`
+  (`components/ProductSetup.tsx`, `lib/products.ts`): sample receipt (skippable, stored in `receipt_samples`, nothing reads it yet),
+  declaration (required before any product), then categories, products, refill, each with "Skip for now". `lib/match.ts` matches a receipt
+  line: exact name, alias, then word overlap above 0.8 (`lib/matchText.ts`); `claimReceipt` records every line in `receipt_lines`, and the
+  unmatched ones are the dashboard's "Confirm these products?" queue (`components/ProductsPanel.tsx`). Reports: "Not true?" on the shop's
+  page goes through `/report/<place>?product=<id>` into `product_reports`; we confirm in `/admin/reports`; two confirmed reports set the
+  product to `removed` (no matching, no re-adding). **Not switched yet:** a stamp's impact is still counted the old way (`matchItems`:
+  shop numbers, catalogue, AI); `products` + `impact_factors` don't feed it, and the customer photo path for unknown lines isn't built.
 
 ### Plans, not built yet (agreed with Pola, in this order)
 - Receipt scanning at home (3 pts) and the per-shop item memory that builds itself from confirmed scans.
