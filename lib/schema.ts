@@ -321,7 +321,7 @@ export const practiceReports = pgTable("practice_reports", {
   resolvedAt: at("resolved_at"),
 }, (t) => [index("practice_reports_place").on(t.placeId, t.practiceId)]);
 
-/** Up to five photos per place, picked by its owner: the place itself, its products, or screenshots of an online shop. The JPEG is
+/** Up to three photos per place, picked by its owner: the place itself, its products, or screenshots of an online shop. The JPEG is
  *  shrunk in the browser and kept here (no file storage yet); the lowest position is the cover. lib/placePhotos.ts */
 export const placePhotos = pgTable("place_photos", {
   id: text().primaryKey(), // random: it is the photo's URL, so a replaced photo never shows a cached old one

@@ -59,7 +59,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   website and shipping origins (`ship_origins`, `lib/shipping.ts`): one per warehouse, each
   serving listed countries or "everyone else". The visitor's country (`x-vercel-ip-country`,
   or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance.
-- Photos: every place can show up to 5 (`MAX_PHOTOS`, `lib/photoRules.ts`): the place, its products, or screenshots of an online shop.
+- Photos: every place can show up to 3 (`MAX_PHOTOS`, `lib/photoRules.ts`): the place, its products, or screenshots of an online shop.
   The browser shrinks each to a 1600px JPEG (`lib/clientPhoto.ts`, which also drops the camera's location data); they are kept in
   Postgres (`place_photos`, `lib/placePhotos.ts`) because there is no file storage, and served with a permanent cache from
   `/api/places/<id>/photos/<photoId>` (a photo's id never gets new content). Only the owner changes them (dashboard "Photos" panel,

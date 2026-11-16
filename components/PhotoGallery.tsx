@@ -12,12 +12,12 @@ export default function PhotoGallery({ photos, name }: { photos: PlacePhoto[]; n
   const round = "flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink";
   return (
     <>
-      <ul className="-mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:px-0 lg:pb-0">
+      <ul className="-mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:pb-0">
         {photos.map((p, i) => (
           <li key={p.id} className={`shrink-0 snap-center ${photos.length === 1 ? "w-full" : "w-[78%]"} lg:w-auto`}>
             <button type="button" onClick={() => { setAt(i); dialog.current?.showModal(); }} className="block w-full" aria-label={`Open ${alt(i)}`}>
               {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
-              <img src={p.url} alt={alt(i)} loading={i ? "lazy" : "eager"} className="aspect-[4/3] w-full rounded-[22px] object-cover ring-1 ring-white/70 lg:aspect-square" />
+              <img src={p.url} alt={alt(i)} loading={i ? "lazy" : "eager"} className="aspect-[4/3] w-full rounded-[22px] object-cover ring-1 ring-white/70" />
             </button>
           </li>
         ))}

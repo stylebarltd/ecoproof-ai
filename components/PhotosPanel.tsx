@@ -7,7 +7,7 @@ import { MAX_PHOTO_BYTES, type PlacePhoto } from "@/lib/photoRules";
 
 type Data = { role: "owner" | "staff"; max: number; photos: PlacePhoto[] };
 
-/** The shop dashboard's photos: up to five, the first is the cover on the map and in the shop list. Only the owner changes them. */
+/** The shop dashboard's photos: up to three, the first is the cover on the map and in the shop list. Only the owner changes them. */
 export default function PhotosPanel({ placeId, kind, online }: { placeId: string; kind: string; online: boolean }) {
   const [d, setD] = useState<Data | null>(null);
   const [busy, setBusy] = useState(false);
