@@ -108,14 +108,15 @@ class EcoProof_Orders {
 
 		$outcome = is_array( $result ) && isset( $result['result'] ) ? (string) $result['result'] : 'ok';
 		self::log( sprintf( 'Order %d (%s): %s', $order->get_id(), $status, $outcome ) );
-		// EcoProof AI's estimate of what the order avoids, for the stamp block ("Your order avoids about ...").
+		// What the order avoids, for the stamp block ("Your order avoids about ..."): grams of plastic and of CO2, counted by
+		// EcoProof AI from the kind of product and its packaging. The shop sets no numbers.
 		if ( 'stored' === $outcome && isset( $result['impact'] ) && is_array( $result['impact'] ) ) {
 			$order->update_meta_data(
 				self::META_IMPACT,
 				array(
-					'plastic_items' => max( 0, (int) ( $result['impact']['plasticItems'] ?? 0 ) ),
-					'co2_kg'        => max( 0, (float) ( $result['impact']['co2Kg'] ?? 0 ) ),
-					'replaces'      => sanitize_text_field( (string) ( $result['impact']['replaces'] ?? '' ) ), // "7 plastic detergent jugs and 300 disposable dryer sheets"
+					'plastic_g' => max( 0, (int) round( (float) ( $result['impact']['plasticG'] ?? 0 ) ) ),
+					'co2_g'     => max( 0, (int) round( 1000 * (float) ( $result['impact']['co2Kg'] ?? 0 ) ) ),
+					'estimate'  => ! empty( $result['impact']['estimate'] ), // some products aren't on the shop's EcoProof AI list yet
 				)
 			);
 			$order->save();

@@ -35,14 +35,13 @@ Shops send order emails in different ways, so each of these can be switched on o
 
 `[ecoproof_stamp part="url"]` gives only the link (for a button), `part="qr"` the QR image URL.
 
-## What each product replaces
+## Where the numbers come from
 
-EcoProof AI's AI estimates what ONE unit of each product replaces ("7 plastic detergent jugs", "300 disposable dryer sheets") and the
-CO2 it saves, with a one-line reason, from the product's public details: name, descriptions, attributes, categories, weight.
-The shop reviews it on the product (Product data > EcoProof AI): confirm, correct, or mark as not an eco product. Orders use these
-numbers; products without them fall back to the category estimates in `lib/impact.ts`. Unconfirmed numbers are shown as an
-estimate. Every number is capped (1,000 of one kind, 2,000 in total, 30 kg CO2 per unit). Code: `lib/productImpact.ts`,
-`app/api/woo/products/[place]`, and `includes/class-ecoproof-products.php` in the plugin.
+The shop sets no numbers, and the plugin has no product screen (since 1.3.0). The shop lists what it sells without plastic in its
+EcoProof AI dashboard ("Plastic-free products"), by the product's name as it appears in its orders, with its kind and packaging.
+An order line that matches a listed product counts the fixed grams of plastic and CO2 for that kind and packaging (`impact_factors`).
+A line that isn't listed is estimated by the AI from its name, shown as an estimate, and waits in the dashboard's "Confirm these
+products?" queue. See `docs/eco-product-standard.md`; code: `lib/order.ts`, `lib/match.ts`.
 
 ## What is sent
 

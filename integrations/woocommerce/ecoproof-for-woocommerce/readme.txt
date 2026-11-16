@@ -5,21 +5,20 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 
 Every paid order earns the customer a verified eco stamp in their EcoProof AI passport, proven on Solana.
 
 == Description ==
 
-When an order is paid, the plugin tells EcoProof AI which products were bought, and the customer gets a "Collect your eco stamp" button and QR code. Collecting it adds the order's real impact to their EcoProof AI passport, for example "replaces about 7 plastic detergent jugs and saves 3 kg of CO2". Stamps add up to soulbound Bee Guardian NFTs.
+When an order is paid, the plugin tells EcoProof AI which products were bought, and the customer gets a "Collect your eco stamp" button and QR code. Collecting it adds the order's real impact to their EcoProof AI passport, for example "230 g plastic avoided, 690 g CO2 saved". Stamps add up to soulbound Bee Guardian NFTs.
 
-What each product replaces:
+Where the numbers come from:
 
-* EcoProof AI estimates what one unit of each product replaces, from its name, descriptions and attributes (pack size, number of washes, sizes in a set), with a one-line reason you can check. Only public product details are sent, never prices or customer data.
-* Review it on the product (Product data > EcoProof AI): confirm it, correct the numbers, or mark the product as not an eco product. Until you confirm, customers see the numbers as an estimate.
-* Multilingual shops: a translated product uses the numbers of the product in your main language, so you review each product once. WPML and Polylang are recognised automatically; for other setups, see `ecoproof_main_product_id` below.
-* "Estimate all products" (WooCommerce > Settings > EcoProof AI) estimates the whole catalogue in the background; the Products list shows each product's numbers and whether they're confirmed. A product is estimated again when its details change.
+* You list what you sell without plastic packaging in your EcoProof AI dashboard ("Plastic-free products"), by the product's name as it appears in your orders, with its kind and packaging. You never enter a number.
+* EcoProof AI counts a fixed amount of plastic and CO2 avoided for each kind of product and packaging, the same for every shop.
+* A product you haven't listed yet is estimated from its name and shown to the customer as an estimate. It then waits in your dashboard ("Confirm these products?") for you to confirm it or say it isn't plastic-free.
 
 Where the customer sees it (each can be switched on or off):
 
@@ -45,13 +44,16 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 == Developers ==
 
 * `ecoproof_stamp_html` filter: change the stamp block's HTML.
-* `ecoproof_main_product_id` filter ( $main_id, WC_Product $product ): which product a translation takes its numbers from, for translation setups other than WPML and Polylang.
 * `ecoproof_shortcode_order_id` filter: tell the shortcode which order an email builder is rendering.
 * `ECOPROOF_URL` constant: point the plugin at another EcoProof AI server (local development). There is no settings field; the default is https://ecoproofai.com.
 * `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof AI by another address than customers do (local development).
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
+
+= 1.3.0 =
+* Impact is counted by EcoProof AI in grams of plastic and CO2, from the products you list in your EcoProof AI dashboard. The per-product estimates and numbers in WooCommerce (Product data > EcoProof AI, "Estimate all products", the Products column) are gone: no shop sets its own numbers any more.
+* The stamp block says "Your order avoids about 230 g of plastic and 690 g of CO2".
 
 = 1.2.1 =
 * EcoProof AI's address is built in. Wording in the stamp block.

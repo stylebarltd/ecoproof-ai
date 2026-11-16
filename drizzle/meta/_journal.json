@@ -85,6 +85,13 @@
       "when": 1794813632074,
       "tag": "0011_product_setup",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794817500913,
+      "tag": "0012_drop_product_impacts",
+      "breakpoints": true
     }
   ]
 }

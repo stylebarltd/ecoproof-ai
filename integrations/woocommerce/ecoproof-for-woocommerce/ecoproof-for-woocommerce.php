@@ -3,7 +3,7 @@
  * Plugin Name:          EcoProof AI for WooCommerce
  * Plugin URI:           https://github.com/stylebarltd/ecoproof-ai
  * Description:          Gives every paid order a verified EcoProof AI eco stamp: the order's real impact goes into the customer's eco passport, proven on Solana. Adds a "Collect your eco stamp" button and QR to your order emails.
- * Version:              1.2.1
+ * Version:              1.3.0
  * Requires at least:    6.5
  * Requires PHP:         7.4
  * Requires Plugins:     woocommerce
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECOPROOF_WC_VERSION', '1.2.1' );
+define( 'ECOPROOF_WC_VERSION', '1.3.0' );
 define( 'ECOPROOF_WC_FILE', __FILE__ );
 define( 'ECOPROOF_WC_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -42,15 +42,20 @@ add_action(
 		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-stamp.php';
 		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-orders.php';
 		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-display.php';
-		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-products.php';
 
 		EcoProof_Orders::register();
 		EcoProof_Display::register();
-		EcoProof_Products::register();
 
 		if ( is_admin() ) {
 			require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-settings.php';
 			EcoProof_Settings::register();
+			// Once after an update: versions before 1.3.0 queued per-product estimates, which no longer exist.
+			if ( get_option( 'ecoproof_wc_version' ) !== ECOPROOF_WC_VERSION ) {
+				if ( function_exists( 'as_unschedule_all_actions' ) ) {
+					as_unschedule_all_actions( 'ecoproof_estimate_product' );
+				}
+				update_option( 'ecoproof_wc_version', ECOPROOF_WC_VERSION, false );
+			}
 		}
 	}
 );

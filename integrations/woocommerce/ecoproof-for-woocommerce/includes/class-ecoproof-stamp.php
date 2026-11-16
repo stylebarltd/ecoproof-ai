@@ -42,32 +42,34 @@ class EcoProof_Stamp {
 		return (string) apply_filters( 'ecoproof_shop_name', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
 	}
 
+	/** A weight in words, like EcoProof AI shows it: "90 g", "1.5 kg", "12 kg". */
+	private static function grams( $g ) {
+		if ( $g < 1000 ) {
+			return sprintf( '%d g', $g );
+		}
+		return wc_format_localized_decimal( wc_format_decimal( $g / 1000, $g < 10000 ? 1 : 0 ) ) . ' kg';
+	}
+
 	/**
-	 * "Your order replaces about 7 plastic detergent jugs and saves about 3 kg of CO₂." from the numbers EcoProof AI
-	 * sent back for this order (stored when the order was sent), or '' when there are none.
+	 * "Your order avoids about 230 g of plastic and 690 g of CO₂." from the numbers EcoProof AI sent back for this order
+	 * (stored when the order was sent), or '' when there are none. Orders sent by versions before 1.3.0 stored other numbers,
+	 * which are no longer shown.
 	 */
 	public static function impact_sentence( WC_Order $order ) {
-		$impact   = (array) $order->get_meta( EcoProof_Orders::META_IMPACT );
-		$replaces = (string) ( $impact['replaces'] ?? '' );
-		$plastic  = (int) ( $impact['plastic_items'] ?? 0 );
-		$co2      = (float) ( $impact['co2_kg'] ?? 0 );
-		$co2_txt  = wc_format_decimal( $co2, 1 );
-		// What the products replace, by name: the shop's confirmed numbers or EcoProof AI's estimate for each product.
-		if ( '' !== $replaces && $co2 > 0 ) {
-			/* translators: 1: what the order replaces, e.g. "7 plastic detergent jugs", 2: kilograms of CO2 */
-			return sprintf( __( 'Your order replaces about %1$s. It saves about %2$s kg of CO₂.', 'ecoproof-for-woocommerce' ), $replaces, $co2_txt );
-		}
-		if ( '' !== $replaces ) {
-			/* translators: %s: what the order replaces, e.g. "7 plastic detergent jugs" */
-			return sprintf( __( 'Your order replaces about %s.', 'ecoproof-for-woocommerce' ), $replaces );
-		}
+		$impact  = (array) $order->get_meta( EcoProof_Orders::META_IMPACT );
+		$plastic = (int) ( $impact['plastic_g'] ?? 0 );
+		$co2     = (int) ( $impact['co2_g'] ?? 0 );
 		if ( $plastic > 0 && $co2 > 0 ) {
-			/* translators: 1: number of single-use plastic items, 2: kilograms of CO2 */
-			return sprintf( _n( 'Your order avoids about %1$d single-use plastic and %2$s kg of CO₂.', 'Your order avoids about %1$d single-use plastics and %2$s kg of CO₂.', $plastic, 'ecoproof-for-woocommerce' ), $plastic, $co2_txt );
+			/* translators: 1: weight of plastic, e.g. "230 g", 2: weight of CO2, e.g. "690 g" */
+			return sprintf( __( 'Your order avoids about %1$s of plastic and %2$s of CO₂.', 'ecoproof-for-woocommerce' ), self::grams( $plastic ), self::grams( $co2 ) );
+		}
+		if ( $plastic > 0 ) {
+			/* translators: %s: weight of plastic, e.g. "230 g" */
+			return sprintf( __( 'Your order avoids about %s of plastic.', 'ecoproof-for-woocommerce' ), self::grams( $plastic ) );
 		}
 		if ( $co2 > 0 ) {
-			/* translators: %s: kilograms of CO2 */
-			return sprintf( __( 'Your order saves about %s kg of CO₂.', 'ecoproof-for-woocommerce' ), $co2_txt );
+			/* translators: %s: weight of CO2, e.g. "690 g" */
+			return sprintf( __( 'Your order avoids about %s of CO₂.', 'ecoproof-for-woocommerce' ), self::grams( $co2 ) );
 		}
 		return '';
 	}

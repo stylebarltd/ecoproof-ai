@@ -160,9 +160,9 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   `ingestOrder`); a removed product or a dismissed wording counts nothing. A pair without a factor counts nothing (the wizard says so).
   Records keep the old columns: `packaging_g` = grams of plastic, `co2_kg` to the gram, `plastic_items` always 0 (it is part of the
   proof's hash input, so it stays). Everything shown goes through `grams()` / `impactParts()` in `lib/impact.ts`; types carry
-  `plasticG`. **Retired, still in the repo:** per-product numbers (`lib/productImpact.ts`, `product_impacts`, `/api/woo/products`,
-  the SuperBee catalogue) and the plugin's product screen: nothing counts with them. The WooCommerce plugin (1.2.1) still reads the old
-  order-response fields (`plasticItems`, `replaces`) for its email sentence and needs a release that prints `impact.line`.
+  `plasticG`. The first engine (per-product numbers, `product_impacts`, the SuperBee catalogue, `/api/woo/products`) was deleted on 2026-11-16. WooCommerce plugin 1.3.0 has no
+  product screen and prints "Your order avoids about 230 g of plastic and 690 g of CO₂" from `impact.plasticG` / `co2Kg`; hive needs
+  that version installed (older ones read fields that no longer exist and show no impact sentence worth reading).
 
 ### Plans, not built yet (agreed with Pola, in this order)
 - Receipt scanning at home (3 pts) and the per-shop item memory that builds itself from confirmed scans.
@@ -181,7 +181,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
 ## Stack
 Next.js 16 (App Router; read `node_modules/next/dist/docs/` first, see AGENTS.md) ·
 React · Tailwind · `@solana/web3.js` (devnet) · Metaplex · PostgreSQL (Neon) via `pg`
-(+ Drizzle) · Anthropic SDK (`CATEGORY_MODEL`, `PRODUCT_IMPACT_MODEL`) · Leaflet.
+(+ Drizzle) · Anthropic SDK (`CATEGORY_MODEL`, `RECEIPT_MODEL`) · Leaflet.
 Hosting: Vercel team "stylebar" (Hobby), project `ecoproof-ai`.
 
 ## Commands

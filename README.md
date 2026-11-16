@@ -53,11 +53,11 @@ Only places that have actually joined EcoProof AI are shown. "Verified" here mea
 
 ## Stack
 
-Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devnet) · Metaplex Bubblegum V2 + MPL-Core · PostgreSQL (Neon) · `next/og` · `qrcode` · Anthropic Claude (classifying products the catalogue doesn't know) · Vercel
+Next.js 16 (App Router) · React · Tailwind · Solana (`@solana/web3.js`, devnet) · Metaplex Bubblegum V2 + MPL-Core · PostgreSQL (Neon) · `next/og` · `qrcode` · Anthropic Claude (reading receipts, and estimating products a shop hasn't listed) · Vercel
 
 ## Honest limits
 
-- **Impact numbers are estimates** from a hand-built factor table (`lib/impact.ts`), not audited lifecycle data. A shop can have its own hand-mapped product catalogue (the first connected shop does); for other shops, unknown product names are classified by an AI and are marked as estimates.
+- **Impact numbers are rough averages**, not audited lifecycle data: grams of plastic and CO2 avoided per kind of product and packaging, from one table EcoProof AI keeps (`impact_factors`, see `docs/eco-product-standard.md`). A shop declares which products it sells without plastic and never sets a number; a product it hasn't listed is classified by an AI from its name and marked as an estimate.
 - **Only the verified-order door proves a purchase.** QR and card stamps are generic stamps. A chain proof shows a record wasn't altered after creation, not that someone bought something.
 - **GPS checks can be spoofed.** They stop casual abuse, not a determined cheater.
 - **Self-serve places are not vetted** beyond format limits and three places per owner. The map says so.
@@ -110,8 +110,7 @@ npm run dev                  # http://localhost:3000
 | `SESSION_SECRET` | 32+ characters, signs sign-in sessions (required in production). |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional. Turn on "Continue with Google" (an OAuth client from Google Cloud). Its authorised redirect URIs are `<site>/api/account/callback/google` for each address the site runs on. Without them, sign-in is wallet only. |
 | `ADMIN_TOKEN` | Enables our own place setup and card generation endpoints (`x-admin-token` header). Leave unset to disable them. |
-| `ANTHROPIC_API_KEY` | Estimates what each shop product replaces (WooCommerce plugin, `lib/productImpact.ts`) and classifies products the catalogue doesn't know. Optional: without it unknown products count as "not sustainable". |
-| `PRODUCT_IMPACT_MODEL` | Optional, defaults to `claude-opus-5-5`. |
+| `ANTHROPIC_API_KEY` | Reads receipt photos and estimates kind and packaging of products a shop hasn't listed. Optional: without it receipts can't be scanned and unlisted products count nothing. |
 
 Local Postgres: `docker run -d -e POSTGRES_PASSWORD=pg -e POSTGRES_DB=ecoproof -p 5433:5432 postgres:16-alpine`, then `DATABASE_URL=postgres://postgres:pg@localhost:5433/ecoproof`.
 

@@ -170,19 +170,6 @@ export const userLinks = pgTable("user_links", {
   linkedAt: at("linked_at").defaultNow().notNull(),
 }, (t) => [index("user_links_wallet").on(t.wallet)]);
 
-/** What one unit of a shop's product replaces: AI estimate (ai) and the shop's confirmed numbers (shop), see lib/productImpact.ts. */
-export const productImpacts = pgTable("product_impacts", {
-  placeId: text("place_id").notNull(),
-  productId: text("product_id").notNull(),
-  name: text().notNull(),
-  detailsHash: text("details_hash").notNull(),
-  ai: text(),
-  shop: text(),
-  confirmedAt: at("confirmed_at"),
-  updatedAt: at("updated_at").defaultNow().notNull(),
-  follows: text(), // a translation follows its main-language product's numbers
-}, (t) => [primaryKey({ columns: [t.placeId, t.productId], name: "product_impacts_pkey" })]);
-
 /** Share-link ids, so a device id is never published. */
 export const publicPassports = pgTable("public_passports", {
   publicId: text("public_id").primaryKey(),
