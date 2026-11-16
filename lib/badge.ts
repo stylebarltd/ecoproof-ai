@@ -1,6 +1,7 @@
 // The live impact badge an eco shop can put on its own site: an SVG served by /api/badge/<place>.svg with the shop's verified numbers,
 // re-read every few minutes, so it is never a printed claim. Fonts are the viewer's (Verdana/DejaVu, like shields.io); textLength pins
 // every label to the width the layout reserved, so the badge is the same shape in every browser.
+import { grams } from "./impact";
 import { appUrl } from "./nft";
 import type { ShopImpact } from "./shops";
 
@@ -22,13 +23,13 @@ export const FEW_ORDERS = 10;
 
 /** What the badge says on its right half: the verified numbers, the order count while orders are few, or, before the first verified
  *  purchase, what the shop is. */
-export function badgeText(impact: Pick<ShopImpact, "purchases" | "plasticItems" | "co2Kg">): string {
+export function badgeText(impact: Pick<ShopImpact, "purchases" | "plasticG" | "co2Kg">): string {
   if (impact.purchases === 0) return "verified eco shop · proofs on Solana";
   if (impact.purchases < FEW_ORDERS) return `${num(impact.purchases)} verified order${impact.purchases === 1 ? "" : "s"} · proofs on Solana`;
-  return `${num(impact.plasticItems)} plastic items · ${kg(impact.co2Kg)} kg CO₂e avoided`;
+  return `${grams(impact.plasticG)} plastic · ${grams(impact.co2Kg * 1000)} CO₂e avoided`;
 }
 
-export function badgeSvg(name: string, impact: Pick<ShopImpact, "purchases" | "plasticItems" | "co2Kg">): string {
+export function badgeSvg(name: string, impact: Pick<ShopImpact, "purchases" | "plasticG" | "co2Kg">): string {
   const brand = "EcoProof AI"; const right = badgeText(impact);
   const bw = width(brand, 12); const rw = width(right, 11.5);
   const leftW = 12 + 16 + 7 + bw + 12; const rightW = 12 + rw + 12; const W = leftW + rightW;

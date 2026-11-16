@@ -98,7 +98,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
         </div>
         <div className="space-y-3">
           {top ? (
-            <div className="mx-auto max-w-[300px] lg:max-w-[320px]"><BeeCard rank={tierFor(top.milestone)} nft={top} big wallet={!!pass?.wallet} impact={t && { plasticItems: t.plasticItems, co2Kg: t.co2Kg, replaces: pass?.replaces }} /></div>
+            <div className="mx-auto max-w-[300px] lg:max-w-[320px]"><BeeCard rank={tierFor(top.milestone)} nft={top} big wallet={!!pass?.wallet} impact={t && { plasticG: t.plasticG, co2Kg: t.co2Kg }} /></div>
           ) : (
             <div className="mx-auto max-w-[260px] text-center">
               <BeeCard rank={RANKS[0]} big />
@@ -167,8 +167,8 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-honey-700">Verified purchase <span className="rounded-full bg-honey-500 px-1.5 py-0.5 text-[9px] text-ink">+{POINTS_VERIFIED} pts</span></span>
                   <span className="block truncate font-heading text-[16px] leading-tight">{v.placeName}</span>
-                  <span className="block text-[12px] font-bold leading-snug text-ink">{v.impactNote ?? `${v.plasticItems} single-use plastics avoided · ${v.co2Kg} kg CO₂ saved`}</span>
-                  {v.basis && <span className="block text-[10px] font-semibold text-sage-800">{v.basis === "shop" ? `Numbers confirmed by ${v.placeName}` : "EcoProof AI estimate"}</span>}
+                  <span className="block text-[12px] font-bold leading-snug text-ink">{v.impactNote ?? impactParts(v).join(" · ")}</span>
+                  {v.basis && <span className="block text-[10px] font-semibold text-sage-800">{v.basis === "shop" ? `Products declared by ${v.placeName}` : "EcoProof AI estimate"}</span>}
                   <span className="text-[10.5px] text-sage-900">{new Date(v.createdAt).toLocaleDateString()}</span>
                 </span>
               </Link>
@@ -204,9 +204,9 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
             </div>
           ))}
         </div>
-        {t && (t.co2Kg > 0 || t.plasticItems > 0) && (
+        {t && (t.co2Kg > 0 || t.plasticG > 0) && (
           <p className="mt-3.5 rounded-2xl bg-white/45 px-3 py-2 text-center text-xs font-semibold text-sage-900">
-            Verified impact so far: {impactParts({ plasticItems: t.plasticItems, co2Kg: t.co2Kg, replaces: pass?.replaces }, 3).map((p, i) => (i ? p : p[0].toLowerCase() + p.slice(1))).join(" · ")}
+            Verified impact so far: {impactParts(t).join(" · ")}
           </p>
         )}
       </Glass>

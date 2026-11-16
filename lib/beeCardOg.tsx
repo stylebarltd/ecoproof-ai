@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { grams } from "./impact";
 import type { RankKey, Tier } from "./milestoneRules";
 
 // The Bee Guardian rank card for share images (next/og), drawn like the NFT card set (art/v2/layers/frame/frame.svg): a paper card with a
@@ -41,7 +42,7 @@ type Props = {
   /** Whether the Bee Guardian is on Solana already (else it is earned and waiting for its mint). */
   minted?: boolean;
   /** The owner's totals, drawn in the impact row. */
-  impact: { plasticItems: number; co2Kg: number; stamps: number };
+  impact: { plasticG: number; co2Kg: number; stamps: number };
 };
 
 export function BeeCardOg({ rank, art, size, serial, edition, locked, minted, impact }: Props) {
@@ -74,9 +75,9 @@ export function BeeCardOg({ rank, art, size, serial, edition, locked, minted, im
         <div style={{ display: "flex", fontWeight: 700, fontSize: 25 * k, letterSpacing: 3 * k, color: CARD_MUTED, marginTop: 16 * k }}>{subtitle}</div>
         <div style={{ display: "flex", marginTop: 20 * k }}>{rule(3, CARD_INK)}</div>
         <div style={{ display: "flex", alignItems: "center", marginTop: 26 * k }}>
-          {stat(nf(impact.plasticItems), "plastic items avoided")}
+          {stat(grams(impact.plasticG), "plastic avoided")}
           <div style={{ display: "flex", width: 2 * k, height: 76 * k, background: CARD_RULE }} />
-          {stat(`${nf(impact.co2Kg, impact.co2Kg >= 100 ? 0 : 1)} kg`, "CO₂e avoided")}
+          {stat(grams(impact.co2Kg * 1000), "CO₂e avoided")}
           <div style={{ display: "flex", width: 2 * k, height: 76 * k, background: CARD_RULE }} />
           {stat(nf(impact.stamps), impact.stamps === 1 ? "stamp" : "stamps")}
         </div>

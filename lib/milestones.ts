@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-import { replacesSummary, type LineItem, type Replaces } from "./impact";
 import { query } from "./db";
 import { identityGroup } from "./users";
 import { looksLikeWallet } from "./ids";
@@ -7,7 +6,7 @@ import { appUrl, mintSoulbound, nftConfig, reachedMilestones, tierFor } from "./
 import { editionOf, onChainName, rankWebp, type RankKey } from "./milestoneRules";
 
 /** What a passport had when it reached a milestone. Stored with the mint and shown in the NFT metadata. */
-export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticItems: number; co2Kg: number; brand: string };
+export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticG: number; co2Kg: number; brand: string };
 
 type MintRow = { serial: number | null; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null; created_at: string; minted_at: string | null };
 
@@ -84,29 +83,29 @@ export async function listNfts(passportId: string): Promise<Nft[]> {
 }
 
 /** After any valid proof: record the milestones the passport has now reached and mint those it can. A failed mint never fails the claim. */
-export async function afterProof(passportId: string, totals: { points: number; plasticItems: number; co2Kg: number }, brand = "EcoProof", onMint?: (milestone: number) => void): Promise<Nft[]> {
+export async function afterProof(passportId: string, totals: { points: number; plasticG: number; co2Kg: number }, brand = "EcoProof", onMint?: (milestone: number) => void): Promise<Nft[]> {
   try {
-    await recordMilestones(passportId, { proofs: totals.points, plasticItems: totals.plasticItems, co2Kg: totals.co2Kg, brand });
+    await recordMilestones(passportId, { proofs: totals.points, plasticG: totals.plasticG, co2Kg: totals.co2Kg, brand });
     return await mintPending(passportId, onMint);
   } catch (e) { console.error("milestone step failed", e); return []; }
 }
 
-export type VerifiedImpact = { purchases: number; plasticItems: number; co2Kg: number; replaces: Replaces[] };
+export type VerifiedImpact = { purchases: number; plasticG: number; co2Kg: number };
 
 /**
- * What a person's verified purchases add up to: only order stamps carry impact (a QR or card stamp doesn't prove what was bought).
+ * What a person's verified purchases add up to, in grams of plastic and kg of CO2: only an order or a scanned receipt carries impact
+ * (a QR or card stamp doesn't prove what was bought).
  * Shown on their Bee Guardians, so every one of their NFTs grows with each verified purchase.
  */
 export async function verifiedImpact(passportId: string): Promise<VerifiedImpact> {
   const group = await identityGroup(passportId);
-  const rows = await query<{ items: string; plastic_items: number | null; co2_kg: number | null }>(
-    "SELECT items, plastic_items, co2_kg FROM records WHERE user_id = ANY($1) AND source = 'order'",
+  const rows = await query<{ packaging_g: number | null; co2_kg: number | null }>(
+    "SELECT packaging_g, co2_kg FROM records WHERE user_id = ANY($1) AND source IN ('order', 'receipt')",
     [group],
   );
   return {
     purchases: rows.length,
-    plasticItems: rows.reduce((n, r) => n + (r.plastic_items ?? 0), 0),
-    co2Kg: Math.round(rows.reduce((n, r) => n + (r.co2_kg ?? 0), 0) * 10) / 10,
-    replaces: replacesSummary(rows.flatMap((r) => JSON.parse(r.items || "[]") as LineItem[])), // what the orders' products replace, added up
+    plasticG: Math.round(rows.reduce((n, r) => n + (r.packaging_g ?? 0), 0)),
+    co2Kg: Math.round(rows.reduce((n, r) => n + (r.co2_kg ?? 0), 0) * 1000) / 1000,
   };
 }

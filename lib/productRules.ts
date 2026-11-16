@@ -45,6 +45,8 @@ export type ProductSetupState = {
   /** categories ticked, refill answered (null = not yet), the declaration's date, and whether a sample receipt is stored */
   setup: { categories: ProductCategory[]; refill: boolean | null; declaredAt: string | null; hasSample: boolean; inStore: boolean };
   products: Product[];
+  /** The "category/packaging" pairs EcoProof AI has an impact figure for; a product outside them is listed but counts nothing yet. */
+  counted: string[];
   /** receipt lines customers scanned that match no product yet */
   queue: { rawText: string; times: number; lastSeen: string; photoUrl: string | null }[];
 };

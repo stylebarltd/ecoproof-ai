@@ -57,7 +57,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       </div>
     </div>
   );
-  const card = <BeeCardOg rank={rank} art={art} size={cardSize} serial={top?.serial} edition={top?.edition} locked={!top} minted={top?.status === "minted"} impact={{ plasticItems: pass.totals.plasticItems, co2Kg: pass.totals.co2Kg, stamps }} />;
+  const card = <BeeCardOg rank={rank} art={art} size={cardSize} serial={top?.serial} edition={top?.edition} locked={!top} minted={top?.status === "minted"} impact={{ plasticG: pass.totals.plasticG, co2Kg: pass.totals.co2Kg, stamps }} />;
 
   return new ImageResponse(
     (

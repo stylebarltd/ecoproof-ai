@@ -56,7 +56,7 @@ export default function ProductSetup({ id }: { id: string }) {
           <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-sage-500 text-cream"><Check size={26} strokeWidth={3} /></span>
           <h1 className="mt-3 text-[22px] leading-tight">{products.length ? `${products.length} product${products.length === 1 ? "" : "s"} on your eco list` : "Your shop is set up"}</h1>
           <p className="mt-1.5 text-[13px] leading-snug text-sage-900">
-            {products.length ? "Customers' receipts are matched against them by the receipt name." : SKIP_TEXT} You can add products and answer the open questions any time from your dashboard.
+            {products.length ? "A receipt or order line with one of these names counts for your customer." : SKIP_TEXT} You can add products and answer the open questions any time from your dashboard.
           </p>
           <Link href={`/shop/${id}`} className={`${primary} mt-4`}>Back to my shop <ArrowRight size={16} /></Link>
         </section>
@@ -160,7 +160,7 @@ export default function ProductSetup({ id }: { id: string }) {
             {shown.length === 0 && <p className="mt-3 rounded-2xl bg-white/60 p-3 text-[13px]">No category ticked yet. <button type="button" onClick={() => go(2)} className="font-bold underline underline-offset-2">Tick your categories first</button>.</p>}
             <div className="mt-3 space-y-4">
               {shown.map((c) => (
-                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} owner={owner} busy={s.busy}
+                <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} counted={s.d!.counted} owner={owner} busy={s.busy}
                   onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} />
               ))}
             </div>
@@ -198,8 +198,8 @@ function StepButtons({ ready, onNext, onSkip, last = false }: { ready: boolean; 
 }
 
 /** One category's products and the form that adds one. */
-function CategoryProducts({ category, products, owner, busy, onAdd, onRemove, onPhoto }: {
-  category: ProductCategory; products: Product[]; owner: boolean; busy: boolean;
+function CategoryProducts({ category, products, counted, owner, busy, onAdd, onRemove, onPhoto }: {
+  category: ProductCategory; products: Product[]; counted: string[]; owner: boolean; busy: boolean;
   onAdd: (b: { receiptName: string; packagingType: string; replaces?: string }) => Promise<boolean>;
   onRemove: (id: string) => Promise<boolean>; onPhoto: (id: string, f?: File) => Promise<boolean>;
 }) {
@@ -221,8 +221,9 @@ function CategoryProducts({ category, products, owner, busy, onAdd, onRemove, on
               </label>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[13.5px] font-bold">{p.receiptName}</span>
-                <span className="block truncate text-[11.5px] text-sage-900">
+                <span className="block text-[11.5px] leading-snug text-sage-900">
                   {PACKAGING_LABELS[p.packagingType]}{p.replaces ? ` · replaces ${p.replaces}` : ""}
+                  {!counted.includes(`${p.category}/${p.packagingType}`) && " · no impact figure for this packaging yet, so it counts nothing"}
                   {p.status === "reported" && " · reported once"}{p.status === "removed" && " · removed after reports"}
                 </span>
               </span>

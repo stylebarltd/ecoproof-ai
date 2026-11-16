@@ -5,7 +5,8 @@ import { ClaimError, claimStamp, type StampResult } from "./stamp";
 import { isClaimed, receiptFingerprint } from "./claim";
 import { recordLines } from "./match";
 import { matchItems, type Matched } from "./order";
-import { computeImpact, FACTORS, type Impact } from "./impact";
+import { computeImpact, type Impact } from "./impact";
+import { CATEGORY_LABELS } from "./productRules";
 import { impactLine } from "./woo";
 import { distanceM, getPlace, PLACE_COLS, stampDay, type StampPlace } from "./stampPlaces";
 
@@ -158,7 +159,7 @@ export async function readReceipt(opts: { imageBase64: string; mediaType: "image
   if (impact.sustainableItems <= 0) {
     throw new ClaimError("Nothing on this receipt counts as a plastic-free swap yet, so it can't earn a verified stamp.", 422, { nothingEco: true });
   }
-  const line = impactLine(impact, matched);
+  const line = impactLine(impact);
   const estimate = matched.some((i) => i.impactSource !== "shop" && i.category !== "not_sustainable");
 
   const exp = Date.now() + TOKEN_TTL_MS;
@@ -167,7 +168,7 @@ export async function readReceipt(opts: { imageBase64: string; mediaType: "image
   return {
     token: `${body}.${hmac("receipt", body)}`, expiresAt: new Date(exp).toISOString(),
     placeId: match.place.id, placeName: match.place.name, date, total: total || null, currency: clean(read.currency, 3).toUpperCase(), receiptNumber,
-    items: matched.map((i) => ({ name: i.name, quantity: i.quantity, category: i.category, label: FACTORS[i.category]?.label ?? i.category, counts: i.category !== "not_sustainable" })),
+    items: matched.map((i) => ({ name: i.name, quantity: i.quantity, category: i.category, label: i.category === "not_sustainable" ? "Not counted" : CATEGORY_LABELS[i.category].label, counts: i.category !== "not_sustainable" })),
     impact, line, estimate, points: 5,
   };
 }

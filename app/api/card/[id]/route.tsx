@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { query, type RecordRow } from "@/lib/db";
+import { grams } from "@/lib/impact";
 import { getPlace, stampSvg } from "@/lib/stampPlaces";
+import { stampClass } from "@/lib/stampClasses";
 import { CHECK_PATH, CREAM, INK, LEAF_PATH, SAGE, TERRA_LIGHT } from "@/lib/brand";
 import { listNfts, verifiedImpact } from "@/lib/milestones";
 import { rankNfts } from "@/lib/passportView";
@@ -17,9 +19,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const [top] = rankNfts(await listNfts(r.user_id)); // the owner's highest Bee Guardian, on the same card frame as the passport
   const rank = top ? tierFor(top.milestone) : RANKS[0];
   const impact = await verifiedImpact(r.user_id);
+  const verified = stampClass(r.source) === "verified"; // an online order or a scanned receipt
   const stamps = Number((await query<{ n: string }>("SELECT count(*)::text AS n FROM records WHERE user_id=$1", [r.user_id]))[0]?.n ?? 0);
   const [art, fonts] = await Promise.all([rankArt(rank.key), cardFonts()]);
-  const bee = <BeeCardOg rank={rank} art={art} size={square ? 330 : 230} serial={top?.serial} edition={top?.edition} locked={!top} minted={top?.status === "minted"} impact={{ plasticItems: impact.plasticItems, co2Kg: impact.co2Kg, stamps }} />;
+  const bee = <BeeCardOg rank={rank} art={art} size={square ? 330 : 230} serial={top?.serial} edition={top?.edition} locked={!top} minted={top?.status === "minted"} impact={{ plasticG: impact.plasticG, co2Kg: impact.co2Kg, stamps }} />;
   const stat = (v: string, l: string) => (
     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", background: CREAM, borderRadius: 28, padding: "28px 16px" }}>
       <div style={{ fontSize: 64, fontWeight: 700, color: INK }}>{v}</div>
@@ -28,7 +31,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   );
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 24, border: r.source === "order" ? "12px solid #e8a317" : "0px solid transparent", background: "linear-gradient(160deg,#272e1b,#56633f 55%,#8fa073)", color: CREAM, padding: square ? 56 : 44 }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 24, border: verified ? "12px solid #e8a317" : "0px solid transparent", background: "linear-gradient(160deg,#272e1b,#56633f 55%,#8fa073)", color: CREAM, padding: square ? 56 : 44 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 76, height: 76, borderRadius: 19, background: SAGE }}>
             <svg width="52" height="52" viewBox="0 0 48 48" fill="none" stroke={CREAM} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round">
@@ -49,15 +52,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={stampImg} width={square ? 170 : 150} height={square ? 170 : 150} alt="" style={{ flexShrink: 0 }} />
                 <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0, fontSize: 28, lineHeight: 1.3, color: CREAM }}>
-                  <div style={{ fontSize: 40, fontWeight: 700 }}>{r.source === "order" ? "Verified purchase" : "Presence stamp · +1 point"}</div>
-                  {r.source === "order" && r.impact_note ? <div style={{ display: "flex", color: "#ffd98a" }}>{r.impact_note}</div> : null}
+                  <div style={{ fontSize: 40, fontWeight: 700 }}>{verified ? "Verified purchase" : "Presence stamp · +1 point"}</div>
+                  {verified && r.impact_note ? <div style={{ display: "flex", color: "#ffd98a" }}>{r.impact_note}</div> : null}
                 </div>
               </div>
             ) : (
             <div style={{ display: "flex", gap: 24 }}>
-              {stat(String(r.plastic_items), "single-use plastics avoided")}
-              {stat(`${r.co2_kg}kg`, "CO₂ saved")}
-              {stat(`${r.packaging_g}g`, "packaging cut")}
+              {stat(grams(r.packaging_g), "plastic avoided")}
+              {stat(grams(r.co2_kg * 1000), "CO₂ saved")}
             </div>
             )}
           </div>

@@ -137,7 +137,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (`RECEIPT_MODEL`, vision + JSON schema) read merchant, date (Buddhist years converted), number, total and item
   lines and pick the matching shop among the candidates (a name-overlap guard behind it), rejects receipts older
   than 7 days or already claimed (DB `receipt_fp` and the chain), sorts the lines with `matchItems` (the shop's
-  numbers, catalogue, then AI), needs at least one sustainable item, and returns a review with a signed token
+  declared products, else an AI estimate), needs at least one sustainable item, and returns a review with a signed token
   (HMAC, 15 min, bound to the passport). The photo is never stored. `POST /api/claims { receiptToken, lat, lng }`
   → `claimReceipt()` re-checks the position (place `gps_radius_m`, default 150 m, against the matched location) and
   goes through `claimStamp` with `source: "receipt"` and the receipt's own fingerprint (number + date + total,
@@ -152,8 +152,17 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   line: exact name, alias, then word overlap above 0.8 (`lib/matchText.ts`); `claimReceipt` records every line in `receipt_lines`, and the
   unmatched ones are the dashboard's "Confirm these products?" queue (`components/ProductsPanel.tsx`). Reports: "Not true?" on the shop's
   page goes through `/report/<place>?product=<id>` into `product_reports`; we confirm in `/admin/reports`; two confirmed reports set the
-  product to `removed` (no matching, no re-adding). **Not switched yet:** a stamp's impact is still counted the old way (`matchItems`:
-  shop numbers, catalogue, AI); `products` + `impact_factors` don't feed it, and the customer photo path for unknown lines isn't built.
+  product to `removed` (no matching, no re-adding). The customer photo path for unknown lines isn't built.
+- Impact counting (switched 2026-11-16): **grams of plastic and grams of CO2 avoided, for receipts and online orders alike**
+  (`matchItems` in `lib/order.ts`). A line that matches one of the shop's products gets `impact_factors` for its category + packaging
+  (`impactSource: "shop"`); an unlisted line is estimated: the AI (`CATEGORY_MODEL`) reads category + packaging off the name, the same
+  table gives the numbers (`"ai"`, shown as "EcoProof AI estimate") and the line waits in the owner's queue (orders too, via
+  `ingestOrder`); a removed product or a dismissed wording counts nothing. A pair without a factor counts nothing (the wizard says so).
+  Records keep the old columns: `packaging_g` = grams of plastic, `co2_kg` to the gram, `plastic_items` always 0 (it is part of the
+  proof's hash input, so it stays). Everything shown goes through `grams()` / `impactParts()` in `lib/impact.ts`; types carry
+  `plasticG`. **Retired, still in the repo:** per-product numbers (`lib/productImpact.ts`, `product_impacts`, `/api/woo/products`,
+  the SuperBee catalogue) and the plugin's product screen: nothing counts with them. The WooCommerce plugin (1.2.1) still reads the old
+  order-response fields (`plasticItems`, `replaces`) for its email sentence and needs a release that prints `impact.line`.
 
 ### Plans, not built yet (agreed with Pola, in this order)
 - Receipt scanning at home (3 pts) and the per-shop item memory that builds itself from confirmed scans.

@@ -31,7 +31,7 @@ export default function ProductsPanel({ placeId }: { placeId: string }) {
       {queue.length > 0 && (
         <div className="mt-4 border-t border-sage-900/10 pt-3">
           <h3 className="text-[15px] font-bold leading-tight">Confirm these products?</h3>
-          <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">Customers scanned these items on your receipts. Confirm the ones you sell without plastic packaging and they join your list.</p>
+          <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">Customers bought these items, and they aren&apos;t on your list yet. Until you decide, EcoProof AI estimates them. Confirm the ones you sell without plastic packaging and they join your list.</p>
           {owner && !setup.declaredAt && <p className="mt-2 rounded-xl bg-white/60 p-2.5 text-[12.5px]">To confirm products, <Link href={`/shop/${placeId}/products`} className="font-bold underline underline-offset-2">make your declaration first</Link>.</p>}
           <ul className="mt-2.5 space-y-2">
             {queue.map((q) => <QueueLine key={q.rawText} q={q} can={owner && !!setup.declaredAt} busy={s.busy} onConfirm={(b) => s.addProduct({ ...b, receiptName: q.rawText, fromQueue: true })} onDismiss={() => s.dismiss(q.rawText)} />)}
@@ -57,7 +57,7 @@ function QueueLine({ q, can, busy, onConfirm, onDismiss }: {
         {q.photoUrl && <img src={q.photoUrl} alt="Customer's photo" className="h-12 w-12 shrink-0 rounded-lg object-cover" />}
         <span className="min-w-0 flex-1">
           <span className="block break-words text-[13.5px] font-bold">{q.rawText}</span>
-          <span className="block text-[11.5px] text-sage-900">Scanned {q.times === 1 ? "once" : `${q.times} times`}</span>
+          <span className="block text-[11.5px] text-sage-900">Bought {q.times === 1 ? "once" : `${q.times} times`}</span>
         </span>
       </div>
       {can && (

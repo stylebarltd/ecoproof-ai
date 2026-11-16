@@ -23,18 +23,20 @@ const toProduct = (r: Row): Product => ({
 
 /** Everything the setup wizard and the dashboard show. */
 export async function productSetup(placeId: string, role: "owner" | "staff"): Promise<ProductSetupState> {
-  const [[place], products, queue, sample] = await Promise.all([
+  const [[place], products, queue, sample, factors] = await Promise.all([
     query<{ product_categories: string[]; refill: boolean | null; products_declared_at: string | null; in_store: boolean }>(
       "SELECT product_categories, refill, products_declared_at::text, (lat IS NOT NULL) AS in_store FROM stamp_places WHERE id=$1", [placeId],
     ),
     query<Row>("SELECT * FROM products WHERE place_id=$1 ORDER BY category, lower(display_name)", [placeId]),
     unmatchedLines(placeId),
     query("SELECT 1 FROM receipt_samples WHERE place_id=$1", [placeId]),
+    query<{ pair: string }>("SELECT category || '/' || packaging_type AS pair FROM impact_factors"),
   ]);
   return {
     role,
     setup: { categories: (place?.product_categories ?? []).filter(isCategory), refill: place?.refill ?? null, declaredAt: place?.products_declared_at ?? null, hasSample: sample.length > 0, inStore: !!place?.in_store },
     products: products.map(toProduct),
+    counted: factors.map((f) => f.pair),
     // No customer photo path yet: a queued line has no photo until the app asks the scanner for one.
     queue: queue.map((q) => ({ ...q, photoUrl: null })),
   };

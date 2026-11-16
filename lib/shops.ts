@@ -8,9 +8,10 @@ import { originFor, type ShipOrigin } from "./shipping";
 import { explorerUrl } from "./solana";
 import { listPlaces, toPublic, type PublicPlace } from "./stampPlaces";
 
-export type ShopImpact = { purchases: number; customers: number; plasticItems: number; co2Kg: number; packagingG: number };
+/** `plasticG`: grams of plastic avoided; `co2Kg` to the gram. */
+export type ShopImpact = { purchases: number; customers: number; plasticG: number; co2Kg: number };
 
-const NONE: ShopImpact = { purchases: 0, customers: 0, plasticItems: 0, co2Kg: 0, packagingG: 0 };
+const NONE: ShopImpact = { purchases: 0, customers: 0, plasticG: 0, co2Kg: 0 };
 
 /** Impact per shop, for many shops at once. Shops without proofs get zeros. */
 export async function shopImpact(placeIds: string[]): Promise<Map<string, ShopImpact>> {
@@ -18,23 +19,23 @@ export async function shopImpact(placeIds: string[]): Promise<Map<string, ShopIm
   if (!placeIds.length) return out;
   const rows = await query<{ place_id: string; purchases: number; customers: number; plastic: number; co2: number; packaging: number }>(
     `SELECT place_id,
-            COUNT(*) FILTER (WHERE co2_kg > 0 OR plastic_items > 0 OR packaging_g > 0)::int AS purchases,
+            COUNT(*) FILTER (WHERE co2_kg > 0 OR packaging_g > 0)::int AS purchases,
             COUNT(DISTINCT user_id)::int AS customers,
-            COALESCE(SUM(plastic_items), 0)::int AS plastic, COALESCE(SUM(co2_kg), 0)::float8 AS co2, COALESCE(SUM(packaging_g), 0)::float8 AS packaging
+            COALESCE(SUM(co2_kg), 0)::float8 AS co2, COALESCE(SUM(packaging_g), 0)::float8 AS plastic
        FROM records WHERE place_id = ANY($1) GROUP BY place_id`,
     [placeIds],
   );
-  for (const r of rows) out.set(r.place_id, { purchases: r.purchases, customers: r.customers, plasticItems: r.plastic, co2Kg: Math.round(r.co2 * 10) / 10, packagingG: Math.round(r.packaging) });
+  for (const r of rows) out.set(r.place_id, { purchases: r.purchases, customers: r.customers, plasticG: Math.round(r.plastic), co2Kg: Math.round(r.co2 * 1000) / 1000 });
   return out;
 }
 
-export type ShopProof = { id: string; createdAt: string; summary: string; plasticItems: number; co2Kg: number; txUrl: string | null };
+export type ShopProof = { id: string; createdAt: string; summary: string; plasticG: number; co2Kg: number; txUrl: string | null };
 
 /** The newest verified purchases at a shop, the proofs behind its impact: what was bought (names only), what it saved, and the Solana tx. */
 export async function shopProofs(placeId: string, limit = 8): Promise<ShopProof[]> {
-  const rows = await query<{ id: string; items: string; plastic_items: number; co2_kg: number; signature: string | null; created_at: string }>(
-    `SELECT id, items, plastic_items, co2_kg, signature, created_at FROM records
-      WHERE place_id = $1 AND (co2_kg > 0 OR plastic_items > 0 OR packaging_g > 0) ORDER BY created_at DESC LIMIT $2`,
+  const rows = await query<{ id: string; items: string; packaging_g: number; co2_kg: number; signature: string | null; created_at: string }>(
+    `SELECT id, items, packaging_g, co2_kg, signature, created_at FROM records
+      WHERE place_id = $1 AND (co2_kg > 0 OR packaging_g > 0) ORDER BY created_at DESC LIMIT $2`,
     [placeId, limit],
   );
   return rows.map((r) => {
@@ -42,7 +43,7 @@ export async function shopProofs(placeId: string, limit = 8): Promise<ShopProof[
     try { items = JSON.parse(r.items); } catch { /* an unreadable items column still lists as a proof */ }
     const names = items.map((i) => (i.quantity > 1 ? `${i.name} ×${i.quantity}` : i.name));
     const summary = names.length > 2 ? `${names.slice(0, 2).join(", ")} and ${names.length - 2} more` : names.join(", ");
-    return { id: r.id, createdAt: new Date(r.created_at).toISOString(), summary, plasticItems: r.plastic_items, co2Kg: Math.round(r.co2_kg * 10) / 10, txUrl: r.signature ? explorerUrl(r.signature) : null };
+    return { id: r.id, createdAt: new Date(r.created_at).toISOString(), summary, plasticG: Math.round(r.packaging_g), co2Kg: r.co2_kg, txUrl: r.signature ? explorerUrl(r.signature) : null };
   });
 }
 

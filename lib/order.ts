@@ -1,12 +1,13 @@
 import { createHash } from "crypto";
 import Anthropic from "@anthropic-ai/sdk";
-import { CATEGORIES, type Category, type LineItem } from "./impact";
-import { cataloguePartsFor } from "./catalogues";
-import { getProductImpacts } from "./productImpact";
+import { query } from "./db";
+import type { LineItem } from "./impact";
+import { matchLines } from "./match";
+import { CATEGORY_LABELS, isCategory, isPackaging, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, type PackagingType, type ProductCategory } from "./productRules";
 
 /**
  * The single entry point to the proof loop. Deliberately small: no prices, no customer personal data.
- * `category` is optional; when absent we match the product name against the brand catalogue, then ask the AI.
+ * A line is its name and quantity; `category` and `productId` are accepted from older senders and ignored.
  */
 export type OrderItem = { name: string; quantity: number; category?: string; productId?: number };
 export type Order = { brandId: string; orderId: string; items: OrderItem[] };
@@ -36,63 +37,94 @@ export class OrderError extends Error {}
 export const orderFingerprint = (brandId: string, orderId: string) =>
   createHash("sha256").update(`ecoproof:order:v1:${brandId}:${orderId}`).digest("hex");
 
-// ---- Item -> category matching ------------------------------------------------------------------------------------
+// ---- Line -> impact ---------------------------------------------------------------------------------------------------------------
 
-export type Matched = LineItem & { source: "given" | "product" | "catalogue" | "ai" | "none" };
+export type Matched = LineItem & { source: "product" | "ai" | "none" };
 
-const isCategory = (c: string | undefined): c is Category => !!c && (CATEGORIES as readonly string[]).includes(c);
+const NOTHING = { category: "not_sustainable", plasticG: 0, co2G: 0 } as const;
 
+/** EcoProof AI's factor table: grams of plastic and CO2 avoided per purchase, by category and packaging. */
+async function factors(): Promise<Map<string, { plasticG: number; co2G: number }>> {
+  const rows = await query<{ category: string; packaging_type: string; plastic_g: number; co2_g: number }>("SELECT category, packaging_type, plastic_g, co2_g FROM impact_factors");
+  return new Map(rows.map((r) => [`${r.category}/${r.packaging_type}`, { plasticG: r.plastic_g, co2G: r.co2_g }]));
+}
+
+/**
+ * What each line of an order or a receipt is worth at this shop (docs/eco-product-standard.md). A line that is one of the shop's declared
+ * products gets the factor for that product's category and packaging. A line the shop hasn't listed is estimated: the AI reads category
+ * and packaging off the name, and the same table gives the numbers (shown as an estimate until the owner confirms it from the queue).
+ * A removed product or a line the owner dismissed counts nothing. Nobody's own numbers are used anywhere.
+ */
 export async function matchItems(order: Order): Promise<Matched[]> {
-  const out: Matched[] = [];
-  // The shop's own product numbers (AI estimate or confirmed by the shop) come first: they say what this product really replaces.
-  const products = await getProductImpacts(order.brandId, order.items.map((i) => i.productId).filter((id): id is number => id != null));
-  for (const it of order.items) {
-    if (isCategory(it.category)) { out.push({ name: it.name, quantity: it.quantity, category: it.category, confidence: 1, source: "given" }); continue; }
-    const own = it.productId != null ? products.get(it.productId)?.effective : null;
-    if (own) {
-      out.push(own.excluded
-        ? { name: it.name, quantity: it.quantity, category: "not_sustainable", confidence: 1, source: "product", productId: it.productId, impactSource: own.source }
-        : { name: it.name, quantity: it.quantity, category: own.category, confidence: 1, source: "product", productId: it.productId, replaces: own.replaces, co2PerUnit: own.co2PerUnit, impactSource: own.source });
-      continue;
-    }
-    const parts = cataloguePartsFor(order.brandId, it.productId, it.name); // the place's own catalogue: by product id (any language listing), else by name
-    if (parts) {
-      if (!parts.length) out.push({ name: it.name, quantity: it.quantity, category: "not_sustainable", confidence: 1, source: "catalogue" }); // known, but not counted (raw fabric, fire starters)
-      for (const [category, count] of parts) out.push({ name: it.name, quantity: it.quantity * count, category, confidence: 1, source: "catalogue" }); // a bundle is several products
-      continue;
-    }
-    const ai = await inferCategory(it.name);
-    out.push({ name: it.name, quantity: it.quantity, ...ai });
-  }
-  return out;
+  const [lines, table] = await Promise.all([matchLines(order.brandId, order.items.map((i) => i.name)), factors()]);
+  const unknown = order.items.filter((_, i) => lines[i].kind === "unknown").map((i) => i.name);
+  const guesses = await classify([...new Set(unknown)]);
+  return order.items.map((it, i) => {
+    const base = { name: it.name, quantity: it.quantity };
+    const m = lines[i];
+    if (m.kind === "blocked") return { ...base, ...NOTHING, confidence: 1, source: "none" };
+    const kind = m.kind === "product" ? { ...m.product, confidence: m.confidence } : guesses.get(it.name);
+    const f = kind && table.get(`${kind.category}/${kind.packagingType}`);
+    if (!kind || !f) return { ...base, ...NOTHING, confidence: kind?.confidence ?? 0, source: m.kind === "product" ? "product" : "none", ...(m.kind === "product" ? { productId: m.productId, impactSource: "shop" as const } : {}) };
+    return m.kind === "product"
+      ? { ...base, category: kind.category, packagingType: kind.packagingType, ...f, confidence: kind.confidence, source: "product", productId: m.productId, impactSource: "shop" }
+      : { ...base, category: kind.category, packagingType: kind.packagingType, ...f, confidence: kind.confidence, source: "ai", impactSource: "ai" };
+  });
 }
 
 const MODEL = process.env.CATEGORY_MODEL ?? "claude-sonnet-5-5";
 
-/** Fallback for products we have no mapping for: the AI picks a category from the fixed list (or "not_sustainable"). */
-async function inferCategory(name: string): Promise<{ category: Category; confidence: number; source: "ai" | "none" }> {
-  if (!process.env.ANTHROPIC_API_KEY) return { category: "not_sustainable", confidence: 0, source: "none" };
+type Guess = { category: ProductCategory; packagingType: PackagingType; confidence: number };
+
+/** The estimate for lines a shop hasn't listed: the AI says, from the name alone, whether the product is plastic-free and in which
+ *  category and packaging. Names it isn't sure about are left out, and count nothing. */
+async function classify(names: string[]): Promise<Map<string, Guess>> {
+  const out = new Map<string, Guess>();
+  if (!names.length || !process.env.ANTHROPIC_API_KEY) return out;
   try {
     const res = await new Anthropic().messages.create({
       model: MODEL,
-      max_tokens: 2000,
+      max_tokens: 4000,
       output_config: {
         format: {
           type: "json_schema",
           schema: {
             type: "object",
-            properties: { category: { type: "string", enum: [...CATEGORIES] }, confidence: { type: "number" } },
-            required: ["category", "confidence"],
+            properties: {
+              lines: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: { index: { type: "integer" }, category: { type: "string", enum: [...PRODUCT_CATEGORIES, "not_eco"] }, packaging: { type: "string", enum: [...PACKAGING_TYPES] }, confidence: { type: "number" } },
+                  required: ["index", "category", "packaging", "confidence"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ["lines"],
             additionalProperties: false,
           },
         },
       },
-      messages: [{ role: "user", content: `Classify this online-shop product into one sustainability category. Use "not_sustainable" unless it clearly replaces a single-use or disposable product. Product: "${name}"` }],
+      messages: [{
+        role: "user",
+        content: `These are product lines from an eco shop's receipt or order. For each, decide whether it is sold without plastic packaging or replaces a single-use plastic item, and if so its category and packaging.
+
+Categories:
+${PRODUCT_CATEGORIES.map((c) => `- ${c}: ${CATEGORY_LABELS[c].label} (${CATEGORY_LABELS[c].examples})`).join("\n")}
+- not_eco: anything else, or when the name doesn't tell (shipping, gift cards, services, ordinary packaged goods).
+Packaging: ${PACKAGING_TYPES.map((t) => `${t} (${PACKAGING_LABELS[t]})`).join(", ")}. A solid bar or a reusable item with no pack is "none".
+Use "not_eco" unless the name clearly says it. confidence is 0 to 1.
+
+${names.map((n, i) => `${i}. ${n}`).join("\n")}`,
+      }],
     });
     const block = res.content.find((b) => b.type === "text");
-    const j = JSON.parse(block && "text" in block ? block.text : "{}") as { category?: string; confidence?: number };
-    if (!isCategory(j.category)) console.warn("category inference gave", JSON.stringify(j), "for", name);
-    if (isCategory(j.category)) return { category: j.category, confidence: Math.max(0, Math.min(1, Number(j.confidence) || 0)), source: "ai" };
-  } catch (e) { console.error("category inference failed", e); }
-  return { category: "not_sustainable", confidence: 0, source: "none" };
+    const j = JSON.parse(block && "text" in block ? block.text : "{}") as { lines?: { index: number; category: string; packaging: string; confidence: number }[] };
+    for (const l of j.lines ?? []) {
+      const name = names[l.index];
+      if (name && isCategory(l.category) && isPackaging(l.packaging)) out.set(name, { category: l.category, packagingType: l.packaging, confidence: Math.max(0, Math.min(1, Number(l.confidence) || 0)) });
+    }
+  } catch (e) { console.error("line classification failed", e); }
+  return out;
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { rankWebp, type Tier } from "@/lib/milestoneRules";
 import { explorerAsset, nftState } from "@/lib/passportView";
 import type { Nft } from "@/lib/milestones";
-import { impactParts, type Replaces } from "@/lib/impact";
+import { impactParts } from "@/lib/impact";
 
 /**
  * A Bee Guardian as a collectible card: dark glass panel inside a gold/holographic edge.
@@ -11,7 +11,7 @@ import { impactParts, type Replaces } from "@/lib/impact";
  * Locked: a dimmed silhouette of the artwork and the points it unlocks at.
  */
 /** `impact`: the owner's verified-purchase totals, shown on the big card once there are any. `note` replaces the status line. */
-export default function BeeCard({ rank, nft, big, wallet, impact, note }: { rank: Tier; nft?: Nft; big?: boolean; wallet?: boolean; impact?: { plasticItems: number; co2Kg: number; replaces?: Replaces[] }; note?: string }) {
+export default function BeeCard({ rank, nft, big, wallet, impact, note }: { rank: Tier; nft?: Nft; big?: boolean; wallet?: boolean; impact?: { plasticG: number; co2Kg: number }; note?: string }) {
   const proven = impact ? impactParts(impact) : [];
   const [broken, setBroken] = useState(false);
   const locked = !nft;

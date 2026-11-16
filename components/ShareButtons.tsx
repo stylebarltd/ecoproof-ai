@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 
-export default function ShareButtons({ id, co2, plastics }: { id: string; co2: number; plastics: number }) {
+/** `impact`: the record's impact in words, from impactParts ("150 g plastic avoided", "450 g CO₂ saved"); empty for a visit stamp. */
+export default function ShareButtons({ id, impact }: { id: string; impact: string[] }) {
   const [msg, setMsg] = useState("");
   const url = () => `${location.origin}/p/${id}`;
-  const text = `I just avoided ${plastics} single-use plastics and saved ${co2} kg CO₂, verified on Solana with EcoProof AI 🌱`;
+  const text = impact.length ? `My eco purchase: ${impact.join(" and ")}, verified on Solana with EcoProof AI 🌱` : "I collected an eco stamp, verified on Solana with EcoProof AI 🌱";
 
   async function cardFile(format: "wide" | "square") {
     const blob = await (await fetch(`/api/card/${id}${format === "square" ? "?format=square" : ""}`)).blob();

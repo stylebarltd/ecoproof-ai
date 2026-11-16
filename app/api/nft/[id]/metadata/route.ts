@@ -1,6 +1,6 @@
 import { query } from "@/lib/db";
 import { appUrl } from "@/lib/nft";
-import { replacesText } from "@/lib/impact";
+import { grams } from "@/lib/impact";
 import { editionOf, nftName, rankImage, tierFor } from "@/lib/milestoneRules";
 import { verifiedImpact, type NftStats } from "@/lib/milestones";
 
@@ -16,9 +16,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const stats = JSON.parse(r.stats) as Partial<NftStats>;
   const image = `${appUrl()}${rankImage(rank.key)}`;
   const impact = await verifiedImpact(r.wallet ?? r.owner_key);
-  const replaced = replacesText(impact.replaces, 3);
-  const proven = (replaced ? ` With verified purchases, its guardian has replaced about ${replaced}.` : "")
-    + (impact.co2Kg > 0 ? ` ${replaced ? "It has" : "With verified purchases, its guardian has"} saved ${impact.co2Kg.toFixed(1)} kg of CO₂.` : "");
+  const proven = impact.plasticG > 0 || impact.co2Kg > 0
+    ? ` With verified purchases, its guardian has avoided ${grams(impact.plasticG)} of plastic and ${grams(impact.co2Kg * 1000)} of CO₂.` : "";
   return Response.json({
     name: nftName(rank),
     symbol: "ECOPROOF",
@@ -32,9 +31,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       { trait_type: "Milestone", value: r.milestone },
       ...(rank.key === "paragon" ? [{ trait_type: "Edition", value: editionOf(r.milestone) }] : []),
       { trait_type: "Verified purchases", value: impact.purchases },
-      { trait_type: "Single-use items replaced", value: impact.plasticItems },
-      ...(impact.replaces.length ? [{ trait_type: "Replaced", value: replacesText(impact.replaces, 4) }] : []),
-      { trait_type: "CO₂ saved (kg)", value: impact.co2Kg },
+      { trait_type: "Plastic avoided (g)", value: impact.plasticG },
+      { trait_type: "CO₂ saved (g)", value: Math.round(impact.co2Kg * 1000) },
       { trait_type: "Soulbound", value: true },
     ],
     properties: { files: [{ uri: image, type: "image/png" }], category: "image" },

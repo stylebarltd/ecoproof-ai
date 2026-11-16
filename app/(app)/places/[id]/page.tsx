@@ -9,6 +9,7 @@ import ShopImpact from "@/components/ShopImpact";
 import Stars from "@/components/Stars";
 import VerifyButton from "@/components/VerifyButton";
 import { declarationsOf, publishedAnswers, toDeclaration } from "@/lib/declarations";
+import { grams } from "@/lib/impact";
 import { isShop, kindOf } from "@/lib/placeKinds";
 import { countryName, originFor, pickCountry, servesText } from "@/lib/shipping";
 import { originsOf, shopImpact, shopProofs } from "@/lib/shops";
@@ -88,7 +89,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
                 <li key={pr.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-2">
                   <span className="w-[88px] shrink-0 text-sage-900">{fmt(pr.createdAt)}</span>
                   <span className="min-w-0 flex-1 truncate">{pr.summary || "Verified purchase"}</span>
-                  <span className="whitespace-nowrap text-sage-900">{pr.plasticItems} plastic · {pr.co2Kg} kg CO₂</span>
+                  <span className="whitespace-nowrap text-sage-900">{grams(pr.plasticG)} plastic · {grams(pr.co2Kg * 1000)} CO₂</span>
                   <span className="flex items-center gap-2 whitespace-nowrap">
                     <Link href={`/p/${pr.id}`} className="font-bold text-sage-800 underline">record</Link>
                     {pr.txUrl ? <a href={pr.txUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-0.5 font-bold text-sage-800 underline">Solana <ExternalLink size={11} /></a> : <span className="text-sage-900">proof pending</span>}

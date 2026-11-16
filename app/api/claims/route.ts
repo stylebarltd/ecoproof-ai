@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       : await claimStamp({ placeId: String(b.placeId ?? ""), passportId, source: "qr", geo, onStep });
     emit({ step: "passport" });
     const passport = await getPassport(passportId);
-    const nfts = await afterProof(passportId, { points: passport.points, plasticItems: passport.totals.plasticItems, co2Kg: passport.totals.co2Kg }, undefined, (milestone) => emit({ step: "nft", milestone }));
+    const nfts = await afterProof(passportId, { points: passport.points, plasticG: passport.totals.plasticG, co2Kg: passport.totals.co2Kg }, undefined, (milestone) => emit({ step: "nft", milestone }));
     return { stamp, passport: { stamps: passport.totals.receipts, points: passport.points, nextMilestone: passport.nextMilestone }, nfts };
   };
   const fail = (e: unknown): { status: number; body: Record<string, unknown> } => {

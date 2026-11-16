@@ -11,7 +11,8 @@ import LandingNav from "@/components/landing/LandingNav";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
 import { COUNTERS_FROM, demoPassport, PRICING } from "@/lib/landingContent";
-import { badgeSvg, kg } from "@/lib/badge";
+import { badgeSvg } from "@/lib/badge";
+import { grams } from "@/lib/impact";
 import QRCode from "qrcode";
 import { appUrl } from "@/lib/nft";
 import type { LandingRecord, LandingStats } from "@/lib/landingStats";
@@ -73,7 +74,7 @@ function PhoneMockup() {
   );
 }
 
-/** Live totals as three square rubber stamps: proofs, single-use plastic items avoided (counted, not weighed), kg CO₂e. */
+/** Live totals as three square rubber stamps: proofs, plastic avoided, CO₂e avoided. */
 function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; className?: string }) {
   if (!stats) return null;
   if (stats.proofs < COUNTERS_FROM) {
@@ -87,7 +88,7 @@ function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; c
       </div>
     );
   }
-  const tiles = [[n(stats.proofs), "proofs", -2], [n(stats.plasticItems), "plastic items avoided", 1.5], [kg(stats.co2Kg), "kg CO₂e avoided", -1]] as const;
+  const tiles = [[n(stats.proofs), "proofs", -2], [grams(stats.plasticG), "plastic avoided", 1.5], [grams(stats.co2Kg * 1000), "CO₂e avoided", -1]] as const;
   return (
     <div className={`flex-wrap items-center gap-x-3 gap-y-3 lg:gap-x-4 ${className}`} aria-label="Verified so far">
       {tiles.map(([v, l, r]) => (
@@ -136,7 +137,7 @@ function RecordCard({ r }: { r: LandingRecord }) {
         ))}
         {r.items.length > 4 && <li className="py-2 text-[13px] font-bold text-cocoa/80">and {r.items.length - 4} more</li>}
       </ul>
-      <p className="mt-3 text-[15px] leading-[1.55]"><b className="font-extrabold">{n(r.plasticItems)} single-use plastic items</b>, <b className="font-extrabold">{r.co2Kg} kg CO₂e</b> and <b className="font-extrabold">{n(r.packagingG)} g packaging</b> avoided.{r.note ? ` ${r.note.split(" · ")[0]}.` : ""}</p>
+      <p className="mt-3 text-[15px] leading-[1.55]"><b className="font-extrabold">{grams(r.plasticG)} plastic</b> and <b className="font-extrabold">{grams(r.co2Kg * 1000)} CO₂e</b> avoided.</p>
       <details className="mt-3 text-[13px]">
         <summary className="cursor-pointer font-bold text-cocoa/80 hover:text-cocoa">The technical part: its fingerprint and Solana transaction</summary>
       <dl className="mt-2 space-y-1 font-mono text-[12px] text-cocoa/80">
@@ -157,17 +158,17 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
   const i = example?.impact;
   const orders = example?.orders && example.orders.length > 0 ? example.orders : null;
   const plural = (v: number, one: string) => `${n(v)} ${one}${v === 1 ? "" : "s"}`;
-  const rows = [[i ? n(i.plasticItems) : "—", "single-use plastic items avoided"], [i ? `${kg(i.co2Kg)} kg` : "—", "CO₂e avoided"], [i ? `${n(Math.round(i.packagingG / 100) / 10)} kg` : "—", "packaging avoided"]] as const;
+  const rows = [[i ? grams(i.plasticG) : "—", "plastic avoided"], [i ? grams(i.co2Kg * 1000) : "—", "CO₂e avoided"]] as const;
   const proofs = example ? `/places/${example.id}#proofs` : null;
   return (
     <div className="sticker grain rounded-[20px] bg-paper p-6 ring-1 ring-cocoa/10 sm:p-8">
       <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{example ? `${example.name} · verified impact` : "Your shop · verified impact"}</p>
-      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Estimates, worked out per product from each verified order.</p>
+      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Rough averages per kind of product and packaging, from each verified purchase.</p>
       {orders && i && (
         <div className="mt-4">
           <p className="text-[15px] font-extrabold">{plural(i.purchases, "verified order")} by {plural(i.customers, "customer")}, each one on Solana</p>
           <ul className="mt-2 divide-y divide-cocoa/10 border-y border-cocoa/10 text-[14px] leading-snug text-cocoa/85">
-            {orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4 py-2"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{n(o.plasticItems)} items</span></li>)}
+            {orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4 py-2"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{grams(o.plasticG)}</span></li>)}
           </ul>
           <p className="mt-2 text-[13px] font-bold text-cocoa/80"><Link href="/about#proof" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">How products are counted</Link></p>
         </div>
@@ -356,13 +357,13 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
               <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
-              <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticItems: 0, co2Kg: 0 }) }} />
+              <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticG: 0, co2Kg: 0 }) }} />
               <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
             </div>
             {/* Why "AI" (2026-11-15): the numbers' origin in two lines, the full account in the guide. */}
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">Where the numbers come from</p>
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">The AI reads what a shop already wrote about a product and estimates what one unit replaces: metres of cling film, zip-lock bags, toothpaste tubes, and the CO₂ behind them. The shop confirms or corrects before it counts. The AI estimates, a person confirms, Solana proves.</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">A shop lists what it sells without plastic. Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof AI for its kind and packaging, never by the shop. For a product the shop hasn&apos;t listed yet, the AI estimates kind and packaging from its name until the owner confirms it. Solana proves every purchase.</p>
               <Link href="/about#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
             </div>
           </div>

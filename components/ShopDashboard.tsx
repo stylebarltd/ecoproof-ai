@@ -12,6 +12,7 @@ import Stars from "@/components/Stars";
 import AccountChip from "@/components/AccountChip";
 import { StampTools, type MyPlace } from "@/components/ShopTools";
 import { useAccountChange, useDesktop } from "@/lib/desktop";
+import { grams } from "@/lib/impact";
 import { isShop, kindOf } from "@/lib/placeKinds";
 import { explorerTx } from "@/lib/passportView";
 import type { ShopActivity, Source } from "@/lib/shopActivity";
@@ -25,7 +26,7 @@ type Team = { role: Role; members: Member[]; invites: { role: Role; expiresAt: s
 const SOURCES: { key: Source; label: string; color: string; icon: typeof QrCode }[] = [
   { key: "qr", label: "QR scans", color: "#8fa073", icon: QrCode },
   { key: "card", label: "Printed cards", color: "#e8a317", icon: Ticket },
-  { key: "order", label: "Verified orders", color: "#d67f48", icon: ShoppingBag },
+  { key: "order", label: "Verified purchases", color: "#d67f48", icon: ShoppingBag },
 ];
 const sourceOf = (k: Source) => SOURCES.find((s) => s.key === k)!;
 const nf = (n: number) => n.toLocaleString("en-US");
@@ -264,7 +265,7 @@ export default function ShopDashboard({ id }: { id: string }) {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat icon={BadgeCheck} label="Stamps" value={nf(a.stamps)} sub={SOURCES.filter((s) => a.bySource[s.key] > 0).map((s) => `${nf(a.bySource[s.key])} ${s.key === "qr" ? "QR scans" : s.label.toLowerCase()}`).join(" · ") || "none yet"} />
         <Stat icon={Users} label="Customers" value={nf(a.customers)} sub={`${nf(a.newCustomers)} new · ${nf(a.returningCustomers)} returning`} />
-        <Stat icon={Leaf} label="Impact" value={`${a.impact.co2Kg} kg`} sub={`CO₂ saved · ${nf(a.impact.plasticItems)} plastic items avoided, from ${nf(a.impact.verifiedPurchases)} verified purchase${a.impact.verifiedPurchases === 1 ? "" : "s"}`} />
+        <Stat icon={Leaf} label="Impact" value={grams(a.impact.plasticG)} sub={`plastic avoided · ${grams(a.impact.co2Kg * 1000)} CO₂ saved, from ${nf(a.impact.verifiedPurchases)} verified purchase${a.impact.verifiedPurchases === 1 ? "" : "s"}`} />
         <Stat icon={Sparkles} label="Bee Guardians" value={nf(a.beeGuardians)} sub="unlocked by a stamp collected here" />
       </div>
 
@@ -286,7 +287,7 @@ export default function ShopDashboard({ id }: { id: string }) {
                           <td className="whitespace-nowrap px-1 py-2 tabular-nums">{when(r.at)}</td>
                           <td className="px-1 py-2 font-mono text-xs">#{r.customer}</td>
                           <td className="px-1 py-2"><span className="flex items-center gap-1.5"><span className="h-2 w-2 shrink-0 rounded-full" style={{ background: s.color }} />{s.label.replace(/s$/, "")}</span></td>
-                          <td className="px-1 py-2 text-xs text-sage-900">{r.source === "order" ? `${r.co2Kg} kg CO₂ · ${r.plasticItems} plastic` : r.source === "qr" ? "Visit" : "–"}</td>
+                          <td className="px-1 py-2 text-xs text-sage-900">{r.plasticG > 0 || r.co2Kg > 0 ? `${grams(r.plasticG)} plastic · ${grams(r.co2Kg * 1000)} CO₂` : r.source === "qr" ? "Visit" : "–"}</td>
                           <td className="px-1 py-2">{r.signature ? <a href={explorerTx(r.signature)} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs font-bold text-sage-800 underline">Explorer <ExternalLink size={11} /></a> : <span className="text-xs text-sage-900">pending</span>}</td>
                         </tr>
                       );

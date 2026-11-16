@@ -135,7 +135,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
                 ))}
               </ul>
               <p className="rounded-xl bg-honey-300/40 p-2.5 text-sm font-semibold">{review.line}</p>
-              <p className="text-[11.5px] leading-relaxed text-ink/60">{review.estimate ? "The impact is EcoProof AI's estimate for these items; the shop hasn't confirmed them yet. " : "Impact confirmed by the shop. "}Something wrong? Take the photo again.</p>
+              <p className="text-[11.5px] leading-relaxed text-ink/60">{review.estimate ? "Some of these items aren't on the shop's product list yet, so their impact is EcoProof AI's estimate. " : "Every counted item is a product the shop declared plastic-free. "}Something wrong? Take the photo again.</p>
               {phase === "review" ? (
                 <div className="space-y-2">
                   <button onClick={claim} className="lift w-full rounded-full bg-terra-500 py-3.5 text-base font-bold text-cream">Collect my stamp · +{review.points} points</button>

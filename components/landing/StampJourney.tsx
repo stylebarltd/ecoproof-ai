@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Check, Loader2, Pause, Play } from "lucide-react";
+import { grams } from "@/lib/impact";
 import type { LandingRecord } from "@/lib/landingStats";
 import { GPS_RADIUS_M } from "@/lib/placeKinds";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
@@ -21,7 +22,7 @@ const ANCHOR = { label: "Writing the proof to Solana", detail: "One line on a pu
 
 export default function StampJourney({ r, door = "order" }: { r: LandingRecord | null; door?: Door }) {
   const items = r && r.items.length > 0 ? r.items.map((it) => `${it.quantity}× ${it.name}`).join(", ") : "your items";
-  const saved = r ? `${r.plasticItems} plastic item${r.plasticItems === 1 ? "" : "s"} · ${r.co2Kg} kg CO₂e avoided` : "plastic and CO₂e avoided";
+  const saved = r ? `${grams(r.plasticG)} plastic · ${grams(r.co2Kg * 1000)} CO₂e avoided` : "plastic and CO₂e avoided";
   // The visit steps follow the real claim screen for a place QR (components/ClaimStamp.tsx): location check, stamp check, Solana, passport.
   const steps: { label: string; detail: string; hint?: string }[] = door === "visit" ? [
     { label: "Checking you're at the café", detail: `Your phone's location, within ${GPS_RADIUS_M} m` },

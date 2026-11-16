@@ -79,19 +79,19 @@ export default function About() {
       {/* The AI: why it is in the name, and what it does (2026-11-15) */}
       <Panel id="ai">
         <div className="mb-1 flex items-center gap-2"><Sparkles size={20} className="text-sage-700" /><H2>Why &ldquo;AI&rdquo;, and what it does</H2></div>
-        <P>A stamp is only worth something if the impact behind it is real. The hard part is not the blockchain, it is knowing what a beeswax wrap or a laundry pouch actually replaces. That is the AI&apos;s job, and it does it in two places.</P>
-        <H3>1. For connected shops: what one product replaces</H3>
-        <P>When a shop connects its catalogue, its plugin sends each product&apos;s public details once: the name, the descriptions and attributes such as pack size, number of washes or the sizes in a set. Never prices, never customer data. From that, the AI writes an estimate in everyday things: how many metres of cling film, zip-lock bags or toothpaste tubes one unit replaces over its life, and the CO₂ behind them.</P>
-        <P>The shop then <b>confirms, corrects or rejects</b> every estimate in its own admin. Orders use the shop&apos;s confirmed numbers; until a product is confirmed, its numbers are shown as an estimate. That is why a figure on a shop&apos;s site can read &ldquo;EcoProof AI · confirmed by the shop&rdquo;.</P>
-        <H3>2. For everything else: sorting into a table</H3>
-        <P>An order item with no confirmed numbers is sorted by the AI into one of a short list of categories (reusable bottle, beeswax wrap, plastic-free laundry, second-hand clothing and so on, or &ldquo;standard item&rdquo; when it is not eco at all). The numbers then come from a <b>transparent, hand-built factor table</b>, not from the model. The same sorting reads the lines of a receipt scanned in an eco shop.</P>
+        <P>A stamp is only worth something if the impact behind it is real. So the numbers are not the shop&apos;s and not the AI&apos;s: they come from one short table that EcoProof AI keeps.</P>
+        <H3>1. The shop says what it sells without plastic</H3>
+        <P>An eco shop lists its plastic-free products by the name its receipts and orders print, and for each one says what kind of product it is (food, refill, soap and cosmetics, reusables, household) and how it is packed (glass, paper, metal, no packaging, refill). It declares that these are sold without plastic packaging. It never enters a number.</P>
+        <H3>2. One table gives the numbers</H3>
+        <P>Each kind of product and packaging has a fixed amount of <b>plastic avoided and CO₂ avoided, in grams</b>. A purchase is worth that amount, whichever shop sold it. No shop can change the table.</P>
+        <H3>3. The AI fills the gaps, as an estimate</H3>
+        <P>When a receipt or an order has a product the shop hasn&apos;t listed yet, the AI reads its kind and packaging off the name, and the same table gives the numbers. That stamp is labelled an <b>EcoProof AI estimate</b>, and the product waits for the owner to confirm it or say it isn&apos;t plastic-free. The AI also reads the receipt photo itself.</P>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
-          <li><b>Guard rails.</b> No product can claim more than a plausible amount per unit, whatever the text says.</li>
-          <li><b>A person decides.</b> The AI proposes; the shop confirms. Nothing it writes reaches a passport unreviewed unless it is clearly labelled an estimate.</li>
-          <li><b>Estimates, not audits.</b> The factor table is published in the code and is our best honest reading, not certified lifecycle data.</li>
+          <li><b>Anyone can object.</b> Every listed product has a &ldquo;Not true?&rdquo; link on the shop&apos;s page. Two reports we confirm take the product off the list, and it stops counting.</li>
+          <li><b>Rough averages, not audits.</b> The table is a first, cautious reading of what a product of that kind avoids. It is not certified lifecycle data, and we say so wherever the numbers appear.</li>
         </ul>
         <p className="mt-3 rounded-2xl bg-white/45 p-3 text-[12.5px] leading-relaxed ring-1 ring-white/70">
-          In short: the AI estimates, a person confirms, Solana proves. Three jobs, three tools.
+          In short: the shop declares, one table counts, the AI estimates what is missing, Solana proves.
         </p>
       </Panel>
 
@@ -115,7 +115,7 @@ export default function About() {
           <div className="relative rounded-2xl bg-gradient-to-br from-honey-300/60 via-white/70 to-honey-300/30 p-3.5 ring-2 ring-honey-400 shadow-[0_10px_28px_rgba(232,163,23,0.4)]">
             <span className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-honey-700">Verified purchase <span className="rounded-full bg-honey-500 px-1.5 py-0.5 text-[9px] text-ink">+{POINTS_VERIFIED} pts</span></span>
             <p className="mt-1 font-heading text-[16px]">Green Goods Co. <span className="font-sans text-[11px] font-semibold text-ink/60">(example online shop)</span></p>
-            <p className="text-[12.5px] font-bold">110 single-use plastics avoided · 4.5 kg CO₂ saved</p>
+            <p className="text-[12.5px] font-bold">130 g plastic avoided · 390 g CO₂ saved</p>
             <p className="mt-1.5 text-[12.5px] leading-snug text-ink/80">Comes from a real online order. Because the shop tells us what was in it, the stamp shows the real impact of your purchase. Worth <b>{POINTS_VERIFIED} points</b>.</p>
           </div>
           <div className="rounded-2xl bg-white/45 p-3.5 ring-1 ring-white/70">
