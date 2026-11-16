@@ -35,10 +35,13 @@ export const isPackaging = (v: unknown): v is PackagingType => (PACKAGING_TYPES 
 
 export const PRODUCT_NAME_MAX = 120;
 export const MAX_PRODUCTS = 300;
+export const MAX_ALIASES = 10;
 
 export type Product = {
   id: string; receiptName: string; displayName: string; category: ProductCategory; packagingType: PackagingType;
   replaces: string | null; photoUrl: string | null; source: ProductSource; status: ProductStatus;
+  /** Other names the same product is printed with (another language, the till's short name, an old name). */
+  aliases: string[];
 };
 export type ProductSetupState = {
   role: "owner" | "staff";

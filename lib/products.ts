@@ -4,7 +4,7 @@ import { unmatchedLines } from "./match";
 import { MAX_PHOTO_BYTES } from "./photoRules";
 import { isJpeg } from "./placePhotos";
 import {
-  isCategory, isPackaging, MAX_PRODUCTS, PRODUCT_NAME_MAX, type Product, type ProductCategory, type ProductSetupState,
+  isCategory, isPackaging, MAX_ALIASES, MAX_PRODUCTS, PRODUCT_NAME_MAX, type Product, type ProductCategory, type ProductSetupState,
 } from "./productRules";
 
 // An eco shop's plastic-free products and their setup (docs/eco-product-standard.md): the owner declares, ticks categories, lists
@@ -16,14 +16,39 @@ const clean = (v: unknown, n: number) => String(v ?? "").replace(/\s+/g, " ").tr
 const photoUrl = (placeId: string, productId: string, v: string) => `/api/places/${placeId}/products/${productId}/photo?v=${v}`;
 
 type Row = { id: string; receipt_name: string; display_name: string; category: string; packaging_type: string; replaces: string | null; photo_url: string | null; source: string; status: string };
-const toProduct = (r: Row): Product => ({
+const toProduct = (r: Row, aliases: string[] = []): Product => ({
+  aliases,
   id: r.id, receiptName: r.receipt_name, displayName: r.display_name, category: r.category as Product["category"], packagingType: r.packaging_type as Product["packagingType"],
   replaces: r.replaces, photoUrl: r.photo_url, source: r.source as Product["source"], status: r.status as Product["status"],
 });
 
+/** Each product's other printed names. */
+async function aliasesOf(placeId: string): Promise<Map<string, string[]>> {
+  const rows = await query<{ product_id: string; receipt_name_variant: string }>(
+    "SELECT a.product_id, a.receipt_name_variant FROM product_aliases a JOIN products p ON p.id = a.product_id WHERE p.place_id=$1 ORDER BY a.id", [placeId],
+  );
+  const out = new Map<string, string[]>();
+  for (const r of rows) out.set(r.product_id, [...(out.get(r.product_id) ?? []), r.receipt_name_variant]);
+  return out;
+}
+
+/** Whether a name is already taken at this shop, as a product's receipt name or as an alias: one printed name, one product. */
+async function nameTaken(placeId: string, name: string): Promise<"removed" | "taken" | null> {
+  const rows = await query<{ status: string }>(
+    `SELECT status FROM products WHERE place_id=$1 AND lower(receipt_name)=lower($2)
+     UNION ALL SELECT p.status FROM product_aliases a JOIN products p ON p.id = a.product_id WHERE p.place_id=$1 AND lower(a.receipt_name_variant)=lower($2)`,
+    [placeId, name],
+  );
+  return !rows.length ? null : rows.some((r) => r.status === "removed") ? "removed" : "taken";
+}
+
+/** Receipt and order lines already seen with this wording stop waiting in the owner's queue: they are this product. */
+const claimLines = (placeId: string, productId: string, name: string) =>
+  query("UPDATE receipt_lines SET matched_product_id=$2, confidence=1 WHERE place_id=$1 AND matched_product_id IS NULL AND lower(btrim(raw_text))=lower($3)", [placeId, productId, name]);
+
 /** Everything the setup wizard and the dashboard show. */
 export async function productSetup(placeId: string, role: "owner" | "staff"): Promise<ProductSetupState> {
-  const [[place], products, queue, sample, factors] = await Promise.all([
+  const [[place], products, queue, sample, factors, aliases] = await Promise.all([
     query<{ product_categories: string[]; refill: boolean | null; products_declared_at: string | null; in_store: boolean }>(
       "SELECT product_categories, refill, products_declared_at::text, (lat IS NOT NULL) AS in_store FROM stamp_places WHERE id=$1", [placeId],
     ),
@@ -31,11 +56,12 @@ export async function productSetup(placeId: string, role: "owner" | "staff"): Pr
     unmatchedLines(placeId),
     query("SELECT 1 FROM receipt_samples WHERE place_id=$1", [placeId]),
     query<{ pair: string }>("SELECT category || '/' || packaging_type AS pair FROM impact_factors"),
+    aliasesOf(placeId),
   ]);
   return {
     role,
     setup: { categories: (place?.product_categories ?? []).filter(isCategory), refill: place?.refill ?? null, declaredAt: place?.products_declared_at ?? null, hasSample: sample.length > 0, inStore: !!place?.in_store },
-    products: products.map(toProduct),
+    products: products.map((p) => toProduct(p, aliases.get(p.id))),
     counted: factors.map((f) => f.pair),
     // No customer photo path yet: a queued line has no photo until the app asks the scanner for one.
     queue: queue.map((q) => ({ ...q, photoUrl: null })),
@@ -69,16 +95,35 @@ export async function addProduct(placeId: string, b: Record<string, unknown>): P
   );
   if (!place?.products_declared_at) throw new ProductError("Confirm the declaration first: the products you list are sold without plastic packaging.");
   if (place.n >= MAX_PRODUCTS) throw new ProductError(`A shop can list ${MAX_PRODUCTS} products for now.`);
-  const existing = await query<{ status: string }>("SELECT status FROM products WHERE place_id=$1 AND lower(receipt_name)=lower($2)", [placeId, receiptName]);
-  if (existing.length) {
-    throw new ProductError(existing[0].status === "removed" ? "This product was removed from the eco list after confirmed reports, so it can't be added again." : "That receipt name is already on your list.", 409);
-  }
+  const taken = await nameTaken(placeId, receiptName);
+  if (taken) throw new ProductError(taken === "removed" ? "This product was removed from the eco list after confirmed reports, so it can't be added again." : "That name is already on your list.", 409);
   const id = randomBytes(9).toString("base64url");
   await query(
     "INSERT INTO products (id, place_id, receipt_name, display_name, category, packaging_type, replaces, source, status) VALUES ($1,$2,$3,$4,$5,$6,$7,'owner',$8)",
     [id, placeId, receiptName, displayName, b.category, b.packagingType, replaces, b.fromQueue === true ? "confirmed" : "declared"],
   );
-  await query("UPDATE receipt_lines SET matched_product_id=$2, confidence=1 WHERE place_id=$1 AND matched_product_id IS NULL AND lower(btrim(raw_text))=lower($3)", [placeId, id, receiptName]);
+  await claimLines(placeId, id, receiptName);
+}
+
+/** Another printed name for a product the shop already lists: the Thai name next to the English one, the till's short name, an old
+ *  name. Lines with that wording then count as this product, and one that waited in the queue leaves it. */
+export async function addAlias(placeId: string, productId: string, raw: unknown): Promise<void> {
+  const name = clean(raw, PRODUCT_NAME_MAX);
+  if (name.length < 2) throw new ProductError("Enter the other name as it is printed.");
+  const [product] = await query<{ status: string; n: number }>(
+    "SELECT status, (SELECT COUNT(*)::int FROM product_aliases WHERE product_id=$2) AS n FROM products WHERE place_id=$1 AND id=$2", [placeId, productId],
+  );
+  if (!product) throw new ProductError("Unknown product.", 404);
+  if (product.status === "removed") throw new ProductError("This product was removed from the eco list after confirmed reports.", 409);
+  if (product.n >= MAX_ALIASES) throw new ProductError(`A product can have ${MAX_ALIASES} other names.`);
+  const taken = await nameTaken(placeId, name);
+  if (taken) throw new ProductError(taken === "removed" ? "That name belongs to a product that was removed after confirmed reports." : "That name is already on your list.", 409);
+  await query("INSERT INTO product_aliases (product_id, receipt_name_variant) VALUES ($1,$2)", [productId, name]);
+  await claimLines(placeId, productId, name);
+}
+
+export async function removeAlias(placeId: string, productId: string, name: string): Promise<void> {
+  await query("DELETE FROM product_aliases a USING products p WHERE p.id = a.product_id AND p.place_id=$1 AND a.product_id=$2 AND a.receipt_name_variant=$3", [placeId, productId, name]);
 }
 
 /** Takes a product off the list. One with a confirmed report against it stays, so deleting and re-adding can't clear the report. */
@@ -122,5 +167,5 @@ export async function publicProducts(placeId: string): Promise<{ refill: boolean
     query<{ refill: boolean | null }>("SELECT refill FROM stamp_places WHERE id=$1", [placeId]),
     query<Row>("SELECT * FROM products WHERE place_id=$1 AND status <> 'removed' ORDER BY category, lower(display_name)", [placeId]),
   ]);
-  return { refill: place?.refill ?? null, products: rows.map(toProduct) };
+  return { refill: place?.refill ?? null, products: rows.map((r) => toProduct(r)) };
 }

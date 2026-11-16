@@ -34,7 +34,8 @@ export default function ProductsPanel({ placeId }: { placeId: string }) {
           <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">Customers bought these items, and they aren&apos;t on your list yet. Until you decide, EcoProof AI estimates them. Confirm the ones you sell without plastic packaging and they join your list.</p>
           {owner && !setup.declaredAt && <p className="mt-2 rounded-xl bg-white/60 p-2.5 text-[12.5px]">To confirm products, <Link href={`/shop/${placeId}/products`} className="font-bold underline underline-offset-2">make your declaration first</Link>.</p>}
           <ul className="mt-2.5 space-y-2">
-            {queue.map((q) => <QueueLine key={q.rawText} q={q} can={owner && !!setup.declaredAt} busy={s.busy} onConfirm={(b) => s.addProduct({ ...b, receiptName: q.rawText, fromQueue: true })} onDismiss={() => s.dismiss(q.rawText)} />)}
+            {queue.map((q) => <QueueLine key={q.rawText} q={q} can={owner && !!setup.declaredAt} busy={s.busy} products={products.filter((p) => p.status !== "removed")}
+              onConfirm={(b) => s.addProduct({ ...b, receiptName: q.rawText, fromQueue: true })} onSame={(id) => s.addAlias(id, q.rawText)} onDismiss={() => s.dismiss(q.rawText)} />)}
           </ul>
           {s.err && <p className="mt-2 rounded-xl bg-terra-100 p-2.5 text-sm text-terra-800" role="alert">{s.err}</p>}
         </div>
@@ -43,10 +44,11 @@ export default function ProductsPanel({ placeId }: { placeId: string }) {
   );
 }
 
-function QueueLine({ q, can, busy, onConfirm, onDismiss }: {
-  q: ProductSetupState["queue"][number]; can: boolean; busy: boolean;
-  onConfirm: (b: { category: string; packagingType: string }) => Promise<boolean>; onDismiss: () => Promise<boolean>;
+function QueueLine({ q, can, busy, products, onConfirm, onSame, onDismiss }: {
+  q: ProductSetupState["queue"][number]; can: boolean; busy: boolean; products: ProductSetupState["products"];
+  onConfirm: (b: { category: string; packagingType: string }) => Promise<boolean>; onSame: (productId: string) => Promise<boolean>; onDismiss: () => Promise<boolean>;
 }) {
+  const [same, setSame] = useState("");
   const [category, setCategory] = useState("");
   const [packaging, setPackaging] = useState("");
   const select = "min-w-0 flex-1 rounded-xl bg-white/80 px-2.5 py-2 text-[12.5px] ring-1 ring-sage-900/15";
@@ -78,6 +80,15 @@ function QueueLine({ q, can, busy, onConfirm, onDismiss }: {
             </button>
             <button type="button" disabled={busy} onClick={onDismiss} className="glass rounded-full px-3.5 py-2 text-xs font-bold disabled:opacity-50">Not plastic-free</button>
           </div>
+          {products.length > 0 && (
+            <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sage-900/10 pt-2">
+              <select value={same} onChange={(e) => setSame(e.target.value)} aria-label="The same as a product on your list" className={select}>
+                <option value="">Or: the same as a product on your list…</option>
+                {products.map((p) => <option key={p.id} value={p.id}>{p.receiptName}</option>)}
+              </select>
+              <button type="button" disabled={busy || !same} onClick={() => onSame(same)} className="glass rounded-full px-3.5 py-2 text-xs font-bold disabled:opacity-50">It&apos;s the same product</button>
+            </div>
+          )}
         </>
       )}
     </li>

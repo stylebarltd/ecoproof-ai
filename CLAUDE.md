@@ -152,7 +152,9 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   line: exact name, alias, then word overlap above 0.8 (`lib/matchText.ts`); `claimReceipt` records every line in `receipt_lines`, and the
   unmatched ones are the dashboard's "Confirm these products?" queue (`components/ProductsPanel.tsx`). Reports: "Not true?" on the shop's
   page goes through `/report/<place>?product=<id>` into `product_reports`; we confirm in `/admin/reports`; two confirmed reports set the
-  product to `removed` (no matching, no re-adding). The customer photo path for unknown lines isn't built.
+  product to `removed` (no matching, no re-adding). Aliases ("Also printed as" on a product, or "It's the same product" in the queue) let
+  several printed names (Thai and English, the till's short name) be one product; a name is unique per shop across receipt names and
+  aliases. The customer photo path for unknown lines isn't built.
 - Impact counting (switched 2026-11-16): **grams of plastic and grams of CO2 avoided, for receipts and online orders alike**
   (`matchItems` in `lib/order.ts`). A line that matches one of the shop's products gets `impact_factors` for its category + packaging
   (`impactSource: "shop"`); an unlisted line is estimated: the AI (`CATEGORY_MODEL`) reads category + packaging off the name, the same

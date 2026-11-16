@@ -161,7 +161,7 @@ export default function ProductSetup({ id }: { id: string }) {
             <div className="mt-3 space-y-4">
               {shown.map((c) => (
                 <CategoryProducts key={c} category={c} products={products.filter((p) => p.category === c)} counted={s.d!.counted} owner={owner} busy={s.busy}
-                  onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} />
+                  onAdd={(b) => s.addProduct({ ...b, category: c })} onRemove={s.removeProduct} onPhoto={s.productPhoto} onAlias={s.addAlias} onRemoveAlias={s.removeAlias} />
               ))}
             </div>
             <StepButtons ready={products.length > 0} onNext={next} onSkip={() => setSkipping(true)} />
@@ -197,11 +197,37 @@ function StepButtons({ ready, onNext, onSkip, last = false }: { ready: boolean; 
   );
 }
 
+/** A product's other printed names: the same product in another language, on the till, or under an old name. */
+function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; owner: boolean; busy: boolean; onAdd: (name: string) => Promise<boolean>; onRemove: (name: string) => Promise<boolean> }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  if (!owner && !product.aliases.length) return null;
+  return (
+    <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-[54px] text-[11.5px] text-sage-900">
+      {product.aliases.length > 0 && <span>Also printed as</span>}
+      {product.aliases.map((a) => (
+        <span key={a} className="inline-flex items-center gap-1 rounded-full bg-sage-200/70 py-0.5 pl-2 pr-1 font-bold text-ink">
+          {a}
+          {owner && <button type="button" disabled={busy} onClick={() => onRemove(a)} aria-label={`Remove the name ${a}`} className="flex h-4 w-4 items-center justify-center rounded-full bg-ink/10"><X size={10} strokeWidth={3} /></button>}
+        </span>
+      ))}
+      {owner && (open ? (
+        <form className="flex w-full gap-1.5" onSubmit={async (e) => { e.preventDefault(); if (await onAdd(name)) { setName(""); setOpen(false); } }}>
+          <input autoFocus value={name} maxLength={PRODUCT_NAME_MAX} onChange={(e) => setName(e.target.value)} placeholder="The other name, exactly as printed" aria-label={`Another name for ${product.receiptName}`} className="min-w-0 flex-1 rounded-lg bg-white px-2 py-1.5 text-[12.5px] text-ink ring-1 ring-sage-900/15" />
+          <button type="submit" disabled={busy || name.trim().length < 2} className="rounded-full bg-honey-500 px-3 py-1.5 text-[11.5px] font-bold text-ink disabled:opacity-50">Add</button>
+          <button type="button" onClick={() => setOpen(false)} className="rounded-full px-2 py-1.5 text-[11.5px] font-bold">Cancel</button>
+        </form>
+      ) : <button type="button" onClick={() => setOpen(true)} className="font-bold underline underline-offset-2">{product.aliases.length ? "Add another name" : "Printed under another name too?"}</button>)}
+    </div>
+  );
+}
+
 /** One category's products and the form that adds one. */
-function CategoryProducts({ category, products, counted, owner, busy, onAdd, onRemove, onPhoto }: {
+function CategoryProducts({ category, products, counted, owner, busy, onAdd, onRemove, onPhoto, onAlias, onRemoveAlias }: {
   category: ProductCategory; products: Product[]; counted: string[]; owner: boolean; busy: boolean;
   onAdd: (b: { receiptName: string; packagingType: string; replaces?: string }) => Promise<boolean>;
   onRemove: (id: string) => Promise<boolean>; onPhoto: (id: string, f?: File) => Promise<boolean>;
+  onAlias: (id: string, name: string) => Promise<boolean>; onRemoveAlias: (id: string, name: string) => Promise<boolean>;
 }) {
   const [name, setName] = useState("");
   const [packaging, setPackaging] = useState<PackagingType | "">("");
@@ -213,7 +239,8 @@ function CategoryProducts({ category, products, counted, owner, busy, onAdd, onR
       {products.length > 0 && (
         <ul className="mt-2 space-y-1.5">
           {products.map((p) => (
-            <li key={p.id} className="flex items-center gap-2.5 rounded-xl bg-white/80 p-2">
+            <li key={p.id} className="rounded-xl bg-white/80 p-2">
+              <div className="flex items-center gap-2.5">
               <label className={`relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-sage-200/70 text-sage-800 ${owner ? "" : "pointer-events-none"}`} title="Add a photo of the product">
                 {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized */}
                 {p.photoUrl ? <img src={p.photoUrl} alt="" className="h-full w-full object-cover" /> : <ImagePlus size={18} strokeWidth={2.4} />}
@@ -230,6 +257,8 @@ function CategoryProducts({ category, products, counted, owner, busy, onAdd, onR
               {owner && (p.status === "declared" || p.status === "confirmed") && (
                 <button type="button" disabled={busy} onClick={() => onRemove(p.id)} aria-label={`Remove ${p.receiptName}`} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink/10 disabled:opacity-50"><X size={15} strokeWidth={2.8} /></button>
               )}
+              </div>
+              {p.status !== "removed" && <Aliases product={p} owner={owner} busy={busy} onAdd={(n) => onAlias(p.id, n)} onRemove={(n) => onRemoveAlias(p.id, n)} />}
             </li>
           ))}
         </ul>

@@ -45,6 +45,8 @@ export function useProductSetup(placeId: string) {
     saveSetup: (b: { categories?: string[]; refill?: boolean; declared?: true }) => send("/setup", json("PUT", b)),
     addProduct: (b: { receiptName: string; category: string; packagingType: string; replaces?: string; fromQueue?: boolean }) => send("", json("POST", b)),
     removeProduct: (id: string) => send(`?product=${encodeURIComponent(id)}`, { method: "DELETE" }),
+    addAlias: (id: string, name: string) => send(`/${encodeURIComponent(id)}/aliases`, json("POST", { name })),
+    removeAlias: (id: string, name: string) => send(`/${encodeURIComponent(id)}/aliases?name=${encodeURIComponent(name)}`, { method: "DELETE" }),
     dismiss: (rawText: string) => send("/queue", json("POST", { dismiss: rawText })),
     sample: (f?: File) => photo("/sample", f),
     productPhoto: (id: string, f?: File) => photo(`/${encodeURIComponent(id)}/photo`, f),
