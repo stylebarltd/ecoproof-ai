@@ -14,7 +14,9 @@ export type PackagingType = (typeof PACKAGING_TYPES)[number];
  * shop or the product. "other" is anything the table has no row for yet: it can be listed, and counts nothing.
  */
 export const PRODUCT_TYPES = [
-  "reusable_wrap", "reusable_container", "reusable_cutlery_straw", "soap_bar", "toothpaste_tabs", "bamboo_toothbrush",
+  "reusable_wrap", "reusable_container", "reusable_cutlery_straw", "reusable_bag", "produce_bag",
+  "soap_bar", "toothpaste_tabs", "toothpaste_tabs_travel", "plastic_free_floss", "bamboo_toothbrush",
+  "laundry_pouch", "dryer_balls", "natural_sponge",
   "refill", "glass_pack", "paper_metal_pack", "other",
 ] as const;
 export type ProductType = (typeof PRODUCT_TYPES)[number];
@@ -47,9 +49,16 @@ export const TYPE_LABELS: Record<ProductType, { label: string; examples: string 
   reusable_wrap: { label: "Reusable wrap", examples: "beeswax wrap, wax bag" },
   reusable_container: { label: "Reusable container", examples: "bottle, cup, lunchbox" },
   reusable_cutlery_straw: { label: "Reusable cutlery or straw", examples: "steel or bamboo set" },
+  reusable_bag: { label: "Reusable shopping bag", examples: "tote, cloth bag" },
+  produce_bag: { label: "Reusable produce bag", examples: "mesh bag for fruit and vegetables" },
   soap_bar: { label: "Soap or shampoo bar", examples: "bar, solid conditioner" },
-  toothpaste_tabs: { label: "Toothpaste tabs", examples: "jar or tin of tabs" },
+  toothpaste_tabs: { label: "Toothpaste tabs", examples: "jar or box of about 100 tabs or more" },
+  toothpaste_tabs_travel: { label: "Toothpaste tabs, travel size", examples: "small tin, about two weeks of tabs" },
+  plastic_free_floss: { label: "Plastic-free dental floss", examples: "floss in glass or paper, per spool" },
   bamboo_toothbrush: { label: "Bamboo toothbrush", examples: "toothbrush" },
+  laundry_pouch: { label: "Reusable laundry pouch", examples: "washes about 300 loads without detergent" },
+  dryer_balls: { label: "Wool dryer balls", examples: "a set, used instead of dryer sheets" },
+  natural_sponge: { label: "Natural sponge or luffa", examples: "luffa dish scrubber" },
   refill: { label: "Refill into the customer's own container", examples: "dry goods, liquids, cleaning products" },
   glass_pack: { label: "In glass instead of plastic", examples: "jars, bottles" },
   paper_metal_pack: { label: "In paper or metal instead of plastic", examples: "packs, tins" },
@@ -60,9 +69,9 @@ export const TYPE_LABELS: Record<ProductType, { label: string; examples: string 
 export const TYPES_BY_CATEGORY: Record<ProductCategory, readonly ProductType[]> = {
   food_glass_paper_metal: ["glass_pack", "paper_metal_pack", "refill", "other"],
   bulk_refill: ["refill"],
-  soap_cosmetics: ["soap_bar", "toothpaste_tabs", "refill", "glass_pack", "paper_metal_pack", "other"],
-  reusables: ["reusable_wrap", "reusable_container", "reusable_cutlery_straw", "other"],
-  household: ["bamboo_toothbrush", "other"],
+  soap_cosmetics: ["soap_bar", "toothpaste_tabs", "toothpaste_tabs_travel", "plastic_free_floss", "refill", "glass_pack", "paper_metal_pack", "other"],
+  reusables: ["reusable_wrap", "reusable_container", "reusable_cutlery_straw", "reusable_bag", "produce_bag", "other"],
+  household: ["bamboo_toothbrush", "natural_sponge", "laundry_pouch", "dryer_balls", "other"],
 };
 /** Categories where the owner picks the type; in the others it follows from the category and the packaging. */
 export const asksType = (c: ProductCategory) => c === "soap_cosmetics" || c === "reusables" || c === "household";

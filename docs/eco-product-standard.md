@@ -84,6 +84,20 @@ First-pass impact reference table. Figures are rough averages to refine later. C
 | Glass instead of plastic | Jars, bottles | 30 | 90 | Plastic jar or bottle avoided |
 | Paper or metal instead of plastic | Packs, tins | 10–20 | 30–60 | Plastic pack avoided |
 
+Rows added on 2026-11-16 (in the app's table; the Claude Doc needs the same rows). Each is "what it replaces, times the plastic in that", with the low end of every range. **The weights are rough web figures, not yet weighed by us, and the use counts are our assumptions**: refine both.
+
+| Category | Example products | Plastic avoided per piece (g) | CO2 avoided (g) | Basis |
+|---|---|---|---|---|
+| Reusable laundry pouch | Magnesium laundry pouch, 300 loads | 420 | 1260 | 300 loads = 6 detergent bottles of 50 loads; an empty 1.5 l bottle is 70–100 g |
+| Wool dryer balls | Set of dryer balls | 150 | 450 | One year at 3 loads a week = about 150 dryer sheets; a used sheet is about 1 g of polyester |
+| Reusable shopping bag | Tote, cloth bag | 310 | 930 | One carrier bag a week for a year = 52 bags of 6–8 g |
+| Reusable produce bag | Mesh bag, each | 100 | 300 | One produce bag a week for a year = 52 bags of 2–4 g |
+| Natural sponge | Luffa dish scrubber | 60 | 180 | Replaces 3 foam scrub sponges of 20–40 g |
+| Plastic-free floss | Floss in glass, per spool | 10 | 30 | One plastic floss case, about 11.5 g |
+| Toothpaste tabs, travel size | Tin of about 14 tabs | 2 | 6 | One small hotel or travel toothpaste tube, 2–3 g empty |
+
+Also decided on 2026-11-16: the figure belongs to the **product type** (one row of these tables), not to category and packaging; a product states its **pieces per pack**, and each piece counts; a **bundle** counts as the products it contains.
+
 Still open:
 
 - Whether a certification-logo bonus is wanted at all, or everything non-visible stays in the certification layer.
