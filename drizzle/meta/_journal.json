@@ -71,6 +71,13 @@
       "when": 1794793026536,
       "tag": "0009_place_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794813025410,
+      "tag": "0010_eco_products",
+      "breakpoints": true
     }
   ]
 }

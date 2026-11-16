@@ -1,10 +1,13 @@
 import { boolean, check, customType, doublePrecision, index, integer, pgTable, primaryKey, serial, text, timestamp, unique, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_SOURCES, PRODUCT_STATUSES } from "./productRules";
 
 // The database schema. Change it here, then run `npm run db:generate` to write a migration into drizzle/ and review the SQL.
 // Migrations run on deploy (`npm run db:migrate`). The app itself never creates or alters tables.
 
 const at = (name: string) => timestamp(name, { withTimezone: true, mode: "string" });
+/** `col IN ('a', 'b')` for a check constraint, from one of the fixed lists. */
+const oneOf = (col: unknown, values: readonly string[]) => sql`${col} IN (${sql.raw(values.map((v) => `'${v}'`).join(", "))})`;
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
 
 export const records = pgTable("records", {
@@ -330,3 +333,73 @@ export const placePhotos = pgTable("place_photos", {
   bytes: bytea().notNull(),
   createdAt: at("created_at").defaultNow().notNull(),
 }, (t) => [index("place_photos_place").on(t.placeId, t.position)]);
+
+// The eco product standard (docs/eco-product-standard.md): what a shop sells without plastic, and what a receipt line of it is worth.
+// The fixed lists live in lib/productRules.ts.
+
+/** A product a shop sells plastic-free. It carries no impact numbers: those are always looked up in impact_factors by category and
+ *  packaging, so an owner has nothing to set or override. */
+export const products = pgTable("products", {
+  id: text().primaryKey(),
+  placeId: text("place_id").notNull(),
+  receiptName: text("receipt_name").notNull(), // exactly as printed on the receipt: the matching key
+  displayName: text("display_name").notNull(),
+  category: text().notNull(),
+  packagingType: text("packaging_type").notNull(),
+  replaces: text(), // the single-use item it replaces, for reusables
+  photoUrl: text("photo_url"),
+  source: text().notNull(),
+  status: text().default("declared").notNull(),
+  createdAt: at("created_at").defaultNow().notNull(),
+}, (t) => [
+  unique("products_receipt_name").on(t.placeId, t.receiptName),
+  check("products_category", oneOf(t.category, PRODUCT_CATEGORIES)),
+  check("products_packaging_type", oneOf(t.packagingType, PACKAGING_TYPES)),
+  check("products_source", oneOf(t.source, PRODUCT_SOURCES)),
+  check("products_status", oneOf(t.status, PRODUCT_STATUSES)),
+]);
+
+/** The same product printed differently on other receipts, so it stays one product. */
+export const productAliases = pgTable("product_aliases", {
+  id: serial().primaryKey(),
+  productId: text("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+  receiptNameVariant: text("receipt_name_variant").notNull(),
+}, (t) => [unique("product_aliases_variant").on(t.productId, t.receiptNameVariant)]);
+
+/** Plastic and CO2 avoided per purchase, by category and packaging. EcoProof AI's own table (seeded by the migration from section 5 of
+ *  the standard): no owner-facing route may write it. A pair without a row is worth nothing. */
+export const impactFactors = pgTable("impact_factors", {
+  category: text().notNull(),
+  packagingType: text("packaging_type").notNull(),
+  plasticG: integer("plastic_g").notNull(),
+  co2G: integer("co2_g").notNull(),
+}, (t) => [
+  primaryKey({ columns: [t.category, t.packagingType], name: "impact_factors_pkey" }),
+  check("impact_factors_category", oneOf(t.category, PRODUCT_CATEGORIES)),
+  check("impact_factors_packaging_type", oneOf(t.packagingType, PACKAGING_TYPES)),
+]);
+
+/** One line of a scanned receipt. A line without a matched product waits in the owner's "Confirm these products?" queue. */
+export const receiptLines = pgTable("receipt_lines", {
+  id: serial().primaryKey(),
+  placeId: text("place_id").notNull(), // the shop the receipt is from: the owner's queue reads by it
+  claimId: text("claim_id"), // records.id of the stamp this receipt earned; null when no line of it counted
+  rawText: text("raw_text").notNull(),
+  price: doublePrecision(),
+  matchedProductId: text("matched_product_id").references(() => products.id, { onDelete: "set null" }),
+  confidence: doublePrecision(), // 1 for an exact or alias match, the fuzzy score otherwise
+  createdAt: at("created_at").defaultNow().notNull(),
+}, (t) => [
+  index("receipt_lines_claim").on(t.claimId),
+  index("receipt_lines_unmatched").on(t.placeId, t.createdAt).where(sql`(matched_product_id IS NULL)`),
+]);
+
+/** A visitor's "Not true" about one product. One per reporter; two confirmed ones remove the product (lib/productRules.ts). */
+export const productReports = pgTable("product_reports", {
+  id: serial().primaryKey(),
+  productId: text("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+  reporterId: text("reporter_id").notNull(), // passport key
+  reason: text().notNull(),
+  confirmed: boolean().default(false).notNull(),
+  createdAt: at("created_at").defaultNow().notNull(),
+}, (t) => [unique("product_reports_reporter").on(t.productId, t.reporterId)]);
