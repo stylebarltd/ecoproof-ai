@@ -166,7 +166,8 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   `woo:<product id>:<variation id>` (`shopKeys` in `lib/match.ts`; the Woo webhook's `product_id` / `variation_id`), so translated
   names and design variations find the product. `GET /api/places/<id>/products` is the public list with what each product counts
   (a shop's own site reads it: superbee.me builds its product pages from it). A long list goes in through "Import a list" in the
-  wizard (`importProducts`, JSON; re-importing keeps what is there and adds the rest).
+  wizard: a CSV file, one product per row (`lib/productCsv.ts`: name, kind, pieces, packaging, other names, contains; the wizard offers a
+  template; a .json list still works), sent on to `importProducts`; re-importing keeps what is there and adds the rest.
   Catalogue sync (plugin 1.4.0, `lib/catalogue.ts`, `catalogue_items`): the plugin's "Send my products to EcoProof AI" posts names,
   numbers and variation labels to `/api/woo/catalogue/<place>` (signed like orders; again a minute after a product save). The AI
   proposes type and pieces (one row per variation when the variations are pack sizes; a translation follows its `main`), and the

@@ -4,7 +4,7 @@ import { unmatchedLines } from "./match";
 import { MAX_PHOTO_BYTES } from "./photoRules";
 import { isJpeg } from "./placePhotos";
 import {
-  isCategory, isPackaging, MAX_ALIASES, MAX_PARTS, MAX_PIECES, MAX_PRODUCTS, PRODUCT_NAME_MAX, typeOf, type Product, type ProductCategory, type ProductSetupState,
+  categoryOfType, isCategory, isPackaging, isType, MAX_ALIASES, MAX_PARTS, MAX_PIECES, MAX_PRODUCTS, PRODUCT_NAME_MAX, typeOf, type Product, type ProductCategory, type ProductSetupState,
 } from "./productRules";
 
 // An eco shop's plastic-free products and their setup (docs/eco-product-standard.md): the owner declares, ticks categories, lists
@@ -250,7 +250,8 @@ export async function publicImpacts(placeId: string): Promise<PublicImpact[]> {
 export type ImportRow = { name?: unknown; category?: unknown; packaging?: unknown; type?: unknown; pieces?: unknown; replaces?: unknown; aliases?: unknown; parts?: unknown };
 
 /**
- * Adds a prepared list in one go: [{ name, category, packaging, type?, pieces?, aliases?: string[], parts?: [{ name, count }] }].
+ * Adds a prepared list in one go: [{ name, packaging, type, category?, pieces?, aliases?: string[], parts?: [{ name, count }] }]
+ * (the wizard reads it from a CSV file, lib/productCsv.ts). Without a category the product goes where its kind is listed.
  * The same rules as adding by hand, one product at a time (still no numbers). A name already on the list is kept as it is and only
  * gets its missing aliases and parts, so a list can be imported again after it grew. Says what happened per line.
  */
@@ -264,7 +265,7 @@ export async function importProducts(placeId: string, rows: unknown): Promise<{ 
     try {
       let id = await idOf(name);
       if (id) report.kept++;
-      else { await addProduct(placeId, { receiptName: name, category: r.category, packagingType: r.packaging, productType: r.type, pieces: r.pieces ?? 1, replaces: r.replaces }); id = (await idOf(name))!; report.added++; }
+      else { await addProduct(placeId, { receiptName: name, category: r.category ?? (isType(r.type) ? categoryOfType(r.type) : undefined), packagingType: r.packaging, productType: r.type, pieces: r.pieces ?? 1, replaces: r.replaces }); id = (await idOf(name))!; report.added++; }
       const have = (await aliasesOf(placeId)).get(id) ?? [];
       for (const a of Array.isArray(r.aliases) ? r.aliases : []) {
         const alias = clean(a, PRODUCT_NAME_MAX);

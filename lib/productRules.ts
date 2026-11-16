@@ -84,6 +84,10 @@ export function typeOf(category: ProductCategory, packaging: PackagingType, pick
   return packaging === "glass" ? "glass_pack" : packaging === "paper" || packaging === "metal" ? "paper_metal_pack" : "other";
 }
 
+/** The category a type is listed under: where a product goes when only its kind is known (a list import, the plugin's catalogue). */
+export const categoryOfType = (t: ProductType): ProductCategory =>
+  PRODUCT_CATEGORIES.find((c) => asksType(c) && TYPES_BY_CATEGORY[c].includes(t)) ?? (t === "refill" ? "bulk_refill" : "food_glass_paper_metal");
+
 export const isType = (v: unknown): v is ProductType => (PRODUCT_TYPES as readonly unknown[]).includes(v);
 export const isCategory = (v: unknown): v is ProductCategory => (PRODUCT_CATEGORIES as readonly unknown[]).includes(v);
 export const isPackaging = (v: unknown): v is PackagingType => (PACKAGING_TYPES as readonly unknown[]).includes(v);

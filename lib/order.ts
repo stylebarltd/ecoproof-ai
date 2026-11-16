@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { query } from "./db";
 import type { LineItem } from "./impact";
 import { matchLines, shopKeys } from "./match";
-import { asksType, isType, PRODUCT_CATEGORIES, PRODUCT_TYPES, TYPE_LABELS, TYPES_BY_CATEGORY, type ProductCategory, type ProductType } from "./productRules";
+import { categoryOfType, isType, PRODUCT_TYPES, TYPE_LABELS, type ProductCategory, type ProductType } from "./productRules";
 
 /**
  * The single entry point to the proof loop. Deliberately small: no prices, no customer personal data.
@@ -86,8 +86,6 @@ const MODEL = process.env.CATEGORY_MODEL ?? "claude-sonnet-5-5";
 
 type Guess = { category: ProductCategory; productType: ProductType; confidence: number };
 
-/** The category a type is listed under, for the line's label. */
-const categoryOf = (t: ProductType): ProductCategory => PRODUCT_CATEGORIES.find((c) => asksType(c) && TYPES_BY_CATEGORY[c].includes(t)) ?? (t === "refill" ? "bulk_refill" : "food_glass_paper_metal");
 
 /** The estimate for lines a shop hasn't listed: the AI says, from the name alone, whether the product is plastic-free and which type
  *  of the impact table it is. Names it isn't sure about, or that fit no type, are left out and count nothing. */
@@ -135,7 +133,7 @@ ${names.map((n, i) => `${i}. ${n}`).join("\n")}`,
     const j = JSON.parse(block && "text" in block ? block.text : "{}") as { lines?: { index: number; type: string; confidence: number }[] };
     for (const l of j.lines ?? []) {
       const name = names[l.index];
-      if (name && isType(l.type) && l.type !== "other") out.set(name, { category: categoryOf(l.type), productType: l.type, confidence: Math.max(0, Math.min(1, Number(l.confidence) || 0)) });
+      if (name && isType(l.type) && l.type !== "other") out.set(name, { category: categoryOfType(l.type), productType: l.type, confidence: Math.max(0, Math.min(1, Number(l.confidence) || 0)) });
     }
   } catch (e) { console.error("line classification failed", e); }
   return out;

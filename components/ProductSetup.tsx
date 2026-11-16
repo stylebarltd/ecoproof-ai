@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Camera, Check, ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { grams } from "@/lib/impact";
+import { CSV_TEMPLATE } from "@/lib/productCsv";
 import {
   asksType, CATEGORY_LABELS, MAX_PIECES, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_NAME_MAX, PRODUCT_TYPES, TYPE_LABELS, TYPES_BY_CATEGORY,
   type PackagingType, type Product, type ProductCategory, type ProductSetupState, type ProductType,
@@ -161,10 +162,10 @@ export default function ProductSetup({ id }: { id: string }) {
             {owner && s.d.catalogue.length > 0 && <CatalogueReview key={s.d.catalogue.map((c) => c.id).join(",")} items={s.d.catalogue} busy={s.busy} report={s.report} onDecide={s.decideCatalogue} />}
             {owner && (
               <div className="mt-3 rounded-2xl bg-honey-300/40 p-3 text-[12.5px] leading-snug text-sage-900">
-                <p><b className="text-ink">Have a product list already?</b> Import it and skip the typing: a .json file with each product&apos;s name, category, packaging, kind, pieces, other names and, for a bundle, its parts.</p>
+                <p><b className="text-ink">Have a product list already?</b> Import it as a CSV file and skip the typing: one row per product with its name, kind, pieces, packaging, other names and, for a bundle, what it contains. <a href={`data:text/csv;charset=utf-8,${encodeURIComponent(CSV_TEMPLATE)}`} download="ecoproof-products-template.csv" className="font-bold underline underline-offset-2">Download the template</a> to see the columns.</p>
                 <label className={`${quiet} mt-2 cursor-pointer ${s.busy ? "pointer-events-none opacity-50" : ""}`}>
-                  {s.busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} strokeWidth={2.8} />} Import a list
-                  <input type="file" accept="application/json,.json" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; s.importList(f).finally(() => { e.target.value = ""; }); }} />
+                  {s.busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} strokeWidth={2.8} />} Import a CSV list
+                  <input type="file" accept=".csv,text/csv,.json,application/json" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; s.importList(f).finally(() => { e.target.value = ""; }); }} />
                 </label>
                 {s.report && (
                   <div className="mt-2" role="status">

@@ -2,8 +2,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { query } from "./db";
 import { addAlias, addProduct, ProductError } from "./products";
 import {
-  asksType, isPackaging, isType, MAX_PIECES, PRODUCT_CATEGORIES, PRODUCT_NAME_MAX, PRODUCT_TYPES, TYPE_LABELS, TYPES_BY_CATEGORY,
-  type ProductCategory, type ProductType,
+  categoryOfType, isPackaging, isType, MAX_PIECES, PRODUCT_NAME_MAX, PRODUCT_TYPES, TYPE_LABELS,
+  type ProductType,
 } from "./productRules";
 
 // A shop's catalogue, sent by its plugin (WooCommerce today), so the owner doesn't type every product: each product arrives with the
@@ -72,7 +72,6 @@ export async function receiveCatalogue(placeId: string, sent: SentProduct[]): Pr
   return { received: sent.length, open: n };
 }
 
-const categoryOf = (t: ProductType): ProductCategory => PRODUCT_CATEGORIES.find((c) => asksType(c) && TYPES_BY_CATEGORY[c].includes(t)) ?? (t === "refill" ? "bulk_refill" : "food_glass_paper_metal");
 
 /**
  * The owner's decision on catalogue rows: `add` puts them on the shop's list with the kind and pieces the owner settled on (the shop
@@ -92,7 +91,7 @@ export async function decideCatalogue(placeId: string, b: { packaging?: unknown;
       if (!isType(a.type)) throw new ProductError("Pick what kind of product it is.");
       const pieces = Number(a.pieces ?? 1);
       if (!Number.isInteger(pieces) || pieces < 1 || pieces > MAX_PIECES) throw new ProductError(`Pieces in the pack is a whole number from 1 to ${MAX_PIECES}.`);
-      const category = categoryOf(a.type);
+      const category = categoryOfType(a.type);
       await addProduct(placeId, { receiptName: item.name, category, packagingType: b.packaging, productType: a.type, pieces });
       const [product] = await query<{ id: string }>("SELECT id FROM products WHERE place_id=$1 AND lower(receipt_name)=lower($2)", [placeId, item.name]);
       await addAlias(placeId, product.id, item.key);

@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { preparePhoto } from "@/lib/clientPhoto";
 import { MAX_PHOTO_BYTES } from "@/lib/photoRules";
+import { productsFromCsv } from "@/lib/productCsv";
 import type { ProductSetupState } from "@/lib/productRules";
 
 /** An eco shop's product setup, loaded from and saved to /api/places/mine/<id>/products. Every change answers with the whole setup. */
@@ -44,12 +45,23 @@ export function useProductSetup(placeId: string) {
 
   return {
     d, state, busy, err, setErr, report,
-    /** A prepared list as a .json file: { products: [...] } or the bare array (lib/products.ts importProducts). */
+    /** A product list as a CSV file (lib/productCsv.ts; a .json file with { products: [...] } still works). Rows the file itself
+     *  gets wrong are reported with the rest. */
     importList: async (f?: File) => {
       if (!f) return false;
-      let products: unknown;
-      try { const j = JSON.parse(await f.text()); products = Array.isArray(j) ? j : j.products; } catch { setErr("That file isn't a product list (JSON)."); return false; }
-      return send("/import", json("POST", { products }));
+      const text = await f.text();
+      let products: unknown, fileProblems: string[] = [];
+      if (/\.json$/i.test(f.name) || /^\s*[[{]/.test(text)) {
+        try { const j = JSON.parse(text); products = Array.isArray(j) ? j : j.products; } catch { setErr("That file isn't a product list."); return false; }
+      } else {
+        const read = productsFromCsv(text);
+        fileProblems = read.problems;
+        if (!read.products.length) { setErr(read.problems[0] ?? "That file has no products."); return false; }
+        products = read.products;
+      }
+      const ok = await send("/import", json("POST", { products }));
+      if (ok && fileProblems.length) setReport((r) => r && { ...r, problems: [...fileProblems, ...r.problems] });
+      return ok;
     },
     saveSetup: (b: { categories?: string[]; refill?: boolean; declared?: true }) => send("/setup", json("PUT", b)),
     addProduct: (b: { receiptName: string; category: string; packagingType: string; productType?: string; pieces?: number; replaces?: string; fromQueue?: boolean }) => send("", json("POST", b)),
