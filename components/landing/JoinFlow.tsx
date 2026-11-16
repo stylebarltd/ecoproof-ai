@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Check, ChevronRight, ImagePlus, Loader2, MapPin } from "lucide-react";
 import { SocialButton, WalletSheet } from "@/components/AccountChip";
+import Postcard, { counterCard, postcardCss } from "@/components/Postcard";
 import { currentAccount, type Social } from "@/lib/account";
 import { announceAccountChange, useAccountChange } from "@/lib/desktop";
 import { hasStars } from "@/lib/practices";
@@ -317,21 +318,23 @@ function Created({ place, onMap, onAnother }: { place: PublicPlace; onMap: boole
     <div className="mx-auto max-w-[560px] text-center">
       <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">{place.name} is set up</h1>
       <p className="mt-4 text-[18px] leading-[1.6] text-cocoa/85">
-        {place.inStore ? `${onMap ? "It's on the map. " : ""}Put the QR where customers can scan it: every scan gives them a stamp.` : "Next, choose how your customers get their stamp: a QR in your order email, printed cards in the parcel, or both."}
+        {place.inStore ? `${onMap ? "It's on the map. " : ""}This is your postcard: print it and put it where customers can scan it. Every scan gives them a stamp.` : "Next, choose how your customers get their stamp: a QR in your order email, printed cards in the parcel, or both."}
       </p>
       <div className={`${card} mt-8`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={place.imageUrl} alt="" width={80} height={80} className="mx-auto" />
-        {place.inStore && (
+        {place.inStore ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={place.qrUrl} alt={`QR code to collect a ${place.name} stamp`} width={200} height={200} className="mx-auto mt-4 rounded-xl bg-white p-2" />
-            <p className={`${note} mt-3 hidden lg:block`}>Try it: scan this QR with your phone&apos;s camera to see what customers see.</p>
+            {/* The real postcard (components/Postcard.tsx), as it prints: a customer should not meet a bare QR, and neither should the owner. */}
+            <style>{postcardCss({ cols: 2, rows: 2 })}</style>
+            <div className="sheet text-left"><Postcard {...counterCard(place, place.qrUrl)} /></div>
+            <p className={`${note} mt-4 hidden lg:block`}>Try it: scan the QR with your phone&apos;s camera to see what customers see.</p>
           </>
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={place.imageUrl} alt="" width={80} height={80} className="mx-auto" />
         )}
         <div className="mt-6 space-y-3">
           {place.inStore
-            ? <Link href={`/place/${place.id}`} className={honey}>Print your counter card <ArrowRight size={18} aria-hidden /></Link>
+            ? <Link href={`/place/${place.id}`} className={honey}>Print your postcard <ArrowRight size={18} aria-hidden /></Link>
             : <Link href={`/shop/${place.id}`} className={honey}>Connect your online shop <ArrowRight size={18} aria-hidden /></Link>}
           {stars && <Link href={`/shop/${place.id}/practices`} className={ink}>Tick your eco practices to earn stars</Link>}
           {isShop(place.kind) && <Link href={`/shop/${place.id}/products`} className={ink}>Add your plastic-free products</Link>}

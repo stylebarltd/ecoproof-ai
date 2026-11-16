@@ -1,16 +1,28 @@
-import QRCode from "qrcode";
 import { LeafMark } from "@/components/Logo";
 import Stars from "@/components/Stars";
 import { SAGE } from "@/lib/brand";
 
-// The printed card that explains EcoProof AI next to a claim QR: a place's postcard for the counter (app/(app)/place/[id]) and the cards
-// an online shop puts in its parcels (app/(app)/place/[id]/cards). One design; every measure inside is in cqw (1% of the card's width),
-// so it prints at any size. The card has a fixed height: new text must fit, check the print PDF.
+// The printed card that explains EcoProof AI next to a claim QR: a place's postcard for the counter (app/(app)/place/[id], and the
+// "set up" screen of /join) and the cards an online shop puts in its parcels (app/(app)/place/[id]/cards). One design; every measure
+// inside is in cqw (1% of the card's width), so it prints at any size. The card has a fixed height: new text must fit, check the print
+// PDF. The QR for print comes from lib/qrImage.ts.
 
-/** A claim link as a QR for print (an inline SVG image, in the card's ink). */
-export async function qrImage(url: string): Promise<string> {
-  const svg = await QRCode.toString(url, { type: "svg", margin: 0, errorCorrectionLevel: "Q", color: { dark: "#3a2a1c", light: "#ffffff" } });
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+/** What the customer did here, in the counter postcard's headline: "Collect an eco stamp for your stay". */
+const HERE: Record<string, string> = { cafe: "visit", restaurant: "meal", hotel: "stay", eco_shop: "visit" };
+
+/** The counter postcard of a place: what EcoProof AI is, why to scan, and the claim QR. `qr` is the QR image's address. */
+export function counterCard(place: { name: string; kind: string; imageUrl: string; requiresGps: boolean }, qr: string, stars?: number): PostcardProps {
+  return {
+    mark: "Eco passport",
+    headline: `Collect an eco stamp for your ${HERE[place.kind] ?? "visit"}`,
+    place: { name: place.name, imageUrl: place.imageUrl, stars },
+    qr,
+    steps: [
+      ["Scan the code", "with your phone's camera. No app to install, no sign-up."],
+      ["Get your stamp", place.requiresGps ? "in your free eco passport. One a day, and we check you're really here." : "in your free eco passport. You can collect one a day here."],
+      ["Meet your Bee Guardian", "Your first stamp unlocks it, and it levels up as you visit more eco places."],
+    ],
+  };
 }
 
 export type PostcardProps = {

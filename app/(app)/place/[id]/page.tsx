@@ -1,18 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { journalFonts } from "@/components/landing/fonts";
-import Postcard, { postcardCss, qrImage } from "@/components/Postcard";
+import Postcard, { counterCard, postcardCss } from "@/components/Postcard";
 import PrintButton from "@/components/PrintButton";
 import { declarationsOf, publishedAnswers } from "@/lib/declarations";
 import { rating } from "@/lib/practices";
-import type { PlaceKind } from "@/lib/placeKinds";
+import { qrImage } from "@/lib/qrImage";
 import { getPlace, toPublic } from "@/lib/stampPlaces";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Print your postcard | EcoProof AI", robots: { index: false } };
-
-/** What the customer did here, in the postcard's headline: "Collect an eco stamp for your stay". */
-const HERE: Record<PlaceKind, string> = { cafe: "visit", restaurant: "meal", hotel: "stay", eco_shop: "visit" };
 
 /**
  * The place's postcard for the counter or the table: what EcoProof AI is, why to scan, and the claim QR (components/Postcard.tsx). A
@@ -25,19 +22,7 @@ export default async function PlacePostcard({ params, searchParams }: { params: 
   const poster = (await searchParams).size === "a4";
   const p = toPublic(place);
   const r = rating(place.kind, place.also_cafe, publishedAnswers(place, (await declarationsOf(place.id))[0]));
-  const card = (
-    <Postcard
-      mark="Eco passport"
-      headline={`Collect an eco stamp for your ${HERE[place.kind as PlaceKind] ?? "visit"}`}
-      place={{ name: place.name, imageUrl: p.imageUrl, stars: r?.stars }}
-      qr={await qrImage(p.claimUrl)}
-      steps={[
-        ["Scan the code", "with your phone's camera. No app to install, no sign-up."],
-        ["Get your stamp", p.requiresGps ? "in your free eco passport. One a day, and we check you're really here." : "in your free eco passport. You can collect one a day here."],
-        ["Meet your Bee Guardian", "Your first stamp unlocks it, and it levels up as you visit more eco places."],
-      ]}
-    />
-  );
+  const card = <Postcard {...counterCard(p, await qrImage(p.claimUrl), r?.stars)} />;
 
   const tab = (on: boolean) => `rounded-full px-3 py-1.5 text-xs font-bold ${on ? "bg-sage-500 text-cream" : "text-sage-900"}`;
   return (
