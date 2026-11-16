@@ -5,7 +5,7 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 
 Every paid order earns the customer a verified eco stamp in their EcoProof AI passport, proven on Solana.
@@ -16,7 +16,7 @@ When an order is paid, the plugin tells EcoProof AI which products were bought, 
 
 Where the numbers come from:
 
-* You list what you sell without plastic packaging in your EcoProof AI dashboard ("Plastic-free products"), by the product's name as it appears in your orders, with its kind and packaging. You never enter a number.
+* "Send my products to EcoProof AI" (WooCommerce > Settings > EcoProof AI) sends your product names and numbers. EcoProof AI proposes what kind each product is and how many pieces a pack holds; you check them in your EcoProof AI dashboard ("Plastic-free products") and add them to your list. You never enter a number. New and renamed products are sent again by themselves.
 * EcoProof AI counts a fixed amount of plastic and CO2 avoided for each kind of product and packaging, the same for every shop.
 * A product you haven't listed yet is estimated from its name and shown to the customer as an estimate. It then waits in your dashboard ("Confirm these products?") for you to confirm it or say it isn't plastic-free.
 
@@ -28,7 +28,7 @@ Where the customer sees it (each can be switched on or off):
 * The `[ecoproof_stamp]` shortcode, to place it yourself. FunnelKit: an HTML or Text block with `[ecoproof_stamp]`; it finds the order by itself (turn off "Email builders" then, or the stamp shows twice). Other builders: `[ecoproof_stamp order_id="..."]`, or hook `ecoproof_shortcode_order_id`. `part="url"` returns the link, `part="qr"` the QR image URL.
 * The order-received page and the order in My account.
 
-Privacy: only the order id, status, product ids, names and quantities are sent. Never customer details or prices. Refunded, cancelled or failed orders void a stamp nobody has collected.
+Privacy: for orders, only the order id, status, product ids, names and quantities are sent; for the product list, only product numbers, names and variation labels. Never customer details or prices. Refunded, cancelled or failed orders void a stamp nobody has collected.
 
 == Installation ==
 
@@ -44,12 +44,17 @@ The connection can also be set in wp-config.php, which keeps the secret out of t
 == Developers ==
 
 * `ecoproof_stamp_html` filter: change the stamp block's HTML.
+* `ecoproof_main_product_id` filter ( $main_id, WC_Product $product ): which product a translation belongs to, for translation setups other than WPML and Polylang.
 * `ecoproof_shortcode_order_id` filter: tell the shortcode which order an email builder is rendering.
 * `ECOPROOF_URL` constant: point the plugin at another EcoProof AI server (local development). There is no settings field; the default is https://ecoproofai.com.
 * `ECOPROOF_API_URL` constant: where the server sends orders, when it reaches EcoProof AI by another address than customers do (local development).
 * Logs: WooCommerce > Status > Logs, source "ecoproof".
 
 == Changelog ==
+
+= 1.4.0 =
+* "Send my products to EcoProof AI": your product list goes to EcoProof AI with a proposal for each product, so you confirm instead of typing. Translations (WPML, Polylang, or the `ecoproof_main_product_id` filter) follow their main product.
+* Orders carry the variation number, so variations with different pack sizes count right.
 
 = 1.3.0 =
 * Impact is counted by EcoProof AI in grams of plastic and CO2, from the products you list in your EcoProof AI dashboard. The per-product estimates and numbers in WooCommerce (Product data > EcoProof AI, "Estimate all products", the Products column) are gone: no shop sets its own numbers any more.

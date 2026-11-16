@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Camera, Check, ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { grams } from "@/lib/impact";
 import {
-  asksType, CATEGORY_LABELS, MAX_PIECES, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_NAME_MAX, TYPE_LABELS, TYPES_BY_CATEGORY,
+  asksType, CATEGORY_LABELS, MAX_PIECES, PACKAGING_LABELS, PACKAGING_TYPES, PRODUCT_CATEGORIES, PRODUCT_NAME_MAX, PRODUCT_TYPES, TYPE_LABELS, TYPES_BY_CATEGORY,
   type PackagingType, type Product, type ProductCategory, type ProductSetupState, type ProductType,
 } from "@/lib/productRules";
 import { useProductSetup } from "./useProductSetup";
@@ -158,6 +158,7 @@ export default function ProductSetup({ id }: { id: string }) {
           <>
             <h2 className="text-[17px] leading-tight">Your products</h2>
             <p className="mt-1 text-[12.5px] leading-snug text-sage-900">Add your main products, each with its name <b>exactly as your receipt prints it</b>: that name is how a customer&apos;s receipt finds it. You don&apos;t enter any impact numbers: each kind of product has a fixed figure from EcoProof AI, counted once per piece in the pack.</p>
+            {owner && s.d.catalogue.length > 0 && <CatalogueReview key={s.d.catalogue.map((c) => c.id).join(",")} items={s.d.catalogue} busy={s.busy} report={s.report} onDecide={s.decideCatalogue} />}
             {owner && (
               <div className="mt-3 rounded-2xl bg-honey-300/40 p-3 text-[12.5px] leading-snug text-sage-900">
                 <p><b className="text-ink">Have a product list already?</b> Import it and skip the typing: a .json file with each product&apos;s name, category, packaging, kind, pieces, other names and, for a bundle, its parts.</p>
@@ -246,6 +247,12 @@ function Bundle({ product, all, busy, onPart }: { product: Product; all: Product
   );
 }
 
+/** "woo:105" and "woo:102:1021" are the shop system's own numbers for the product (lib/match.ts shopKeys): said in words. */
+function shopNumber(alias: string): string | null {
+  const m = /^woo:(\d+)(?::(\d+))?$/.exec(alias);
+  return m ? `Shop product #${m[1]}${m[2] ? `, variation #${m[2]}` : ""}` : null;
+}
+
 /** A product's other printed names: the same product in another language, on the till, or under an old name. */
 function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; owner: boolean; busy: boolean; onAdd: (name: string) => Promise<boolean>; onRemove: (name: string) => Promise<boolean> }) {
   const [open, setOpen] = useState(false);
@@ -256,7 +263,7 @@ function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; 
       {product.aliases.length > 0 && <span>Also printed as</span>}
       {product.aliases.map((a) => (
         <span key={a} className="inline-flex items-center gap-1 rounded-full bg-sage-200/70 py-0.5 pl-2 pr-1 font-bold text-ink">
-          {a}
+          {shopNumber(a) ?? a}
           {owner && <button type="button" disabled={busy} onClick={() => onRemove(a)} aria-label={`Remove the name ${a}`} className="flex h-4 w-4 items-center justify-center rounded-full bg-ink/10"><X size={10} strokeWidth={3} /></button>}
         </span>
       ))}
@@ -267,6 +274,63 @@ function Aliases({ product, owner, busy, onAdd, onRemove }: { product: Product; 
           <button type="button" onClick={() => setOpen(false)} className="rounded-full px-2 py-1.5 text-[11.5px] font-bold">Cancel</button>
         </form>
       ) : <button type="button" onClick={() => setOpen(true)} className="font-bold underline underline-offset-2">{product.aliases.length ? "Add another name" : "Printed under another name too?"}</button>)}
+    </div>
+  );
+}
+
+/**
+ * The products the shop's plugin sent, each with EcoProof AI's proposal for its kind and pieces. The owner corrects what is wrong, unticks
+ * what isn't sold without plastic, says how they are packed, and adds them in one go. Nothing is on the list before that.
+ */
+function CatalogueReview({ items, busy, report, onDecide }: {
+  items: ProductSetupState["catalogue"]; busy: boolean; report: { added: number; problems: string[] } | null;
+  onDecide: (b: { packaging?: string; add?: { id: number; type: string; pieces: number }[]; skip?: number[] }) => Promise<boolean>;
+}) {
+  const [rows, setRows] = useState(() => items.map((c) => ({ ...c, on: c.type !== null, pick: (c.type ?? "") as ProductType | "" })));
+  const [packaging, setPackaging] = useState<PackagingType | "">("");
+  const set = (id: number, patch: Partial<(typeof rows)[number]>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  const chosen = rows.filter((r) => r.on);
+  const ready = chosen.length > 0 && !!packaging && chosen.every((r) => r.pick);
+  const types = PRODUCT_TYPES;
+  return (
+    <div className="mt-3 rounded-2xl bg-honey-300/40 p-3">
+      <h3 className="text-[14px] font-bold leading-tight">From your shop: {items.length} product{items.length === 1 ? "" : "s"} to check</h3>
+      <p className="mt-0.5 text-[12.5px] leading-snug text-sage-900">Your shop sent its products. EcoProof AI filled in what each one looks like; correct it where it is wrong and untick anything you don&apos;t sell without plastic packaging. Nothing is on your list until you add it.</p>
+      <ul className="mt-2 space-y-1.5">
+        {rows.map((r) => (
+          <li key={r.id} className={`rounded-xl bg-white/80 p-2 ${r.on ? "" : "opacity-60"}`}>
+            <label className="flex cursor-pointer items-start gap-2 text-[13px] font-bold leading-snug">
+              <input type="checkbox" className="mt-0.5 h-4 w-4 shrink-0 accent-sage-700" checked={r.on} onChange={(e) => set(r.id, { on: e.target.checked })} />
+              <span className="min-w-0 break-words">{r.name}</span>
+            </label>
+            {r.on && (
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-6 text-[11.5px] text-sage-900">
+                <select value={r.pick} onChange={(e) => set(r.id, { pick: e.target.value as ProductType | "" })} aria-label={`What kind of product ${r.name} is`} className={`${small} min-w-0 flex-1`}>
+                  <option value="">What is it?…</option>
+                  {types.map((t) => <option key={t} value={t}>{TYPE_LABELS[t].label}</option>)}
+                </select>
+                <label className="flex items-center gap-1.5">Pieces
+                  <input type="number" min={1} max={MAX_PIECES} value={r.pieces} onChange={(e) => set(r.id, { pieces: Math.min(MAX_PIECES, Math.max(1, Math.round(Number(e.target.value)) || 1)) })} className={`${small} w-14`} />
+                </label>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-2.5 flex flex-wrap items-center gap-2">
+        <select value={packaging} onChange={(e) => setPackaging(e.target.value as PackagingType | "")} aria-label="How these products are packed" className={`${small} min-w-0 flex-1`}>
+          <option value="">How are they packed?…</option>
+          {PACKAGING_TYPES.map((t) => <option key={t} value={t}>{PACKAGING_LABELS[t]}</option>)}
+        </select>
+        <button type="button" disabled={busy || !ready} onClick={() => onDecide({ packaging, add: chosen.map((r) => ({ id: r.id, type: r.pick as string, pieces: r.pieces })) })} className={primary}>
+          {busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} strokeWidth={2.8} />} Add {chosen.length} to my list
+        </button>
+      </div>
+      <p className="mt-1.5 text-[11.5px] leading-snug text-sage-900">
+        Products packed differently? Tick one kind of packaging at a time: the unticked ones stay here for the next round.
+        {rows.some((r) => !r.on) && <> <button type="button" disabled={busy} onClick={() => onDecide({ skip: rows.filter((r) => !r.on).map((r) => r.id) })} className="font-bold underline underline-offset-2">Leave out the {rows.filter((r) => !r.on).length} unticked for good</button></>}
+      </p>
+      {report && report.problems.length > 0 && <ul className="mt-1.5 list-disc space-y-0.5 pl-5 text-[11.5px] text-terra-800">{report.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
     </div>
   );
 }

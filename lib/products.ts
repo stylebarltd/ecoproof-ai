@@ -49,7 +49,7 @@ const claimLines = (placeId: string, productId: string, name: string) =>
 
 /** Everything the setup wizard and the dashboard show. */
 export async function productSetup(placeId: string, role: "owner" | "staff"): Promise<ProductSetupState> {
-  const [[place], products, queue, sample, factors, aliases, parts] = await Promise.all([
+  const [[place], products, queue, sample, factors, aliases, parts, catalogue] = await Promise.all([
     query<{ product_categories: string[]; refill: boolean | null; products_declared_at: string | null; in_store: boolean }>(
       "SELECT product_categories, refill, products_declared_at::text, (lat IS NOT NULL) AS in_store FROM stamp_places WHERE id=$1", [placeId],
     ),
@@ -61,6 +61,10 @@ export async function productSetup(placeId: string, role: "owner" | "staff"): Pr
     query<{ product_id: string; part_id: string; name: string; count: number }>(
       "SELECT pp.product_id, pp.part_id, part.receipt_name AS name, pp.count FROM product_parts pp JOIN products part ON part.id = pp.part_id WHERE part.place_id=$1 AND part.status <> 'removed' ORDER BY lower(part.receipt_name)", [placeId],
     ),
+    // What the shop's plugin sent and the owner hasn't decided yet (lib/catalogue.ts; read here because that file builds on this one).
+    query<{ id: number; key: string; name: string; proposed_type: string | null; proposed_pieces: number }>(
+      "SELECT id, key, name, proposed_type, proposed_pieces FROM catalogue_items WHERE place_id=$1 AND state='open' AND main_key IS NULL ORDER BY (proposed_type IS NULL), lower(name) LIMIT 300", [placeId],
+    ),
   ]);
   return {
     role,
@@ -69,6 +73,7 @@ export async function productSetup(placeId: string, role: "owner" | "staff"): Pr
     factors: Object.fromEntries(factors.map((f) => [f.product_type, { plasticG: f.plastic_g, co2G: f.co2_g }])),
     // No customer photo path yet: a queued line has no photo until the app asks the scanner for one.
     queue: queue.map((q) => ({ ...q, photoUrl: null })),
+    catalogue: catalogue.map((c) => ({ id: c.id, key: c.key, name: c.name, type: (c.proposed_type as Product["productType"] | null), pieces: c.proposed_pieces })),
   };
 }
 

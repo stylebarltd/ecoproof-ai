@@ -419,3 +419,22 @@ export const receiptSamples = pgTable("receipt_samples", {
   bytes: bytea().notNull(),
   createdAt: at("created_at").defaultNow().notNull(),
 });
+
+/** What a shop's plugin sent of its catalogue (lib/catalogue.ts): one row per product, or per variation when the variations are
+ *  different pack sizes. It is a proposal for the owner to confirm, never a declared product: `proposed_type` and `proposed_pieces`
+ *  are the AI's reading of the name (null type = it doesn't look plastic-free). `key` is the shop system's number ("woo:80318",
+ *  "woo:80318:91234"); `main_key` says the row is a translation of that product. */
+export const catalogueItems = pgTable("catalogue_items", {
+  id: serial().primaryKey(),
+  placeId: text("place_id").notNull(),
+  key: text().notNull(),
+  name: text().notNull(),
+  mainKey: text("main_key"),
+  proposedType: text("proposed_type"),
+  proposedPieces: integer("proposed_pieces").default(1).notNull(),
+  state: text().default("open").notNull(), // open | added | skipped
+  updatedAt: at("updated_at").defaultNow().notNull(),
+}, (t) => [
+  unique("catalogue_items_key").on(t.placeId, t.key),
+  check("catalogue_items_state", sql`${t.state} IN ('open', 'added', 'skipped')`),
+]);

@@ -167,6 +167,10 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   names and design variations find the product. `GET /api/places/<id>/products` is the public list with what each product counts
   (a shop's own site reads it: superbee.me builds its product pages from it). A long list goes in through "Import a list" in the
   wizard (`importProducts`, JSON; re-importing keeps what is there and adds the rest).
+  Catalogue sync (plugin 1.4.0, `lib/catalogue.ts`, `catalogue_items`): the plugin's "Send my products to EcoProof AI" posts names,
+  numbers and variation labels to `/api/woo/catalogue/<place>` (signed like orders; again a minute after a product save). The AI
+  proposes type and pieces (one row per variation when the variations are pack sizes; a translation follows its `main`), and the
+  owner confirms in the wizard ("From your shop": tick, correct, say the packaging, add). A proposal is never a declared product.
   Bundles (`product_parts`): a product can contain counts of other listed products and then counts as their sum (no nesting; a part
   removed after reports stops counting inside it).
   Records keep the old columns: `packaging_g` = grams of plastic, `co2_kg` to the gram, `plastic_items` always 0 (it is part of the

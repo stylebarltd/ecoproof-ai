@@ -79,9 +79,10 @@ class EcoProof_Orders {
 		foreach ( $order->get_items() as $item ) {
 			if ( $item instanceof WC_Order_Item_Product ) {
 				$items[] = array(
-					'name'       => $item->get_name(),
-					'quantity'   => (int) $item->get_quantity(),
-					'product_id' => (int) $item->get_product_id(),
+					'name'         => $item->get_name(),
+					'quantity'     => (int) $item->get_quantity(),
+					'product_id'   => (int) $item->get_product_id(),
+					'variation_id' => (int) $item->get_variation_id(), // with product_id, how EcoProof AI finds the product whatever the line is called
 				);
 			}
 		}

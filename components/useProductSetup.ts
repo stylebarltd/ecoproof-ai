@@ -58,6 +58,8 @@ export function useProductSetup(placeId: string) {
     addAlias: (id: string, name: string) => send(`/${encodeURIComponent(id)}/aliases`, json("POST", { name })),
     removeAlias: (id: string, name: string) => send(`/${encodeURIComponent(id)}/aliases?name=${encodeURIComponent(name)}`, { method: "DELETE" }),
     setPart: (id: string, partId: string, count: number) => send(`/${encodeURIComponent(id)}/parts`, json("PUT", { partId, count })),
+    /** The owner's decision on products the shop's plugin sent (lib/catalogue.ts). */
+    decideCatalogue: (b: { packaging?: string; add?: { id: number; type: string; pieces: number }[]; skip?: number[] }) => send("/catalogue", json("POST", b)),
     dismiss: (rawText: string) => send("/queue", json("POST", { dismiss: rawText })),
     sample: (f?: File) => photo("/sample", f),
     productPhoto: (id: string, f?: File) => photo(`/${encodeURIComponent(id)}/photo`, f),

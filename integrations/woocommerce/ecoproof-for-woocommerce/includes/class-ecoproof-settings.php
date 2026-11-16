@@ -21,6 +21,7 @@ class EcoProof_Settings {
 		add_action( 'woocommerce_settings_' . self::TAB, array( __CLASS__, 'output' ) );
 		add_action( 'woocommerce_update_options_' . self::TAB, array( __CLASS__, 'save' ) );
 		add_action( 'admin_post_ecoproof_test', array( __CLASS__, 'test_connection' ) );
+		add_action( 'admin_post_ecoproof_catalogue', array( __CLASS__, 'send_catalogue' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'notices' ) );
 	}
 
@@ -150,12 +151,36 @@ class EcoProof_Settings {
 			echo '<p><a class="button" href="' . esc_url( $url ) . '">' . esc_html__( 'Test connection', 'ecoproof-for-woocommerce' ) . '</a> ';
 			esc_html_e( 'Sends a signed test message to EcoProof AI (save your changes first).', 'ecoproof-for-woocommerce' );
 			echo '</p>';
+			$list = wp_nonce_url( admin_url( 'admin-post.php?action=ecoproof_catalogue' ), 'ecoproof_catalogue' );
+			echo '<h2>' . esc_html__( 'Your products in EcoProof AI', 'ecoproof-for-woocommerce' ) . '</h2>';
+			echo '<p>' . esc_html__( 'EcoProof AI counts the plastic and CO2 an order avoids from the products you list there. Send your product names and numbers, and EcoProof AI proposes what each one is; you then check and add them in your EcoProof AI dashboard. Only names and numbers are sent, never prices or stock. New and renamed products are sent again by themselves.', 'ecoproof-for-woocommerce' ) . '</p>';
+			echo '<p><a class="button button-primary" href="' . esc_url( $list ) . '">' . esc_html__( 'Send my products to EcoProof AI', 'ecoproof-for-woocommerce' ) . '</a></p>';
 		}
 	}
 
 	public static function save() {
 		$fields = array_filter( self::fields(), fn( $f ) => isset( $f['id'] ) && empty( $f['custom_attributes']['disabled'] ) && ! in_array( $f['type'], array( 'title', 'sectionend' ), true ) );
 		WC_Admin_Settings::save_fields( $fields );
+	}
+
+	/** Sends the product list to EcoProof AI and says how many products are waiting there for the owner. */
+	public static function send_catalogue() {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to do that.', 'ecoproof-for-woocommerce' ) );
+		}
+		check_admin_referer( 'ecoproof_catalogue' );
+
+		$sent = EcoProof_Catalogue::send();
+		if ( is_wp_error( $sent ) ) {
+			/* translators: %s: error message or HTTP status */
+			$result = array( 'error', sprintf( __( 'Could not send your products to EcoProof AI (%s).', 'ecoproof-for-woocommerce' ), $sent->get_error_message() ) );
+		} else {
+			/* translators: 1: products sent, 2: products waiting for the owner in EcoProof AI */
+			$result = array( 'success', sprintf( __( 'Sent %1$d products. %2$d are waiting in your EcoProof AI dashboard under "Plastic-free products": check them there and add them to your list.', 'ecoproof-for-woocommerce' ), (int) ( $sent['received'] ?? 0 ), (int) ( $sent['open'] ?? 0 ) ) );
+		}
+		set_transient( 'ecoproof_test_' . get_current_user_id(), $result, 60 );
+		wp_safe_redirect( admin_url( 'admin.php?page=wc-settings&tab=' . self::TAB ) );
+		exit;
 	}
 
 	/** Sends a signed, non-order message: EcoProof AI answers 200 only if the place exists and the signature is right. */

@@ -3,7 +3,7 @@
  * Plugin Name:          EcoProof AI for WooCommerce
  * Plugin URI:           https://github.com/stylebarltd/ecoproof-ai
  * Description:          Gives every paid order a verified EcoProof AI eco stamp: the order's real impact goes into the customer's eco passport, proven on Solana. Adds a "Collect your eco stamp" button and QR to your order emails.
- * Version:              1.3.0
+ * Version:              1.4.0
  * Requires at least:    6.5
  * Requires PHP:         7.4
  * Requires Plugins:     woocommerce
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECOPROOF_WC_VERSION', '1.3.0' );
+define( 'ECOPROOF_WC_VERSION', '1.4.0' );
 define( 'ECOPROOF_WC_FILE', __FILE__ );
 define( 'ECOPROOF_WC_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -42,9 +42,11 @@ add_action(
 		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-stamp.php';
 		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-orders.php';
 		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-display.php';
+		require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-catalogue.php';
 
 		EcoProof_Orders::register();
 		EcoProof_Display::register();
+		EcoProof_Catalogue::register();
 
 		if ( is_admin() ) {
 			require_once ECOPROOF_WC_DIR . 'includes/class-ecoproof-settings.php';

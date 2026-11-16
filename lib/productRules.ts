@@ -109,6 +109,8 @@ export type ProductSetupState = {
   products: Product[];
   /** EcoProof AI's impact figure per product type, in grams per piece; a type without one is listed but counts nothing yet. */
   factors: Partial<Record<ProductType, { plasticG: number; co2G: number }>>;
+  /** products the shop's plugin sent, with the AI's proposal, waiting for the owner (type null = it doesn't look plastic-free) */
+  catalogue: { id: number; key: string; name: string; type: ProductType | null; pieces: number }[];
   /** receipt lines customers scanned that match no product yet */
   queue: { rawText: string; times: number; lastSeen: string; photoUrl: string | null }[];
 };
