@@ -130,7 +130,6 @@ function RecordCard({ r }: { r: LandingRecord }) {
       {/* Durability is the headline (critique run 8): the point of a record is that it hasn't changed since the day it was written. */}
       <p className="font-stamp text-[15px] uppercase tracking-[0.12em] text-sky-ink">Verified purchase · {r.merchant}</p>
       <p className="mt-1 font-journal-display text-[24px] font-bold leading-tight sm:text-[26px]">Unchanged since {fmtDate(r.date)}</p>
-      <p className="mt-1 text-[13px] font-bold text-cocoa/80">Fingerprinted on Solana the day it was written. The check below compares it again, now.</p>
       <ul className="mt-3 divide-y divide-cocoa/10 border-y border-cocoa/10">
         {r.items.slice(0, 4).map((it, i) => (
           <li key={i} className="flex items-baseline gap-3 py-2 text-[15px]"><span className="w-7 shrink-0 font-extrabold text-cocoa/80">{it.quantity}×</span><span className="min-w-0 flex-1 truncate font-bold">{it.name}</span></li>
@@ -146,7 +145,7 @@ function RecordCard({ r }: { r: LandingRecord }) {
       </dl>
       </details>
       <CheckRecord id={r.id} />
-      <p className="mt-3 text-[13px] font-bold text-cocoa/80"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link> · {r.recent ? "the newest proof in the system, whoever made it" : "a real proof from the system, checkable any time"}</p>
+      <p className="mt-3 text-[13px] font-bold text-cocoa/80"><Link href={`/p/${r.id}`} className="underline decoration-sky decoration-2 underline-offset-2">Open the full record</Link></p>
     </div>
   );
 }
@@ -197,12 +196,26 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
  *  the product). Set NEXT_PUBLIC_LANDING_HERO to switch; the copy is the same in all three. */
 const HERO = (process.env.NEXT_PUBLIC_LANDING_HERO ?? "island") as "island" | "cards" | "proof";
 
+/** "Solana blockchain" with a plain-words explanation for readers who have never heard of it. No script: it opens on hover, on keyboard
+ *  focus and on a tap (the tap focuses it). The bubble is placed against the paragraph (the nearest positioned parent), not the words, so
+ *  it never runs off a phone screen. */
+function SolanaTip() {
+  return (
+    <span tabIndex={0} aria-describedby="solana-tip" className="group cursor-help rounded-sm font-bold underline decoration-sky decoration-dotted decoration-[3px] underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-sky">
+      Solana blockchain
+      <span id="solana-tip" role="tooltip" className="pointer-events-none invisible absolute left-1/2 top-full z-20 mt-2 block w-[min(340px,100%)] -translate-x-1/2 rounded-[14px] bg-cocoa px-4 py-3 text-left text-[14px] font-semibold leading-[1.5] text-paper opacity-0 shadow-[0_12px_28px_rgba(58,42,28,0.35)] transition-opacity group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100">
+        Solana is a public record book kept by many independent computers, not by one company. What is written there can&apos;t be changed afterwards. Your customers need no wallet and no coins.
+      </span>
+    </span>
+  );
+}
+
 /** The hero's words and actions, shared by every hero. `center` for the island, where the copy sits in the sky. */
 function HeroCopy({ center }: { center?: boolean }) {
   return (
     <>
       <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco promise, proven by every customer. <span className="text-honey-ink">Verified, not claimed.</span></h1>
-      <p className={`${center ? "mx-auto " : ""}mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit or order becomes a stamp in your customer&apos;s eco passport, with an estimate of the plastic and CO₂ it saved, written to Solana so nobody can fake it. They share it; you get the credit.</p>
+      <p className={`${center ? "mx-auto " : ""}relative mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit or order becomes a stamp in your customer&apos;s eco passport, written to the <SolanaTip /> so nobody can fake it. They share it; you get the credit.</p>
       <div className={`mt-7 flex flex-col items-center gap-3 sm:flex-row sm:gap-5 ${center ? "justify-center" : ""}`}>
         <Primary href="/join">Join as a business <ArrowRight size={18} /></Primary>
         <Link href={demoPassport().href} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">{demoPassport().label}</Link>
@@ -220,11 +233,11 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
   const doors = [
     { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `A stamp for each visit, ${pointsLabel(POINTS_BY_KIND.cafe)}, once a day`,
-      you: "An eco star rating and a map pin, and regulars who have a reason to keep coming back.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
+      you: "Eco stars, a map pin, and regulars with a reason to come back.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
     { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `A stamp for each stay, ${pointsLabel(POINTS_BY_KIND.hotel)}`,
-      you: "An eco star rating from your published practices checklist, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
-    { img: "store", kind: "eco_shop", title: "Eco shop", join: "an eco shop", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified online order, with what it saved; ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
-      you: "A public impact page that adds up every order, a listing in the eco shops directory, and referrals from cafés' and hotels' checklists.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
+      you: "Eco stars from the practices you publish, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
+    { img: "store", kind: "eco_shop", title: "Eco shop", join: "an eco shop", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified order, ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
+      you: "A public impact page that adds up every order, and a place in the eco shops directory.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
   ];
   return (
     <div className={`journal grain min-h-screen ${journalFonts}`}>
@@ -271,7 +284,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       <Section className="pb-12">
         <div className="border-y border-cocoa/10 py-6">
           <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[14px] font-bold text-cocoa/80">
-            <li className="inline-flex items-center gap-1.5"><Trophy size={14} aria-hidden /> Winner · Best Use of Solana, Colosseum Chiang Mai 2026</li>
+            <li className="inline-flex items-center gap-1.5"><Trophy size={14} aria-hidden /> Winner · Best Use of Solana, Superteam TH (Colosseum), Chiang Mai 2026</li>
             <li>Made in Chiang Mai, Thailand</li>
           </ul>
         </div>
@@ -280,12 +293,12 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
       <Section id="proof" className="py-12 lg:py-20">
         <H2>Anyone can print a green badge</H2>
-        <Lead>EcoProof AI doesn&apos;t grade your marketing. It records what actually happened, one order at a time, and lets anyone check the record.</Lead>
+        <Lead>EcoProof AI records what actually happened, one order at a time. Anyone can check it.</Lead>
         <div className="mt-8 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
           <div className="flex flex-col items-center rounded-[18px] border-2 border-dashed border-cocoa/25 px-6 py-8 text-center">
             <FakeSticker />
             <p className="mt-6 text-[15px] font-extrabold">A claim</p>
-            <p className="mt-1 max-w-[300px] text-[15px] leading-[1.6] text-cocoa/80">Printed in a minute. Says nothing about any one order or visit. Nobody can check it, so nobody has to believe it.</p>
+            <p className="mt-1 max-w-[300px] text-[15px] leading-[1.6] text-cocoa/80">Printed in a minute. Nobody can check it, so nobody has to believe it.</p>
           </div>
           <div className="sticker grain rounded-[18px] bg-kraft/60 p-5 sm:p-6">
             <p className="text-[15px] font-extrabold">A record</p>
@@ -296,22 +309,23 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         </div>
         {/* Where the record comes from, as the second half of the same section: one proof story, not three (critique run 7; moved out and back in, 15 Nov 2026). */}
         <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
-          <h3 className="text-[22px] leading-[1.15]">Why put a coffee stamp on Solana?</h3>
-          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Because a claim that can only be checked by trusting you, or us, is still a claim. This is what your customer sees in the seconds after scanning your QR:</p>
+          <h3 className="text-[22px] leading-[1.15]">What is Solana, and why put a coffee stamp on it?</h3>
+          {/* For readers who are not blockchain people (Pola, 2026-11-17): what Solana is in plain words, before anything else about it. */}
+          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Solana is a public blockchain: a record book kept by many independent computers around the world instead of by one company. What is written there can&apos;t be changed or deleted, not by the shop and not by us. So a stamp is proof that anyone can check, and your customers never notice the technology: no wallet, no coins, no app.</p>
           <SolanaJourney r={stats?.record ?? null} qr={qr} />
-          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A proof shows a record was not altered after it was made. Only the verified-order door proves a purchase; a QR stamp proves a visit, not what was bought.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
+          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
         </div>
       </Section>
 
       {/* How it works */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>Live in three steps</H2>
-        <Lead>Cafés and hotels print one QR code. Online shops connect WooCommerce. Your customers need nothing but their phone: no app, no account, no wallet.</Lead>
+        <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
         <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
           {[
-            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof AI QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter or reception, our WooCommerce plugin for online orders, or printable cards for parcels." },
-            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof AI QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: `A café visit is worth ${pointsLabel(POINTS_BY_KIND.cafe)}, a hotel stay ${POINTS_BY_KIND.hotel}, a verified eco shop purchase ${POINTS_VERIFIED}. Each stamp is one record, hashed and written to Solana.` },
-            { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Their passport names your business on every stamp. A share image is one tap away, and the proof is one tap further." },
+            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof AI QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter, our WooCommerce plugin, or cards for your parcels." },
+            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof AI QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: "Each stamp lands in your customer's passport and is written to Solana." },
+            { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Every stamp carries your name, and sharing takes one tap." },
           ].map((s, i) => (
             <li key={s.label} className="flex flex-col">
               <div className="relative">
@@ -328,7 +342,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Business types */}
       <Section id="businesses" className="py-12 lg:py-20">
         <H2>Which one are you?</H2>
-        <Lead>Three kinds of business, one passport. What differs is how your customers collect a stamp, and what it is worth.</Lead>
+        <Lead>Three kinds of business, one passport.</Lead>
         <ul className="mt-8 grid gap-6 md:grid-cols-3">
           {doors.map((d, i) => (
             <li key={d.img} className="stitched grain flex flex-col rounded-[20px] bg-kraft/50 p-4 sm:p-5">
@@ -344,7 +358,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             </li>
           ))}
         </ul>
-        <p className="mt-5 max-w-[68ch] text-[14px] font-bold leading-[1.6] text-cocoa/80">Cafés, restaurants and hotels earn eco stars from the practices they publish; shops show the impact of their orders instead. Every kind gets a public place page, a map pin and share images.</p>
       </Section>
 
       {/* Impact you can publish: the shop page that builds itself from proofs, and the live badge that links to it. */}
@@ -353,17 +366,16 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-x-14">
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">
             <H2>Your public page writes itself</H2>
-            <Lead>A shop&apos;s page adds up every verified order, and each number links to the proofs behind it. A café, restaurant or hotel shows eco stars from the practices it publishes, frozen on Solana so they can&apos;t quietly change. You never type a figure.</Lead>
+            <Lead>A shop&apos;s page adds up every verified order. A café, restaurant or hotel shows eco stars from the practices it publishes. You never type a figure.</Lead>
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">A badge nobody can print</p>
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It is drawn fresh from your proofs every few minutes, and a click lands on the page that shows them.</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Put it on your own site. It updates from your proofs, and a click shows them.</p>
               <div className="mt-4 max-w-full [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: badgeSvg(stats?.example?.name ?? "Your shop", stats?.example?.impact ?? { purchases: 0, plasticG: 0, co2Kg: 0 }) }} />
-              <p className="mt-3 text-[14px] font-bold text-cocoa/80">Its embed code is on your dashboard once you join.</p>
             </div>
             {/* Why "AI" (2026-11-15): the numbers' origin in two lines, the full account in the guide. */}
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">Where the numbers come from</p>
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">A shop lists what it sells without plastic. Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof AI for its kind, never by the shop. For a product the shop hasn&apos;t listed yet, the AI estimates its kind from its name until the owner confirms it. Solana proves every purchase.</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof AI for its kind, never by the shop.</p>
               <Link href="/about#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
             </div>
           </div>
@@ -375,7 +387,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Pricing */}
       <Section id="pricing" className="py-12 lg:py-20">
         <H2>Free for the founding fifty</H2>
-        <Lead>Stamps, proofs and the public impact page are always included. No wallet or coins for you or your customers: the chain fees are on us.</Lead>
+        <Lead>Stamps, proofs and your public page are always included. No wallet, no coins: the blockchain fees are on us.</Lead>
         <div className="mt-8 grid items-start gap-6 lg:grid-cols-2 lg:gap-12">
         <ul className="grid max-w-[480px] gap-5">
           {PRICING.filter((p) => p.price).map((p, i) => (
@@ -404,7 +416,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <PhoneMockup />
             <div className="min-w-0">
               <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
-              <Lead>A passport that fills up with real choices, place by place. Enough stamps unlock a Bee Guardian: a collectible card (a soulbound NFT) that can&apos;t be bought or transferred, only earned. No wallet needed; it waits for them until they want one.</Lead>
+              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian: a collectible card that can&apos;t be bought, only earned.</Lead>
               <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
               <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
                 {RANKS.map((r, i) => (
@@ -435,7 +447,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           <div>
             <JournalWordmark className="text-[22px]" />
             <p className="mt-2 max-w-xs text-[14px] leading-[1.6] text-cocoa/80">A verified eco passport for customers of sustainable shops, cafés, markets and online brands. Built in Chiang Mai, Thailand.</p>
-            <p className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-bold text-cocoa/80"><Trophy size={14} aria-hidden /> Winner · Best Use of Solana, Colosseum Chiang Mai 2026</p>
+            <p className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-bold text-cocoa/80"><Trophy size={14} aria-hidden /> Winner · Best Use of Solana, Superteam TH (Colosseum), Chiang Mai 2026</p>
           </div>
           <ul className="space-y-2 text-[14px] font-bold">
             {SECTIONS.map(([href, label]) => <li key={href}><a href={href} className="hover:underline">{label}</a></li>)}

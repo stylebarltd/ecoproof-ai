@@ -19,7 +19,7 @@ Proof that can't be edited after the fact: one scan, one stamp, enforced on-chai
 ## Operating Context
 - Three claim doors, one stamp each: place QR (`/c/<id>`), printed parcel card (`/k/<code>`), verified WooCommerce order (`/o/<place>/<token>`).
 - Owners use it on a phone at the counter and on desktop for the dashboard; customers almost always on a phone, right after paying.
-- Currently a hackathon build on Solana devnet (Best Use of Solana, Colosseum Chiang Mai 2026); demo places without a GPS check exist for judges on purpose.
+- Currently a hackathon build on Solana devnet (Best Use of Solana, Superteam TH (Colosseum), Chiang Mai 2026); demo places without a GPS check exist for judges on purpose.
 - Launch market: global, English only.
 
 ## Capabilities and Constraints
@@ -37,7 +37,7 @@ Proof that can't be edited after the fact: one scan, one stamp, enforced on-chai
 
 ## Evidence on Hand
 - Live counters and the newest verified record from the database (`lib/landingStats.ts`), the example shop's proofs (`/places/<id>#proofs`), live badge (`/api/badge/<place>.svg`), on-chain verify (`/api/verify/<id>`).
-- Hackathon win (Colosseum Chiang Mai 2026, Best Use of Solana).
+- Hackathon win (Superteam TH (Colosseum), Chiang Mai 2026, Best Use of Solana).
 - Partner logos in `public/landing/partners/`; SuperBee is the first real shop.
 - No testimonials, customer quotes, case studies or audited impact data exist yet; do not invent them.
 
