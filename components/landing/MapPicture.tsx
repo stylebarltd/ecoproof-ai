@@ -134,7 +134,7 @@ export default function MapPicture({ scanned = false }: { scanned?: boolean }) {
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
           <path d="M66 81 C 68 79, 69 77, 71 75" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
         </svg>
-        <Image src="/landing/hero/stand-riverside.webp" alt="The hotel's EcoProof postcard on a small stand of rough natural wood: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 235px, 166px"
+        <Image src="/landing/hero/stand-riverside.webp" alt="The hotel's EcoProof postcard on a small stand of rough natural wood: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 212px, 150px"
           className="hero-stand absolute -bottom-[16%] -rotate-[3deg] drop-shadow-[0_18px_22px_rgba(58,42,28,0.4)]" />
         <ScanPhone />
       </>}

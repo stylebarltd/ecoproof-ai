@@ -208,8 +208,8 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 .scan-phone { transform-origin: bottom right; transform: rotate(4deg) scale(0.66); }
 @media (min-width: 640px) { .scan-phone { transform: rotate(4deg) scale(0.8); } }
 /* The hero's postcard stand: its width and how far it hangs over the map's left edge; the picture is mostly card since the block was halved (Pola: the block looked far too big). */
-.hero-stand { width: 166px; left: -12px; }
-@media (min-width: 640px) { .hero-stand { width: 235px; } }
+.hero-stand { width: 150px; left: -12px; }
+@media (min-width: 640px) { .hero-stand { width: 212px; } }
 @media (min-width: 1024px) { .hero-stand { left: -60px; } }
 /* Kraft hero: a faint vignette toward the edges. */
 .vignette::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(58, 42, 28, 0.12) 100%); }
