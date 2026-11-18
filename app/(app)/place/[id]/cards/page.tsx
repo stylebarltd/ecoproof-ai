@@ -12,11 +12,11 @@ import { getSession } from "@/lib/session";
 import { getPlace, toPublic } from "@/lib/stampPlaces";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Print parcel cards | EcoProof AI", robots: { index: false } };
+export const metadata = { title: "Print parcel cards | EcoProof", robots: { index: false } };
 
 /**
  * Print sheets for a batch of claim cards (parcel inserts): the same card as the counter postcard (components/Postcard.tsx), so the
- * customer learns what EcoProof AI is, with each card's own single-use QR and code. Four A6 cards per A4 sheet, or eight A7 cards on a
+ * customer learns what EcoProof is, with each card's own single-use QR and code. Four A6 cards per A4 sheet, or eight A7 cards on a
  * landscape sheet (?size=a7). The codes are secrets: it needs ?token=<ADMIN_TOKEN> or someone who runs the place (owner or staff), signed in.
  */
 export default async function CardSheet({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ batch?: string; token?: string; size?: string }> }) {

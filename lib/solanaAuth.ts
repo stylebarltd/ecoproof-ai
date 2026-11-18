@@ -33,7 +33,7 @@ export const solanaWallet = () => ({
         where: [{ field: "providerId", value: SOLANA_PROVIDER }, { field: "accountId", value: address }],
       });
       if (owned && current && owned.userId !== current.user.id) {
-        throw new APIError("CONFLICT", { message: "This wallet already belongs to another EcoProof AI account. Sign out first to use it." });
+        throw new APIError("CONFLICT", { message: "This wallet already belongs to another EcoProof account. Sign out first to use it." });
       }
       let userId = owned?.userId ?? current?.user.id;
       if (!userId) {

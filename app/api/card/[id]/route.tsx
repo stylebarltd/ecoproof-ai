@@ -3,7 +3,7 @@ import { query, type RecordRow } from "@/lib/db";
 import { grams } from "@/lib/impact";
 import { getPlace, stampSvg } from "@/lib/stampPlaces";
 import { stampClass } from "@/lib/stampClasses";
-import { CHECK_PATH, CREAM, INK, LEAF_PATH, SAGE, TERRA_LIGHT } from "@/lib/brand";
+import { CHECK_PATH, CREAM, INK, LEAF_PATH, SAGE } from "@/lib/brand";
 import { listNfts, verifiedImpact } from "@/lib/milestones";
 import { rankNfts } from "@/lib/passportView";
 import { RANKS, tierFor } from "@/lib/milestoneRules";
@@ -39,7 +39,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
               <path d={CHECK_PATH} />
             </svg>
           </div>
-          <div style={{ display: "flex", fontSize: 44, fontWeight: 700 }}>EcoProof<span style={{ color: TERRA_LIGHT, marginLeft: 12 }}>AI</span></div>
+          <div style={{ display: "flex", fontSize: 44, fontWeight: 700 }}>EcoProof</div>
         </div>
         <div style={{ display: "flex", flexDirection: square ? "column-reverse" : "row", alignItems: square ? "flex-start" : "center", justifyContent: "space-between", gap: 32 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 22, ...(square ? { width: "100%" } : { flex: 1, minWidth: 0 }) }}>{/* wide: shrink beside the Bee card; square: full width under it */}

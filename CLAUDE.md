@@ -1,18 +1,19 @@
 @AGENTS.md
 
-# EcoProof AI (ecoproofai.com)
+# EcoProof (ecoproof.app)
 
 ## What this is
 Eco passport app: customers scan a shop's QR, a parcel card or a verified-order
 link, collect stamps and soulbound Bee Guardian NFTs; every claim writes a proof
 on Solana. For sustainable shops, cafés, markets and online brands.
-- App: https://ecoproofai.com (the final domain since 2026-11-15; DNS at Hetzner: A @ 216.198.79.1 + 64.29.17.1,
-  CNAME www → 3bc5a83f7626c30d.vercel-dns-017.com., certificate issued with `vercel certs issue`). The old host
-  ecoproof.superbee.me stays attached to the project forever: printed QR cards, parcel cards and the plugin on
-  shops' servers point at it. `proxy.ts` sends visitors on the old host (and www) to ecoproofai.com with path and
-  query, but never API paths. Production links are always built on https://ecoproofai.com (`lib/hosts.ts`,
-  `appUrl()`); `APP_URL` is ignored there and only matters locally. Repo `stylebarltd/ecoproof-ai`. The separate showcase site
-  (`../ecoproofai.stylebar.de`) is offline since 2026-11-15: the landing page and `/about#ai` explain the project.
+- App: https://ecoproof.app (the final domain since 2026-11-18, a PWA; DNS at Hetzner: A @ 216.198.79.1 + 64.29.17.1,
+  CNAME www → 3bc5a83f7626c30d.vercel-dns-017.com.). The earlier domain ecoproofai.com (2026-11-15 to 18) stays attached
+  to the Vercel project: plugin versions before 1.5.0 and cards printed in those days point at it. `proxy.ts` sends
+  visitors on it (and on the www hosts) to ecoproof.app with path and query, but never API paths. ecoproof.superbee.me
+  is dropped (Pola, 2026-11-18). Production links are always built on https://ecoproof.app (`lib/hosts.ts`,
+  `appUrl()`); `APP_URL` is ignored there and only matters locally. Repo `stylebarltd/ecoproof-ai` and Vercel project
+  `ecoproof-ai` keep their names. The separate showcase site (`../ecoproofai.stylebar.de`) is offline since 2026-11-15:
+  the landing page and `/about#ai` explain the project.
 - Won Best Use of Solana at the Superteam TH (Colosseum) hackathon, Chiang Mai 2026; public copy reads "Superteam TH (Colosseum), Chiang Mai 2026".
 - Landing copy stays short and sells (Pola, 2026-11-17: "too much text"); readers are not blockchain people, so Solana is explained in plain words (hero tooltip `SolanaTip`, paragraph at `#why-chain`).
 - Still in its hackathon-judging phase on **Solana devnet** (see Gotchas).
@@ -60,14 +61,14 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   website and shipping origins (`ship_origins`, `lib/shipping.ts`): one per warehouse, each
   serving listed countries or "everyone else". The visitor's country (`x-vercel-ip-country`,
   or `?country=US` to test; unknown locally) picks the origin used for "ships from" and distance.
-- Place badge (`stampSvg()` in `lib/stampPlaces.ts`, served at `/api/stamp-places/<id>/stamp`): a rounded-square tile like the EcoProof AI
+- Place badge (`stampSvg()` in `lib/stampPlaces.ts`, served at `/api/stamp-places/<id>/stamp`): a rounded-square tile like the EcoProof
   mark, never round (Pola, 2026-11-16). With a logo: the logo on white inside a border of the place's colour; without: the kind's symbol on
   the colour. No name inside it (unreadable at 44px, and the name always stands beside it), so never crop it with `rounded-full`.
   The owner changes logo and tagline in the dashboard's "Logo and tagline" panel (`components/ProfilePanel.tsx`,
   `PUT /api/places/mine/<id>/profile`, rules in `lib/placeLogo.ts`); the name can't be changed yet.
 - Postcard (`components/Postcard.tsx`): the one printed card, used for a place's counter or tables (`/place/<id>`, "Print your postcard")
-  and for an online shop's parcel cards (`/place/<id>/cards?batch=`, 20 single-use codes per batch). It must explain EcoProof AI to someone
-  who has never heard of it (Pola, 2026-11-16: nobody scans a QR without knowing what it is): headline, one sentence on EcoProof AI, the
+  and for an online shop's parcel cards (`/place/<id>/cards?batch=`, 20 single-use codes per batch). It must explain EcoProof to someone
+  who has never heard of it (Pola, 2026-11-16: nobody scans a QR without knowing what it is): headline, one sentence on EcoProof, the
   claim QR, three steps, the Bee Guardian. Sizes come from `postcardCss({ cols, rows, landscape })`: cards fill an A4 page edge to edge
   (counter: 4 x A6 or one A4 poster `?size=a4`; parcels: 4 x A6 or 8 x A7 `?size=a7`). Every measure in the card is in `cqw` and the
   card has a fixed height, so new text must fit (a headline is two lines at most): check the print PDF. White card (little ink), text
@@ -96,13 +97,13 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   card-fan hero (`components/landing/HeroArt.tsx`, `public/landing/cards/*.webp`, 2x of 300x420, from `art/v2/compositor/samples/`, SVG stamp
   rings) stays behind `NEXT_PUBLIC_LANDING_HERO=cards`. Paper grain and stamps are CSS. Buildings inpainted onto the island (`inpaint.py`,
   `v3_*.py`) never matched; the island stays as generated. The earlier SD flat-lay hero (`art/hero-r1/`, `art/v2/hero/`) was dropped for mixing two styles; the three owner-door photos
-  (`public/landing/doors/`, from `art/doors/v2/`: epicrealismXL scenes with blank surfaces, `gen.py`, restaurant seed 202, hotel 211, store 203 with the hand repainted off the
+  (`public/landing/doors/v2/`, from `art/doors/v2/`: epicrealismXL scenes with blank surfaces, `gen.py`, restaurant seed 202, hotel 211, store 203 with the hand repainted off the
   screen by `inpaint_hand.py` seed 306; `compose.py` prints the real QR card, the SuperBee receipt and the EcoProof screen from `assets.mjs` onto them; the café tile uses `coffee.webp`) and partner logos (`public/landing/partners/`, from
-  `art/partner/`) stay. How-it-works step images `public/landing/steps/`: connect is a photoreal composite
+  `art/partner/`) stay. How-it-works step images `public/landing/steps/v2/` (a new folder whenever a picture changes, so caches bust; the QR card on them is `art/steps/connect/card.html`, a QR to https://ecoproof.app, rendered to `card.png` with headless Brave at 600x400, scale 2): connect is a photoreal composite
   (`art/steps/connect/`: epicrealismXL counter scene seed 105 with a blank card stand, `compose2.py 105` warps the real demo-café QR card
   onto it; `compose2.py 103` is the alternative with a replica of the WordPress plugins page on a tablet POS plus the card), stamp is a screenshot from
   `../ecoproofai.stylebar.de/src/assets/screens/` (stamp collection), share is `/api/passport-card/<id>?format=square` rendered
-  locally with `APP_URL=https://ecoproof.superbee.me` for the footer (local Warden passport `DGc2…`). Share images (`lib/beeCardOg.tsx`,
+  locally with `APP_URL=https://ecoproof.app` for the footer (local Warden passport `DGc2…`). Share images (`lib/beeCardOg.tsx`,
   `/api/passport-card`, `/api/card`) draw the NFT card set's frame (paper, rank-coloured rim, Caprasimo/Figtree) on kraft paper with the
   cel-shaded rank art from `public/share/art/` (640px, from `art/v2/compositor/samples/`) and the fonts from `public/share/fonts/`
   (static Figtree instances: the og renderer cannot read variable fonts), both traced in `next.config.ts`. The counter strip counts plastic *items* avoided, not kg (that is what
@@ -169,7 +170,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (a shop's own site reads it: superbee.me builds its product pages from it). A long list goes in through "Import a list" in the
   wizard: a CSV file, one product per row (`lib/productCsv.ts`: name, kind, pieces, packaging, other names, contains; the wizard offers a
   template; a .json list still works), sent on to `importProducts`; re-importing keeps what is there and adds the rest.
-  Catalogue sync (plugin 1.4.0, `lib/catalogue.ts`, `catalogue_items`): the plugin's "Send my products to EcoProof AI" posts names,
+  Catalogue sync (plugin 1.4.0, `lib/catalogue.ts`, `catalogue_items`): the plugin's "Send my products to EcoProof" posts names,
   numbers and variation labels to `/api/woo/catalogue/<place>` (signed like orders; again a minute after a product save). The AI
   proposes type and pieces (one row per variation when the variations are pack sizes; a translation follows its `main`), and the
   owner confirms in the wizard ("From your shop": tick, correct, say the packaging, add). A proposal is never a declared product.
@@ -187,12 +188,15 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   (Yes / No / Didn't notice); a No becomes a report (`practice_reports`); badge after 3 visitors
   on 3 different days, shown with its count; any answer earns the reward, not only Yes.
 
-## Naming and ownership (Pola, 2026-11-15)
-- The product is always written **EcoProof AI**, never bare "EcoProof" (page titles, copy, plugin strings, emails).
-  Exceptions that must stay: identifiers and slugs (`ecoproof-for-woocommerce`, `ecoproof_stamp`, hostnames), the
-  on-chain NFT name `<Rank> Bee Guardian - EcoProof` (Bubblegum's 32-byte limit) and the logo markup, which renders
-  "EcoProof" + a coloured " AI" span.
-- EcoProof AI is run by **stylebar ltd**, Thailand; privacy contact privacy@ecoproofai.com. SuperBee is a shop that
+## Naming and ownership (Pola, 2026-11-18)
+- The brand is **EcoProof**, the address **ecoproof.app**; the wordmark is plain "EcoProof", one colour.
+  **EcoProof AI** is only the name of the part that reads receipts and estimates or proposes products (receipt
+  scanner, "EcoProof AI estimate", catalogue proposals from WooCommerce and later Shopify, `/about#ai`). Everywhere
+  else write "EcoProof".
+- On-chain memos read `EcoProof proof v1: <hash>` and `EcoProof declaration v1: <hash>`; verification also accepts
+  the "EcoProof AI …" wording written before the rename (`proofMemos`, `declarationMemos`): never drop those.
+  The devnet NFT collection was created as "EcoProof AI Bee Guardians"; its metadata now serves "EcoProof Bee Guardians".
+- EcoProof is run by **stylebar ltd**, Thailand; privacy contact privacy@ecoproof.app. SuperBee is a shop that
   uses it, not its maker: no "built by SuperBee", no founding-partner line, no SuperBee example addresses.
 
 ## Stack
@@ -229,7 +233,7 @@ Local DB: Docker Postgres container `ecoproof-pg` (port 5433), database `ecoproo
   Previews read `PREVIEW_DATABASE_DATABASE_URL` and refuse to fall back to production.
 - Previews build their links (QR, cards, order links, webhooks) from `VERCEL_BRANCH_URL`, production from
   `PRODUCTION_URL`; `APP_URL` only counts locally (`appUrl()` in `lib/nft.ts`). The plugin has no URL field either:
-  ecoproofai.com is built in, `ECOPROOF_URL` in wp-config.php overrides it for local dev. The dashboard shows a
+  ecoproof.app is built in (plugin 1.5.0; earlier versions have ecoproofai.com), `ECOPROOF_URL` in wp-config.php overrides it for local dev. The dashboard shows a
   shop only place id and secret, plus a "Connect your WooCommerce shop" card until the first order arrives.
 - Port 5432 to Neon may be blocked from Pola's machine; use the Neon console SQL editor.
 - **`SESSION_SECRET` is required in production** (>= 32 chars); locally a dev-only

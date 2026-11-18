@@ -23,10 +23,10 @@ export function payerKeypair(): Keypair {
 }
 
 /** The memo written with every proof: readable on Solana Explorer, and what verification compares against. */
-export const proofMemo = (hash: string) => `EcoProof AI proof v1: ${hash}`;
+export const proofMemo = (hash: string) => `EcoProof proof v1: ${hash}`;
 
-/** Every memo a valid proof of this hash can carry: the current one, and `ecoproof:v1:<hash>` written by proofs made before it. */
-export const proofMemos = (hash: string) => [proofMemo(hash), `ecoproof:v1:${hash}`];
+/** Every memo a valid proof of this hash can carry: the current one, and the two wordings written by proofs made before it. */
+export const proofMemos = (hash: string) => [proofMemo(hash), `EcoProof AI proof v1: ${hash}`, `ecoproof:v1:${hash}`];
 
 export const explorerUrl = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=${CLUSTER}`;
 
@@ -40,7 +40,7 @@ export async function readMemo(signature: string): Promise<{ memo: string | null
   return { memo, slot: tx.slot, blockTime: tx.blockTime ?? null };
 }
 
-/** Public address of the wallet that signs proofs; its Explorer page lists every EcoProof AI memo. */
+/** Public address of the wallet that signs proofs; its Explorer page lists every EcoProof memo. */
 export function payerAddress(): string | null {
   try { return payerKeypair().publicKey.toBase58(); } catch { return null; }
 }

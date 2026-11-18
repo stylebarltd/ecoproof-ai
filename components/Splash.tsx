@@ -25,7 +25,7 @@ export default function Splash({ ready }: { ready: boolean }) {
 
   if (gone) return null;
   return (
-    <div className={`passport-bg fixed inset-0 z-[5000] flex items-center justify-center transition-opacity duration-500 ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`} role="status" aria-label="Loading EcoProof AI">
+    <div className={`passport-bg fixed inset-0 z-[5000] flex items-center justify-center transition-opacity duration-500 ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`} role="status" aria-label="Loading EcoProof">
       <div className="animate-pulse"><LogoLockup size={64} /></div>
     </div>
   );

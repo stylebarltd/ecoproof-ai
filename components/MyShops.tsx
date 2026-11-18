@@ -33,7 +33,7 @@ export default function MyShops() {
         <p className="glass rounded-[22px] p-4 text-sm">Sign in to see the places you run. New here? <Link href="/join" className="font-bold underline">Set up your place</Link>.</p>
       ) : (
         <>
-          {places.length === 0 && <p className="glass rounded-[22px] p-4 text-sm">You don&apos;t run a place on EcoProof AI yet. Set one up, or ask its owner for an invite link.</p>}
+          {places.length === 0 && <p className="glass rounded-[22px] p-4 text-sm">You don&apos;t run a place on EcoProof yet. Set one up, or ask its owner for an invite link.</p>}
           <ul className="space-y-3">
             {places.map((p) => (
               <li key={p.id}>

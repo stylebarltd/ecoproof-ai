@@ -160,7 +160,7 @@ export default function ProductSetup({ id }: { id: string }) {
         ) : at === 3 ? (
           <>
             <h2 className="text-[17px] leading-tight">Your products</h2>
-            <p className="mt-1 text-[12.5px] leading-snug text-sage-900">Add your main products, each with its name <b>exactly as your receipt prints it</b>: that name is how a customer&apos;s receipt finds it. You don&apos;t enter any impact numbers: each kind of product has a fixed figure from EcoProof AI, counted once per piece in the pack.</p>
+            <p className="mt-1 text-[12.5px] leading-snug text-sage-900">Add your main products, each with its name <b>exactly as your receipt prints it</b>: that name is how a customer&apos;s receipt finds it. You don&apos;t enter any impact numbers: each kind of product has a fixed figure from EcoProof, counted once per piece in the pack.</p>
             {owner && s.d.catalogue.length > 0 && <CatalogueReview key={s.d.catalogue.map((c) => c.id).join(",")} items={s.d.catalogue} busy={s.busy} report={s.report} onDecide={s.decideCatalogue} />}
             {owner && (
               <div className="mt-3 rounded-2xl bg-honey-300/40 p-3 text-[12.5px] leading-snug text-sage-900">

@@ -373,7 +373,7 @@ export const productAliases = pgTable("product_aliases", {
   receiptNameVariant: text("receipt_name_variant").notNull(),
 }, (t) => [unique("product_aliases_variant").on(t.productId, t.receiptNameVariant)]);
 
-/** Plastic and CO2 avoided per piece, by product type: the standard's table (section 5), seeded by the migration. EcoProof AI's own:
+/** Plastic and CO2 avoided per piece, by product type: the standard's table (section 5), seeded by the migration. EcoProof's own:
  *  no owner-facing route may write it. A type without a row is worth nothing. */
 export const impactFactors = pgTable("impact_factors", {
   productType: text("product_type").primaryKey(),
@@ -413,7 +413,7 @@ export const productPhotos = pgTable("product_photos", {
   bytes: bytea().notNull(),
 });
 
-/** The shop's sample receipt from onboarding: how its receipts print the shop name and the lines. Only the owner and EcoProof AI see it. */
+/** The shop's sample receipt from onboarding: how its receipts print the shop name and the lines. Only the owner and EcoProof see it. */
 export const receiptSamples = pgTable("receipt_samples", {
   placeId: text("place_id").primaryKey(),
   bytes: bytea().notNull(),

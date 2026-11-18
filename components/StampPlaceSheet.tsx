@@ -24,7 +24,7 @@ export default function StampPlaceSheet({ place, onClose }: { place: MapPlace; o
         </div>
         <button onClick={onClose} aria-label="Close" className="rounded-full text-neutral-600 transition hover:bg-white hover:text-ink lg:px-1.5">✕</button>
       </div>
-      <p className="mt-3 rounded-xl bg-sage-200 px-3 py-1.5 text-xs text-sage-900">✅ EcoProof AI place · claimed and set up by its owner</p>
+      <p className="mt-3 rounded-xl bg-sage-200 px-3 py-1.5 text-xs text-sage-900">✅ EcoProof place · claimed and set up by its owner</p>
       <Link href={`/places/${place.id}`} className="mt-3 flex items-center justify-between rounded-2xl bg-white px-3.5 py-2.5 text-sm font-bold ring-1 ring-sage-900/10">
         {place.stars ? "See its eco practices" : "About this place"} <ChevronRight size={18} strokeWidth={2.5} className="text-sage-700" />
       </Link>

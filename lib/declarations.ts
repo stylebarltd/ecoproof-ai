@@ -20,7 +20,9 @@ export type Declaration = {
   hash: string; pending: boolean; txUrl: string | null; claimUrl: string;
 };
 
-export const declarationMemo = (hash: string) => `EcoProof AI declaration v1: ${hash}`;
+export const declarationMemo = (hash: string) => `EcoProof declaration v1: ${hash}`;
+/** Every memo wording a declaration may carry: today's, and the one written before the 2026-11-18 rename. */
+export const declarationMemos = (hash: string) => [declarationMemo(hash), `EcoProof AI declaration v1: ${hash}`];
 
 /** Only the answers to this checklist, keys sorted, so the same answers always hash the same. */
 function frozen(kind: string, alsoCafe: boolean, answers: Answers): Answers {
@@ -162,7 +164,7 @@ export async function verifyDeclaration(d: DeclarationRow): Promise<Verification
     if (!chain) { v.error = "Transaction not found on devnet"; return v; }
     v.slot = chain.slot;
     if (chain.blockTime) v.blockTime = new Date(chain.blockTime * 1000).toISOString();
-    v.onChainMatch = chain.memo === declarationMemo(recomputedHash);
+    v.onChainMatch = chain.memo != null && declarationMemos(recomputedHash).includes(chain.memo);
   } catch (e) {
     v.error = e instanceof Error ? e.message : "RPC error";
   }

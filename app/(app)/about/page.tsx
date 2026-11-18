@@ -5,7 +5,7 @@ import { POINTS_BY_KIND, POINTS_VERIFIED } from "@/lib/stampClasses";
 import InviteShop from "@/components/InviteShop";
 
 export const metadata = {
-  title: "How EcoProof AI works",
+  title: "How EcoProof works",
   description: "Collect eco stamps, earn soulbound Bee Guardian NFTs, and prove it on Solana. A guide for customers and for shops.",
 };
 
@@ -45,10 +45,10 @@ export default function About() {
 
       {/* Hero */}
       <header className="pt-1 text-center">
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-honey-700">Welcome to EcoProof AI</p>
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-honey-700">Welcome to EcoProof</p>
         <h1 className="mt-1 text-[30px] leading-[1.05]">&ldquo;I&apos;m eco, and I have proof.&rdquo;</h1>
         <p className="mx-auto mt-3 max-w-sm text-[14.5px] leading-relaxed text-ink/90">
-          EcoProof AI turns your real eco-friendly choices into <b>stamps</b> in a personal eco passport. Every stamp is proven on the Solana blockchain, and collecting enough of them unlocks a collectible <b>Bee Guardian NFT</b> that only you can own.
+          EcoProof turns your real eco-friendly choices into <b>stamps</b> in a personal eco passport. Every stamp is proven on the Solana blockchain, and collecting enough of them unlocks a collectible <b>Bee Guardian NFT</b> that only you can own.
         </p>
         <div className="mt-4 flex justify-center gap-2">
           <Link href="/passport" className="rounded-full bg-honey-500 px-4 py-2.5 text-[14px] font-bold text-ink shadow-[0_6px_20px_rgba(232,163,23,0.45)] ring-1 ring-white/60">My passport</Link>
@@ -67,7 +67,7 @@ export default function About() {
       <Panel id="idea">
         <H2>The idea in one minute</H2>
         <P>Lots of people choose reusable, plastic-free and local, but they have nothing to show for it. And brands doing the real work get drowned out by ones that only <i>claim</i> to be green.</P>
-        <P>EcoProof AI connects the two. A customer scans a QR code or taps a link after an eco choice, and a stamp from that shop, café or brand lands in their passport. The stamp is recorded on Solana, so it can&apos;t be edited or used twice. People share their passport because it looks good and it&apos;s true, and that sharing is the most credible marketing a sustainable brand can get.</P>
+        <P>EcoProof connects the two. A customer scans a QR code or taps a link after an eco choice, and a stamp from that shop, café or brand lands in their passport. The stamp is recorded on Solana, so it can&apos;t be edited or used twice. People share their passport because it looks good and it&apos;s true, and that sharing is the most credible marketing a sustainable brand can get.</P>
         <ul className="mt-4 grid grid-cols-3 gap-2 text-center text-[11.5px] font-bold leading-tight">
           {[[QrCode, "Scan", "a QR or tap a link"], [Gift, "Collect", "a stamp in your passport"], [ShieldCheck, "Unlock", "an Bee Guardian NFT"]].map(([Icon, t, s]) => {
             const I = Icon as typeof QrCode;
@@ -76,10 +76,10 @@ export default function About() {
         </ul>
       </Panel>
 
-      {/* The AI: why it is in the name, and what it does (2026-11-15) */}
+      {/* EcoProof AI: the part of EcoProof that reads receipts and estimates products (2026-11-18) */}
       <Panel id="ai">
-        <div className="mb-1 flex items-center gap-2"><Sparkles size={20} className="text-sage-700" /><H2>Why &ldquo;AI&rdquo;, and what it does</H2></div>
-        <P>A stamp is only worth something if the impact behind it is real. So the numbers are not the shop&apos;s and not the AI&apos;s: they come from one short table that EcoProof AI keeps.</P>
+        <div className="mb-1 flex items-center gap-2"><Sparkles size={20} className="text-sage-700" /><H2>EcoProof AI: what the AI does</H2></div>
+        <P>A stamp is only worth something if the impact behind it is real. EcoProof AI is the part of EcoProof that reads receipts and online orders. The numbers are not the shop&apos;s and not the AI&apos;s: they come from one short table that EcoProof keeps.</P>
         <H3>1. The shop says what it sells without plastic</H3>
         <P>An eco shop lists its plastic-free products by the name its receipts and orders print, and for each one says what kind of product it is (a reusable wrap, a soap bar, food in glass and so on), how it is packed, and how many pieces are in a pack. It declares that these are sold without plastic packaging. It never enters a number.</P>
         <H3>2. One table gives the numbers</H3>
@@ -104,10 +104,10 @@ export default function About() {
         <H3>2. Collect a stamp</H3>
         <P>There are three ways, and they all end the same way, with a stamp and a proof on Solana:</P>
         <ul className="mt-2 space-y-2.5 text-[14px] leading-relaxed">
-          <li className="flex gap-3"><Store size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>At a shop or café:</b> scan the EcoProof AI QR code on the counter. Tap <b>Scan a QR to collect a stamp</b> in the app, or use your phone&apos;s own camera. One stamp per place per day. Some places check that you are really there and will ask for your location.</span></li>
+          <li className="flex gap-3"><Store size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>At a shop or café:</b> scan the EcoProof QR code on the counter. Tap <b>Scan a QR to collect a stamp</b> in the app, or use your phone&apos;s own camera. One stamp per place per day. Some places check that you are really there and will ask for your location.</span></li>
           <li className="flex gap-3"><Package size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A card in your parcel:</b> brands that sell online (even on marketplaces) can put a card in the box. Scan it. Each card works once.</span></li>
-          <li className="flex gap-3"><Gift size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>From an order email:</b> if a shop that uses EcoProof AI sends you an &ldquo;order completed&rdquo; email, it contains a personal QR and a <b>Collect my stamp</b> button. Tap it. This is the special one, see below.</span></li>
-          <li className="flex gap-3"><Camera size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A receipt in an eco shop:</b> bought something plastic-free in a shop that&apos;s on EcoProof AI? Tap <b>Scan a receipt</b> in your passport while you&apos;re still in the shop and photograph the receipt. EcoProof AI reads what you bought, you check it, and the stamp is a <b>verified purchase</b> too. Only in the shop (we check your location), with a receipt from the last 7 days; each receipt once; we keep the items, never the photo.</span></li>
+          <li className="flex gap-3"><Gift size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>From an order email:</b> if a shop that uses EcoProof sends you an &ldquo;order completed&rdquo; email, it contains a personal QR and a <b>Collect my stamp</b> button. Tap it. This is the special one, see below.</span></li>
+          <li className="flex gap-3"><Camera size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>A receipt in an eco shop:</b> bought something plastic-free in a shop that&apos;s on EcoProof? Tap <b>Scan a receipt</b> in your passport while you&apos;re still in the shop and photograph the receipt. EcoProof reads what you bought, you check it, and the stamp is a <b>verified purchase</b> too. Only in the shop (we check your location), with a receipt from the last 7 days; each receipt once; we keep the items, never the photo.</span></li>
         </ul>
 
         <H3>3. Two kinds of stamp</H3>
@@ -133,7 +133,7 @@ export default function About() {
         <H3>5. Share it, find places, report problems</H3>
         <ul className="mt-1 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
           <li><b>Share:</b> the <b>Share my passport</b> button makes a ready-to-post image and caption for Telegram, X, Facebook, WhatsApp and Instagram, with a link back to your live passport.</li>
-          <li><b>Map:</b> <MapPin size={14} className="inline text-sage-700" /> the <Link href="/map" className="font-bold underline">Map</Link> shows every place that has joined EcoProof AI.</li>
+          <li><b>Map:</b> <MapPin size={14} className="inline text-sage-700" /> the <Link href="/map" className="font-bold underline">Map</Link> shows every place that has joined EcoProof.</li>
           <li><b>Report:</b> if a place isn&apos;t eco (plastic cups, plastic cutlery, greenwashing), tap <b>Report this place</b>. Read the <Link href="/rules" className="font-bold underline">eco rules</Link>.</li>
         </ul>
       </Panel>
@@ -162,7 +162,7 @@ export default function About() {
       {/* Owners */}
       <Panel id="owners">
         <div className="mb-1 flex items-center gap-2"><Store size={20} className="text-sage-700" /><H2>For shops, cafés and brands</H2></div>
-        <P>EcoProof AI is free marketing built on proof. Your customers get a stamp with your logo on it, and when they share their passport, your name goes with it. The reward is the NFT, not a discount, so it never costs you margin. You don&apos;t need an app, a till integration or any code to start.</P>
+        <P>EcoProof is free marketing built on proof. Your customers get a stamp with your logo on it, and when they share their passport, your name goes with it. The reward is the NFT, not a discount, so it never costs you margin. You don&apos;t need an app, a till integration or any code to start.</P>
 
         <H3>Who can join</H3>
         <P>Only places that are genuinely eco. You confirm the <Link href="/rules" className="font-bold underline">eco rules</Link> when you join: no drinks in single-use plastic, no plastic straws, cutlery or takeaway containers, and genuinely eco-minded. We don&apos;t inspect places in person yet, so we rely on honesty and on customers: anyone can report a place, and a place with enough reports from real visitors is paused until we&apos;ve looked at it.</P>
@@ -184,7 +184,7 @@ export default function About() {
 
         <H3>What happens afterwards</H3>
         <ul className="mt-1 list-disc space-y-1.5 pl-5 text-[14px] leading-relaxed">
-          <li>Your stamp, with your logo, appears in customers&apos; passports and on the EcoProof AI map.</li>
+          <li>Your stamp, with your logo, appears in customers&apos; passports and on the EcoProof map.</li>
           <li>Customers share their passport, and your brand travels with it.</li>
           <li>If a place is reported, it can be paused. Stamps already collected stay in passports and their proofs are untouched.</li>
         </ul>
@@ -192,8 +192,8 @@ export default function About() {
 
       {/* How to help */}
       <Panel id="help">
-        <div className="mb-1 flex items-center gap-2"><Heart size={20} className="text-sage-700" /><H2>How you can help EcoProof AI</H2></div>
-        <P>EcoProof AI gets better with every eco place that joins, and the people who can do the most are the customers. A few small things make a big difference:</P>
+        <div className="mb-1 flex items-center gap-2"><Heart size={20} className="text-sage-700" /><H2>How you can help EcoProof</H2></div>
+        <P>EcoProof gets better with every eco place that joins, and the people who can do the most are the customers. A few small things make a big difference:</P>
         <ul className="mt-3 space-y-3 text-[14px] leading-relaxed">
           <li className="flex gap-3"><Coffee size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>Tell your local café, shop or market stall.</b> If they already skip plastic, they can set up their place in a few minutes and give their customers stamps. Send them the message below, or show them the <Link href="/join" className="font-bold underline">Run a place?</Link> page.</span></li>
           <li className="flex gap-3"><Package size={20} className="mt-0.5 shrink-0 text-sage-700" /><span><b>Tell your favourite eco online store.</b> Webshops can put a stamp QR in their order email (WooCommerce) or a card in every parcel, on any channel. Ask them to look at the &ldquo;selling online&rdquo; section above.</span></li>
@@ -219,11 +219,11 @@ export default function About() {
       <Panel id="faq" className="space-y-2">
         <H2>Questions</H2>
         <Faq q="Do I need a wallet?">No, you can collect stamps without one. You need a wallet (Phantom or Solflare) to receive your Bee Guardian NFTs and to keep your passport on other devices.</Faq>
-        <Faq q="Does it cost anything?">No. EcoProof AI is free, connecting a wallet costs nothing, and you never pay a network fee.</Faq>
+        <Faq q="Does it cost anything?">No. EcoProof is free, connecting a wallet costs nothing, and you never pay a network fee.</Faq>
         <Faq q="I can't collect a stamp from my passport. Why?">At real places a stamp is collected by scanning the place&apos;s QR code, so it can only be done there. Tap <b>Scan a QR to collect a stamp</b> or use your camera.</Faq>
         <Faq q="It says I already collected a stamp today.">A place gives one stamp per person per day. Come back tomorrow. Parcel cards and orders work once each.</Faq>
         <Faq q="Why does it ask for my location?">Places set up by their owners check that you are really there. Your location is used for that check only.</Faq>
-        <Faq q="The camera doesn't open inside my wallet app.">Wallet apps often block the camera in their built-in browser. Open EcoProof AI in Safari or Chrome instead, or point your phone&apos;s own camera app at the QR code. Connecting your wallet from Safari or Chrome works too: the wallet app opens and brings you back.</Faq>
+        <Faq q="The camera doesn't open inside my wallet app.">Wallet apps often block the camera in their built-in browser. Open EcoProof in Safari or Chrome instead, or point your phone&apos;s own camera app at the QR code. Connecting your wallet from Safari or Chrome works too: the wallet app opens and brings you back.</Faq>
         <Faq q="What data do you keep?">Your passport (a device ID, or your account: Google or Facebook name and email, or wallet address) and your stamps. For online orders we keep only the order number and the products and quantities, never names, emails, addresses or prices. The details are in our <Link href="/privacy" className="font-bold underline">privacy page</Link>.</Faq>
         <Faq q="What if I lose my phone?">If you signed in (with Google, Facebook or a wallet), sign in the same way on the new device and your passport is back. A passport that was never signed in stays on the old device.</Faq>
         <Faq q="I run a shop. How do I join?">Open <Link href="/join" className="font-bold underline">Run a place?</Link>, sign in and follow the steps. Read the <Link href="/rules" className="font-bold underline">eco rules</Link> first.</Faq>

@@ -4,7 +4,7 @@ import jsQR from "jsqr";
 import { Camera, X } from "lucide-react";
 import { detectWallets, isMobile } from "@/lib/wallet";
 
-/** Only EcoProof AI claim paths are accepted: a counter QR (/c/..), a printed card (/k/..) or an order link (/o/../..). */
+/** Only EcoProof claim paths are accepted: a counter QR (/c/..), a printed card (/k/..) or an order link (/o/../..). */
 const CLAIM_PATH = /^\/(c\/[a-z0-9-]+|k\/[A-Za-z0-9]+|o\/[a-z0-9-]+\/[A-Za-z0-9_.-]+)$/;
 
 /** Opens the camera, finds a QR code, and goes to its claim page. We follow the path on this site only, never the host in the code. */
@@ -16,7 +16,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
   const [copied, setCopied] = useState(false);
   const [inWallet] = useState(() => isMobile() && detectWallets().length > 0); // a wallet app's built-in browser
 
-  /** Handles a QR code's text. Returns true when it was an EcoProof AI claim code (and we're navigating). */
+  /** Handles a QR code's text. Returns true when it was an EcoProof claim code (and we're navigating). */
   const handleCode = (data: string): boolean => {
     let path = "";
     try { path = new URL(data).pathname; } catch { /* not a URL */ }
@@ -38,7 +38,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
         c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
         ctx.drawImage(bmp, 0, 0, c.width, c.height);
         const hit = jsQR(ctx.getImageData(0, 0, c.width, c.height).data, c.width, c.height, { inversionAttempts: "attemptBoth" });
-        if (hit?.data) { if (handleCode(hit.data)) return; setSeen("That QR code isn't an EcoProof AI stamp."); setPhotoBusy(false); return; }
+        if (hit?.data) { if (handleCode(hit.data)) return; setSeen("That QR code isn't an EcoProof stamp."); setPhotoBusy(false); return; }
       }
       setSeen("We couldn't find a QR code in that photo. Get closer, keep it flat and well lit, and try again.");
     } catch { setSeen("We couldn't read that photo. Try again."); }
@@ -62,7 +62,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
         const hit = jsQR(ctx.getImageData(0, 0, w, h).data, w, h, { inversionAttempts: "dontInvert" });
         if (hit?.data) {
           if (handleCode(hit.data)) { stopped = true; return; }
-          setSeen("That QR code isn't an EcoProof AI stamp.");
+          setSeen("That QR code isn't an EcoProof stamp.");
         }
       }
       raf = window.setTimeout(tick, 150) as unknown as number;
@@ -103,7 +103,7 @@ export default function QrScanner({ onClose, onPath }: { onClose: () => void; on
               <Camera size={18} /> {photoBusy ? "Reading the photo…" : "Take a photo of the QR code"}
               <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { void readPhoto(e.target.files?.[0]); e.target.value = ""; }} />
             </label>
-            <p className="text-xs text-cream/80">{inWallet ? "Wallet browsers often block the camera. The easiest way: point your phone's own camera app at the QR code. It opens EcoProof AI in your normal browser." : "Or point your phone's own camera app at the QR code."}</p>
+            <p className="text-xs text-cream/80">{inWallet ? "Wallet browsers often block the camera. The easiest way: point your phone's own camera app at the QR code. It opens EcoProof in your normal browser." : "Or point your phone's own camera app at the QR code."}</p>
             {inWallet && (
               <div className="mx-auto flex max-w-xs gap-2 text-xs font-bold">
                 {/android/i.test(navigator.userAgent) && (

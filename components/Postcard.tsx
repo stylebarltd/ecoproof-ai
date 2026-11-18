@@ -2,7 +2,7 @@ import { LeafMark } from "@/components/Logo";
 import Stars from "@/components/Stars";
 import { SAGE } from "@/lib/brand";
 
-// The printed card that explains EcoProof AI next to a claim QR: a place's postcard for the counter (app/(app)/place/[id], and the
+// The printed card that explains EcoProof next to a claim QR: a place's postcard for the counter (app/(app)/place/[id], and the
 // "set up" screen of /join) and the cards an online shop puts in its parcels (app/(app)/place/[id]/cards). One design; every measure
 // inside is in cqw (1% of the card's width), so it prints at any size. The card has a fixed height: new text must fit, check the print
 // PDF. The QR for print comes from lib/qrImage.ts.
@@ -10,7 +10,7 @@ import { SAGE } from "@/lib/brand";
 /** What the customer did here, in the counter postcard's headline: "Collect an eco stamp for your stay". */
 const HERE: Record<string, string> = { cafe: "visit", restaurant: "meal", hotel: "stay", eco_shop: "visit" };
 
-/** The counter postcard of a place: what EcoProof AI is, why to scan, and the claim QR. `qr` is the QR image's address. */
+/** The counter postcard of a place: what EcoProof is, why to scan, and the claim QR. `qr` is the QR image's address. */
 export function counterCard(place: { name: string; kind: string; imageUrl: string; requiresGps: boolean }, qr: string, stars?: number): PostcardProps {
   return {
     mark: "Eco passport",
@@ -44,13 +44,13 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
         <div className="pc-top">
           <span className="pc-brand">
             <span className="pc-tile" style={{ background: SAGE }}><LeafMark size={100} /></span>
-            <span>EcoProof<b> AI</b></span>
+            <span>EcoProof</span>
           </span>
           <span className="pc-mark">{mark}</span>
         </div>
 
         <p className="pc-h">{headline}</p>
-        <p className="pc-lead">EcoProof AI is the passport for people who choose places that cut plastic and waste. <b>{place.name}</b> is one of them.</p>
+        <p className="pc-lead">EcoProof is the passport for people who choose places that cut plastic and waste. <b>{place.name}</b> is one of them.</p>
 
         <div className="pc-scan">
           <div className="pc-qr">
@@ -75,7 +75,7 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
           ))}
         </ol>
 
-        <p className="pc-foot"><span>Every stamp is recorded on Solana.</span><b>ecoproofai.com</b></p>
+        <p className="pc-foot"><span>Every stamp is recorded on Solana.</span><b>ecoproof.app</b></p>
       </div>
     </div>
   );
@@ -96,7 +96,6 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-in { height: 100%; padding: 5.4cqw 7.5cqw 5.5cqw; display: flex; flex-direction: column; border-top: 2.6cqw solid var(--color-honey); }
 .pc-top { display: flex; align-items: center; justify-content: space-between; }
 .pc-brand { display: inline-flex; align-items: center; gap: 2cqw; font-family: var(--font-caprasimo), serif; font-size: 4.6cqw; line-height: 1; }
-.pc-brand b { font-weight: 400; color: var(--color-terracotta-ink); }
 .pc-tile { display: inline-flex; align-items: center; justify-content: center; width: 7cqw; height: 7cqw; border-radius: 2cqw; }
 .pc-tile svg { width: 62%; height: 62%; }
 .pc-mark { font-family: var(--font-bebas), Impact, sans-serif; font-size: 3.4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: var(--color-terracotta-ink);

@@ -5,7 +5,7 @@
  *
  * The link is <app>/o/<place>/<order id>.<sig>, where sig is the first 22
  * characters of base64url(HMAC-SHA256(secret, "ecoproof:order-link:v1:<place>:<order id>")).
- * Without the secret a link can't be made up, and EcoProof AI lets each order be
+ * Without the secret a link can't be made up, and EcoProof lets each order be
  * collected once.
  *
  * @package EcoProof_WooCommerce
@@ -36,13 +36,13 @@ class EcoProof_Stamp {
 			&& count( $order->get_items() ) > 0;
 	}
 
-	/** The shop's name in the explainer ("<Shop> is part of EcoProof AI"). */
+	/** The shop's name in the explainer ("<Shop> is part of EcoProof"). */
 	private static function shop_name() {
 		/** Filters the shop name used in the stamp block. */
 		return (string) apply_filters( 'ecoproof_shop_name', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
 	}
 
-	/** A weight in words, like EcoProof AI shows it: "90 g", "1.5 kg", "12 kg". */
+	/** A weight in words, like EcoProof shows it: "90 g", "1.5 kg", "12 kg". */
 	private static function grams( $g ) {
 		if ( $g < 1000 ) {
 			return sprintf( '%d g', $g );
@@ -51,7 +51,7 @@ class EcoProof_Stamp {
 	}
 
 	/**
-	 * "Your order avoids about 230 g of plastic and 690 g of CO₂." from the numbers EcoProof AI sent back for this order
+	 * "Your order avoids about 230 g of plastic and 690 g of CO₂." from the numbers EcoProof sent back for this order
 	 * (stored when the order was sent), or '' when there are none. Orders sent by versions before 1.3.0 stored other numbers,
 	 * which are no longer shown.
 	 */
@@ -75,7 +75,7 @@ class EcoProof_Stamp {
 	}
 
 	/**
-	 * The stamp block for emails and the order pages. The customer has usually never heard of EcoProof AI, so it says what it
+	 * The stamp block for emails and the order pages. The customer has usually never heard of EcoProof, so it says what it
 	 * is, what they get and what to do, in that order. Table layout and inline styles only (email clients), max 600px,
 	 * and it still makes sense with images blocked (the bee and the QR carry no information of their own).
 	 */
@@ -102,7 +102,7 @@ class EcoProof_Stamp {
 			. '<tr><td bgcolor="#f0fae1" style="background:#f0fae1;border-radius:16px;padding:24px 22px;text-align:center">'
 
 			// 1. Bee Guardian
-			. '<img src="' . esc_url( $app . '/nft/web/sentinel.png' ) . '" width="120" height="120" alt="' . esc_attr__( 'EcoProof AI Bee Guardian', 'ecoproof-for-woocommerce' ) . '" style="display:block;margin:0 auto 10px;width:120px;height:120px;border:0;' . $font . 'font-size:12px;' . $muted . '">'
+			. '<img src="' . esc_url( $app . '/nft/web/sentinel.png' ) . '" width="120" height="120" alt="' . esc_attr__( 'EcoProof Bee Guardian', 'ecoproof-for-woocommerce' ) . '" style="display:block;margin:0 auto 10px;width:120px;height:120px;border:0;' . $font . 'font-size:12px;' . $muted . '">'
 
 			// 2–3. Headline and this order's impact
 			. '<h2 style="' . $font . $ink . 'margin:0 0 6px;font-size:21px;line-height:28px;font-weight:bold">' . esc_html__( 'You just did something good for the planet 🌍', 'ecoproof-for-woocommerce' ) . '</h2>'
@@ -111,7 +111,7 @@ class EcoProof_Stamp {
 			// 4–5. What it is
 			. '<h3 style="' . $font . $ink . 'margin:0 0 6px;font-size:18px;line-height:24px;font-weight:bold">' . esc_html__( 'Collect your free eco stamp', 'ecoproof-for-woocommerce' ) . '</h3>'
 			/* translators: %s: shop name */
-			. '<p style="' . $font . $muted . 'margin:0 0 16px;font-size:14px;line-height:21px">' . esc_html( sprintf( __( '%s is part of EcoProof AI, a digital eco passport. Every sustainable purchase you make earns a stamp, verified so nobody can fake it.', 'ecoproof-for-woocommerce' ), self::shop_name() ) ) . '</p>'
+			. '<p style="' . $font . $muted . 'margin:0 0 16px;font-size:14px;line-height:21px">' . esc_html( sprintf( __( '%s is part of EcoProof, a digital eco passport. Every sustainable purchase you make earns a stamp, verified so nobody can fake it.', 'ecoproof-for-woocommerce' ), self::shop_name() ) ) . '</p>'
 
 			// 6. What you get
 			. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:440px;margin:0 auto 18px;text-align:left">'
@@ -131,7 +131,7 @@ class EcoProof_Stamp {
 
 			// 10. Footnote
 			. '<p style="' . $font . 'margin:0;font-size:12px;line-height:17px;color:#7a7f72">' . esc_html__( 'Stamps are recorded on the Solana blockchain so they can’t be faked.', 'ecoproof-for-woocommerce' )
-			. ' <a href="' . esc_url( $app . '/about' ) . '" style="color:#56633f;text-decoration:underline">' . esc_html__( 'Learn more about EcoProof AI', 'ecoproof-for-woocommerce' ) . '</a></p>'
+			. ' <a href="' . esc_url( $app . '/about' ) . '" style="color:#56633f;text-decoration:underline">' . esc_html__( 'Learn more about EcoProof', 'ecoproof-for-woocommerce' ) . '</a></p>'
 
 			. '</td></tr></table>';
 
@@ -146,11 +146,11 @@ class EcoProof_Stamp {
 			trim( self::impact_sentence( $order ) . ' ' . __( 'Now you can prove it.', 'ecoproof-for-woocommerce' ) ),
 			'',
 			/* translators: %s: shop name */
-			sprintf( __( 'Collect your free eco stamp: %s is part of EcoProof AI, a digital eco passport. Every sustainable purchase earns a stamp, verified so nobody can fake it.', 'ecoproof-for-woocommerce' ), self::shop_name() ),
+			sprintf( __( 'Collect your free eco stamp: %s is part of EcoProof, a digital eco passport. Every sustainable purchase earns a stamp, verified so nobody can fake it.', 'ecoproof-for-woocommerce' ), self::shop_name() ),
 			/* translators: %s: claim link */
 			sprintf( __( 'Collect my stamp (10 seconds, no app): %s', 'ecoproof-for-woocommerce' ), self::claim_url( $order ) ),
 			/* translators: %s: link */
-			sprintf( __( 'Learn more about EcoProof AI: %s', 'ecoproof-for-woocommerce' ), EcoProof_Config::url() . '/about' ),
+			sprintf( __( 'Learn more about EcoProof: %s', 'ecoproof-for-woocommerce' ), EcoProof_Config::url() . '/about' ),
 			'',
 		);
 		return implode( "\n", $lines );

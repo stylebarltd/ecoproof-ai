@@ -4,5 +4,5 @@ export const SECTIONS = [["#how", "How it works"], ["#businesses", "For business
 
 /** Wordmark in the journal's serif; the leaf tile stays the app's icon. */
 export const JournalWordmark = ({ className = "text-[22px]" }: { className?: string }) => (
-  <span className={`font-journal-display font-bold leading-none tracking-tight text-cocoa ${className}`}>EcoProof<span className="text-honey-ink"> AI</span></span>
+  <span className={`font-journal-display font-bold leading-none tracking-tight text-cocoa ${className}`}>EcoProof</span>
 );

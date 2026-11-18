@@ -44,7 +44,7 @@ export type Matched = LineItem & { source: "product" | "ai" | "none" };
 
 const NOTHING = { category: "not_sustainable", plasticG: 0, co2G: 0 } as const;
 
-/** EcoProof AI's factor table: grams of plastic and CO2 avoided per piece, by product type. */
+/** EcoProof's factor table: grams of plastic and CO2 avoided per piece, by product type. */
 export async function factors(): Promise<Map<string, { plasticG: number; co2G: number }>> {
   const rows = await query<{ product_type: string; plastic_g: number; co2_g: number }>("SELECT product_type, plastic_g, co2_g FROM impact_factors");
   return new Map(rows.map((r) => [r.product_type, { plasticG: r.plastic_g, co2G: r.co2_g }]));

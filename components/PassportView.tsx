@@ -70,7 +70,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
           {stamps === 0 && (
             <Link href="/about" className="glass lift flex items-center gap-3 rounded-2xl px-4 py-3 ring-2 ring-honey-400/70 lg:col-span-2">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-honey-500 text-ink"><CircleHelp size={20} strokeWidth={2.6} /></span>
-              <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof AI works</span><span className="block text-[11.5px] text-sage-900">Stamps, Bee Guardian NFTs and how to collect them, in one minute.</span></span>
+              <span className="min-w-0 flex-1"><span className="block font-heading text-[15px] leading-tight">New here? See how EcoProof works</span><span className="block text-[11.5px] text-sage-900">Stamps, Bee Guardian NFTs and how to collect them, in one minute.</span></span>
             </Link>
           )}
           <div className="lg:col-start-2 lg:row-start-1 lg:text-right">
@@ -114,7 +114,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
             <span>{toClaim ? `${toClaim} waiting to claim · connect a wallet` : "My Bee Guardians on Solana"}</span><span aria-hidden>→</span>
           </Link>
         )}
-        {pass?.collectionUrl && <a href={pass.collectionUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline lg:hidden">The EcoProof AI Bee Guardians collection on Solana ↗</a>}
+        {pass?.collectionUrl && <a href={pass.collectionUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline lg:hidden">The EcoProof Bee Guardians collection on Solana ↗</a>}
         {owner && stamps > 0 && <div className="mt-4"><SharePassport passportId={passportId} stamps={stamps} points={points} tier={top ? tierFor(top.milestone).name : null} /></div>}
       </Glass>
 
@@ -143,7 +143,7 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
             return n ? <div key={r.key} className="lift-soft"><BeeCard rank={r} nft={n} wallet={!!pass?.wallet} /></div> : <BeeCard key={r.key} rank={r} />;
           })}
         </div>
-        {pass?.collectionUrl && <a href={pass.collectionUrl} target="_blank" rel="noreferrer" className="mt-3 block text-right text-[12px] text-sage-800 underline hover:text-sage-900">The EcoProof AI Bee Guardians collection on Solana ↗</a>}
+        {pass?.collectionUrl && <a href={pass.collectionUrl} target="_blank" rel="noreferrer" className="mt-3 block text-right text-[12px] text-sage-800 underline hover:text-sage-900">The EcoProof Bee Guardians collection on Solana ↗</a>}
       </Glass>
 
       {/* 2. Stamp collection: verified purchases (premium, with their impact) and presence stamps (plainer), one passport */}
@@ -235,14 +235,14 @@ export default function PassportView({ pass, passportId, owner, onAccountChange 
               </li>
             ))}
           </ul>
-          {pass.registryUrl && <a href={pass.registryUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline">All EcoProof AI proofs on Solana ↗</a>}
+          {pass.registryUrl && <a href={pass.registryUrl} target="_blank" rel="noreferrer" className="mt-3 block text-center text-[11px] text-sage-800 underline">All EcoProof proofs on Solana ↗</a>}
         </Glass>
       )}
       </div>
       </div>
 
       <p className="pb-1 pt-1 text-center text-[11.5px] font-semibold text-sage-900">
-        <Link href="/about" className="underline">How EcoProof AI works</Link> · <Link href="/about#owners" className="underline">For shops</Link> · <Link href="/rules" className="underline">Eco rules</Link>
+        <Link href="/about" className="underline">How EcoProof works</Link> · <Link href="/about#owners" className="underline">For shops</Link> · <Link href="/rules" className="underline">Eco rules</Link>
       </p>
     </div>
   );

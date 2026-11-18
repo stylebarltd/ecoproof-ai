@@ -9,11 +9,11 @@ import { qrImage } from "@/lib/qrImage";
 import { getPlace, toPublic } from "@/lib/stampPlaces";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Print your postcard | EcoProof AI", robots: { index: false } };
+export const metadata = { title: "Print your postcard | EcoProof", robots: { index: false } };
 
 /**
- * The place's postcard for the counter or the table: what EcoProof AI is, why to scan, and the claim QR (components/Postcard.tsx). A
- * customer who has never heard of EcoProof AI should understand it without asking. Prints as four A6 postcards on one A4 sheet (cut once
+ * The place's postcard for the counter or the table: what EcoProof is, why to scan, and the claim QR (components/Postcard.tsx). A
+ * customer who has never heard of EcoProof should understand it without asking. Prints as four A6 postcards on one A4 sheet (cut once
  * each way), or as one A4 poster (?size=a4).
  */
 export default async function PlacePostcard({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ size?: string }> }) {
@@ -31,7 +31,7 @@ export default async function PlacePostcard({ params, searchParams }: { params: 
       <div className="no-print mb-4 space-y-3">
         <div>
           <h1 className="text-[22px] leading-tight">Your postcard</h1>
-          <p className="text-[13px] text-sage-900">Put it on the counter or the tables. It tells customers what EcoProof AI is, so they know why to scan.</p>
+          <p className="text-[13px] text-sage-900">Put it on the counter or the tables. It tells customers what EcoProof is, so they know why to scan.</p>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="glass flex rounded-full p-1" role="group" aria-label="Print size">

@@ -1,6 +1,6 @@
-import { CHECK_PATH, CREAM, LEAF_PATH, SAGE, TERRA } from "@/lib/brand";
+import { CHECK_PATH, CREAM, LEAF_PATH, SAGE } from "@/lib/brand";
 
-/** The EcoProof AI mark: a leaf carrying a checkmark (sustainable choice, verified). */
+/** The EcoProof mark: a leaf carrying a checkmark (sustainable choice, verified). */
 export function LeafMark({ size = 32, stroke = CREAM, strokeWidth = 2.75 }: { size?: number; stroke?: string; strokeWidth?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -22,7 +22,7 @@ export function LogoTile({ size = 36 }: { size?: number }) {
 export function Wordmark({ size = 20 }: { size?: number }) {
   return (
     <span className="font-heading leading-none text-ink" style={{ fontSize: size }}>
-      EcoProof<span style={{ color: TERRA }}> AI</span>
+      EcoProof
     </span>
   );
 }

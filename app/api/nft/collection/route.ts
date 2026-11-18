@@ -7,7 +7,7 @@ export function GET() {
   return Response.json({
     name: COLLECTION_NAME,
     symbol: "ECOPROOF",
-    description: "Soulbound Bee Guardians from EcoProof AI. Earned by collecting eco stamps for real plastic-free purchases, never bought.",
+    description: "Soulbound Bee Guardians from EcoProof. Earned by collecting eco stamps for real plastic-free purchases, never bought.",
     image,
     external_url: appUrl(),
     properties: { files: [{ uri: image, type: "image/png" }], category: "image" },

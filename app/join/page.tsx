@@ -6,8 +6,8 @@ import { headers } from "next/headers";
 import { isKind } from "@/lib/placeKinds";
 
 export const metadata: Metadata = {
-  title: "Join as a business · EcoProof AI",
-  description: "Set up your café, restaurant, hotel or eco shop on EcoProof AI in about 10 minutes. The first 50 businesses join free.",
+  title: "Join as a business · EcoProof",
+  description: "Set up your café, restaurant, hotel or eco shop on EcoProof in about 10 minutes. The first 50 businesses join free.",
 };
 
 /** Where every "Join as a business" on the landing leads. It sits outside the (app) group on purpose: it wears the landing's travel-journal chrome

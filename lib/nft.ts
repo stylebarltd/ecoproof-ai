@@ -20,7 +20,7 @@ import { PRODUCTION_URL } from "./hosts";
 export { BASE_MILESTONES, reachedMilestones, nextMilestone, tierFor, milestoneLabel, type Tier } from "./milestoneRules";
 
 /** Public base URL for links we hand out (QR codes, cards, order links, webhooks, NFT metadata). Production is always
- *  ecoproofai.com: the domain is not a setting. A preview links to its own branch URL, even when APP_URL is set for every
+ *  ecoproof.app: the domain is not a setting. A preview links to its own branch URL, even when APP_URL is set for every
  *  environment: a QR scanned while testing must stamp on the preview's database, not production. APP_URL is for local dev. */
 export const appUrl = () => {
   const e = process.env;

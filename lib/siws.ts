@@ -24,7 +24,7 @@ export function buildMessage(o: { domain: string; address: string; nonce: string
     `${o.domain} wants you to sign in with your Solana account:`,
     o.address,
     "",
-    "Sign in to EcoProof AI. This does not cost anything and does not move any funds.",
+    "Sign in to EcoProof. This does not cost anything and does not move any funds.",
     "",
     `URI: ${o.uri}`,
     `Nonce: ${o.nonce}`,

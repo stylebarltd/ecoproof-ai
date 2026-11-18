@@ -11,7 +11,7 @@ web
 - **Secondary: their customers.** People who scan a QR at the counter, a card in a parcel, or a link in an order email, and collect stamps and Bee Guardian cards in an eco passport they can share. Most have no crypto knowledge and no wallet.
 
 ## Product Purpose
-EcoProof AI turns real eco-friendly visits and purchases into shareable, verifiable social proof. A scan or verified order gives the customer a stamp; points unlock five rank milestones (Sentinel, Warden, Guardian, Vanguard, Paragon), each a soulbound Bee Guardian NFT. Every claim and every published practice declaration writes a SHA-256 fingerprint to Solana, so anyone can check it later. Success means owners join and keep their QR on the counter, and customers come back and share their passport.
+EcoProof turns real eco-friendly visits and purchases into shareable, verifiable social proof. A scan or verified order gives the customer a stamp; points unlock five rank milestones (Sentinel, Warden, Guardian, Vanguard, Paragon), each a soulbound Bee Guardian NFT. Every claim and every published practice declaration writes a SHA-256 fingerprint to Solana, so anyone can check it later. Success means owners join and keep their QR on the counter, and customers come back and share their passport.
 
 ## Positioning
 Proof that can't be edited after the fact: one scan, one stamp, enforced on-chain, with a live "check this record" anyone can run. Hospitality places earn eco stars from a published, versioned practices declaration; shops show impact summed from their own verified orders. It is "visitor-verified", never "certified".
@@ -33,7 +33,7 @@ Proof that can't be edited after the fact: one scan, one stamp, enforced on-chai
 - **No wallet needed.** Customers never need crypto knowledge; Solana stays in the background as the reason the record is trustworthy, explained from the customer's view, not the mechanics.
 - **One art language:** the cel-shaded Bee Guardian card set, five rank personas (`art/v2/ranks/`, `public/nft/`). No mixing in other illustration styles.
 - **Pricing** (`lib/landingContent.ts`): Founding is free for the first 50 businesses, everything included, for as long as EcoProof exists; founding businesses never pay. After the first 50: a simple yearly price per place, not decided yet; the page promises it is shown there before anyone is asked to pay. Never print undecided prices.
-- Name: "EcoProof AI" / "EcoProof". Made by SuperBee (stylebar).
+- Name: "EcoProof" / "EcoProof". Made by SuperBee (stylebar).
 
 ## Evidence on Hand
 - Live counters and the newest verified record from the database (`lib/landingStats.ts`), the example shop's proofs (`/places/<id>#proofs`), live badge (`/api/badge/<place>.svg`), on-chain verify (`/api/verify/<id>`).

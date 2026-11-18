@@ -1,13 +1,13 @@
 <?php
 /**
- * Sends the shop's product list to EcoProof AI, so the owner doesn't type it there.
+ * Sends the shop's product list to EcoProof, so the owner doesn't type it there.
  *
  * Only what identifies a product: its number, its name, the labels of its variations, and for a translation the number of the
  * product in the shop's main language. Never prices, stock, descriptions or customer data. EcoProof AI proposes what kind each
- * product is and how many pieces a pack holds; the owner confirms, corrects or leaves out each one in their EcoProof AI dashboard
+ * product is and how many pieces a pack holds; the owner confirms, corrects or leaves out each one in their EcoProof dashboard
  * ("Plastic-free products"). Sending the list declares nothing.
  *
- * Sent when the owner clicks "Send my products to EcoProof AI" on the settings page, and again in the background a minute after a
+ * Sent when the owner clicks "Send my products to EcoProof" on the settings page, and again in the background a minute after a
  * product is published or renamed (Action Scheduler; several saves become one send).
  *
  * Translations: WPML and Polylang are recognised; any other setup can say which product is the main one with the
@@ -54,7 +54,7 @@ class EcoProof_Catalogue {
 		return $main > 0 ? $main : $id;
 	}
 
-	/** The published products as EcoProof AI takes them. */
+	/** The published products as EcoProof takes them. */
 	public static function products() {
 		$out = array();
 		$ids = wc_get_products(
@@ -101,13 +101,13 @@ class EcoProof_Catalogue {
 	}
 
 	/**
-	 * Sends the list. Returns array( 'received' => n, 'open' => n ) from EcoProof AI, or a WP_Error.
+	 * Sends the list. Returns array( 'received' => n, 'open' => n ) from EcoProof, or a WP_Error.
 	 *
 	 * @return array|WP_Error
 	 */
 	public static function send() {
 		if ( ! EcoProof_Config::connected() ) {
-			return new WP_Error( 'ecoproof_not_connected', __( 'Connect to EcoProof AI first.', 'ecoproof-for-woocommerce' ) );
+			return new WP_Error( 'ecoproof_not_connected', __( 'Connect to EcoProof first.', 'ecoproof-for-woocommerce' ) );
 		}
 		$body     = wp_json_encode( array( 'products' => self::products() ) );
 		$response = EcoProof_Orders::signed_post( '/api/woo/catalogue/', $body, 120 );
@@ -118,10 +118,10 @@ class EcoProof_Catalogue {
 		$code   = (int) wp_remote_retrieve_response_code( $response );
 		$result = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( 200 !== $code || ! is_array( $result ) ) {
-			EcoProof_Orders::log( 'Product list refused by EcoProof AI: HTTP ' . $code, 'error' );
+			EcoProof_Orders::log( 'Product list refused by EcoProof: HTTP ' . $code, 'error' );
 			return new WP_Error( 'ecoproof_refused', 'HTTP ' . $code );
 		}
-		EcoProof_Orders::log( sprintf( 'Product list sent: %d products, %d to check in EcoProof AI.', (int) ( $result['received'] ?? 0 ), (int) ( $result['open'] ?? 0 ) ) );
+		EcoProof_Orders::log( sprintf( 'Product list sent: %d products, %d to check in EcoProof.', (int) ( $result['received'] ?? 0 ), (int) ( $result['open'] ?? 0 ) ) );
 		return $result;
 	}
 }

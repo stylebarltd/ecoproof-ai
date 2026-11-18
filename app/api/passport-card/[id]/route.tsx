@@ -63,7 +63,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: square ? 56 : 44, fontFamily: "Figtree", color: CARD_INK, background: `radial-gradient(circle at 85% 10%, rgba(246,160,107,0.28), rgba(246,160,107,0) 50%), radial-gradient(circle at 10% 95%, rgba(178,98,45,0.14), rgba(178,98,45,0) 45%), ${PAPER}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "baseline", fontFamily: "Caprasimo", fontSize: square ? 46 : 40 }}>EcoProof<span style={{ color: TERRA, marginLeft: 12 }}>AI</span></div>
+          <div style={{ display: "flex", alignItems: "baseline", fontFamily: "Caprasimo", fontSize: square ? 46 : 40 }}>EcoProof</div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: square ? 25 : 22, color: CARD_INK, background: CARD_PAPER, border: `3px solid ${CARD_INK}`, borderRadius: 999, padding: "8px 22px" }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={TERRA} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 7" /></svg>
             Verified on Solana

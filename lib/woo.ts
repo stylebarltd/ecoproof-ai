@@ -124,7 +124,7 @@ export async function claimOrder(placeId: string, token: string, passportId: str
  */
 export const wooSetup = (place: StampPlace) => ({
   plugin: { download: `${appUrl()}/downloads/ecoproof-for-woocommerce.zip`, placeId: place.id, secret: place.secret },
-  webhook: { name: "EcoProof AI", status: "Active", topic: "Order updated", deliveryUrl: `${appUrl()}/api/woo/webhook/${place.id}`, secret: place.secret, apiVersion: "WP REST API Integration v3" },
+  webhook: { name: "EcoProof", status: "Active", topic: "Order updated", deliveryUrl: `${appUrl()}/api/woo/webhook/${place.id}`, secret: place.secret, apiVersion: "WP REST API Integration v3" },
   themeSnippet: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }),
   themeSnippetOwnEmail: wooSnippet({ appUrl: appUrl(), placeId: place.id, secret: place.secret }, "own-email"),
 });

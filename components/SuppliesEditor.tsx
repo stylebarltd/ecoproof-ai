@@ -21,7 +21,7 @@ export default function SuppliesEditor({ supplies, onChange, disabled }: { suppl
       <div>
         <h2 className="text-[17px]">Help cafés, restaurants and hotels</h2>
         <p className="mt-0.5 text-[12.5px] text-sage-900">
-          Tick the practices your products help with. When a place answers No, EcoProof AI suggests the nearest shops that can help, under
+          Tick the practices your products help with. When a place answers No, EcoProof suggests the nearest shops that can help, under
           &ldquo;Where to get it&rdquo;. Suggestions are open to every shop and never change anyone&apos;s stars.{ticked ? ` You help with ${ticked}.` : ""}
         </p>
       </div>

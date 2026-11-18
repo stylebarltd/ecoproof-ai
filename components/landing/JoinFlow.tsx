@@ -72,7 +72,7 @@ export default function JoinFlow({ initialKind, near = null }: { initialKind?: s
       <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-start lg:gap-x-14 lg:gap-y-0">
         <div className="lg:col-start-1 lg:row-start-1">
           <h1 className="text-[36px] leading-[1.04] sm:text-[46px]">Join as {(initialKind && JOIN_AS[initialKind]) || "a business"}</h1>
-          <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Set up your {(initialKind && SET_UP[initialKind]) || "café, restaurant, hotel or eco shop"} in about 10 minutes. The first 50 businesses join free, with everything included, for as long as EcoProof AI exists.</p>
+          <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-cocoa/85">Set up your {(initialKind && SET_UP[initialKind]) || "café, restaurant, hotel or eco shop"} in about 10 minutes. The first 50 businesses join free, with everything included, for as long as EcoProof exists.</p>
         </div>
         <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <SignIn social={social} onSignedIn={() => { announceAccountChange(); void refresh(); }} />
@@ -255,7 +255,7 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
           {shopOnline && (
             <>
               <input className={input} value={website} maxLength={200} inputMode="url" aria-label="Your website" onChange={(e) => setWebsite(e.target.value)} placeholder="Your website, e.g. https://yourshop.com" />
-              <p className={note}>Your shop is listed in EcoProof AI&apos;s shop directory. You add where you ship from in your shop settings afterwards.</p>
+              <p className={note}>Your shop is listed in EcoProof&apos;s shop directory. You add where you ship from in your shop settings afterwards.</p>
             </>
           )}
           <p className={note}>Eco shops show the plastic and CO₂ their customers save instead of stars.</p>
@@ -285,10 +285,10 @@ function PlaceForm({ initialKind, near, onCreated }: { initialKind: string; near
       )}
 
       <div className="stitched rounded-[20px] bg-kraft/50 p-5 sm:p-6">
-        <p className="text-[18px] font-extrabold">EcoProof AI is only for eco places</p>
+        <p className="text-[18px] font-extrabold">EcoProof is only for eco places</p>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[15px] leading-[1.6] text-cocoa/85">{shownRules.map((r) => <li key={r}>{r}</li>)}</ul>
         <div className="mt-4">
-          <Tick checked={rules} onChange={setRules}>I confirm my place keeps these rules. I understand customers can report places that don&apos;t, and that EcoProof AI can pause or remove them. <Link href="/rules" className="font-extrabold underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">Read the rules</Link></Tick>
+          <Tick checked={rules} onChange={setRules}>I confirm my place keeps these rules. I understand customers can report places that don&apos;t, and that EcoProof can pause or remove them. <Link href="/rules" className="font-extrabold underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">Read the rules</Link></Tick>
         </div>
       </div>
 

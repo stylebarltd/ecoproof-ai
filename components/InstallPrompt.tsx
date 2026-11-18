@@ -42,7 +42,7 @@ export default function InstallPrompt({ stamps = 0 }: { stamps?: number }) {
     <div className="flex items-center gap-3 rounded-2xl bg-neutral-100 p-3 text-sm ring-1 ring-sage-300">
       <Download size={20} strokeWidth={2.5} className="shrink-0 text-sage-700" />
       <span className="min-w-0 flex-1">
-        {ios && !evt ? <>Add EcoProof AI to your home screen: tap <b>Share</b>, then <b>Add to Home Screen</b></> : <>Add EcoProof AI to your home screen</>}
+        {ios && !evt ? <>Add EcoProof to your home screen: tap <b>Share</b>, then <b>Add to Home Screen</b></> : <>Add EcoProof to your home screen</>}
       </span>
       {evt && (
         <button onClick={async () => { const r = await evt.prompt(); if (r && r.outcome === "accepted") write({ installed: true }); else write({ dismissedAt: Date.now() }); setHidden(true); }} className="rounded-full bg-terra-500 px-3.5 py-1.5 text-xs font-bold text-cream">Install</button>

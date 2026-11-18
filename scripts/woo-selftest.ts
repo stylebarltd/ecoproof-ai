@@ -1,7 +1,7 @@
 // Checks the WooCommerce wiring from outside, in seconds, WITHOUT touching the shop:
 // sends signed fake webhooks to EcoProof and shows what the customer's link and impact would be.
 // Run: npx tsx scripts/woo-selftest.ts <baseUrl> <webhookSecret> [productId]
-//   e.g. npx tsx scripts/woo-selftest.ts https://ecoproof.superbee.me <secret> 91551
+//   e.g. npx tsx scripts/woo-selftest.ts https://ecoproof.app <secret> 91551
 // It stores one harmless, never-claimed order named SELFTEST-<time> in EcoProof.
 import { createHmac } from "crypto";
 

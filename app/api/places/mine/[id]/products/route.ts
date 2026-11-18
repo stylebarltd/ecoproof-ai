@@ -12,7 +12,7 @@ export async function GET(req: Request, { params }: Ctx) {
 }
 
 /** Adds a product: { receiptName, displayName?, category, packagingType, productType?, pieces?, replaces?, fromQueue? }. No impact numbers are accepted:
- *  EcoProof AI looks them up by category and packaging. */
+ *  EcoProof looks them up by category and packaging. */
 export async function POST(req: Request, { params }: Ctx) {
   const id = (await params).id;
   const m = await shopMember(req, id, "owner");

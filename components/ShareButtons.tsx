@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function ShareButtons({ id, impact }: { id: string; impact: string[] }) {
   const [msg, setMsg] = useState("");
   const url = () => `${location.origin}/p/${id}`;
-  const text = impact.length ? `My eco purchase: ${impact.join(" and ")}, verified on Solana with EcoProof AI 🌱` : "I collected an eco stamp, verified on Solana with EcoProof AI 🌱";
+  const text = impact.length ? `My eco purchase: ${impact.join(" and ")}, verified on Solana with EcoProof 🌱` : "I collected an eco stamp, verified on Solana with EcoProof 🌱";
 
   async function cardFile(format: "wide" | "square") {
     const blob = await (await fetch(`/api/card/${id}${format === "square" ? "?format=square" : ""}`)).blob();

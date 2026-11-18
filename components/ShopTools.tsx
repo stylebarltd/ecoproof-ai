@@ -65,7 +65,7 @@ export function WooOption({ id, open = false }: { id: string; open?: boolean }) 
   return (
     <div id="woo-setup" className={BLOCK}>
       <p className="font-bold">QR in your order email <span className="font-normal text-sage-900">(WooCommerce)</span></p>
-      <p className={MUTED}>Install the free EcoProof AI plugin. When an order is paid, your customer gets a personal button and QR in their order email. It&apos;s signed per order, so their stamp is a verified purchase with the real impact of what they bought.</p>
+      <p className={MUTED}>Install the free EcoProof plugin. When an order is paid, your customer gets a personal button and QR in their order email. It&apos;s signed per order, so their stamp is a verified purchase with the real impact of what they bought.</p>
       {!setup ? (
         <button onClick={() => void load()} className="rounded-full bg-white px-3.5 py-2 text-xs font-bold ring-1 ring-sage-900/15">Show setup steps</button>
       ) : (
@@ -73,18 +73,18 @@ export function WooOption({ id, open = false }: { id: string; open?: boolean }) 
           <ol className="list-decimal space-y-2.5 pl-4 text-[12.5px] leading-snug">
             <li><a href={setup.plugin.download} download className="inline-block rounded-full bg-honey-500 px-3.5 py-1.5 font-bold text-ink">Download the plugin</a></li>
             <li>In WordPress: <b>Plugins → Add New → Upload Plugin</b>, choose the file, <b>Install</b>, then <b>Activate</b>.</li>
-            <li>Open <b>WooCommerce → Settings → EcoProof AI</b> and fill in:
+            <li>Open <b>WooCommerce → Settings → EcoProof</b> and fill in:
               {field("Place id", setup.plugin.placeId)}
               {field("Secret", setup.plugin.secret, true)}
               <span className="mt-1.5 block text-sage-900">Keep the secret private: it signs every order and every claim link.</span>
             </li>
-            <li>Click <b>Save changes</b>, then <b>Test connection</b>. It should say &ldquo;EcoProof AI is connected&rdquo;.</li>
+            <li>Click <b>Save changes</b>, then <b>Test connection</b>. It should say &ldquo;EcoProof is connected&rdquo;.</li>
           </ol>
           <p className={MUTED}>That&apos;s it. The stamp appears in WooCommerce&apos;s <b>Processing order</b> email (sent when an order is paid). Using <b>FunnelKit</b>? It shows below the Order Summary block automatically. Other email builders: add the <code>[ecoproof_stamp]</code> shortcode, or switch on the separate stamp email in the plugin settings.</p>
           <details className={MUTED}>
             <summary className="cursor-pointer font-bold">Can&apos;t install plugins? Set it up by hand</summary>
             <ol className="mt-2 list-decimal space-y-2 pl-4">
-              <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof AI, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
+              <li>In WooCommerce: <b>Settings → Advanced → Webhooks → Add webhook</b>. Name EcoProof, Status Active, Topic <b>{setup.webhook.topic}</b>, API version WP REST API v3.</li>
               <li>Delivery URL: <code className="break-all">{setup.webhook.deliveryUrl}</code> <CopyButton text={setup.webhook.deliveryUrl} /></li>
               <li>Secret: the one above.</li>
               <li>Paste this into your <b>child theme&apos;s functions.php</b>: <CopyButton text={setup.themeSnippet} label="copy snippet" />

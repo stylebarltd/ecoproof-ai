@@ -30,10 +30,10 @@ export function badgeText(impact: Pick<ShopImpact, "purchases" | "plasticG" | "c
 }
 
 export function badgeSvg(name: string, impact: Pick<ShopImpact, "purchases" | "plasticG" | "co2Kg">): string {
-  const brand = "EcoProof AI"; const right = badgeText(impact);
+  const brand = "EcoProof"; const right = badgeText(impact);
   const bw = width(brand, 12); const rw = width(right, 11.5);
   const leftW = 12 + 16 + 7 + bw + 12; const rightW = 12 + rw + 12; const W = leftW + rightW;
-  const label = `${name} · ${right} · verified on EcoProof AI`;
+  const label = `${name} · ${right} · verified on EcoProof`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}">
 <title>${esc(label)}</title>
 <clipPath id="r"><rect width="${W}" height="${H}" rx="6"/></clipPath>
@@ -48,5 +48,5 @@ export function badgeSvg(name: string, impact: Pick<ShopImpact, "purchases" | "p
 /** The snippet a shop pastes into its site: the badge image, linking to the shop's public page where every number has its proofs. */
 export function badgeEmbed(placeId: string, name: string): string {
   const base = appUrl();
-  return `<a href="${base}/places/${placeId}#proofs"><img src="${base}/api/badge/${placeId}.svg" alt="${esc(name)} · verified impact on EcoProof AI" height="${H}"></a>`;
+  return `<a href="${base}/places/${placeId}#proofs"><img src="${base}/api/badge/${placeId}.svg" alt="${esc(name)} · verified impact on EcoProof" height="${H}"></a>`;
 }

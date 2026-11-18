@@ -228,7 +228,7 @@ export type PublicImpact = {
   plasticG: number; co2G: number; bundle: boolean;
 };
 
-/** A shop's eco list with what each product counts, for the shop's own site to show EcoProof AI's numbers (not a copy of them). */
+/** A shop's eco list with what each product counts, for the shop's own site to show EcoProof's numbers (not a copy of them). */
 export async function publicImpacts(placeId: string): Promise<PublicImpact[]> {
   const [rows, aliases, parts, factors] = await Promise.all([
     query<Row>("SELECT * FROM products WHERE place_id=$1 AND status <> 'removed' ORDER BY lower(receipt_name)", [placeId]),

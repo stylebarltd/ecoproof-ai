@@ -21,13 +21,13 @@ export const socialEnabled = (): SocialProvider[] => SOCIAL_PROVIDERS.filter((p)
 
 function create() {
   return betterAuth({
-    appName: "EcoProof AI",
+    appName: "EcoProof",
     basePath: AUTH_BASE_PATH,
     secret: secret(),
     // The site answers on its own domain, Vercel previews and localhost: build links (e.g. Google's and Facebook's return address) from the host asked for.
     baseURL: {
-      // ecoproofai.com is the project's final domain (2026-11-15); ecoproof.superbee.me stays answering for printed QR cards and the plugin.
-      allowedHosts: ["ecoproofai.com", "www.ecoproofai.com", "ecoproof.superbee.me", "ecoproof-*-stylebar.vercel.app", "ecoproof-ai-*-stylebar.vercel.app", "localhost:*", "127.0.0.1:*"],
+      // ecoproof.app is the project's final domain (2026-11-18); ecoproofai.com stays answering for printed QR cards and the plugin.
+      allowedHosts: ["ecoproof.app", "www.ecoproof.app", "ecoproofai.com", "www.ecoproofai.com", "ecoproof-*-stylebar.vercel.app", "ecoproof-ai-*-stylebar.vercel.app", "localhost:*", "127.0.0.1:*"],
       fallback: process.env.VERCEL_ENV === "production" ? PRODUCTION_URL : process.env.APP_URL || PRODUCTION_URL,
     },
     database: drizzleAdapter(orm(), {

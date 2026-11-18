@@ -17,7 +17,7 @@ export default function LandingNav({ page = "home" }: { page?: "home" | "join" }
   return (
     <header className="sticky top-0 z-[2000] border-b border-cocoa/10 bg-paper/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-[1200px] items-center gap-4 px-4 sm:px-6" aria-label="Main">
-        <Link href="/" className="shrink-0" aria-label="EcoProof AI"><JournalWordmark /></Link>
+        <Link href="/" className="shrink-0" aria-label="EcoProof"><JournalWordmark /></Link>
         <div className="ml-6 hidden items-center gap-1 md:flex">
           {sections.map(([href, label]) => <a key={href} href={href} className="rounded-full px-3.5 py-2 text-[15px] font-bold text-cocoa/80 hover:bg-kraft/40 hover:text-cocoa">{label}</a>)}
           <PassportNavLink className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[15px] font-bold text-cocoa/80 hover:bg-kraft/40 hover:text-cocoa" />

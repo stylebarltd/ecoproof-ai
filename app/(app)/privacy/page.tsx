@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy | EcoProof AI",
-  description: "What EcoProof AI collects, why, who it is shared with, what goes on the Solana blockchain, and your rights under Thailand's PDPA.",
+  title: "Privacy | EcoProof",
+  description: "What EcoProof collects, why, who it is shared with, what goes on the Solana blockchain, and your rights under Thailand's PDPA.",
 };
 
-const PRIVACY_EMAIL = "privacy@ecoproofai.com";
+const PRIVACY_EMAIL = "privacy@ecoproof.app";
 const UPDATED = "16 November 2026";
 
 const H2 = ({ id, children }: { id?: string; children: React.ReactNode }) => <h2 id={id} className="scroll-mt-20 pt-2 text-[17px]">{children}</h2>;
@@ -17,7 +17,7 @@ export default function Privacy() {
       <h1 className="text-[22px] leading-tight">Privacy</h1>
       <p className="text-xs text-neutral-600">Last updated {UPDATED}</p>
       <p>
-        EcoProof AI is run by <b>stylebar ltd</b> in Thailand. We are the data controller for the personal data described here, under Thailand&apos;s
+        EcoProof is run by <b>stylebar ltd</b> in Thailand. We are the data controller for the personal data described here, under Thailand&apos;s
         Personal Data Protection Act (PDPA). This page explains it in plain language. Questions or requests: <Mail />.
       </p>
 
@@ -100,7 +100,7 @@ export default function Privacy() {
         <li><b>Google</b> or <b>Meta</b> (Facebook), only if you choose to sign in with them.</li>
         <li>
           <b>Anthropic</b> (AI) reads the receipt photos you scan, as described above, and works out what kind of product a name on a receipt, an
-          order or a shop&apos;s product list is. With a receipt photo it also gets the names of the EcoProof AI shops near you and how far away
+          order or a shop&apos;s product list is. With a receipt photo it also gets the names of the EcoProof shops near you and how far away
           they are, to tell which shop the receipt is from. Apart from that and what the photo shows, no customer data is sent: no name,
           email or account.
         </li>
@@ -140,7 +140,7 @@ export default function Privacy() {
 
       <H2>Children</H2>
       <p>
-        EcoProof AI is not meant for children under 10. Under the PDPA, if you are under 20 you need a parent&apos;s or guardian&apos;s agreement to
+        EcoProof is not meant for children under 10. Under the PDPA, if you are under 20 you need a parent&apos;s or guardian&apos;s agreement to
         sign in with an account.
       </p>
 
@@ -149,7 +149,7 @@ export default function Privacy() {
 
       <div className="flex flex-wrap gap-2 pt-1">
         <Link href="/passport" className="rounded-full bg-sage-500 px-4 py-2 font-bold text-cream">Back to my passport</Link>
-        <Link href="/about" className="rounded-full border-[1.5px] border-neutral-300 px-4 py-2 font-bold">How EcoProof AI works</Link>
+        <Link href="/about" className="rounded-full border-[1.5px] border-neutral-300 px-4 py-2 font-bold">How EcoProof works</Link>
       </div>
     </div>
   );

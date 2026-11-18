@@ -25,7 +25,7 @@ const visible = (p: StampPlace | null): p is StampPlace => !!p && p.status === "
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const place = await getPlace((await params).id);
-  return { title: visible(place) ? `${place.name} | EcoProof AI` : "Place | EcoProof AI" };
+  return { title: visible(place) ? `${place.name} | EcoProof` : "Place | EcoProof" };
 }
 
 /** A place's public page: its stars, and the eco practices its owner declared (the latest published declaration), with its Solana proof. */
@@ -149,7 +149,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
           <h2 className="flex items-center gap-1.5 text-[17px]"><Link2 size={17} strokeWidth={2.5} /> Declared on the blockchain</h2>
           <p className="text-[13px] leading-snug">
             {place.name} published these practices on {fmt(current.createdAt)} (declaration {current.version}). A fingerprint of the answers was written to Solana,
-            so nobody, not even EcoProof AI, can change what was declared without it showing.
+            so nobody, not even EcoProof, can change what was declared without it showing.
           </p>
           {current.pending ? <AnchorPending id={current.id} /> : (
             <>
@@ -179,7 +179,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
           <div>
             <h2 className="text-[17px] leading-tight">Sold without plastic packaging</h2>
             <p className="text-[12.5px] leading-snug text-sage-900">
-              {eco.products.length > 0 && `${place.name} declares these products. EcoProof AI doesn't inspect them; if one isn't true, tell us. `}
+              {eco.products.length > 0 && `${place.name} declares these products. EcoProof doesn't inspect them; if one isn't true, tell us. `}
               {eco.refill && place.in_store && <b className="text-ink">In the shop you can bring your own containers for a refill.</b>}
             </p>
           </div>
@@ -205,7 +205,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
       )}
 
       <p className="px-1 text-[12px] leading-relaxed text-sage-900">
-        {groups ? "The owner declares these practices; EcoProof AI doesn't inspect places in person yet. " : "Eco shops don't get stars: they show what their customers saved, from verified purchases. "}
+        {groups ? "The owner declares these practices; EcoProof doesn't inspect places in person yet. " : "Eco shops don't get stars: they show what their customers saved, from verified purchases. "}
         Something not true? <Link href={`/report/${place.id}`} className="font-bold underline">Report this place</Link>.
       </p>
     </div>

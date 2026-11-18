@@ -21,13 +21,13 @@ const PROMISES: Record<Door, string[]> = {
     "Nobody can edit it later, not even us.",
     "One stamp per visit: scanning again the same day gives nothing.",
     "Only a fingerprint goes on the chain. Never a name or an email.",
-    "Still readable if EcoProof AI closed tomorrow.",
+    "Still readable if EcoProof closed tomorrow.",
   ],
   order: [
     "Nobody can edit it later, not even us.",
     "The same order can never become a second stamp.",
     "Only a fingerprint goes on the chain. Never a name, an email or what they bought.",
-    "Still readable if EcoProof AI closed tomorrow.",
+    "Still readable if EcoProof closed tomorrow.",
   ],
 };
 

@@ -99,7 +99,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
         <div className="mx-auto max-w-md space-y-4">
           {phase === "idle" && (
             <>
-              <p className="text-[15px] leading-relaxed text-cream/90">Bought something plastic-free in an eco shop that&apos;s on EcoProof AI? Photograph the receipt <b>while you&apos;re in the shop</b> and it becomes a verified purchase: 5 points, with the real impact of what you bought.</p>
+              <p className="text-[15px] leading-relaxed text-cream/90">Bought something plastic-free in an eco shop that&apos;s on EcoProof? Photograph the receipt <b>while you&apos;re in the shop</b> and it becomes a verified purchase: 5 points, with the real impact of what you bought.</p>
               <ul className="list-disc space-y-1 pl-5 text-[13.5px] text-cream/75">
                 <li>Lay the receipt flat, whole receipt in the frame, good light.</li>
                 <li>Only in the shop: we check your location against the shop&apos;s. The receipt itself can be from the last 7 days, so a forgotten one still counts on your next visit.</li>
@@ -111,7 +111,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
               {err && (
                 <div className="space-y-2 rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">
                   <p>{err.message}</p>
-                  {err.noShop && <p className="text-[13px]">Know the shop? <Link href="/about#help" className="font-bold underline" onClick={onClose}>Ask them to join EcoProof AI</Link>.</p>}
+                  {err.noShop && <p className="text-[13px]">Know the shop? <Link href="/about#help" className="font-bold underline" onClick={onClose}>Ask them to join EcoProof</Link>.</p>}
                 </div>
               )}
             </>

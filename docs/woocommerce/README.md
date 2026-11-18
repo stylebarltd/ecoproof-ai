@@ -1,7 +1,7 @@
 # WooCommerce connection (verified-purchase stamps)
 
-Shops connect with the **EcoProof AI for WooCommerce** plugin: `integrations/woocommerce/ecoproof-for-woocommerce/`.
-When an order is paid (processing, or any status the shop marks as paid), the plugin sends it to EcoProof AI and the customer
+Shops connect with the **EcoProof for WooCommerce** plugin: `integrations/woocommerce/ecoproof-for-woocommerce/`.
+When an order is paid (processing, or any status the shop marks as paid), the plugin sends it to EcoProof and the customer
 gets a "Collect your eco stamp" button and QR. Collecting it gives a **verified purchase** stamp with the order's real impact.
 
 ## Install
@@ -10,7 +10,7 @@ gets a "Collect your eco stamp" button and QR. Collecting it gives a **verified 
 cd integrations/woocommerce && zip -r ecoproof-for-woocommerce.zip ecoproof-for-woocommerce
 ```
 
-Upload the zip in wp-admin (Plugins > Add New > Upload), activate, then **WooCommerce > Settings > EcoProof AI**: enter the place id
+Upload the zip in wp-admin (Plugins > Add New > Upload), activate, then **WooCommerce > Settings > EcoProof**: enter the place id
 and secret, save, click **Test connection**. The place id and secret come from:
 
 ```
@@ -18,8 +18,8 @@ curl -H "x-admin-token: $ADMIN_TOKEN" https://<app>/api/stamp-places/<place>/woo
 ```
 
 The connection can also be set in `wp-config.php` (`ECOPROOF_PLACE`, `ECOPROOF_SECRET`), which keeps the
-secret out of the database. The EcoProof AI URL is fixed to `https://ecoproofai.com` and has no settings field; for local development
-override it with `define( 'ECOPROOF_URL', ... )` in `wp-config.php`. `ECOPROOF_API_URL` is only for local development, where the shop's server reaches EcoProof AI by another
+secret out of the database. The EcoProof URL is fixed to `https://ecoproof.app` and has no settings field; for local development
+override it with `define( 'ECOPROOF_URL', ... )` in `wp-config.php`. `ECOPROOF_API_URL` is only for local development, where the shop's server reaches EcoProof by another
 address than customers do (DDEV: `http://host.docker.internal:3000`).
 
 ## Where the customer sees the stamp
@@ -38,7 +38,7 @@ Shops send order emails in different ways, so each of these can be switched on o
 ## Where the numbers come from
 
 The shop sets no numbers, and the plugin has no product screen (since 1.3.0). The shop lists what it sells without plastic in its
-EcoProof AI dashboard ("Plastic-free products"), by the product's name as it appears in its orders, with its kind and packaging.
+EcoProof dashboard ("Plastic-free products"), by the product's name as it appears in its orders, with its kind and packaging.
 An order line that matches a listed product counts the fixed grams of plastic and CO2 for that kind and packaging (`impact_factors`).
 A line that isn't listed is estimated by the AI from its name, shown as an estimate, and waits in the dashboard's "Confirm these
 products?" queue. See `docs/eco-product-standard.md`; code: `lib/order.ts`, `lib/match.ts`.

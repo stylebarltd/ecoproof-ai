@@ -19,7 +19,7 @@ export default function TopNav({ rootIs = "passport" }: { rootIs?: RootIs }) {
   return (
     <header className="sticky top-0 z-[2000] hidden border-b border-white/70 bg-white/40 shadow-[0_4px_24px_rgba(39,46,27,0.10)] backdrop-blur-xl backdrop-saturate-150 lg:block print:hidden">
       <nav className="mx-auto flex h-16 max-w-[1280px] items-center gap-6 px-10" aria-label="Main">
-        <Link href="/" aria-label="EcoProof AI, home" className="shrink-0"><LogoLockup size={34} /></Link>
+        <Link href="/" aria-label="EcoProof, home" className="shrink-0"><LogoLockup size={34} /></Link>
         <div className="flex items-center gap-1">
           {link("/passport", <LeafMark size={18} stroke="currentColor" strokeWidth={2.75} />, "Passport", isPassportPath(path, rootIs))}
           {link("/map", <MapPin size={17} strokeWidth={2.5} />, "Map", path.startsWith("/map"))}

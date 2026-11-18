@@ -2,13 +2,13 @@
 /**
  * Settings, resolved in one place.
  *
- * Every setting is saved in wp-admin (WooCommerce > Settings > EcoProof AI), and
+ * Every setting is saved in wp-admin (WooCommerce > Settings > EcoProof), and
  * the connection settings can instead be defined as constants in
  * wp-config.php (ECOPROOF_PLACE, ECOPROOF_SECRET, ECOPROOF_API_URL). A
  * constant always wins and its field is locked in the settings page, so a
  * secret can live outside the database.
  *
- * The EcoProof AI URL has no settings field: it is the hosted service, and only
+ * The EcoProof URL has no settings field: it is the hosted service, and only
  * a wp-config.php constant (ECOPROOF_URL, for local development) overrides it.
  *
  * @package EcoProof_WooCommerce
@@ -22,7 +22,7 @@ class EcoProof_Config {
 
 	/** Defaults for the saved settings. */
 	const DEFAULTS = array(
-		'url'             => 'https://ecoproofai.com',   // the hosted service; not a setting
+		'url'             => 'https://ecoproof.app',   // the hosted service; not a setting
 		'place'           => '',
 		'secret'          => '',
 		'api_url'         => '',
@@ -61,12 +61,12 @@ class EcoProof_Config {
 		return '' !== self::url() && '' !== self::place() && '' !== self::secret();
 	}
 
-	/** Public EcoProof AI URL: claim links and QR codes. */
+	/** Public EcoProof URL: claim links and QR codes. */
 	public static function url() {
 		return untrailingslashit( trim( (string) self::get( 'url' ) ) );
 	}
 
-	/** Where this server sends orders. Same as the public URL unless the shop reaches EcoProof AI by another address (local dev). */
+	/** Where this server sends orders. Same as the public URL unless the shop reaches EcoProof by another address (local dev). */
 	public static function api_url() {
 		$api = untrailingslashit( trim( (string) self::get( 'api_url' ) ) );
 		return '' !== $api ? $api : self::url();

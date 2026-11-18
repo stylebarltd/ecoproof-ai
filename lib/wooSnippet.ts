@@ -2,7 +2,7 @@
 export function wooSnippet(o: { appUrl: string; placeId: string; secret: string }, variant: "email-block" | "own-email" = "email-block"): string {
   return `<?php
 /**
- * EcoProof AI: eco stamp QR in the "order completed" email.
+ * EcoProof: eco stamp QR in the "order completed" email.
  * Add to the CHILD theme's functions.php (never the parent theme). Remove this block to switch it off.
  * The secret signs each order's claim link so it can't be guessed. Keep it private (better: define it in wp-config.php).
  */
@@ -26,7 +26,7 @@ function ecoproof_block( $order, $plain = false ) {
 	$qr = ECOPROOF_APP . '/api/woo/qr/' . ECOPROOF_PLACE . '/' . $token;
 	return '<div style="margin:24px 0;padding:20px;border-radius:16px;background:#f0fae1;text-align:center;font-family:sans-serif">'
 		. '<h2 style="margin:0 0 6px;color:#272e1b">Collect your eco stamp 🌱</h2>'
-		. '<p style="margin:0 0 14px;color:#56633f">Tap the button or scan the code. Your order\\'s real impact goes into your EcoProof AI passport, verified on Solana.</p>'
+		. '<p style="margin:0 0 14px;color:#56633f">Tap the button or scan the code. Your order\\'s real impact goes into your EcoProof passport, verified on Solana.</p>'
 		. '<p><a href="' . esc_url( $link ) . '" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#e8a317;color:#201e1d;font-weight:bold;text-decoration:none">Collect my stamp</a></p>'
 		. '<p><img src="' . esc_url( $qr ) . '" width="160" height="160" alt="Scan to collect your eco stamp" style="border-radius:12px"></p>'
 		. '</div>';

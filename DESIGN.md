@@ -1,5 +1,5 @@
 ---
-name: EcoProof AI
+name: EcoProof
 description: A stamped travel journal for real eco choices, verified on Solana.
 colors:
   paper: "#f4e9d8"
@@ -147,7 +147,7 @@ components:
     padding: "12px"
 ---
 
-# Design System: EcoProof AI
+# Design System: EcoProof
 
 ## Overview
 

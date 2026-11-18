@@ -8,11 +8,11 @@ const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", displa
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.VERCEL_ENV === "production" ? PRODUCTION_URL : process.env.APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://ecoproof-ai.vercel.app"), // link-preview images must come from the host that serves them
-  title: "EcoProof AI",
+  title: "EcoProof",
   description: "Your verified environmental impact passport",
   manifest: "/manifest.webmanifest",
   icons: { icon: [{ url: "/logo.svg", type: "image/svg+xml" }, { url: "/icons/192", type: "image/png" }], apple: "/icons/180" },
-  appleWebApp: { capable: true, title: "EcoProof AI", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "EcoProof", statusBarStyle: "black-translucent" },
 };
 export const viewport: Viewport = { themeColor: "#f0fae1", width: "device-width", initialScale: 1 };
 

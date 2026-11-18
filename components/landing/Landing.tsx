@@ -293,7 +293,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
       <Section id="proof" className="py-12 lg:py-20">
         <H2>Anyone can print a green badge</H2>
-        <Lead>EcoProof AI records what actually happened, one order at a time. Anyone can check it.</Lead>
+        <Lead>EcoProof records what actually happened, one order at a time. Anyone can check it.</Lead>
         <div className="mt-8 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
           <div className="flex flex-col items-center rounded-[18px] border-2 border-dashed border-cocoa/25 px-6 py-8 text-center">
             <FakeSticker />
@@ -323,13 +323,13 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
         <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
           {[
-            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof AI QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter, our WooCommerce plugin, or cards for your parcels." },
-            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof AI QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: "Each stamp lands in your customer's passport and is written to Solana." },
+            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter, our WooCommerce plugin, or cards for your parcels." },
+            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: "Each stamp lands in your customer's passport and is written to Solana." },
             { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Every stamp carries your name, and sharing takes one tap." },
           ].map((s, i) => (
             <li key={s.label} className="flex flex-col">
               <div className="relative">
-                <Image src={`/landing/steps/${s.label}.webp`} alt={s.alt} width={800} height={800} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: `rotate(${[-1, 1.2, -0.8][i]}deg)` }} />
+                <Image src={`/landing/steps/v2/${s.label}.webp`} alt={s.alt} width={800} height={800} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: `rotate(${[-1, 1.2, -0.8][i]}deg)` }} />
                 <div className="absolute -bottom-6 -right-2 scale-[0.8] sm:-right-4 sm:scale-100"><StampMark num={i + 1} icon={s.icon} label={s.label} /></div>
               </div>
               <h3 className="mt-10 text-[22px] leading-tight">{s.title}</h3>
@@ -346,7 +346,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <ul className="mt-8 grid gap-6 md:grid-cols-3">
           {doors.map((d, i) => (
             <li key={d.img} className="stitched grain flex flex-col rounded-[20px] bg-kraft/50 p-4 sm:p-5">
-              <Image src={`/landing/doors/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
+              <Image src={`/landing/doors/v2/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
               <h3 className="mt-5 text-[22px] leading-tight">{d.title}</h3>
               <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-paper px-3 py-1 text-[13px] font-extrabold text-cocoa ring-1 ring-cocoa/10"><Stamp size={14} className="shrink-0 text-sky-ink" /> {d.door}</p>
               {/* Three facts per card (critique of 14 Nov 2026: 12+ chunks for "which one am I?"); what customers get is in "For customers". */}
@@ -375,7 +375,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             {/* Why "AI" (2026-11-15): the numbers' origin in two lines, the full account in the guide. */}
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">Where the numbers come from</p>
-              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof AI for its kind, never by the shop.</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof for its kind, never by the shop.</p>
               <Link href="/about#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
             </div>
           </div>
@@ -458,7 +458,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <li><Link href="/map" className="hover:underline">Map of places</Link></li>
             <li><Link href="/shops" className="hover:underline">Eco shops</Link></li>
             <li><Link href="/passport" className="hover:underline">My passport</Link></li>
-            <li><a href="https://ecoproofai.stylebar.de" className="hover:underline" target="_blank" rel="noopener">About the project</a></li>
             <li><Link href="/rules" className="hover:underline">Rules</Link> · <Link href="/privacy" className="hover:underline">Privacy</Link></li>
           </ul>
         </div>
