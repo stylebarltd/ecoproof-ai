@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, Link2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
-import SolanaJourney from "@/components/landing/SolanaJourney";
+import HowItWorks from "@/components/landing/HowItWorks";
 import HospitalityCard from "@/components/landing/HospitalityCard";
 import MobileJoinBar from "@/components/landing/MobileJoinBar";
 import HeroArt from "@/components/landing/HeroArt";
@@ -275,6 +275,14 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         </div>
       </Section>
 
+      {/* How it works: the whole journey as a carousel, right under the hero (2026-11-18). Slide 3 carries #why-chain (the hero's
+          SolanaTip and the footer link to it). */}
+      <Section id="how" className="py-12 lg:py-20">
+        <H2>How it works</H2>
+        <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
+        <HowItWorks r={stats?.record ?? null} />
+      </Section>
+
       {/* Verified, not claimed: a printed sticker next to one real record, which the visitor can check against Solana right here. */}
       <Section id="proof" className="py-12 lg:py-20">
         <H2>Anyone can print a green badge</H2>
@@ -292,15 +300,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             )}
           </div>
         </div>
-      </Section>
-
-      {/* How it works, and why it is on Solana: one section since 2026-11-18 (the Solana journey and "Live in three steps" told the same
-          three steps twice). The three columns are SolanaJourney; its third column is the plain-words Solana explainer and carries the #why-chain
-          anchor (the hero's SolanaTip links to it). */}
-      <Section id="how" className="py-12 lg:py-20">
-        <H2>Live in three steps</H2>
-        <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
-        <SolanaJourney r={stats?.record ?? null} />
       </Section>
 
       {/* Business types */}
