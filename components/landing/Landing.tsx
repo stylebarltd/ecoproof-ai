@@ -275,7 +275,30 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         </div>
       </Section>
 
-      {/* How it works: the whole journey as a carousel, right under the hero (2026-11-18). Slide 3 carries #why-chain (the hero's
+      {/* What customers get: right under the hero since 2026-11-18 (Pola), so the page opens for customers as well as businesses. */}
+      <Section id="customers" className="py-12 lg:py-20">
+        <div className="stitched grain rounded-[20px] bg-kraft/55 px-5 py-10 sm:px-10 lg:px-14 lg:py-14">
+          <div className="grid items-center gap-10 lg:grid-cols-[300px_1fr] lg:gap-14">
+            <PhoneMockup />
+            <div className="min-w-0">
+              <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
+              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian: a collectible card that can&apos;t be bought, only earned.</Lead>
+              <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
+              <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
+                {RANKS.map((r, i) => (
+                  <li key={r.key} className="w-[150px] shrink-0 text-center lg:w-auto" style={{ transform: `rotate(${(i - 2) * 2.5}deg)` }}>
+                    <Image src={`/landing/cards/${r.key}.webp`} alt={`${r.name} Bee Guardian card`} width={600} height={840} sizes="150px" className="w-full rounded-[10px] shadow-[0_10px_24px_rgba(58,42,28,0.25)]" />
+                    <span className="mt-3 block text-[14px] font-extrabold">{r.name}</span>
+                    <span className="block text-[12px] font-bold text-cocoa/80">{r.at} point{r.at === 1 ? "" : "s"}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* How it works: the whole journey as a carousel (2026-11-18). Slide 3 carries #why-chain (the hero's
           SolanaTip and the footer link to it). */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>How it works</H2>
@@ -369,29 +392,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           {["Set up in about 10 minutes: print a QR, or install the WooCommerce plugin.", "Your proofs stay on Solana, even if you leave (from launch, on mainnet)."].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
         </ul>
         </div>
-        </div>
-      </Section>
-
-      {/* What customers get */}
-      <Section id="customers" className="py-12 lg:py-20">
-        <div className="stitched grain rounded-[20px] bg-kraft/55 px-5 py-10 sm:px-10 lg:px-14 lg:py-14">
-          <div className="grid items-center gap-10 lg:grid-cols-[300px_1fr] lg:gap-14">
-            <PhoneMockup />
-            <div className="min-w-0">
-              <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
-              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian: a collectible card that can&apos;t be bought, only earned.</Lead>
-              <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
-              <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
-                {RANKS.map((r, i) => (
-                  <li key={r.key} className="w-[150px] shrink-0 text-center lg:w-auto" style={{ transform: `rotate(${(i - 2) * 2.5}deg)` }}>
-                    <Image src={`/landing/cards/${r.key}.webp`} alt={`${r.name} Bee Guardian card`} width={600} height={840} sizes="150px" className="w-full rounded-[10px] shadow-[0_10px_24px_rgba(58,42,28,0.25)]" />
-                    <span className="mt-3 block text-[14px] font-extrabold">{r.name}</span>
-                    <span className="block text-[12px] font-bold text-cocoa/80">{r.at} point{r.at === 1 ? "" : "s"}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
         </div>
       </Section>
 
