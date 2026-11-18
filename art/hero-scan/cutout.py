@@ -27,12 +27,13 @@ f, r, l, bk = P(A0, B0), P(A1, B0), P(A0, B1), P(A1, B1)
 size = (W*SS, H*SS)
 block = np.zeros((H*SS, W*SS, 3), np.float32); bm = np.zeros((H*SS, W*SS), np.uint8)
 WOOD = {n: np.asarray(Image.open(D/f"wood_{n}.png").convert("RGB"), np.float32) for n in ("face", "end")}   # wood.py: rough sawn, untreated
+HONEY = np.float32((1.12, 0.97, 0.72))             # the grey-brown textures, warmed to honey (Pola)
 def face(tex, box, dst_quad, gain=1.0):
     """Lay the part `box` (x0, y0, x1, y1) of a wood texture onto one face of the holder."""
     global block, bm
     x0, y0, x1, y1 = box; t = WOOD[tex][y0:y1, x0:x1]
     M2 = cv2.getPerspectiveTransform(np.float32([(0, 0), (x1-x0, 0), (x1-x0, y1-y0), (0, y1-y0)]), np.float32(dst_quad)*SS)
-    w = cv2.warpPerspective(t, M2, size, flags=cv2.INTER_AREA); m = np.zeros((H*SS, W*SS), np.uint8); cv2.fillPoly(m, [np.int32(np.float32(dst_quad)*SS)], 255, cv2.LINE_AA)
+    w = cv2.warpPerspective(t*HONEY, M2, size, flags=cv2.INTER_AREA); m = np.zeros((H*SS, W*SS), np.uint8); cv2.fillPoly(m, [np.int32(np.float32(dst_quad)*SS)], 255, cv2.LINE_AA)
     k = (m.astype(np.float32)/255)[..., None]; block = block*(1-k) + w*gain*k; bm = np.maximum(bm, m)
 face("face", (60, 40, 1000, 230), [l, bk, r, f], 1.06)            # top: the plank's upper boards
 face("end", (60, 120, 400, 420), [l, f, f + TH, l + TH], 0.72)    # the side: end grain, in shadow
