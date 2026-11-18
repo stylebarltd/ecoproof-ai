@@ -24,9 +24,9 @@ const SCANNED = "Hotel";
 const PINS: Pin[] = [
   { kind: "cafe", label: "Café", x: 38, y: 22 },
   { kind: "restaurant", label: "Restaurant", x: 62, y: 28 },
-  { kind: "hotel", label: "Hotel", x: 88, y: 33 },
+  { kind: "eco_shop", label: "Eco shop", x: 88, y: 33 },
   { kind: "online", label: "Online", x: 38, y: 59 },
-  { kind: "eco_shop", label: "Eco shop", x: 41, y: 90 },
+  { kind: "hotel", label: "Hotel", x: 58, y: 90 }, // on the river bank: the card on the stand is Riverside Resort's
 ];
 
 const W = 600, H = 460;
@@ -74,8 +74,8 @@ function Streets() {
         {cols.map((x) => <line key={`c${x}`} y1={-200} y2={H + 200} x1={x} x2={x} stroke={C.road} strokeWidth={10} />)}
       </g>
       {/* the river and the lake, over the grid, then the main road that crosses them */}
-      <path d="M470 -20 C 440 90, 520 150, 470 250 S 380 380, 420 480" fill="none" stroke={C.water} strokeWidth={34} strokeLinecap="round" />
-      <path d="M455 300 C 520 270, 640 300, 640 380 L 640 480 L 400 480 C 380 400, 400 330, 455 300 Z" fill={C.water} />
+      <path d="M470 -20 C 440 90, 520 150, 470 250 S 365 380, 385 480" fill="none" stroke={C.water} strokeWidth={34} strokeLinecap="round" />
+      <path d="M455 300 C 520 270, 640 300, 640 380 L 640 480 L 365 480 C 345 410, 390 330, 455 300 Z" fill={C.water} />
       <path d="M-20 250 C 120 215, 260 300, 380 240 S 560 130, 640 150" fill="none" stroke={C.mainEdge} strokeWidth={19} />
       <path d="M-20 250 C 120 215, 260 300, 380 240 S 560 130, 640 150" fill="none" stroke={C.main} strokeWidth={15} />
     </svg>
@@ -132,7 +132,7 @@ export default function MapPicture({ scanned = false }: { scanned?: boolean }) {
       {scanned && <>
         {/* from the scanned code down to the phone */}
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
-          <path d="M92 35 C 94 38, 94 42, 91 46" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+          <path d="M66 81 C 68 79, 69 77, 71 75" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
         </svg>
         <Image src="/landing/hero/stand-riverside.webp" alt="The hotel's EcoProof postcard on a small stand of rough natural wood: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 235px, 166px"
           className="hero-stand absolute -bottom-[16%] -rotate-[3deg] drop-shadow-[0_18px_22px_rgba(58,42,28,0.4)]" />
