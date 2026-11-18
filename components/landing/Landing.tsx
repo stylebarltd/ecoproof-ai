@@ -199,7 +199,7 @@ function SolanaTip() {
 }
 
 /** The hero's words and actions, shared by every hero. `center` for the island, where the copy sits in the sky. */
-/** The hero speaks to customers (Pola, 2026-11-18); owners get one line with "Add place" under it. */
+/** The hero speaks to customers only (Pola, 2026-11-18); owners find "Add place" in the navigation. */
 function HeroCopy({ center }: { center?: boolean }) {
   return (
     <>
@@ -210,7 +210,6 @@ function HeroCopy({ center }: { center?: boolean }) {
         <Link href="/map" className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Find eco places</Link>
       </div>
       <p className={`${center ? "text-center " : ""}mt-3 text-[15px] font-bold text-cocoa/85`}>Free. No app to install, no account needed to start.</p>
-      <p className={`${center ? "text-center " : ""}mt-2 text-[15px] text-cocoa/85`}>Run an eco café, hotel or shop? <Link href="/join" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Add place</Link>. Free for the first 50 businesses.</p>
     </>
   );
 }
@@ -239,7 +238,6 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
             <div>
               <HeroCopy />
-              <CounterStrip stats={stats} className="mt-8 flex" />
             </div>
             <MapPicture scanned />
           </div>
