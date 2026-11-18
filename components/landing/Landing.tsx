@@ -34,6 +34,33 @@ const DoorRow = ({ term, className = "", children }: { term: string; className?:
   <div className={className}><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">{term}</dt><dd className="text-cocoa/85">{children}</dd></div>
 );
 
+/** A passport on a phone, drawn in CSS: what a customer sees after a few stamps. */
+function PhoneMockup() {
+  const stamps = [["Eco café", "Visit stamp", POINTS_BY_KIND.cafe], ["Online eco shop", "Verified order", POINTS_VERIFIED], ["Eco hotel", "Visit stamp", POINTS_BY_KIND.hotel]] as const;
+  return (
+    <div className="mx-auto w-[272px] rounded-[38px] border-[8px] border-cocoa bg-paper p-3 shadow-[0_24px_50px_rgba(58,42,28,0.3)]" aria-label="A customer's eco passport on a phone" role="img">
+      <div className="mx-auto mb-3 h-5 w-24 rounded-full bg-cocoa" />
+      <p className="font-journal-display text-[18px] font-bold leading-tight">My eco passport</p>
+      <div className="mt-2 flex items-end justify-between rounded-2xl bg-kraft/60 px-3 py-2.5">
+        <span><span className="block text-[12px] font-bold text-cocoa/80">Points</span><span className="font-journal-display text-[26px] font-bold leading-none">{POINTS_BY_KIND.cafe + POINTS_VERIFIED + POINTS_BY_KIND.hotel}</span></span>
+        <span className="text-right text-[12px] font-bold text-cocoa/80">3 stamps<br />3 proofs on Solana</span>
+      </div>
+      <ul className="mt-3 space-y-2">
+        {stamps.map(([place, kind, pts]) => (
+          <li key={place} className="flex items-center gap-2.5 rounded-xl bg-white/70 px-2.5 py-2">
+            <span className="stamp flex h-9 w-9 items-center justify-center text-sky-ink"><Stamp size={14} /></span>
+            <span className="min-w-0 flex-1 leading-tight"><span className="block truncate text-[13px] font-extrabold">{place}</span><span className="block text-[12px] text-cocoa/80">{kind}</span></span>
+            <span className="text-[12px] font-extrabold text-honey-ink">+{pts}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex items-center gap-2 rounded-xl bg-kraft/50 p-2">
+        <Image src="/landing/cards/warden.webp" alt="" width={600} height={840} sizes="40px" className="w-10 rounded-md" />
+        <span className="text-[12px] font-bold leading-tight">Bee Guardian · Warden<br /><span className="font-semibold text-cocoa/80">Soulbound NFT, earned at {RANKS[1].at} points</span></span>
+      </div>
+    </div>
+  );
+}
 
 /** Live totals as three square rubber stamps: proofs, plastic avoided, CO₂e avoided. */
 function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; className?: string }) {
@@ -204,13 +231,17 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav />
 
-      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy centred on kraft paper (the island pictures were removed on 2026-11-18).
+      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy left and the map of eco places right, on kraft paper (the island pictures were removed on 2026-11-18).
           "proof": copy left, the newest real record and its live check right, on kraft. "cards": copy left, the card fan and the bee right. */}
       {HERO === "island" ? (
         <IslandHero>
-          <div className="mx-auto max-w-[880px] text-center">
-            <HeroCopy center />
-            <CounterStrip stats={stats} className="mt-8 flex justify-center" />
+          {/* Copy left, the map of eco places right (2026-11-18); on phones the map follows the copy. */}
+          <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+            <div>
+              <HeroCopy />
+              <CounterStrip stats={stats} className="mt-8 flex" />
+            </div>
+            <MapPicture />
           </div>
         </IslandHero>
       ) : HERO === "proof" ? (
@@ -254,13 +285,11 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       {/* What customers get: right under the hero since 2026-11-18 (Pola), so the page opens for customers as well as businesses. */}
       <Section id="customers" className="py-12 lg:py-20">
         <div className="stitched grain rounded-[20px] bg-kraft/55 px-5 py-10 sm:px-10 lg:px-14 lg:py-14">
-          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
-            {/* The map is the picture (Pola, 2026-11-18): that eco places can be found is the fact that was missing here. */}
-            <MapPicture />
+          <div className="grid items-center gap-10 lg:grid-cols-[300px_1fr] lg:gap-14">
+            <PhoneMockup />
             <div className="min-w-0">
               <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
               <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian NFT: a collectible card that can&apos;t be bought, only earned.</Lead>
-              <p className="mt-4 max-w-xl text-[16px] leading-[1.6] text-cocoa/85">Find eco cafés, restaurants, hotels, resorts and shops on <Link href="/map" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">the map</Link>, and <Link href="/shops" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">online eco shops</Link> that ship to you.</p>
               <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
               <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
                 {RANKS.map((r, i) => (
