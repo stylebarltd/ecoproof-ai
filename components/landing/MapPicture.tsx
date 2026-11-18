@@ -82,14 +82,15 @@ function Streets() {
   );
 }
 
-/** What the phone shows a few seconds after the scan: the stamp, its points and the proof. Points from lib/stampClasses.ts. */
+/** What the phone shows a few seconds after the scan: the stamp, the place (the same name as on the postcard stand: Riverside Resort), its points and the proof. Points from lib/stampClasses.ts. */
 function ScanPhone() {
   return (
-    <div className="scan-phone absolute -bottom-[16%] -right-2 w-[212px] rounded-[34px] border-[8px] border-cocoa bg-paper p-3 pb-4 text-cocoa shadow-[0_26px_50px_rgba(58,42,28,0.45)] lg:-right-10" role="img" aria-label={`A phone that has scanned the hotel's QR code: stamp collected, ${pointsLabel(POINTS_BY_KIND.hotel)} for a hotel stay, proof written to Solana, Sentinel Bee Guardian NFT unlocked and minted`}>
+    <div className="scan-phone absolute -bottom-[16%] -right-2 w-[212px] rounded-[34px] border-[8px] border-cocoa bg-paper p-3 pb-4 text-cocoa shadow-[0_26px_50px_rgba(58,42,28,0.45)] lg:-right-10" role="img" aria-label={`A phone that has scanned the hotel's QR code: stamp collected at Riverside Resort, ${pointsLabel(POINTS_BY_KIND.hotel)} for a hotel stay, proof written to Solana, Sentinel Bee Guardian NFT unlocked and minted`}>
       <div className="mx-auto mb-2.5 h-[18px] w-[72px] rounded-full bg-cocoa" />
       <div className="rounded-2xl bg-kraft/60 px-3 py-2.5 text-center">
         <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#8fa073] text-paper"><Check size={24} strokeWidth={3} aria-hidden /></span>
         <p className="font-journal-display mt-1.5 text-[18px] font-bold leading-tight">Stamp collected</p>
+        <p className="mt-0.5 text-[12px] font-bold text-cocoa/80">Riverside Resort</p>
         <p className="mt-1.5 inline-block rounded-full bg-honey px-2.5 py-0.5 text-[11.5px] font-extrabold">+{pointsLabel(POINTS_BY_KIND.hotel)} · hotel stay</p>
       </div>
       <p className="mt-2 flex items-center gap-1.5 rounded-xl bg-white/70 px-2.5 py-2 text-[11px] font-bold leading-snug"><Check size={14} strokeWidth={3} className="shrink-0 text-[#56633f]" aria-hidden /> Proof written to Solana. Nobody can fake it.</p>
