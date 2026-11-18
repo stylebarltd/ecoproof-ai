@@ -51,7 +51,13 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
         </div>
 
         <p className="pc-h">{headline}</p>
-        <p className="pc-lead">EcoProof is the passport for people who choose places that cut plastic and waste. <b>{place.name}</b> is one of them.</p>
+        {place.stars ? <>
+          {/* The lead gives way to this box (the card's height is fixed); the steps still say what the passport is. Why to trust the place itself: its practices are published and anchored (lib/declarations.ts). Self-declared, so "on public record", never "certified". */}
+          <p className="pc-proof">
+            <span className="pc-seal" style={{ background: SAGE }}><LeafMark size={100} /></span>
+            <span><b>{place.name} has its eco practices on public record:</b> <span className="pc-stars"><Stars stars={place.stars} size={100} /></span> <b>{place.stars} eco star{place.stars === 1 ? "" : "s"}</b>. Locked on Solana, so nobody can quietly change them.</span>
+          </p>
+        </> : <p className="pc-lead">EcoProof is the passport for people who choose places that cut plastic and waste. <b>{place.name}</b> is one of them.</p>}
 
         <div className="pc-scan">
           <div className="pc-qr">
@@ -62,7 +68,6 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={place.imageUrl} alt="" className="pc-stamp" />
             <span className="pc-name">{place.name}</span>
-            {!!place.stars && <span className="pc-stars"><Stars stars={place.stars} size={100} /><span>{place.stars} eco star{place.stars === 1 ? "" : "s"}</span></span>}
             <span className="pc-arrow">Scan me</span>
             {code && <span className="pc-code">{code}</span>}
           </div>
@@ -110,9 +115,11 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-place { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5cqw; }
 .pc-stamp { width: 14cqw; height: 14cqw; }
 .pc-name { max-width: 26cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 4.4cqw; line-height: 1.1; overflow-wrap: anywhere; }
-.pc-stars { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6cqw 1.2cqw; max-width: 26cqw; font-size: 2.9cqw; font-weight: 800; line-height: 1; }
-.pc-stars > span:first-child { display: inline-flex; flex: none; }
-.pc-stars svg { width: 3.4cqw; height: 3.4cqw; }
+.pc-proof { margin-top: 3cqw; padding: 2.2cqw 2.8cqw; display: flex; gap: 2.4cqw; align-items: center; border-radius: 2.6cqw; background: rgba(143, 163, 114, 0.2); font-size: 3.15cqw; line-height: 1.32; text-wrap: pretty; }
+.pc-seal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 8cqw; height: 8cqw; border-radius: 999px; }
+.pc-seal svg { width: 60%; height: 60%; }
+.pc-stars { display: inline-flex; vertical-align: -0.4cqw; }
+.pc-stars svg { width: 3.3cqw; height: 3.3cqw; }
 .pc-arrow { font-family: var(--font-bebas), Impact, sans-serif; font-size: 4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: #fff; background: var(--color-cocoa);
   border-radius: 999px; padding: 1.4cqw 3cqw 1cqw; }
 .pc-steps { margin-top: auto; padding-top: 3cqw; display: grid; gap: 1.8cqw; font-size: 3.2cqw; line-height: 1.3; }

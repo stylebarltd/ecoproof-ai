@@ -94,5 +94,101 @@
   "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
   "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
   "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk_1101.png": {
+  "scene": "desk",
+  "seed": 1101,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground a long wide solid wooden table seen slightly from above, sharply in focus, on the table a glass water carafe with two glasses, a stainless steel reusable water bottle, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a folded cotton tote bag, a small potted plant and a woven basket, an empty clear area in the middle of the table, behind the table softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea and looking out at a green garden, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk_1102.png": {
+  "scene": "desk",
+  "seed": 1102,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground a long wide solid wooden table seen slightly from above, sharply in focus, on the table a glass water carafe with two glasses, a stainless steel reusable water bottle, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a folded cotton tote bag, a small potted plant and a woven basket, an empty clear area in the middle of the table, behind the table softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea and looking out at a green garden, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk_1103.png": {
+  "scene": "desk",
+  "seed": 1103,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground a long wide solid wooden table seen slightly from above, sharply in focus, on the table a glass water carafe with two glasses, a stainless steel reusable water bottle, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a folded cotton tote bag, a small potted plant and a woven basket, an empty clear area in the middle of the table, behind the table softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea and looking out at a green garden, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk_1104.png": {
+  "scene": "desk",
+  "seed": 1104,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground a long wide solid wooden table seen slightly from above, sharply in focus, on the table a glass water carafe with two glasses, a stainless steel reusable water bottle, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a folded cotton tote bag, a small potted plant and a woven basket, an empty clear area in the middle of the table, behind the table softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea and looking out at a green garden, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk_1105.png": {
+  "scene": "desk",
+  "seed": 1105,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground a long wide solid wooden table seen slightly from above, sharply in focus, on the table a glass water carafe with two glasses, a stainless steel reusable water bottle, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a folded cotton tote bag, a small potted plant and a woven basket, an empty clear area in the middle of the table, behind the table softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea and looking out at a green garden, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk_1106.png": {
+  "scene": "desk",
+  "seed": 1106,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground a long wide solid wooden table seen slightly from above, sharply in focus, on the table a glass water carafe with two glasses, a stainless steel reusable water bottle, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a folded cotton tote bag, a small potted plant and a woven basket, an empty clear area in the middle of the table, behind the table softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea and looking out at a green garden, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk2_1111.png": {
+  "scene": "desk2",
+  "seed": 1111,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground the left half of the frame is a large solid wooden desk seen slightly from above, sharply in focus, on the desk a glass water carafe with a glass, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a rolled linen towel and a small potted plant arranged at the back of the desk, the front of the desk is empty, on the right softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea, side view, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk2_1112.png": {
+  "scene": "desk2",
+  "seed": 1112,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground the left half of the frame is a large solid wooden desk seen slightly from above, sharply in focus, on the desk a glass water carafe with a glass, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a rolled linen towel and a small potted plant arranged at the back of the desk, the front of the desk is empty, on the right softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea, side view, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk2_1113.png": {
+  "scene": "desk2",
+  "seed": 1113,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground the left half of the frame is a large solid wooden desk seen slightly from above, sharply in focus, on the desk a glass water carafe with a glass, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a rolled linen towel and a small potted plant arranged at the back of the desk, the front of the desk is empty, on the right softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea, side view, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk2_1114.png": {
+  "scene": "desk2",
+  "seed": 1114,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground the left half of the frame is a large solid wooden desk seen slightly from above, sharply in focus, on the desk a glass water carafe with a glass, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a rolled linen towel and a small potted plant arranged at the back of the desk, the front of the desk is empty, on the right softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea, side view, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk2_1115.png": {
+  "scene": "desk2",
+  "seed": 1115,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground the left half of the frame is a large solid wooden desk seen slightly from above, sharply in focus, on the desk a glass water carafe with a glass, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a rolled linen towel and a small potted plant arranged at the back of the desk, the front of the desk is empty, on the right softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea, side view, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "desk2_1116.png": {
+  "scene": "desk2",
+  "seed": 1116,
+  "prompt": "photo of a bright eco boutique hotel room, in the foreground the left half of the frame is a large solid wooden desk seen slightly from above, sharply in focus, on the desk a glass water carafe with a glass, refillable amber glass pump bottles, a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a rolled linen towel and a small potted plant arranged at the back of the desk, the front of the desk is empty, on the right softly out of focus a relaxed happy woman in a linen shirt sits in a rattan armchair by the big wooden window holding a cup of tea, side view, a neatly made bed with white linen, late afternoon golden hour sunlight streaming through sheer linen curtains, warm glow, long soft shadows, calm, cosy, very clean and tidy, natural materials, shallow depth of field, 35mm lens, photorealistic, editorial travel photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, phone, laptop, cartoon, illustration, painting, 3d render, cgi, blurry foreground, low quality, deformed, extra fingers, bad hands, watermark, plastic bottles, green walls, neon, clutter, nudity",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1216x832 steps 30 cfg 6 DPM++ 2M karras"
  }
 }
