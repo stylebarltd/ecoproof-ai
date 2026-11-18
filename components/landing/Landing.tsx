@@ -279,7 +279,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           SolanaTip and the footer link to it). */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>How it works</H2>
-        <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
+        <Lead>Scan a code, collect a stamp, keep the proof. A good choice takes a few seconds to record, and nobody can fake it afterwards.</Lead>
         <HowItWorks r={stats?.record ?? null} />
       </Section>
 
