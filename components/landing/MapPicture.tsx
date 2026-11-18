@@ -22,11 +22,11 @@ const SCANNED = "Hotel";
 
 // Positions in percent of the map; the tip of a pin points at the spot.
 const PINS: Pin[] = [
-  { kind: "cafe", label: "Café", x: 45, y: 24 },
-  { kind: "restaurant", label: "Restaurant", x: 66, y: 27 },
-  { kind: "hotel", label: "Hotel", x: 87, y: 32 },
-  { kind: "online", label: "Online", x: 52, y: 58 },
-  { kind: "eco_shop", label: "Eco shop", x: 56, y: 90 },
+  { kind: "cafe", label: "Café", x: 50, y: 22 },
+  { kind: "restaurant", label: "Restaurant", x: 69, y: 28 },
+  { kind: "hotel", label: "Hotel", x: 88, y: 33 },
+  { kind: "online", label: "Online", x: 57, y: 59 },
+  { kind: "eco_shop", label: "Eco shop", x: 59, y: 90 },
 ];
 
 const W = 600, H = 460;
@@ -132,10 +132,10 @@ export default function MapPicture({ scanned = false }: { scanned?: boolean }) {
       {scanned && <>
         {/* from the scanned code down to the phone */}
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
-          <path d="M91 34 C 93 37, 93 41, 90 46" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+          <path d="M92 35 C 94 38, 94 42, 91 46" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
         </svg>
         <Image src="/landing/hero/stand-riverside.webp" alt="The hotel's EcoProof postcard on a small stand of rough natural wood: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 235px, 166px"
-          className="hero-stand absolute -bottom-[16%] -left-3 -rotate-[3deg] drop-shadow-[0_18px_22px_rgba(58,42,28,0.4)] lg:-left-24" />
+          className="hero-stand absolute -bottom-[16%] -rotate-[3deg] drop-shadow-[0_18px_22px_rgba(58,42,28,0.4)]" />
         <ScanPhone />
       </>}
     </div>
