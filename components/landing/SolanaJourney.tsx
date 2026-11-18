@@ -9,8 +9,8 @@ import type { LandingRecord } from "@/lib/landingStats";
  *  for the door the visitor runs: a visit (the postcard with the QR on a café or hotel counter, the default, since most owners reading
  *  run one) or an online order (the stamp block in the order email). Column 1 is what the owner sets up, as a picture: the real
  *  postcard in a café (art/postcard) or the plugin's own email block (art/steps/email). Column 2 is what the customer does: the stamp
- *  picture, the phone replaying the real claim steps behind one tap (StampJourney), and sharing. Column 3 is why the stamp stays
- *  checkable. */
+ *  picture, the phone replaying the real claim steps behind one tap (StampJourney), and sharing. Column 3 is what Solana is and why the
+ *  stamp stays checkable. */
 const Cap = ({ children }: { children: React.ReactNode }) => <p className="mb-3 font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{children}</p>;
 const GUIDE = "/about#customers";
 const PIC = "/landing/steps/v2";
@@ -87,16 +87,20 @@ export default function SolanaJourney({ r }: { r: LandingRecord | null }) {
             <p className="text-[15px] leading-snug text-cocoa/85"><b className="font-extrabold text-cocoa">Then they share it, and you get the credit.</b> Every stamp carries your name, and sharing takes one tap.</p>
           </div>
         </li>
-        <li className="flex flex-col">
+        {/* Why the stamp is on Solana, and what that promises: the plain-words explainer for readers who are not blockchain people
+            (Pola, 2026-11-17) lives in this column since 2026-11-18. The hero's SolanaTip links to #why-chain. */}
+        <li id="why-chain" className="flex scroll-mt-20 flex-col">
           <Cap>3 · And it stays that way</Cap>
           <div className="sticker grain flex flex-col rounded-[16px] bg-kraft/60 p-5">
-            <p className="text-[18px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
-            <ul className="mt-4 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
+            <h3 className="text-[22px] leading-[1.15]">What is Solana, and why put a coffee stamp on it?</h3>
+            <p className="mt-2 text-[15px] leading-[1.55] text-cocoa/85">Solana is a public blockchain: a record book kept by many independent computers around the world instead of by one company. What is written there can&apos;t be changed or deleted, not by the shop and not by us. Your customers never notice the technology: no wallet, no coins, no app.</p>
+            <p className="mt-4 text-[16px] font-extrabold leading-snug">Years from now, the stamp is still there, exactly as it was written.</p>
+            <ul className="mt-3 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
               {PROMISES[door].map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
             </ul>
-            {/* Honest limits: the promises hold on mainnet; the hackathon build writes to devnet, which can be reset. */}
-            <p className="mt-4 text-[14px] font-bold leading-snug text-cocoa/80">Today&apos;s proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
-            <p className="pt-5 text-[15px]">
+            {/* Honest limits: a QR proves a visit, not a purchase; the promises hold on mainnet, and the hackathon build writes to devnet, which can be reset. */}
+            <p className="mt-4 text-[14px] leading-snug text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase. Today&apos;s proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
+            <p className="pt-4 text-[15px]">
               {r ? <a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> : <a href="#proof" className={link}>Check a record yourself</a>}
             </p>
           </div>

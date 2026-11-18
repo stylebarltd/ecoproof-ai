@@ -295,18 +295,12 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       </Section>
 
       {/* How it works, and why it is on Solana: one section since 2026-11-18 (the Solana journey and "Live in three steps" told the same
-          three steps twice). The three columns are SolanaJourney; the plain-words Solana paragraph keeps its #why-chain anchor (the hero's
-          SolanaTip links to it). */}
+          three steps twice). The three columns are SolanaJourney; its third column is the plain-words Solana explainer and carries the #why-chain
+          anchor (the hero's SolanaTip links to it). */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>Live in three steps</H2>
         <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
         <SolanaJourney r={stats?.record ?? null} />
-        <div id="why-chain" className="mt-14 scroll-mt-20">
-          <h3 className="text-[22px] leading-[1.15]">What is Solana, and why put a coffee stamp on it?</h3>
-          {/* For readers who are not blockchain people (Pola, 2026-11-17): what Solana is in plain words, before anything else about it. */}
-          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Solana is a public blockchain: a record book kept by many independent computers around the world instead of by one company. What is written there can&apos;t be changed or deleted, not by the shop and not by us. So a stamp is proof that anyone can check, and your customers never notice the technology: no wallet, no coins, no app.</p>
-          <p className="mt-4 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
-        </div>
       </Section>
 
       {/* Business types */}
