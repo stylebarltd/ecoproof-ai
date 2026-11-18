@@ -109,7 +109,8 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-place { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5cqw; }
 .pc-stamp { width: 14cqw; height: 14cqw; }
 .pc-name { max-width: 26cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 4.4cqw; line-height: 1.1; overflow-wrap: anywhere; }
-.pc-stars { display: inline-flex; align-items: center; gap: 1.2cqw; font-size: 2.9cqw; font-weight: 800; }
+.pc-stars { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6cqw 1.2cqw; max-width: 26cqw; font-size: 2.9cqw; font-weight: 800; line-height: 1; }
+.pc-stars > span:first-child { display: inline-flex; flex: none; }
 .pc-stars svg { width: 3.4cqw; height: 3.4cqw; }
 .pc-arrow { font-family: var(--font-bebas), Impact, sans-serif; font-size: 4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: #fff; background: var(--color-cocoa);
   border-radius: 999px; padding: 1.4cqw 3cqw 1cqw; }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Link2, Plug, Share2, Stamp, Trophy } from "lucide-react";
+import { ArrowRight, Check, Link2, Stamp, Trophy } from "lucide-react";
 import CheckRecord from "@/components/landing/CheckRecord";
 import SolanaJourney from "@/components/landing/SolanaJourney";
 import HospitalityCard from "@/components/landing/HospitalityCard";
@@ -13,8 +13,6 @@ import { journalFonts } from "@/components/landing/fonts";
 import { COUNTERS_FROM, demoPassport, PRICING } from "@/lib/landingContent";
 import { badgeSvg } from "@/lib/badge";
 import { grams } from "@/lib/impact";
-import QRCode from "qrcode";
-import { appUrl } from "@/lib/nft";
 import type { LandingRecord, LandingStats } from "@/lib/landingStats";
 import { RANKS } from "@/lib/milestoneRules";
 import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
@@ -34,17 +32,6 @@ const Primary = ({ href, children }: { href: string; children: React.ReactNode }
 const DoorRow = ({ term, className = "", children }: { term: string; className?: string; children: React.ReactNode }) => (
   <div className={className}><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">{term}</dt><dd className="text-cocoa/85">{children}</dd></div>
 );
-
-/** A round rubber-stamp mark with a number and an icon. */
-function StampMark({ num, icon, label }: { num: number; icon: React.ReactNode; label: string }) {
-  return (
-    <div className="stamp flex h-[120px] w-[120px] shrink-0 flex-col items-center justify-center bg-paper/90 text-sky-ink" style={{ transform: `rotate(${[-6, 4, -3][num - 1]}deg)` }}>
-      {icon}
-      <span className="mt-1 text-[22px]">{label}</span>
-      <span className="text-[12px] tracking-[0.2em]">step {num}</span>
-    </div>
-  );
-}
 
 /** A passport on a phone, drawn in CSS: what a customer sees after a few stamps. */
 function PhoneMockup() {
@@ -226,8 +213,6 @@ function HeroCopy({ center }: { center?: boolean }) {
 }
 
 export default async function Landing({ stats }: { stats: LandingStats | null }) {
-  // The QR in the "order email" picture: a real code that opens the guide to collecting stamps, so a reader can try it from the page
-  const qr = await QRCode.toString(`${appUrl()}/about#customers`, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#3a2a1c", light: "#0000" } });
   // The three owner doors (images in public/landing/doors; cafés and restaurants share one door, a small café/restaurant switch is planned):
   // how their customers collect a stamp, what each side gets, and setup. An eco shop sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
@@ -307,36 +292,21 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             )}
           </div>
         </div>
-        {/* Where the record comes from, as the second half of the same section: one proof story, not three (critique run 7; moved out and back in, 15 Nov 2026). */}
-        <div id="why-chain" className="mt-14 scroll-mt-20 lg:mt-20">
-          <h3 className="text-[22px] leading-[1.15]">What is Solana, and why put a coffee stamp on it?</h3>
-          {/* For readers who are not blockchain people (Pola, 2026-11-17): what Solana is in plain words, before anything else about it. */}
-          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Solana is a public blockchain: a record book kept by many independent computers around the world instead of by one company. What is written there can&apos;t be changed or deleted, not by the shop and not by us. So a stamp is proof that anyone can check, and your customers never notice the technology: no wallet, no coins, no app.</p>
-          <SolanaJourney r={stats?.record ?? null} qr={qr} />
-          <p className="mt-6 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
-        </div>
       </Section>
 
-      {/* How it works */}
+      {/* How it works, and why it is on Solana: one section since 2026-11-18 (the Solana journey and "Live in three steps" told the same
+          three steps twice). The three columns are SolanaJourney; the plain-words Solana paragraph keeps its #why-chain anchor (the hero's
+          SolanaTip links to it). */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>Live in three steps</H2>
         <Lead>Print one QR code or connect WooCommerce. Your customers need only their phone: no app, no account.</Lead>
-        <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
-          {[
-            { icon: <Plug size={26} />, label: "connect", alt: "A café counter from the cashier's side: the EcoProof QR card in a stand on the counter, Scan to collect your eco stamp", title: "Connect your shop or print your QR", body: "A QR code for the counter, our WooCommerce plugin, or cards for your parcels." },
-            { icon: <Stamp size={26} />, label: "stamp", alt: "Four steps on kraft paper: a phone scans the EcoProof QR card, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted", title: "Every verified order or visit becomes a stamp", body: "Each stamp lands in your customer's passport and is written to Solana." },
-            { icon: <Share2 size={26} />, label: "share", alt: "The share image of a passport on kraft paper: the Warden Bee Guardian rank card, 7 points, progress to Guardian and stamps from three places, verified on Solana", title: "Your customers share their impact, you get the credit", body: "Every stamp carries your name, and sharing takes one tap." },
-          ].map((s, i) => (
-            <li key={s.label} className="flex flex-col">
-              <div className="relative">
-                <Image src={`/landing/steps/v2/${s.label}.webp`} alt={s.alt} width={800} height={800} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: `rotate(${[-1, 1.2, -0.8][i]}deg)` }} />
-                <div className="absolute -bottom-6 -right-2 scale-[0.8] sm:-right-4 sm:scale-100"><StampMark num={i + 1} icon={s.icon} label={s.label} /></div>
-              </div>
-              <h3 className="mt-10 text-[22px] leading-tight">{s.title}</h3>
-              <p className="mt-2 text-[16px] leading-[1.6] text-cocoa/80">{s.body}</p>
-            </li>
-          ))}
-        </ol>
+        <SolanaJourney r={stats?.record ?? null} />
+        <div id="why-chain" className="mt-14 scroll-mt-20">
+          <h3 className="text-[22px] leading-[1.15]">What is Solana, and why put a coffee stamp on it?</h3>
+          {/* For readers who are not blockchain people (Pola, 2026-11-17): what Solana is in plain words, before anything else about it. */}
+          <p className="mt-2 max-w-2xl text-[16px] leading-[1.6] text-cocoa/85">Solana is a public blockchain: a record book kept by many independent computers around the world instead of by one company. What is written there can&apos;t be changed or deleted, not by the shop and not by us. So a stamp is proof that anyone can check, and your customers never notice the technology: no wallet, no coins, no app.</p>
+          <p className="mt-4 max-w-[60ch] text-[14px] leading-[1.6] text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase.{stats?.proofUrl && <> <a href={stats.proofUrl} target="_blank" rel="noopener" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the newest proof on Solana Explorer</a></>}</p>
+        </div>
       </Section>
 
       {/* Business types */}
@@ -346,7 +316,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <ul className="mt-8 grid gap-6 md:grid-cols-3">
           {doors.map((d, i) => (
             <li key={d.img} className="stitched grain flex flex-col rounded-[20px] bg-kraft/50 p-4 sm:p-5">
-              <Image src={`/landing/doors/v2/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
+              <Image src={`/landing/doors/v2/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover object-[50%_70%] md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
               <h3 className="mt-5 text-[22px] leading-tight">{d.title}</h3>
               <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-paper px-3 py-1 text-[13px] font-extrabold text-cocoa ring-1 ring-cocoa/10"><Stamp size={14} className="shrink-0 text-sky-ink" /> {d.door}</p>
               {/* Three facts per card (critique of 14 Nov 2026: 12+ chunks for "which one am I?"); what customers get is in "For customers". */}

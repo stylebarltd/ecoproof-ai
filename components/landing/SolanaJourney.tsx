@@ -1,20 +1,29 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { Check, Play } from "lucide-react";
 import StampJourney, { type Door } from "@/components/landing/StampJourney";
 import type { LandingRecord } from "@/lib/landingStats";
 
-/** How a stamp lands on Solana, told the way a customer meets it, for the door the visitor runs: a visit (the QR on a café or hotel counter,
- *  the default, since most owners reading run one) or an online order (the QR in the order email). Each shows the QR, the phone replaying
- *  the real claim steps (StampJourney) and why the stamp stays checkable. The QR is a real code that opens the guide to collecting
- *  stamps (the demo café it used to open was retired on 2026-11-15): scannable on a computer screen, tappable on a phone. */
+/** "Live in three steps" and how a stamp lands on Solana, as one row (merged 2026-11-18, Pola: the two sections said the same thing),
+ *  for the door the visitor runs: a visit (the postcard with the QR on a café or hotel counter, the default, since most owners reading
+ *  run one) or an online order (the stamp block in the order email). Column 1 is what the owner sets up, as a picture: the real
+ *  postcard in a café (art/postcard) or the plugin's own email block (art/steps/email). Column 2 is what the customer does: the stamp
+ *  picture, the phone replaying the real claim steps behind one tap (StampJourney), and sharing. Column 3 is why the stamp stays
+ *  checkable. */
 const Cap = ({ children }: { children: React.ReactNode }) => <p className="mb-3 font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{children}</p>;
 const GUIDE = "/about#customers";
+const PIC = "/landing/steps/v2";
 
 const DOORS: { id: Door; label: string }[] = [
   { id: "visit", label: "A café or hotel visit" },
   { id: "order", label: "An online order" },
 ];
+
+const SETUP: Record<Door, { cap: string; title: string; body: string }> = {
+  visit: { cap: "The QR on your counter", title: "Print your postcard", body: "One card for the counter or the tables. It tells customers what EcoProof is and carries your QR code." },
+  order: { cap: "The QR in your order email", title: "Connect your shop", body: "Install our WooCommerce plugin, or put claim cards in your parcels. Every paid order then comes with a stamp to collect." },
+};
 
 const PROMISES: Record<Door, string[]> = {
   visit: [
@@ -31,73 +40,55 @@ const PROMISES: Record<Door, string[]> = {
   ],
 };
 
-function Qr({ qr }: { qr: string }) {
-  return (
-    <a href={GUIDE} aria-label="Open the guide to collecting stamps" className="block h-[140px] w-[140px] shrink-0 rounded-md [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
-  );
-}
-// The QR card only shows from lg (a computer screen you can scan); phones get the "Try it" button under the replay instead.
-const ScanHint = () => <>Point your phone camera at the code. No app, no account.</>;
-
-export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: string }) {
+export default function SolanaJourney({ r }: { r: LandingRecord | null }) {
   const [door, setDoor] = useState<Door>("visit");
-  // The replay is behind one tap (critique run 8): a closed card costs a few lines instead of a 520px phone on every visit.
+  // The replay is behind one tap (critique run 8): closed, the column shows the stamp picture instead of a 520px phone on every visit.
   const [open, setOpen] = useState(false);
   const link = "font-extrabold underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey";
+  const setup = SETUP[door];
+  const steps = (door === "visit" ? ["Their location is checked", "One stamp per visit, once a day"] : ["Their order is read", "What it saved is worked out"]).concat(["The proof is written to Solana", "The stamp lands in their passport"]);
   return (
     <div className="mt-8">
-      <div role="group" aria-label="Show the stamp for" className="inline-flex flex-wrap gap-1 rounded-full bg-kraft/40 p-1">
+      <div role="group" aria-label="Show the steps for" className="inline-flex flex-wrap gap-1 rounded-full bg-kraft/40 p-1">
         {DOORS.map((d) => (
           <button key={d.id} type="button" aria-pressed={door === d.id} onClick={() => setDoor(d.id)} className={`h-11 rounded-full px-4 text-[15px] font-extrabold transition ${door === d.id ? "bg-cocoa text-paper" : "text-cocoa/80 hover:text-cocoa"}`}>{d.label}</button>
         ))}
       </div>
-      <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_auto_1fr] lg:items-start lg:gap-10">
-        {/* The QR card is for scanning from a computer screen; phones skip it (the replay shows the same moment). */}
-        <div className="hidden flex-col lg:flex">
+      <ol className="mt-6 grid gap-10 lg:grid-cols-3 lg:items-start lg:gap-10">
+        <li className="flex flex-col">
+          <Cap>1 · {setup.cap}</Cap>
           {door === "visit" ? (
-            <>
-              <Cap>1 · The QR on your counter</Cap>
-              <div className="sticker grain flex flex-col items-center rounded-[16px] bg-white p-5 text-center ring-1 ring-cocoa/10">
-                <p className="font-journal-display text-[22px] font-bold leading-tight">Your café</p>
-                <p className="mt-1 text-[15px] font-extrabold">Collect your eco stamp</p>
-                <div className="mt-4"><Qr qr={qr} /></div>
-                <p className="mt-4 text-[15px] leading-snug text-cocoa/80"><ScanHint /></p>
-              </div>
-            </>
+            <Image src={`${PIC}/connect.webp`} alt="A café counter with the EcoProof postcard on a wooden stand beside a cup of coffee: Collect an eco stamp for your visit, a QR code, three steps and the Bee Guardian" width={800} height={800} sizes="(min-width: 1024px) 360px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: "rotate(-1deg)" }} />
           ) : (
-            <>
-              <Cap>1 · The QR in your order email</Cap>
-              <div className="sticker grain flex flex-col rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10">
-                <p className="text-[13px] font-bold text-cocoa/80">{r ? r.merchant : "Your shop"} · Your order is on its way</p>
-                <p className="mt-2 text-[18px] font-extrabold leading-snug">Thank you for choosing plastic-free.</p>
-                <div className="mt-4 flex items-center gap-5">
-                  <Qr qr={qr} />
-                  <p className="text-[15px] leading-snug text-cocoa/80"><b className="font-extrabold">Collect your eco stamp.</b> <ScanHint /></p>
-                </div>
-              </div>
-            </>
+            <Image src={`${PIC}/email.webp`} alt="The stamp block of an order email: a Bee Guardian, You just did something good for the planet, what the order avoided, a Collect my stamp button and a QR code" width={720} height={1378} sizes="300px" className="sticker mx-auto w-full max-w-[300px] rounded-[14px]" style={{ transform: "rotate(-1deg)" }} />
           )}
-          <p className="mt-3 text-[13px] font-bold text-cocoa/80">This code works: it opens the guide to collecting stamps.</p>
-        </div>
-        <div className="flex flex-col">
-          <Cap><span className="hidden lg:inline">2 · </span>A few seconds on their phone</Cap>
+          <h3 className="mt-6 text-[22px] leading-tight">{setup.title}</h3>
+          <p className="mt-2 text-[16px] leading-[1.6] text-cocoa/80">{setup.body}</p>
+        </li>
+        <li className="flex flex-col">
+          <Cap>2 · A few seconds on their phone</Cap>
           {open ? <StampJourney key={door} door={door} r={r} /> : (
-            <div className="sticker grain flex flex-col items-start rounded-[16px] bg-white p-5 ring-1 ring-cocoa/10 lg:w-[260px]">
-              <ol className="space-y-1.5 text-[15px] leading-snug text-cocoa/85">
-                {(door === "visit" ? ["Their location is checked", "One stamp per visit, once a day"] : ["Their order is read", "What it saved is worked out"]).concat(["The proof is written to Solana", "The stamp lands in their passport"]).map((t, i) => (
-                  <li key={t} className="flex gap-2"><span className="w-4 shrink-0 font-extrabold text-cocoa/80">{i + 1}</span><span>{t}</span></li>
-                ))}
-              </ol>
-              <button type="button" onClick={() => setOpen(true)} className="mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-kraft/60 px-4 text-[15px] font-extrabold text-cocoa ring-1 ring-cocoa/15 hover:bg-kraft">
-                <Play size={15} aria-hidden /> Watch it on a phone
-              </button>
-            </div>
+            <Image src={`${PIC}/stamp.webp`} alt="Four steps on kraft paper: a phone scans the EcoProof QR code, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted" width={800} height={800} sizes="(min-width: 1024px) 360px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: "rotate(1.2deg)" }} />
           )}
-          {/* Phones can't scan their own screen and skip the QR card, so they get the guide as a button (critique run 5 found it missing). */}
-          <a href={GUIDE} className="mx-auto mt-4 inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink lg:hidden">How to collect a stamp</a>
-        </div>
-        <div className="flex flex-col">
-          <Cap><span className="hidden lg:inline">3 · </span>And it stays that way</Cap>
+          <h3 className="mt-6 text-[22px] leading-tight">Every {door === "visit" ? "visit" : "verified order"} becomes a stamp</h3>
+          <ol className="mt-2 space-y-1 text-[16px] leading-[1.5] text-cocoa/80">
+            {steps.map((t, i) => <li key={t} className="flex gap-2"><span className="w-4 shrink-0 font-extrabold">{i + 1}</span><span>{t}</span></li>)}
+          </ol>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" aria-pressed={open} onClick={() => setOpen((v) => !v)} className="inline-flex h-11 items-center gap-2 rounded-full bg-kraft/60 px-4 text-[15px] font-extrabold text-cocoa ring-1 ring-cocoa/15 hover:bg-kraft">
+              {open ? "Show the picture" : <><Play size={15} aria-hidden /> Watch it on a phone</>}
+            </button>
+            {/* Phones can't scan a code on their own screen, so they get the guide as a button (critique run 5 found it missing). */}
+            <a href={GUIDE} className="inline-flex h-11 items-center justify-center rounded-full bg-cocoa px-5 text-[15px] font-extrabold text-paper hover:bg-honey-ink lg:hidden">How to collect a stamp</a>
+          </div>
+          {/* Sharing is the customer's last step, so it lives in their column (it was step 3 of "Live in three steps"). */}
+          <div className="mt-6 flex items-center gap-4 rounded-[16px] bg-white p-3 ring-1 ring-cocoa/10">
+            <Image src={`${PIC}/share.webp`} alt="The share image of a passport: the Warden Bee Guardian rank card, 7 points and stamps from three places, verified on Solana" width={800} height={800} sizes="96px" className="h-24 w-24 shrink-0 rounded-[10px] object-cover" />
+            <p className="text-[15px] leading-snug text-cocoa/85"><b className="font-extrabold text-cocoa">Then they share it, and you get the credit.</b> Every stamp carries your name, and sharing takes one tap.</p>
+          </div>
+        </li>
+        <li className="flex flex-col">
+          <Cap>3 · And it stays that way</Cap>
           <div className="sticker grain flex flex-col rounded-[16px] bg-kraft/60 p-5">
             <p className="text-[18px] font-extrabold leading-snug">Years from now, the stamp is still on Solana, exactly as it was written.</p>
             <ul className="mt-4 space-y-2.5 text-[15px] leading-snug text-cocoa/85">
@@ -109,8 +100,8 @@ export default function SolanaJourney({ r, qr }: { r: LandingRecord | null; qr: 
               {r ? <a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> : <a href="#proof" className={link}>Check a record yourself</a>}
             </p>
           </div>
-        </div>
-      </div>
+        </li>
+      </ol>
     </div>
   );
 }
