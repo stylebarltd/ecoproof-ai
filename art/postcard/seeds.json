@@ -302,5 +302,69 @@
   "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
   "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
   "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_431.png": {
+  "scene": "reception2",
+  "seed": 431,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_432.png": {
+  "scene": "reception2",
+  "seed": 432,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_433.png": {
+  "scene": "reception2",
+  "seed": 433,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_434.png": {
+  "scene": "reception2",
+  "seed": 434,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_435.png": {
+  "scene": "reception2",
+  "seed": 435,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_436.png": {
+  "scene": "reception2",
+  "seed": 436,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_437.png": {
+  "scene": "reception2",
+  "seed": 437,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "reception2_438.png": {
+  "scene": "reception2",
+  "seed": 438,
+  "prompt": "photo of the wooden reception desk of a boutique resort hotel in northern Thailand, sharply in focus in the foreground a single tall portrait format plain blank white postcard standing perfectly upright and vertical in the slot of a small low wooden block card holder, seen straight from the front at eye level, the empty white card is completely blank, nothing written on it, the card is large in the frame, beside it a brass service bell, behind it the open lobby with rattan armchairs, tropical plants and a terrace with a green garden view softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, qr code, barcode, icons, picture frame, photo frame, landscape format card, folded card, tent card, two cards, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, hands, watermark, plastic bottles, green walls, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
  }
 }

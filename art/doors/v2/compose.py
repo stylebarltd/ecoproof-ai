@@ -4,7 +4,7 @@ the SuperBee receipt and the EcoProof screen onto the eco store counter (203, wi
 repainted as clean paper from a lighting fit of its own pixels before the card is printed on it (multiply). Corners read off gridded zoom
 crops. Usage: compose.py <hotel|restaurant|store>. Run with the WebUI venv python (numpy, cv2) → door_<name>.png (800x800)."""
 import numpy as np, cv2, pathlib, sys
-from PIL import Image
+from PIL import Image, ImageDraw
 D = pathlib.Path(__file__).parent
 CARD = Image.open(D/"../../steps/connect/card.png").convert("RGB")  # 1200x800, white
 SS = 2  # warp at 2x, downsample at the end
@@ -29,9 +29,21 @@ SCENES = {
               "receipt": [(362,565),(558,641),(348,781),(149,705)],
               "hands": [(0,700),(260,725),(420,735),(560,760),(560,1024),(0,1024)],  # where skin colour really is a hand (kraft paper reads as skin)
               "phone": [(440,716),(550,768),(322,886),(252,830)],  # the whole phone with its bezel, lies over the receipt
-              "screen": [(433,722),(535,775),(338,888),(268,830)],  # TL TR BR BL: portrait, top at the far end; BR runs under the fingers
-              "bezel": [(433,722),(535,775),(532,762),(404,712)]},  # the glass strip between the screen's top edge and the rim, painted as bezel
+              # the phone's glass, read off a gridded 4x zoom (TL TR BR BL: portrait, top at the far end; BR lies under the fingers)
+              "glass": [(430,725),(541,771),(337,888),(262,822)]},
 }
+
+def inset(quad, d):
+    """The quad with every edge moved inward by d pixels (outward if negative). Corners clockwise from top left."""
+    q = np.float64(quad); n = len(q); lines = []
+    for i in range(n):
+        p, r = q[i], q[(i+1) % n]; e = (r-p)/np.linalg.norm(r-p); nrm = np.array([-e[1], e[0]])  # inward for clockwise corners in image coordinates
+        lines.append((p + nrm*d, e))
+    out = []
+    for i in range(n):
+        (p1, e1), (p2, e2) = lines[i-1], lines[i]
+        t = np.linalg.solve(np.array([e1, -e2]).T, p2-p1)[0]; out.append(tuple(p1 + e1*t))
+    return out
 
 def quad_mask(shape, pts, s=1):
     m = np.zeros(shape[:2], np.uint8); cv2.fillPoly(m, [np.int32(np.round(np.array(pts)*s))], 255); return m
@@ -98,14 +110,17 @@ else:
     keep = cv2.GaussianBlur((sk & quad_mask(big.shape, S["hands"], SS)).astype(np.float32)/255, (0,0), 1.2)[..., None]
     phone = cv2.GaussianBlur(quad_mask(big.shape, S["phone"], SS).astype(np.float32)/255, (0,0), 1.2)[..., None]
     a = a*(1-np.maximum(keep, phone)); big = big*(1-a) + rgb*a
-    # 3. the EcoProof screen in the phone, under the fingertip
+    # 3. the EcoProof screen in the phone, under the fingertip. The glass is painted as the phone's own near-black first (a little past
+    #    its far edge, where the repainted hand left no rim), then the screen goes inside it with an even bezel and rounded corners.
+    body = cv2.GaussianBlur(quad_mask(big.shape, inset(S["glass"], -2.5), SS).astype(np.float32)/255, (0,0), 1.0)[..., None]*(1-keep)
+    big = big*(1-body) + np.float32([26, 26, 29])*body
     scr = Image.open(D/"screen.png").convert("RGB")
-    rgb, a = warp(scr, S["screen"], size)
+    quad = inset(S["glass"], 5.5)
+    rgb, _ = warp(scr, quad, size)
+    rnd = Image.new("L", scr.size, 0); ImageDraw.Draw(rnd).rounded_rectangle((0, 0, scr.width-1, scr.height-1), radius=round(scr.width*0.07), fill=255)
+    a = cv2.warpPerspective(np.asarray(rnd, np.float32), cv2.getPerspectiveTransform(np.float32([(0,0),(scr.width,0),(scr.width,scr.height),(0,scr.height)]), np.float32(quad)*SS), size, flags=cv2.INTER_LINEAR)[..., None]/255
     rgb = cv2.GaussianBlur(rgb, (0,0), 0.8)*0.95 + 10
     a = a*(1-keep); big = big*(1-a) + rgb*a
-    # 4. close the phone at the top: the glass strip above the screen becomes bezel, in the phone's own near-black
-    bz = cv2.GaussianBlur(quad_mask(big.shape, S["bezel"], SS).astype(np.float32)/255, (0,0), 1.0)[..., None]*(1-keep)
-    big = big*(1-bz) + np.float32([26, 26, 29])*bz
 
 out = Image.fromarray(big.clip(0,255).astype(np.uint8)).resize((800, 800), Image.LANCZOS)
 out.save(D/f"door_{key}.png"); print("wrote", f"door_{key}.png")

@@ -12,7 +12,7 @@ SCENES = {
     # scene file, a point on the blank card, the postcard to print, and optionally corners by hand (TL TR BR BL)
     "cafe": {"scene": "cafe_403.png", "at": (242, 640), "card": "card_demo-cafe_web.png"},
     "restaurant": {"scene": "restaurant_403.png", "at": (232, 620), "card": "card_demo-restaurant_web.png"},
-    "hotel": {"scene": "reception_426.png", "at": (440, 640), "card": "card_demo-hotel_web.png", "erase": [(383, 446, 28, 40)]},
+    "hotel": {"scene": "reception2_436.png", "at": (486, 580), "card": "card_demo-hotel_web.png"},
     "store": {"scene": "store_402.png", "at": (516, 520), "card": "card_demo-eco-shop_web.png"},
 }
 
