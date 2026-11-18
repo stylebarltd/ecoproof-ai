@@ -44,8 +44,9 @@ export function pickTraits(card) {
       // some backgrounds are too close to the rank's own colours at 64 px (e.g. gold armour on honey)
       background: pick(T.backgrounds.filter((b) => !(rank.exclude_backgrounds ?? []).includes(b)), h[0]),
       aura: rank.aura, // ranks get exactly their minimum aura
-      item: pick(T.items, h[1]),
-      badge: pick(T.badges, h[2]),
+      // Rank cards carry no item circle and no collar badge (Pola, 2026-11-18: "no circles"); achievements keep theirs for now.
+      item: "none",
+      badge: "none",
     };
   }
   // Achievements: item fixed by the achievement, aura randomised upward from its minimum,
@@ -133,10 +134,11 @@ export async function renderArt(beeFile, traits, { mode = "slot", colour = INK }
     beeFile,
     join(LAYERS, "badge", `${traits.badge}.png`),
   ];
-  for (const f of files) if (!existsSync(f)) throw new Error(`missing layer ${f}`);
+  const badge = traits.badge && traits.badge !== "none";
+  for (const f of badge ? files : files.slice(0, 3)) if (!existsSync(f)) throw new Error(`missing layer ${f}`);
   const aura = traits.aura === "gold_outline" ? await goldOutline(beeFile) : files[1];
   return sharp(files[0])
-    .composite([{ input: aura }, { input: beeFile }, { input: files[3] }, ...(await itemLayers(traits.item, mode, colour))])
+    .composite([{ input: aura }, { input: beeFile }, ...(badge ? [{ input: files[3] }] : []), ...(await itemLayers(traits.item, mode, colour))])
     .png()
     .toBuffer();
 }

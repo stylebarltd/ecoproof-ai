@@ -1,6 +1,6 @@
 // "Every verified order or visit becomes a stamp": the how-it-works step 2 picture. A kraft poster with four paper stations on a
 // dashed path: scan the QR → proof written to Solana → stamp in the passport → Bee Guardian minted. Real assets: the demo café QR
-// card (art/steps/connect/card.png) and the Sentinel rank card (public/landing/cards/sentinel.webp). SVG rendered by sharp.
+// card (art/steps/connect/card.png) and the Sentinel rank card (public/landing/cards/v2/sentinel.webp). SVG rendered by sharp.
 // Run from the repo root: node art/steps/stamp/compose.mjs   → art/steps/stamp/stamp.png (1600) + public/landing/steps/stamp.webp (800)
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -12,7 +12,7 @@ const sharp = (await import("sharp")).default;
 const W = 1600, C = { paper: "#f4e9d8", kraft: "#d9b88c", kraftDeep: "#b8905f", cocoa: "#3a2a1c", honey: "#e08a2e", honeyDeep: "#b96a1d", sky: "#8fa9c8", leaf: "#6f8f4e", terracotta: "#c9704e" };
 const b64 = async (file, w, h) => `data:image/png;base64,${(await sharp(file).resize(w, h, { fit: "inside" }).png().toBuffer()).toString("base64")}`;
 const qr = `data:image/png;base64,${(await sharp(resolve(HERE, "../connect/card.png")).extract({ left: 90, top: 115, width: 570, height: 570 }).resize(600, 600).png().toBuffer()).toString("base64")}`;
-const card = await b64(resolve(HERE, "../../../public/landing/cards/sentinel.webp"), 480, 672);
+const card = await b64(resolve(HERE, "../../../public/landing/cards/v2/sentinel.webp"), 480, 672);
 const H = `font-family="Caprasimo"`, F = `font-family="Figtree"`, M = `font-family="DejaVu Sans Mono"`;
 
 // a paper station card with a soft shadow and the sticker's white edge

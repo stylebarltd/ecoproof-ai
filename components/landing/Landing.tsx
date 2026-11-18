@@ -55,7 +55,7 @@ function PhoneMockup() {
         ))}
       </ul>
       <div className="mt-3 flex items-center gap-2 rounded-xl bg-kraft/50 p-2">
-        <Image src="/landing/cards/warden.webp" alt="" width={600} height={840} sizes="40px" className="w-10 rounded-md" />
+        <Image src="/landing/cards/v2/warden.webp" alt="" width={600} height={840} sizes="40px" className="w-10 rounded-md" />
         <span className="text-[12px] font-bold leading-tight">Bee Guardian · Warden<br /><span className="font-semibold text-cocoa/80">Soulbound NFT, earned at {RANKS[1].at} points</span></span>
       </div>
     </div>
@@ -292,7 +292,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
               <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
                 {RANKS.map((r, i) => (
                   <li key={r.key} className="w-[150px] shrink-0 text-center lg:w-auto" style={{ transform: `rotate(${(i - 2) * 2.5}deg)` }}>
-                    <Image src={`/landing/cards/${r.key}.webp`} alt={`${r.name} Bee Guardian card`} width={600} height={840} sizes="150px" className="w-full rounded-[10px] shadow-[0_10px_24px_rgba(58,42,28,0.25)]" />
+                    <Image src={`/landing/cards/v2/${r.key}.webp`} alt={`${r.name} Bee Guardian card`} width={600} height={840} sizes="150px" className="w-full rounded-[10px] shadow-[0_10px_24px_rgba(58,42,28,0.25)]" />
                     <span className="mt-3 block text-[14px] font-extrabold">{r.name}</span>
                     <span className="block text-[12px] font-bold text-cocoa/80">{r.at} point{r.at === 1 ? "" : "s"}</span>
                   </li>

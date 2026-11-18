@@ -95,7 +95,7 @@ function ScanPhone() {
       </div>
       <p className="mt-2 flex items-center gap-1.5 rounded-xl bg-white/70 px-2.5 py-2 text-[11px] font-bold leading-snug"><Check size={14} strokeWidth={3} className="shrink-0 text-[#56633f]" aria-hidden /> Proof written to Solana. Nobody can fake it.</p>
       <div className="mt-2 flex items-center gap-2.5 rounded-xl bg-white/70 px-2.5 py-2">
-        <Image src="/landing/cards/sentinel.webp" alt="" width={600} height={840} sizes="40px" className="w-10 rounded-[5px] shadow-sm" />
+        <Image src="/landing/cards/v2/sentinel.webp" alt="" width={600} height={840} sizes="40px" className="w-10 rounded-[5px] shadow-sm" />
         <p className="text-[11px] font-bold leading-snug">Bee Guardian NFT unlocked and minted<span className="font-journal-display block text-[15px] leading-tight">Sentinel</span></p>
       </div>
     </div>

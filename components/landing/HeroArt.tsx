@@ -42,7 +42,7 @@ export default function HeroArt() {
       <div className="fan absolute bottom-[26px] left-1/2 h-[280px] w-[200px] -translate-x-1/2 lg:bottom-[40px] lg:h-[420px] lg:w-[300px]">
         {RANKS.map((rank) => (
           <div key={rank.key} className="fan-card absolute inset-0 origin-bottom" style={{ "--r": `${fan[rank.key].r}deg`, "--ro": `${fan[rank.key].r * 2.2}deg`, zIndex: fan[rank.key].z } as React.CSSProperties}>
-            <Image src={`/landing/cards/${rank.key}.webp`} alt={`${rank.name} rank card`} width={600} height={840} priority={rank.key === "paragon"} sizes="(min-width: 1024px) 300px, 200px" className="h-full w-full rounded-[12px] shadow-[0_18px_40px_rgba(58,42,28,0.28)] lg:rounded-[16px]" />
+            <Image src={`/landing/cards/v2/${rank.key}.webp`} alt={`${rank.name} rank card`} width={600} height={840} priority={rank.key === "paragon"} sizes="(min-width: 1024px) 300px, 200px" className="h-full w-full rounded-[12px] shadow-[0_18px_40px_rgba(58,42,28,0.28)] lg:rounded-[16px]" />
           </div>
         ))}
       </div>

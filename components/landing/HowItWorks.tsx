@@ -118,7 +118,7 @@ export default function HowItWorks({ r }: { r: LandingRecord | null }) {
           <div className="grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center md:gap-12">
             <div className="mx-auto w-full max-w-[420px]">
               {open ? <StampJourney door="visit" r={r} /> : (
-                <Image src={`${PIC}/stamp.webp`} alt="Four steps on kraft paper: a phone scans the EcoProof QR code, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted" width={800} height={800} sizes="(min-width: 768px) 420px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: "rotate(1.2deg)" }} />
+                <Image src={`${PIC}/stamp-clean.webp`} alt="Four steps on kraft paper: a phone scans the EcoProof QR code, the record is hashed and written to Solana as a proof, the stamp lands in the eco passport, and the Sentinel Bee Guardian card is minted" width={800} height={800} sizes="(min-width: 768px) 420px, 100vw" className="sticker aspect-square w-full object-cover" style={{ transform: "rotate(1.2deg)" }} />
               )}
             </div>
             <div>
