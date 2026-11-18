@@ -1,5 +1,4 @@
 import { LeafMark } from "@/components/Logo";
-import Stars from "@/components/Stars";
 import { SAGE } from "@/lib/brand";
 
 // The printed cards that explain EcoProof next to a claim QR. Postcard: a place's card for the counter (app/(app)/place/[id], and the
@@ -52,11 +51,11 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
 
         <p className="pc-h">{headline}</p>
         {place.stars ? <>
-          {/* The lead gives way to this box (the card's height is fixed); the steps still say what the passport is. Why to trust the place itself (Pola, 2026-11-18: the card must say the place is eco by EcoProof's measure): the stars are EcoProof's rating (lib/stars.ts) of the practices the place published and anchored (lib/declarations.ts). The practices are self-declared and nobody inspects them, so "rated", never "approved", "certified" or "verified". */}
+          {/* The lead gives way to this box (the card's height is fixed); the steps still say what the passport is. Why to trust the place itself (Pola, 2026-11-18: the card must say the place is eco by EcoProof's measure): the card says "Rated by EcoProof" without the stars or a number (Pola), for a place that has a rating (lib/stars.ts) from the practices the place published and anchored (lib/declarations.ts). The practices are self-declared and nobody inspects them, so "rated", never "approved", "certified" or "verified". */}
           <p className="pc-proof">
             <span className="pc-seal" style={{ background: SAGE }}><LeafMark size={100} /></span>
             <span>
-              <span className="pc-rated">Rated by EcoProof: {place.stars} eco star{place.stars === 1 ? "" : "s"} <span className="pc-stars"><Stars stars={place.stars} size={100} /></span></span>
+              <span className="pc-rated">Rated by EcoProof</span>
               For the eco practices {place.name} has published and locked on Solana.
             </span>
           </p>
@@ -121,9 +120,7 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-proof { margin-top: 3cqw; padding: 2.2cqw 2.8cqw; display: flex; gap: 2.4cqw; align-items: center; border-radius: 2.6cqw; background: rgba(143, 163, 114, 0.2); font-size: 3.05cqw; line-height: 1.3; text-wrap: pretty; }
 .pc-seal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 8cqw; height: 8cqw; border-radius: 999px; }
 .pc-seal svg { width: 60%; height: 60%; }
-.pc-rated { display: block; margin-bottom: 0.5cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 3.5cqw; line-height: 1.15; white-space: nowrap; }
-.pc-stars { display: inline-flex; vertical-align: -0.3cqw; }
-.pc-stars svg { width: 3.3cqw; height: 3.3cqw; }
+.pc-rated { display: block; margin-bottom: 0.5cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 4.4cqw; line-height: 1.15; }
 .pc-arrow { font-family: var(--font-bebas), Impact, sans-serif; font-size: 4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: #fff; background: var(--color-cocoa);
   border-radius: 999px; padding: 1.4cqw 3cqw 1cqw; }
 .pc-steps { margin-top: auto; padding-top: 3cqw; display: grid; gap: 1.8cqw; font-size: 3.2cqw; line-height: 1.3; }
