@@ -1,13 +1,17 @@
 import Image from "next/image";
 
-/** The landing's hero: the copy and the map of eco places (MapPicture) on kraft paper, with the Bee Guardian peeking in at the bottom right. The island artwork that
- *  used to fill it (sky and island plates from art/v2/island, public/landing/island/v4) was taken out on 2026-11-18 (Pola: a colour
- *  instead of the two background pictures); the files stay in the repo. */
+/** The landing's hero: the copy on kraft paper, and a photo of a guest in an eco hotel room in late-afternoon light with the hotel's
+ *  A6 postcard on the table (Pola, 2026-11-18: warm, comfy, clean, so the viewer trusts EcoProof and feels a good green choice;
+ *  recipe in art/hero-room). On wide screens the photo fills the right side and fades into the paper under the copy; on phones it
+ *  sits above the copy. The fades are `.hero-photo` in app/globals.css. The island artwork (public/landing/island/v4) and the
+ *  plain-colour hero with the map before it were replaced the same day; the island files stay in the repo. */
 export default function IslandHero({ children }: { children: React.ReactNode }) {
   return (
-    <section className="vignette grain relative overflow-hidden bg-kraft/60">
-      <div className="relative z-10 px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:pt-20 lg:pb-24">{children}</div>
-      <Image src="/landing/bee.webp" alt="" width={944} height={880} priority sizes="(min-width: 1024px) 220px, 120px" className="bee-bob absolute -bottom-3 right-2 z-[5] hidden h-[110px] w-auto sm:block lg:right-4 lg:h-[150px]" style={{ filter: "drop-shadow(0 10px 18px rgba(58,42,28,0.3))" }} />
+    <section className="grain relative overflow-hidden bg-kraft/60">
+      <Image src="/landing/hero/room.webp" width={2432} height={1664} priority sizes="(min-width: 1024px) 62vw, 100vw"
+        alt="A hotel guest sits by the window with a cup of tea in warm evening light. On the table beside her stands the hotel's EcoProof postcard: Collect an eco stamp for your stay, with a QR code"
+        className="hero-photo block aspect-[3/2] w-full object-cover object-[40%_50%] lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:h-full lg:w-[62%]" />
+      <div className="relative z-10 px-4 pt-6 pb-14 sm:px-6 lg:pt-20 lg:pb-24">{children}</div>
     </section>
   );
 }

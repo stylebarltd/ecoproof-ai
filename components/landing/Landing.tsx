@@ -231,17 +231,16 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav />
 
-      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy left and the map of eco places right, on kraft paper (the island pictures were removed on 2026-11-18).
+      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy left and the hotel-room photo right, on kraft paper (the island pictures were removed on 2026-11-18; the map of eco places moved to its own band under the hero).
           "proof": copy left, the newest real record and its live check right, on kraft. "cards": copy left, the card fan and the bee right. */}
       {HERO === "island" ? (
         <IslandHero>
-          {/* Copy left, the map of eco places right (2026-11-18); on phones the map follows the copy. */}
-          <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
-            <div>
+          {/* Copy left; the photo of the hotel guest and the postcard (IslandHero) shows beside it, above it on phones. */}
+          <div className="mx-auto max-w-[1200px]">
+            <div className="lg:max-w-[470px]">
               <HeroCopy />
               <CounterStrip stats={stats} className="mt-8 flex" />
             </div>
-            <MapPicture />
           </div>
         </IslandHero>
       ) : HERO === "proof" ? (
@@ -279,6 +278,18 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <li className="inline-flex items-center gap-1.5"><Trophy size={14} aria-hidden /> Winner · Best Use of Solana, Superteam TH (Colosseum), Chiang Mai 2026</li>
             <li>Made in Chiang Mai, Thailand</li>
           </ul>
+        </div>
+      </Section>
+
+      {/* The map of eco places: stood in the hero until the hotel-room photo took its place (2026-11-18). */}
+      <Section className="py-10 lg:py-14">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
+          <div>
+            <H2>Eco places, on one map.</H2>
+            <Lead>Cafés, restaurants, hotels, resorts and eco shops. Each one has a QR code to scan; online shops send theirs with the order.</Lead>
+            <p className="mt-6"><Link href="/map" className="inline-flex h-12 items-center gap-2 text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Open the map <ArrowRight size={18} aria-hidden /></Link></p>
+          </div>
+          <MapPicture />
         </div>
       </Section>
 
