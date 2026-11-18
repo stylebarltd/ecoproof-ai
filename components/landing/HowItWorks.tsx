@@ -30,7 +30,7 @@ const PLACES: { cap: string; title: string; points: string; src: string; alt: st
     src: "/landing/doors/v2/store.webp",
     alt: "The counter of an eco shop: a customer photographs the till receipt with a phone, and the screen shows what the purchase avoided" },
   { cap: "The QR code in the order email or the parcel", title: "An online order", points: `${pointsLabel(POINTS_VERIFIED)} for each verified order.`,
-    src: `${PIC}/email-home.webp`,
+    src: `${PIC}/parcel-home.webp`,
     alt: "A kitchen table with an opened parcel: in it lies the small EcoProof card, the size of a business card, Your order earns an eco stamp with a QR code and the bee. Beside the parcel a tablet shows the order email with a Collect my stamp button and a QR code" },
 ];
 
