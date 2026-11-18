@@ -133,7 +133,7 @@ export default function MapPicture({ scanned = false }: { scanned?: boolean }) {
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
           <path d="M83 33 C 86 36, 87 40, 86 46" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
         </svg>
-        <Image src="/landing/hero/stand-slim.webp" alt="The hotel's EcoProof postcard on a wooden stand: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={280} height={522} sizes="(min-width: 640px) 170px, 120px"
+        <Image src="/landing/hero/stand-thin.webp" alt="The hotel's EcoProof postcard on a wooden stand: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 170px, 120px"
           className="hero-stand absolute -bottom-[16%] -left-3 -rotate-[3deg] drop-shadow-[0_18px_22px_rgba(58,42,28,0.4)] lg:-left-10" />
         <ScanPhone />
       </>}
