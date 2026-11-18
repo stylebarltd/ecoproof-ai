@@ -1,0 +1,82 @@
+{
+ "home_501.png": {
+  "scene": "home",
+  "seed": 501,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding, a glass jar and a cup of tea, behind it a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "home_502.png": {
+  "scene": "home",
+  "seed": 502,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding, a glass jar and a cup of tea, behind it a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "home_503.png": {
+  "scene": "home",
+  "seed": 503,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding, a glass jar and a cup of tea, behind it a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "home_504.png": {
+  "scene": "home",
+  "seed": 504,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding, a glass jar and a cup of tea, behind it a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "home_505.png": {
+  "scene": "home",
+  "seed": 505,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding, a glass jar and a cup of tea, behind it a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "home_506.png": {
+  "scene": "home",
+  "seed": 506,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding, a glass jar and a cup of tea, behind it a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "sofa_511.png": {
+  "scene": "sofa",
+  "seed": 511,
+  "prompt": "photo of a cosy sustainable living room, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand on a wooden coffee table, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding and a cup of tea, behind it a linen sofa with cushions, a woven basket and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "sofa_512.png": {
+  "scene": "sofa",
+  "seed": 512,
+  "prompt": "photo of a cosy sustainable living room, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand on a wooden coffee table, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding and a cup of tea, behind it a linen sofa with cushions, a woven basket and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "sofa_513.png": {
+  "scene": "sofa",
+  "seed": 513,
+  "prompt": "photo of a cosy sustainable living room, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand on a wooden coffee table, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding and a cup of tea, behind it a linen sofa with cushions, a woven basket and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "sofa_514.png": {
+  "scene": "sofa",
+  "seed": 514,
+  "prompt": "photo of a cosy sustainable living room, sharply in focus in the foreground a tablet computer standing upright on a small wooden stand on a wooden coffee table, the tablet faces the camera straight on, its large screen is switched on and shows a completely plain blank white page, thin black bezel, the tablet is large in the frame, beside it an opened kraft cardboard parcel with paper padding and a cup of tea, behind it a linen sofa with cushions, a woven basket and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ }
+}
