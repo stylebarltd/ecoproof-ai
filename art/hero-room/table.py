@@ -10,8 +10,9 @@ CKPT = "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]"
 AREA = [(0, 400), (415, 400), (415, 600), (600, 640), (640, 832), (0, 832)]   # the plant, the wicker table and the floor around it; not her hand and cup
 mask = np.zeros((832, 1216), np.uint8); cv2.fillPoly(mask, [np.int32(AREA)], 255)
 b64 = lambda im: base64.b64encode((lambda b: (im.save(b, "PNG"), b.getvalue())[1])(io.BytesIO())).decode()
-PROMPT = ("a large solid wooden table in the foreground seen slightly from above, on it a glass water carafe and a drinking glass, refillable amber glass pump bottles, "
-  "a glass jar of loose leaf tea, a bar of soap wrapped in brown paper, a small potted plant, an empty clear area at the front of the table, eco boutique hotel room, "
+PROMPT = ("a large solid wooden table in the foreground seen slightly from above, the table is full of neatly arranged zero waste eco products: a glass water carafe with a drinking glass, "
+  "three refillable amber glass pump bottles, a glass jar of loose leaf tea, bars of natural soap wrapped in brown paper tied with string, a bamboo toothbrush in a ceramic cup, "
+  "a woven basket with rolled white linen towels, a wooden tray, a small potted green plant, a folded cotton tote bag, eco boutique hotel room, "
   "late afternoon golden hour sunlight, warm glow, photorealistic, editorial travel photography, high detail")
 for seed in sys.argv[1:]:
     req = urllib.request.Request("http://127.0.0.1:7860/sdapi/v1/img2img", headers={"Content-Type": "application/json"}, data=json.dumps({

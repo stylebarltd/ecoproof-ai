@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""The hero's background: the guest by the window (gen.py tea 1004, its small wicker table repainted by table.py 1205 into a big
-wooden table with a jar of tea, an amber bottle and a plant) with the hotel's A6 postcard on its wooden block on that table. Stable
+"""The hero's background: the guest by the window (gen.py tea 1004, its small wicker table repainted by table.py 1307 into a wooden
+table with a wicker welcome tray of refill jars, a wooden spoon and a linen cloth) with the hotel's A6 postcard on its wooden block on that tray. Stable
 Diffusion would not draw the card into a scene with a person, so the card and its block are cut out of the hotel reception photo
 (../postcard/reception2_436.png, with the app's own postcard printed on it as in ../postcard/compose.py), warmed to this room's
 evening light and set on the table. The room is enlarged 2x first (A1111 extras, R-ESRGAN 4x+) so the picture can fill a wide
@@ -12,16 +12,16 @@ from PIL import Image
 D = pathlib.Path(__file__).parent
 QUAD = [(376, 369), (592, 372), (612, 765), (401, 796)]                                   # the blank card in the reception photo, TL TR BR BL
 BLOCK = [(303, 775), (400, 760), (615, 760), (773, 793), (773, 900), (500, 974), (303, 864)]  # the wooden block's outline
-FOOT, AT, SCALE = (500, 974), (170, 702), 0.5     # the block's front corner, where it stands in the room (1216 wide), and its size there
+FOOT, AT, SCALE = (500, 974), (128, 648), 0.43    # the block's front corner, where it stands in the room (1216 wide), and its size there
 TINT = np.array((0.93, 0.80, 0.62))               # evening light on the cut-out
 SS = 2
 
-if not (D/"table_1205_x2.png").exists():
-    b = io.BytesIO(); Image.open(D/"table_1205.png").save(b, "PNG")
+if not (D/"table_1307_x2.png").exists():
+    b = io.BytesIO(); Image.open(D/"table_1307.png").save(b, "PNG")
     req = urllib.request.Request("http://127.0.0.1:7860/sdapi/v1/extra-single-image", headers={"Content-Type": "application/json"},
         data=json.dumps({"image": base64.b64encode(b.getvalue()).decode(), "upscaling_resize": 2, "upscaler_1": "R-ESRGAN 4x+"}).encode())
-    Image.open(io.BytesIO(base64.b64decode(json.load(urllib.request.urlopen(req, timeout=900))["image"]))).convert("RGB").save(D/"table_1205_x2.png")
-room = np.asarray(Image.open(D/"table_1205_x2.png"), np.float32)
+    Image.open(io.BytesIO(base64.b64decode(json.load(urllib.request.urlopen(req, timeout=900))["image"]))).convert("RGB").save(D/"table_1307_x2.png")
+room = np.asarray(Image.open(D/"table_1307_x2.png"), np.float32)
 
 src = cv2.cvtColor(cv2.imread(str(D/"../postcard/reception2_436.png")), cv2.COLOR_BGR2RGB); H, W = src.shape[:2]
 big = cv2.resize(src, (W*SS, H*SS), interpolation=cv2.INTER_LANCZOS4).astype(np.float32)

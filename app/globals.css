@@ -206,7 +206,7 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 }
 /* The hero photo fades into the paper: at its bottom on phones (it sits above the copy), at its left on wide screens (beside the copy). */
 .hero-photo { -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
-@media (min-width: 1024px) { .hero-photo { -webkit-mask-image: linear-gradient(to right, transparent, #000 7%); mask-image: linear-gradient(to right, transparent, #000 7%); } }
+@media (min-width: 1024px) { .hero-photo { -webkit-mask-image: linear-gradient(to right, transparent, #000 4%); mask-image: linear-gradient(to right, transparent, #000 4%); } }
 /* Kraft hero: a faint vignette toward the edges. */
 .vignette::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(58, 42, 28, 0.12) 100%); }
 @media (prefers-reduced-motion: reduce) {
