@@ -4,34 +4,34 @@ import { BedDouble, Coffee, Package, Store, UtensilsCrossed } from "lucide-react
 import { kindOf } from "@/lib/placeKinds";
 
 /** The hero's map (Pola, 2026-11-18): a flat street map in the look of an everyday maps app (drawn here as SVG, no real place and no
- *  map provider's tiles), with one pin per kind of eco place. A pin is a small QR code with the kind's symbol in its middle, because
- *  the QR code is what a customer finds there; the code is real and opens the map of places, it is not a place's claim code. Online
- *  shops have no place on a map, so they are a parcel marker at its edge that links to the shop directory. The whole picture links to
- *  /map. Server component: the QR is built once per render with the `qrcode` library. */
-const ICON = { cafe: Coffee, restaurant: UtensilsCrossed, hotel: BedDouble, eco_shop: Store } as const;
+ *  map provider's tiles), with one pin per kind of eco place and one for online shops. A pin shows the kind's symbol and a small QR
+ *  code side by side, the same size, because the QR code is what a customer finds there; the code is real and opens the map of
+ *  places, it is not a place's claim code. The pins are decoration, not links; the whole picture links to /map. Server component:
+ *  the QR is built once per render with the `qrcode` library. */
+const ICON = { cafe: Coffee, restaurant: UtensilsCrossed, hotel: BedDouble, eco_shop: Store, online: Package } as const;
+/** Online shops are not a place kind (an eco shop's channel), so the pin has its own ink colour. */
+const ONLINE = "#3a2a1c";
 type Pin = { kind: keyof typeof ICON; label: string; x: number; y: number };
 
 // Positions in percent of the map; the tip of a pin points at the spot.
 const PINS: Pin[] = [
   { kind: "cafe", label: "Café", x: 24, y: 40 },
   { kind: "restaurant", label: "Restaurant", x: 52, y: 31 },
-  { kind: "hotel", label: "Hotel", x: 79, y: 47 },
+  { kind: "hotel", label: "Hotel", x: 77, y: 47 },
   { kind: "eco_shop", label: "Eco shop", x: 38, y: 78 },
   { kind: "hotel", label: "Resort", x: 68, y: 88 },
+  { kind: "online", label: "Online", x: 14, y: 90 },
 ];
 
 const W = 600, H = 460;
 const C = { land: "#f2ede4", block: "#e9e2d5", house: "#ddd3c2", road: "#ffffff", edge: "#d8cfbf", main: "#fbe2a0", mainEdge: "#e9c770", park: "#cfe3b3", water: "#a8d2ec" };
 
-/** A QR code as one SVG path (dark modules only), with the middle left empty for the symbol. Level H tolerates the hole. */
+/** A QR code as one SVG path (dark modules only). */
 function qrPath(text: string): { d: string; n: number } {
-  const m = QRCode.create(text, { errorCorrectionLevel: "H" }).modules;
-  const n = m.size, hole = Math.round(n * 0.3), lo = (n - hole) / 2, hi = lo + hole;
+  const m = QRCode.create(text, { errorCorrectionLevel: "M" }).modules;
+  const n = m.size;
   let d = "";
-  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
-    if (!m.get(y, x) || (x >= lo && x < hi && y >= lo && y < hi)) continue;
-    d += `M${x} ${y}h1v1h-1z`;
-  }
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (m.get(y, x)) d += `M${x} ${y}h1v1h-1z`;
   return { d, n };
 }
 
@@ -83,24 +83,22 @@ export default function MapPicture() {
       <Link href="/map" aria-label="Open the map of eco places" className="sticker block overflow-hidden rounded-[18px]">
         <Streets />
       </Link>
-      <ul aria-label="Kinds of eco places on the map">
+      <ul aria-label="Kinds of eco places on the map, and online shops">
         {PINS.map((p) => {
-          const I = ICON[p.kind], colour = kindOf(p.kind)?.colour;
+          const I = ICON[p.kind], colour = p.kind === "online" ? ONLINE : kindOf(p.kind)?.colour;
+          const box = "h-[30px] w-[30px] sm:h-[38px] sm:w-[38px]";
           return (
             <li key={p.label} className="pointer-events-none absolute flex -translate-x-1/2 -translate-y-full flex-col items-center" style={{ left: `${p.x}%`, top: `${p.y}%` }}>
               <span className="mb-1 rounded-full bg-cocoa px-2 py-0.5 text-[11px] font-extrabold leading-tight text-paper shadow-sm">{p.label}</span>
-              <span className="relative block rounded-[9px] bg-white p-[4px] shadow-[0_5px_12px_rgba(58,42,28,0.4)]">
-                <svg viewBox={`0 0 ${qr.n} ${qr.n}`} className="block h-[46px] w-[46px] sm:h-[54px] sm:w-[54px]" shapeRendering="crispEdges" aria-hidden><path d={qr.d} fill={colour} /></svg>
-                <span className="absolute left-1/2 top-1/2 flex h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[5px] text-paper sm:h-[20px] sm:w-[20px]" style={{ background: colour }}><I size={12} strokeWidth={2.6} aria-hidden /></span>
+              <span className="flex gap-[4px] rounded-[9px] bg-white p-[4px] shadow-[0_5px_12px_rgba(58,42,28,0.4)]">
+                <span className={`flex items-center justify-center rounded-[6px] text-paper ${box}`} style={{ background: colour }}><I className="h-[60%] w-[60%]" strokeWidth={2.2} aria-hidden /></span>
+                <svg viewBox={`0 0 ${qr.n} ${qr.n}`} className={`block ${box}`} shapeRendering="crispEdges" aria-hidden><path d={qr.d} fill={colour} /></svg>
               </span>
               <span className="-mt-px h-0 w-0 border-x-[7px] border-t-[9px] border-x-transparent border-t-white drop-shadow-[0_3px_2px_rgba(58,42,28,0.3)]" aria-hidden />
             </li>
           );
         })}
       </ul>
-      <Link href="/shops" className="absolute -bottom-3 left-3 inline-flex items-center gap-2 rounded-full bg-cocoa px-3.5 py-2 text-[13px] font-extrabold text-paper shadow-[0_6px_14px_rgba(58,42,28,0.4)] ring-2 ring-white hover:bg-honey-ink">
-        <Package size={16} aria-hidden /> Online shops ship to you
-      </Link>
     </div>
   );
 }
