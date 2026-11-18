@@ -654,5 +654,53 @@
   "prompt": "cute honeybee young bee scout with a small friendly closed-mouth smile, wearing a (kraft brown felt hooded cloak with the hood down around the shoulders, fastened with a wooden toggle:1.3) and a leather backpack, (big proud happy open-mouth smile:1.2), (one arm raised high holding up a small closed brown kraft passport booklet, a little rectangular book with a plain cover, clearly visible above its shoulder:1.5), the other hand on its hip, (hands with fingers clearly visible:1.2), anthropomorphic honeybee mascot, (round golden-yellow bee head with no ink outline, its edge is soft felt fuzz with tiny fuzz spikes sitting directly against the background:1.3), (visible felt fuzz texture on the face and body:1.2), no hair, huge glossy black bead eyes with one simple round white highlight each, blush cheeks, (two thin natural smooth black bee antennae with small round tips:1.3), chubby fuzzy bee body in warm honey orange and dark brown, abdomen hidden below the frame, (arms with fuzzy black felt stripe bands drawn as ragged ink-hatched fur with spiky frayed edges, like the Sentinel's bands, never a flat smooth band:1.45), translucent pale wings, no badge, no patch, no emblem, stylized collectible NFT character illustration, soft matte felt texture, natural fine soft fuzz on head and body, ink outlines, light crosshatching only in shadow areas, gentle soft shading, upper-body framing, facing slightly left, centered, filling the square, plain flat background in dusty sky blue, strong silhouette, readable at small size",
   "negative": "nsfw, nude, suggestive, pointing finger, index finger extended, arm merged into the body, armless, spiked bracelet, spikes on wrist, flat smooth black arm band, solid black stripe on arm, star-shaped eye highlights, sparkle eyes, star pupils, paddle antennae, racket antennae, striped antennae, hatched antennae, dripping antennae, thick club antennae, ink drips from antennae, black outline around the head, ink contour line on the face, thick lineart on the head, dripping, drips, liquid, melting, smooth clean outline, clean silhouette, vector, sticker, bracelet, bangle, wristband, cuff, studded, glossy black ring, leather strap on arm, lantern, lamp, torch, candle, bee abdomen, bee tail, stinger, striped abdomen, badge, patch, emblem, crest, pin, medal, medallion, round badge, speech bubble, hair, bangs, fringe, human face, human skin, girl, boy, kawaii, smooth flat shading, glossy skin, shiny, plastic, vinyl, photograph, realistic insect, green background, green body, foliage, scene, extra characters, human, watercolour, sketchy, weapon, text, letters, watermark, logo, extra limbs, deformed, blurry, teal, muddy stripes, noisy hatching, logo on cup, face on cup, print on cup, print on bag, lettering on bag, second bee, small bee, baby bee, two characters, plush toy, bowling pin, black fur collar, ice cream, whipped cream",
   "settings": "img2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
+ },
+ "first_proof_scene_68001.png": {
+  "card": "first_proof",
+  "seed": 68001,
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "prompt": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp, no humans, scenery, full picture edge to edge, soft matte paper texture, clean ink outlines, light crosshatching only in shadow areas, gentle soft shading, flat warm colours, kraft brown, honey, cream and dusty blue palette, simple shapes, uncluttered",
+  "negative": "nsfw, human, person, character, animal, bee, face, text, letters, numbers, signature, watermark, logo, frame, border, ornament, card, trading card, icon, circle, round badge, medallion, photograph, realistic, 3d render, glossy, plastic, neon, dark, gloomy, cluttered, noisy hatching, blurry, plastic bottle, plastic bag, honey drips, liquid splash, food, cake, dessert, cream, butter, cheese, tofu, sauce",
+  "settings": "txt2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
+ },
+ "first_proof_scene_68002.png": {
+  "card": "first_proof",
+  "seed": 68002,
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "prompt": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp, no humans, scenery, full picture edge to edge, soft matte paper texture, clean ink outlines, light crosshatching only in shadow areas, gentle soft shading, flat warm colours, kraft brown, honey, cream and dusty blue palette, simple shapes, uncluttered",
+  "negative": "nsfw, human, person, character, animal, bee, face, text, letters, numbers, signature, watermark, logo, frame, border, ornament, card, trading card, icon, circle, round badge, medallion, photograph, realistic, 3d render, glossy, plastic, neon, dark, gloomy, cluttered, noisy hatching, blurry, plastic bottle, plastic bag, honey drips, liquid splash, food, cake, dessert, cream, butter, cheese, tofu, sauce",
+  "settings": "txt2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
+ },
+ "first_proof_scene_68003.png": {
+  "card": "first_proof",
+  "seed": 68003,
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "prompt": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp, no humans, scenery, full picture edge to edge, soft matte paper texture, clean ink outlines, light crosshatching only in shadow areas, gentle soft shading, flat warm colours, kraft brown, honey, cream and dusty blue palette, simple shapes, uncluttered",
+  "negative": "nsfw, human, person, character, animal, bee, face, text, letters, numbers, signature, watermark, logo, frame, border, ornament, card, trading card, icon, circle, round badge, medallion, photograph, realistic, 3d render, glossy, plastic, neon, dark, gloomy, cluttered, noisy hatching, blurry, plastic bottle, plastic bag, honey drips, liquid splash, food, cake, dessert, cream, butter, cheese, tofu, sauce",
+  "settings": "txt2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
+ },
+ "first_proof_scene_68004.png": {
+  "card": "first_proof",
+  "seed": 68004,
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "prompt": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp, no humans, scenery, full picture edge to edge, soft matte paper texture, clean ink outlines, light crosshatching only in shadow areas, gentle soft shading, flat warm colours, kraft brown, honey, cream and dusty blue palette, simple shapes, uncluttered",
+  "negative": "nsfw, human, person, character, animal, bee, face, text, letters, numbers, signature, watermark, logo, frame, border, ornament, card, trading card, icon, circle, round badge, medallion, photograph, realistic, 3d render, glossy, plastic, neon, dark, gloomy, cluttered, noisy hatching, blurry, plastic bottle, plastic bag, honey drips, liquid splash, food, cake, dessert, cream, butter, cheese, tofu, sauce",
+  "settings": "txt2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
+ },
+ "first_proof_scene_68005.png": {
+  "card": "first_proof",
+  "seed": 68005,
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "prompt": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp, no humans, scenery, full picture edge to edge, soft matte paper texture, clean ink outlines, light crosshatching only in shadow areas, gentle soft shading, flat warm colours, kraft brown, honey, cream and dusty blue palette, simple shapes, uncluttered",
+  "negative": "nsfw, human, person, character, animal, bee, face, text, letters, numbers, signature, watermark, logo, frame, border, ornament, card, trading card, icon, circle, round badge, medallion, photograph, realistic, 3d render, glossy, plastic, neon, dark, gloomy, cluttered, noisy hatching, blurry, plastic bottle, plastic bag, honey drips, liquid splash, food, cake, dessert, cream, butter, cheese, tofu, sauce",
+  "settings": "txt2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
+ },
+ "first_proof_scene_68006.png": {
+  "card": "first_proof",
+  "seed": 68006,
+  "checkpoint": "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]",
+  "prompt": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp, no humans, scenery, full picture edge to edge, soft matte paper texture, clean ink outlines, light crosshatching only in shadow areas, gentle soft shading, flat warm colours, kraft brown, honey, cream and dusty blue palette, simple shapes, uncluttered",
+  "negative": "nsfw, human, person, character, animal, bee, face, text, letters, numbers, signature, watermark, logo, frame, border, ornament, card, trading card, icon, circle, round badge, medallion, photograph, realistic, 3d render, glossy, plastic, neon, dark, gloomy, cluttered, noisy hatching, blurry, plastic bottle, plastic bag, honey drips, liquid splash, food, cake, dessert, cream, butter, cheese, tofu, sauce",
+  "settings": "txt2img 1024x1024 steps 30 cfg 6.5 DPM++ 2M karras"
  }
 }

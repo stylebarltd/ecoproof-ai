@@ -11,8 +11,7 @@ PICKS = {  # card: bee render, scene, size of the bee (1 = full width), x of its
  "market_day": dict(bee="market_day_bee_d78_66002.png", scene="market_day_scene_63001.png", scale=0.76, x=150),
  # the render drew the antenna tips cream: darkened to the Sentinel's own brown-black
  "first_trail": dict(bee="first_trail_bee_d68_66001.png", scene="first_trail_scene_63004.png", scale=0.78, x=235, dark=[(370, 120, 610, 260), (790, 120, 1010, 260)]),
- # the scene's orange blot on the paper sat right behind the head like a tuft of hair: painted out
- "first_proof": dict(bee="first_proof_bee_d70_67002.png", scene="first_proof_scene_64006.png", scale=0.82, x=-150, erase=[(545, 395, 725, 570)]),
+ "first_proof": dict(bee="first_proof_bee_d70_67002.png", scene="first_proof_scene_68002.png", scale=0.82, x=-150),
 }
 def key(im):
     """Alpha from hue: the background is the only blue-violet thing; holes inside the bee are filled, loose specks dropped."""

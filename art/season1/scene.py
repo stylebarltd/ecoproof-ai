@@ -14,7 +14,7 @@ SCENES = {
  "morning_cup": "indoors, cosy small cafe, wooden counter across the bottom, on the counter at the right a tall reusable bamboo coffee cup with a lid, steam, big window with warm morning sunlight, shelf with ceramic cups on the wall",
  "market_day": "outdoors, farmers market, wooden market stall with a red and cream striped awning at the top, wooden crates full of carrots, tomatoes, apples and leafy greens at the right, a cream cotton tote bag full of vegetables standing on the table, sunny day, blue sky",
  "first_trail": "outdoors, countryside, at the right a tall wooden signpost with two blank wooden arrow boards pointing left and right, winding dirt path, soft rolling hills, a few round trees, big pale morning sky with small clouds",
- "first_proof": "indoors, still life, wooden desk across the bottom, at the right an open notebook with blank cream pages lying flat on the desk, one page has a single round-cornered orange ink stamp print in its middle, a wooden handled rubber stamp standing next to the notebook, a pencil, plain warm cream wall, soft window light from the left",
+ "first_proof": "indoors, cosy small zero waste shop seen at eye level, wooden shop counter across the bottom, behind it wooden shelves with rows of glass jars, refill dispensers and woven baskets, a hanging plant, warm afternoon sunlight from a window at the left, on the counter at the right a small wooden stand holding a blank cream card and a wooden rubber stamp",
 }
 def post(path, payload):
     req = urllib.request.Request(API + path, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"})
