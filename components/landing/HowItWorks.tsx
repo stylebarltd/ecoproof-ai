@@ -24,10 +24,10 @@ const VISIT_POINTS = `${Math.min(...visits)}–${Math.max(...visits)} points`;
 
 const PLACES: { cap: string; title: string; points: string; src: string; alt: string }[] = [
   { cap: "The QR code on the counter", title: "Café, restaurant, hotel or resort", points: `${VISIT_POINTS} for each visit, once a day.`,
-    src: `${PIC}/counter.webp`,
+    src: `${PIC}/counter-rated.webp`,
     alt: "A café counter with the EcoProof postcard on a wooden stand beside a cup of coffee: Collect an eco stamp for your visit, a QR code, three steps and the Bee Guardian" },
   { cap: "The receipt from the till", title: "A purchase in an eco shop", points: `${pointsLabel(POINTS_VERIFIED)} for a photo of the receipt, taken in the shop. ${pointsLabel(POINTS_BY_KIND.eco_shop)} for the QR code at the till.`,
-    src: "/landing/doors/v3/store.webp",
+    src: "/landing/doors/v4/store.webp",
     alt: "The counter of an eco shop: a customer photographs the till receipt with a phone, and the screen shows what the purchase avoided" },
   { cap: "The QR code in the order email or the parcel", title: "An online order", points: `${pointsLabel(POINTS_VERIFIED)} for each verified order.`,
     src: `${PIC}/parcel-home.webp`,

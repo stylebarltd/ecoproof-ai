@@ -12,7 +12,7 @@ export default function IslandHero({ children }: { children: React.ReactNode }) 
   return (
     <section className="grain relative overflow-hidden bg-kraft/60">
       <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-[58%]">
-        <Image src="/landing/hero/desk-scan.webp" width={2432} height={1664} priority sizes="(min-width: 1024px) 58vw, 100vw"
+        <Image src="/landing/hero/desk-rated.webp" width={2432} height={1664} priority sizes="(min-width: 1024px) 58vw, 100vw"
           alt="The wooden desk of an eco hotel in warm evening light, a plant and a sunny terrace behind it. On the desk stands the hotel's EcoProof postcard: Collect an eco stamp for your stay, with the hotel's eco stars and a QR code"
           className="hero-photo block aspect-[3/2] w-full object-cover object-[30%_50%] lg:aspect-auto lg:h-full" />
         <HeroPhone />

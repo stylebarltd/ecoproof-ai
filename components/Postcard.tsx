@@ -52,10 +52,13 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
 
         <p className="pc-h">{headline}</p>
         {place.stars ? <>
-          {/* The lead gives way to this box (the card's height is fixed); the steps still say what the passport is. Why to trust the place itself: its practices are published and anchored (lib/declarations.ts). Self-declared, so "on public record", never "certified". */}
+          {/* The lead gives way to this box (the card's height is fixed); the steps still say what the passport is. Why to trust the place itself (Pola, 2026-11-18: the card must say the place is eco by EcoProof's measure): the stars are EcoProof's rating (lib/stars.ts) of the practices the place published and anchored (lib/declarations.ts). The practices are self-declared and nobody inspects them, so "rated", never "approved", "certified" or "verified". */}
           <p className="pc-proof">
             <span className="pc-seal" style={{ background: SAGE }}><LeafMark size={100} /></span>
-            <span><b>{place.name} has its eco practices on public record:</b> <span className="pc-stars"><Stars stars={place.stars} size={100} /></span> <b>{place.stars} eco star{place.stars === 1 ? "" : "s"}</b>. Locked on Solana, so nobody can quietly change them.</span>
+            <span>
+              <span className="pc-rated">Rated by EcoProof: {place.stars} eco star{place.stars === 1 ? "" : "s"} <span className="pc-stars"><Stars stars={place.stars} size={100} /></span></span>
+              For the eco practices {place.name} has published and locked on Solana.
+            </span>
           </p>
         </> : <p className="pc-lead">EcoProof is the passport for people who choose places that cut plastic and waste. <b>{place.name}</b> is one of them.</p>}
 
@@ -115,10 +118,11 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-place { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5cqw; }
 .pc-stamp { width: 14cqw; height: 14cqw; }
 .pc-name { max-width: 26cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 4.4cqw; line-height: 1.1; overflow-wrap: anywhere; }
-.pc-proof { margin-top: 3cqw; padding: 2.2cqw 2.8cqw; display: flex; gap: 2.4cqw; align-items: center; border-radius: 2.6cqw; background: rgba(143, 163, 114, 0.2); font-size: 3.15cqw; line-height: 1.32; text-wrap: pretty; }
+.pc-proof { margin-top: 3cqw; padding: 2.2cqw 2.8cqw; display: flex; gap: 2.4cqw; align-items: center; border-radius: 2.6cqw; background: rgba(143, 163, 114, 0.2); font-size: 3.05cqw; line-height: 1.3; text-wrap: pretty; }
 .pc-seal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 8cqw; height: 8cqw; border-radius: 999px; }
 .pc-seal svg { width: 60%; height: 60%; }
-.pc-stars { display: inline-flex; vertical-align: -0.4cqw; }
+.pc-rated { display: block; margin-bottom: 0.5cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 3.5cqw; line-height: 1.15; white-space: nowrap; }
+.pc-stars { display: inline-flex; vertical-align: -0.3cqw; }
 .pc-stars svg { width: 3.3cqw; height: 3.3cqw; }
 .pc-arrow { font-family: var(--font-bebas), Impact, sans-serif; font-size: 4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: #fff; background: var(--color-cocoa);
   border-radius: 999px; padding: 1.4cqw 3cqw 1cqw; }
