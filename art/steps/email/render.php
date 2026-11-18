@@ -30,15 +30,19 @@ if ( ( $argv[1] ?? '' ) !== 'client' ) {
 // `php render.php client full > tablet.html`: that window filling the page, as a mail app on a tablet (compose.py puts it on the
 // tablet's screen). Screenshot either with a headless browser at window size 1000,1000.
 $full = ( $argv[2] ?? '' ) === 'full';
+// `php render.php client full portrait > tablet.html`: the same for a tablet standing upright, 750 x 1070 (screenshot at that size).
+$tall = $full && ( $argv[3] ?? '' ) === 'portrait';
+$pw   = $tall ? 750 : 1000;
+$ph   = $tall ? 1070 : 1000;
 $f = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;";
 $row = function ( $from, $subject, $time, $on = false ) use ( $f ) {
 	return '<div style="padding:12px 14px;border-bottom:1px solid #ece6dc;' . ( $on ? 'background:#fff6e4;border-left:4px solid #e8a317;padding-left:10px' : '' ) . '">'
 		. '<div style="display:flex;justify-content:space-between;' . $f . 'font-size:14px;font-weight:700;color:#2b2622"><span>' . $from . '</span><span style="font-weight:400;color:#8a8076;font-size:12px">' . $time . '</span></div>'
 		. '<div style="' . $f . 'font-size:13px;color:#5d554c;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' . $subject . '</div></div>';
 };
-echo '<!doctype html><meta charset="utf-8"><body style="margin:0;background:#d9b88c;width:1000px;height:1000px;overflow:hidden">'
+echo '<!doctype html><meta charset="utf-8"><body style="margin:0;background:#d9b88c;width:' . $pw . 'px;height:' . $ph . 'px;overflow:hidden">'
 	. ( $full
-		? '<div style="position:absolute;left:0;top:0;width:1000px;height:1000px;background:#fff;overflow:hidden;display:flex;flex-direction:column">'
+		? '<div style="position:absolute;left:0;top:0;width:' . $pw . 'px;height:' . $ph . 'px;background:#fff;overflow:hidden;display:flex;flex-direction:column">'
 		: '<div style="position:absolute;left:28px;top:28px;width:944px;height:944px;background:#fff;border-radius:18px;box-shadow:0 14px 40px rgba(58,42,28,.35);overflow:hidden;display:flex;flex-direction:column">' )
 	// title bar
 	. '<div style="height:46px;background:#f3ede3;border-bottom:1px solid #e3dccf;display:flex;align-items:center;padding:0 16px;gap:8px">'
@@ -54,9 +58,9 @@ echo '<!doctype html><meta charset="utf-8"><body style="margin:0;background:#d9b
 		. $row( 'Parcel service', 'Your parcel is on its way', 'Sat' )
 		. '</div>' )
 	// the message
-	. '<div style="flex:1;min-width:0;padding:18px ' . ( $full ? '90px' : '26px' ) . ' 0;overflow:hidden">'
+	. '<div style="flex:1;min-width:0;padding:18px ' . ( $tall ? '36px' : ( $full ? '90px' : '26px' ) ) . ' 0;overflow:hidden">'
 	. '<div style="' . $f . 'font-size:21px;font-weight:700;color:#2b2622">Your order #1042 is complete</div>'
 	. '<div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px"><span style="width:34px;height:34px;border-radius:50%;background:#3d6b8c;color:#fff;' . $f . 'font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">D</span>'
 	. '<span style="' . $f . 'font-size:14px;color:#2b2622"><b>Demo Eco Shop</b><br><span style="color:#8a8076;font-size:12px">to me</span></span></div>'
-	. '<div style="zoom:' . ( $full ? '0.93' : '0.8' ) . '">' . $html . '</div>'
+	. '<div style="zoom:' . ( $tall ? '1.04' : ( $full ? '0.93' : '0.8' ) ) . '">' . $html . '</div>'
 	. '</div></div></div></body>';
