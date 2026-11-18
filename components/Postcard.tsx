@@ -2,10 +2,11 @@ import { LeafMark } from "@/components/Logo";
 import Stars from "@/components/Stars";
 import { SAGE } from "@/lib/brand";
 
-// The printed card that explains EcoProof next to a claim QR: a place's postcard for the counter (app/(app)/place/[id], and the
-// "set up" screen of /join) and the cards an online shop puts in its parcels (app/(app)/place/[id]/cards). One design; every measure
-// inside is in cqw (1% of the card's width), so it prints at any size. The card has a fixed height: new text must fit, check the print
-// PDF. The QR for print comes from lib/qrImage.ts.
+// The printed cards that explain EcoProof next to a claim QR. Postcard: a place's card for the counter (app/(app)/place/[id], and the
+// "set up" screen of /join), A6 or an A4 poster. ParcelCard: the card an online shop puts in its parcels (app/(app)/place/[id]/cards),
+// the size of a business card, because a green shop should not add more paper to a parcel than it must (Pola, 2026-11-18). Every measure
+// inside is in cqw (1% of the card's width), so a card prints at any size. The cards have a fixed height: new text must fit, check the
+// print PDF. The QR for print comes from lib/qrImage.ts.
 
 /** What the customer did here, in the counter postcard's headline: "Collect an eco stamp for your stay". */
 const HERE: Record<string, string> = { cafe: "visit", restaurant: "meal", hotel: "stay", eco_shop: "visit" };
@@ -129,6 +130,70 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
     grid-template-columns: repeat(${cols}, ${w / cols}mm); grid-template-rows: repeat(${rows}, ${(h - 1) / rows}mm); }
   .sheet:last-child { break-after: auto; }
   .sheet > .pc, .sheet > .pc + .pc { display: block; aspect-ratio: auto; width: 100%; height: 100%; border-radius: 0; box-shadow: none; ${cols * rows > 1 ? "outline: 0.2mm dashed rgba(58, 42, 28, 0.35);" : ""} }
+}
+`;
+}
+
+/** The card in a parcel: business-card size (85 x 55 mm), so only the facts that matter: what it is, whose it is, how to scan, the code and the bee. */
+export function ParcelCard({ place, qr, code }: { place: string; qr: string; code: string }) {
+  return (
+    <div className="bc">
+      <div className="bc-in">
+        <div className="bc-left">
+          <div className="bc-qr">
+            {/* eslint-disable-next-line @next/next/no-img-element -- an inline SVG */}
+            <img src={qr} alt={`QR code: collect your ${place} stamp`} />
+          </div>
+          <span className="bc-code">{code}</span>
+        </div>
+        <div className="bc-right">
+          <span className="bc-brand">
+            <span className="bc-tile" style={{ background: SAGE }}><LeafMark size={100} /></span>
+            <span>EcoProof</span>
+          </span>
+          <p className="bc-h">Your order earns an eco stamp</p>
+          <p className="bc-lead">A thank-you from <b>{place}</b>. Scan with your phone: no app, no sign-up.</p>
+          <p className="bc-foot"><b>ecoproof.app</b><span>Works once</span></p>
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element -- printed, so no lazy loading or resizing */}
+        <img src="/landing/bee.webp" alt="" className="bc-bee" />
+      </div>
+    </div>
+  );
+}
+
+/** The styles of the parcel card, its screen preview (the first card) and the print sheets: ten cards of 85 x 55 mm on an A4 page,
+ *  two across and five down, centred, with dashed cut lines. */
+export function parcelCardCss(): string {
+  return `
+.sheet { max-width: 420px; margin: 0 auto; }
+.sheet + .sheet, .sheet > .bc + .bc { display: none; }
+.bc { container-type: inline-size; aspect-ratio: 85 / 55; background: #fff; color: var(--color-cocoa); border-radius: 12px; box-shadow: 0 10px 30px rgba(58, 42, 28, 0.18); overflow: hidden;
+  font-family: var(--font-nunito), system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.bc-in { position: relative; height: 100%; padding: 4.6cqw 5.5cqw 4.6cqw; display: flex; gap: 5cqw; border-top: 2.4cqw solid var(--color-honey); }
+.bc-left { flex: none; width: 36cqw; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2cqw; }
+.bc-qr { width: 100%; padding: 2cqw; border: 0.7cqw solid var(--color-cocoa); border-radius: 3cqw; background: #fff; }
+.bc-qr img { display: block; width: 100%; height: auto; }
+.bc-code { font-family: ui-monospace, monospace; font-size: 3.3cqw; letter-spacing: 0.08em; font-weight: 700; line-height: 1; }
+.bc-right { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.bc-brand { display: inline-flex; align-items: center; gap: 1.8cqw; font-family: var(--font-caprasimo), serif; font-size: 5cqw; line-height: 1; }
+.bc-tile { display: inline-flex; align-items: center; justify-content: center; width: 7cqw; height: 7cqw; border-radius: 2cqw; }
+.bc-tile svg { width: 62%; height: 62%; }
+.bc-h { margin-top: 3.2cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 7.2cqw; line-height: 1.04; letter-spacing: -0.015em; text-wrap: balance; }
+.bc-lead { margin-top: 2.4cqw; font-size: 3.5cqw; line-height: 1.3; text-wrap: pretty; }
+.bc-lead b { overflow-wrap: anywhere; }
+.bc-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; font-size: 3.2cqw; line-height: 1; font-weight: 700; white-space: nowrap; }
+.bc-foot b { font-family: var(--font-caprasimo), serif; font-weight: 400; font-size: 4.4cqw; }
+.bc-bee { position: absolute; width: 16cqw; right: 3cqw; top: 1cqw; rotate: 6deg; }
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  nav, header, .no-print { display: none !important; }
+  html, body { background: #fff !important; }
+  main { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+  .sheet, .sheet + .sheet { max-width: none; margin: 0; width: 210mm; height: 296mm; overflow: hidden; display: grid; break-after: page;
+    grid-template-columns: repeat(2, 85mm); grid-auto-rows: 55mm; justify-content: center; align-content: start; padding-top: 10.5mm; }
+  .sheet:last-child { break-after: auto; }
+  .sheet > .bc, .sheet > .bc + .bc { display: block; aspect-ratio: auto; width: 100%; height: 100%; border-radius: 0; box-shadow: none; outline: 0.2mm dashed rgba(58, 42, 28, 0.35); }
 }
 `;
 }

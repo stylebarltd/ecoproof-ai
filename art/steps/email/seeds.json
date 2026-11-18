@@ -158,5 +158,101 @@
   "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
   "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
   "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizcard_601.png": {
+  "scene": "bizcard",
+  "seed": 601,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, in the foreground an opened kraft cardboard shipping box with brown paper padding, a small plain blank white business card standing upright leaning against the front of the box and facing the camera, the small card is landscape format, completely blank, nothing written on it, much smaller than the box, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box, the small card and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizcard_602.png": {
+  "scene": "bizcard",
+  "seed": 602,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, in the foreground an opened kraft cardboard shipping box with brown paper padding, a small plain blank white business card standing upright leaning against the front of the box and facing the camera, the small card is landscape format, completely blank, nothing written on it, much smaller than the box, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box, the small card and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizcard_603.png": {
+  "scene": "bizcard",
+  "seed": 603,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, in the foreground an opened kraft cardboard shipping box with brown paper padding, a small plain blank white business card standing upright leaning against the front of the box and facing the camera, the small card is landscape format, completely blank, nothing written on it, much smaller than the box, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box, the small card and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizcard_604.png": {
+  "scene": "bizcard",
+  "seed": 604,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, in the foreground an opened kraft cardboard shipping box with brown paper padding, a small plain blank white business card standing upright leaning against the front of the box and facing the camera, the small card is landscape format, completely blank, nothing written on it, much smaller than the box, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box, the small card and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizcard_605.png": {
+  "scene": "bizcard",
+  "seed": 605,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, in the foreground an opened kraft cardboard shipping box with brown paper padding, a small plain blank white business card standing upright leaning against the front of the box and facing the camera, the small card is landscape format, completely blank, nothing written on it, much smaller than the box, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box, the small card and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizcard_606.png": {
+  "scene": "bizcard",
+  "seed": 606,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, in the foreground an opened kraft cardboard shipping box with brown paper padding, a small plain blank white business card standing upright leaning against the front of the box and facing the camera, the small card is landscape format, completely blank, nothing written on it, much smaller than the box, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box, the small card and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars, a cotton tote bag and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizflat_611.png": {
+  "scene": "bizflat",
+  "seed": 611,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, close-up, in the foreground a single small plain blank white business card lying flat on the wooden table, landscape format, completely blank, nothing written on it, right behind it an opened kraft cardboard shipping box with brown paper padding, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the small card, the box and the tablet are sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizflat_612.png": {
+  "scene": "bizflat",
+  "seed": 612,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, close-up, in the foreground a single small plain blank white business card lying flat on the wooden table, landscape format, completely blank, nothing written on it, right behind it an opened kraft cardboard shipping box with brown paper padding, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the small card, the box and the tablet are sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizflat_613.png": {
+  "scene": "bizflat",
+  "seed": 613,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, close-up, in the foreground a single small plain blank white business card lying flat on the wooden table, landscape format, completely blank, nothing written on it, right behind it an opened kraft cardboard shipping box with brown paper padding, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the small card, the box and the tablet are sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizflat_614.png": {
+  "scene": "bizflat",
+  "seed": 614,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, close-up, in the foreground a single small plain blank white business card lying flat on the wooden table, landscape format, completely blank, nothing written on it, right behind it an opened kraft cardboard shipping box with brown paper padding, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the small card, the box and the tablet are sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizflat_615.png": {
+  "scene": "bizflat",
+  "seed": 615,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, close-up, in the foreground a single small plain blank white business card lying flat on the wooden table, landscape format, completely blank, nothing written on it, right behind it an opened kraft cardboard shipping box with brown paper padding, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the small card, the box and the tablet are sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "bizflat_616.png": {
+  "scene": "bizflat",
+  "seed": 616,
+  "prompt": "photo of a wooden kitchen table in a cosy sustainable home, close-up, in the foreground a single small plain blank white business card lying flat on the wooden table, landscape format, completely blank, nothing written on it, right behind it an opened kraft cardboard shipping box with brown paper padding, next to the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the small card, the box and the tablet are sharply in focus, a glass jar and a cup of tea beside them, behind them a bright kitchen with open wooden shelves, glass storage jars and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
  }
 }
