@@ -171,7 +171,7 @@ export default function HowItWorks({ r }: { r: LandingRecord | null }) {
         {slide < TABS.length - 1 ? (
           <button type="button" onClick={() => show(slide + 1)} className={next}>Next: {TABS[slide + 1]} <ArrowRight size={16} aria-hidden /></button>
         ) : (
-          <Link href="/join" className={next}>Join as a business <ArrowRight size={16} aria-hidden /></Link>
+          <Link href="/join" className={next}>Add place <ArrowRight size={16} aria-hidden /></Link>
         )}
       </div>
     </div>

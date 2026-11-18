@@ -16,6 +16,7 @@ on Solana. For sustainable shops, cafés, markets and online brands.
   the landing page and `/about#ai` explain the project.
 - Won Best Use of Solana at the Superteam TH (Colosseum) hackathon, Chiang Mai 2026; public copy reads "Superteam TH (Colosseum), Chiang Mai 2026".
 - The landing is written for customers and businesses alike (Pola, 2026-11-18): in shared sections like "How it works" no "your customers", no "they / their"; the hero and the business sections may still address owners.
+- Hero (2026-11-18, Pola): written for customers ("Your eco choices, proven. Verified, not claimed.", primary "Open my eco passport", "Find eco places", one line for owners); no background pictures, kraft colour with the bee (`IslandHero.tsx`; the island plates in `public/landing/island/v4` and the notes about them below are history). Every "Join as a business" button is now "Add place" (still `/join`).
 - Landing copy stays short and sells (Pola, 2026-11-17: "too much text"); readers are not blockchain people, so Solana is explained in plain words (hero tooltip `SolanaTip`, paragraph at `#why-chain`).
 - Still in its hackathon-judging phase on **Solana devnet** (see Gotchas).
 

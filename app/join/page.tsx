@@ -6,11 +6,11 @@ import { headers } from "next/headers";
 import { isKind } from "@/lib/placeKinds";
 
 export const metadata: Metadata = {
-  title: "Join as a business · EcoProof",
+  title: "Add your place · EcoProof",
   description: "Set up your café, restaurant, hotel or eco shop on EcoProof in about 10 minutes. The first 50 businesses join free.",
 };
 
-/** Where every "Join as a business" on the landing leads. It sits outside the (app) group on purpose: it wears the landing's travel-journal chrome
+/** Where every "Add place" on the landing leads. It sits outside the (app) group on purpose: it wears the landing's travel-journal chrome
  *  (DESIGN.md), not the legacy app shell, so the hand-off from the landing page looks like the same place. */
 export default async function JoinPage({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
   // The landing's business cards link here with ?kind=, so "Join as a hotel" starts on Hotel.

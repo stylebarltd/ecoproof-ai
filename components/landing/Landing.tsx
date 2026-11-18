@@ -10,7 +10,7 @@ import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
-import { COUNTERS_FROM, demoPassport, PRICING } from "@/lib/landingContent";
+import { COUNTERS_FROM, PRICING } from "@/lib/landingContent";
 import { badgeSvg } from "@/lib/badge";
 import { grams } from "@/lib/impact";
 import type { LandingRecord, LandingStats } from "@/lib/landingStats";
@@ -198,16 +198,18 @@ function SolanaTip() {
 }
 
 /** The hero's words and actions, shared by every hero. `center` for the island, where the copy sits in the sky. */
+/** The hero speaks to customers (Pola, 2026-11-18); owners get one line with "Add place" under it. */
 function HeroCopy({ center }: { center?: boolean }) {
   return (
     <>
-      <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco promise, proven by every customer. <span className="text-honey-ink">Verified, not claimed.</span></h1>
-      <p className={`${center ? "mx-auto " : ""}relative mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit or order becomes a stamp in your customer&apos;s eco passport, written to the <SolanaTip /> so nobody can fake it. They share it; you get the credit.</p>
+      <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco choices, proven. <span className="text-honey-ink">Verified, not claimed.</span></h1>
+      <p className={`${center ? "mx-auto " : ""}relative mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit to an eco café, hotel or shop, and every plastic-free order, becomes a stamp in your eco passport, written to the <SolanaTip /> so nobody can fake it. Collect them, earn Bee Guardian NFTs, and share the proof.</p>
       <div className={`mt-7 flex flex-col items-center gap-3 sm:flex-row sm:gap-5 ${center ? "justify-center" : ""}`}>
-        <Primary href="/join">Join as a business <ArrowRight size={18} /></Primary>
-        <Link href={demoPassport().href} className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">{demoPassport().label}</Link>
+        <Primary href="/passport">Open my eco passport <ArrowRight size={18} /></Primary>
+        <Link href="/map" className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Find eco places</Link>
       </div>
-      <p className={`${center ? "text-center " : ""}mt-3 text-[15px] font-bold text-cocoa/85`}>Free for the first 50 businesses.</p>
+      <p className={`${center ? "text-center " : ""}mt-3 text-[15px] font-bold text-cocoa/85`}>Free. No app to install, no account needed to start.</p>
+      <p className={`${center ? "text-center " : ""}mt-2 text-[15px] text-cocoa/85`}>Run an eco café, hotel or shop? <Link href="/join" className="font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Add place</Link>. Free for the first 50 businesses.</p>
     </>
   );
 }
@@ -228,7 +230,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
     <div className={`journal grain min-h-screen ${journalFonts}`}>
       <LandingNav />
 
-      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy centred in the sky above the island band.
+      {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy centred on kraft paper (the island pictures were removed on 2026-11-18).
           "proof": copy left, the newest real record and its live check right, on kraft. "cards": copy left, the card fan and the bee right. */}
       {HERO === "island" ? (
         <IslandHero>
@@ -381,7 +383,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">{p.name}</p>
               {p.price && <p className="mt-2 font-journal-display text-[36px] font-bold leading-none">{p.price}{p.period && <span className="text-[16px] font-bold text-cocoa/80"> {p.period}</span>}</p>}
               <p className="mt-3 text-[15px] leading-[1.6] text-cocoa/80">{p.note}</p>
-              {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Join as a business <ArrowRight size={18} /></Primary></div>}
+              {i === 0 && <div className="mt-auto pt-5"><Primary href="/join">Add place <ArrowRight size={18} /></Primary></div>}
             </li>
           ))}
         </ul>
@@ -399,7 +401,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       <Section className="py-12 lg:py-20">
         <div className="stitched grain rounded-[24px] bg-kraft px-6 py-12 text-center sm:px-10 lg:py-16">
           <h2 className="mx-auto max-w-3xl text-[36px] leading-[1.04] sm:text-[46px]">Prove your eco promise. One customer at a time.</h2>
-          <div className="mt-7 flex justify-center"><Primary href="/join">Join as a business <ArrowRight size={18} /></Primary></div>
+          <div className="mt-7 flex justify-center"><Primary href="/join">Add place <ArrowRight size={18} /></Primary></div>
           <p className="mt-4 text-[15px] font-bold text-cocoa/80">Free for the first 50 businesses. Live in about 10 minutes.</p>
         </div>
       </Section>
