@@ -33,6 +33,33 @@ const DoorRow = ({ term, className = "", children }: { term: string; className?:
   <div className={className}><dt className="font-stamp text-[14px] uppercase tracking-[0.12em] text-terracotta-ink">{term}</dt><dd className="text-cocoa/85">{children}</dd></div>
 );
 
+/** A passport on a phone, drawn in CSS: what a customer sees after a few stamps. */
+function PhoneMockup() {
+  const stamps = [["Eco café", "Visit stamp", POINTS_BY_KIND.cafe], ["Online eco shop", "Verified order", POINTS_VERIFIED], ["Eco hotel", "Visit stamp", POINTS_BY_KIND.hotel]] as const;
+  return (
+    <div className="mx-auto w-[272px] rounded-[38px] border-[8px] border-cocoa bg-paper p-3 shadow-[0_24px_50px_rgba(58,42,28,0.3)]" aria-label="A customer's eco passport on a phone" role="img">
+      <div className="mx-auto mb-3 h-5 w-24 rounded-full bg-cocoa" />
+      <p className="font-journal-display text-[18px] font-bold leading-tight">My eco passport</p>
+      <div className="mt-2 flex items-end justify-between rounded-2xl bg-kraft/60 px-3 py-2.5">
+        <span><span className="block text-[12px] font-bold text-cocoa/80">Points</span><span className="font-journal-display text-[26px] font-bold leading-none">{POINTS_BY_KIND.cafe + POINTS_VERIFIED + POINTS_BY_KIND.hotel}</span></span>
+        <span className="text-right text-[12px] font-bold text-cocoa/80">3 stamps<br />3 proofs on Solana</span>
+      </div>
+      <ul className="mt-3 space-y-2">
+        {stamps.map(([place, kind, pts]) => (
+          <li key={place} className="flex items-center gap-2.5 rounded-xl bg-white/70 px-2.5 py-2">
+            <span className="stamp flex h-9 w-9 items-center justify-center text-sky-ink"><Stamp size={14} /></span>
+            <span className="min-w-0 flex-1 leading-tight"><span className="block truncate text-[13px] font-extrabold">{place}</span><span className="block text-[12px] text-cocoa/80">{kind}</span></span>
+            <span className="text-[12px] font-extrabold text-honey-ink">+{pts}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex items-center gap-2 rounded-xl bg-kraft/50 p-2">
+        <Image src="/landing/cards/warden.webp" alt="" width={600} height={840} sizes="40px" className="w-10 rounded-md" />
+        <span className="text-[12px] font-bold leading-tight">Bee Guardian · Warden<br /><span className="font-semibold text-cocoa/80">Soulbound NFT, earned at {RANKS[1].at} points</span></span>
+      </div>
+    </div>
+  );
+}
 
 /** Live totals as three square rubber stamps: proofs, plastic avoided, CO₂e avoided. */
 function CounterStrip({ stats, className = "" }: { stats: LandingStats | null; className?: string }) {
@@ -252,26 +279,10 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       <Section id="customers" className="py-12 lg:py-20">
         <div className="stitched grain rounded-[20px] bg-kraft/55 px-5 py-10 sm:px-10 lg:px-14 lg:py-14">
           <div className="grid items-center gap-10 lg:grid-cols-[300px_1fr] lg:gap-14">
-            {/* The NFT leads (Pola, 2026-11-18): the Sentinel, the Bee Guardian every first stamp earns, as the section's picture. */}
-            <div className="relative mx-auto w-[240px] lg:w-[300px]">
-              <Image src="/landing/cards/sentinel.webp" alt="The Sentinel Bee Guardian NFT card: a young hooded bee giving a peace sign" width={600} height={840} sizes="300px" className="w-full -rotate-3 rounded-[16px] shadow-[0_24px_50px_rgba(58,42,28,0.35)]" />
-              <span className="stamp absolute -right-4 -top-4 flex h-[92px] w-[92px] rotate-12 flex-col items-center justify-center bg-paper/95 text-center text-leaf-ink">
-                <span className="text-[12px] leading-none tracking-[0.12em]">your first</span>
-                <span className="text-[26px] leading-none">NFT</span>
-              </span>
-            </div>
+            <PhoneMockup />
             <div className="min-w-0">
               <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
-              <Lead>Your first stamp earns the Sentinel NFT: a Bee Guardian that can&apos;t be bought, only earned. Keep choosing eco places and it ranks up.</Lead>
-              <ul className="mt-5 grid gap-2.5 text-[15px] leading-snug text-cocoa/85 sm:grid-cols-3 sm:gap-5">
-                {[
-                  ["Yours alone", "A soulbound NFT on Solana. It can't be sold, traded or faked."],
-                  ["Free to earn", `${RANKS[0].at} point is enough: one visit or one order. Connect a wallet whenever you like to claim it.`],
-                  ["Five ranks", `From Sentinel to Paragon at ${RANKS[RANKS.length - 1].at} points, each with its own card.`],
-                ].map(([t, d]) => (
-                  <li key={t} className="flex gap-2 sm:block"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink sm:mb-1" aria-hidden /><span><b className="font-extrabold text-cocoa">{t}.</b> {d}</span></li>
-                ))}
-              </ul>
+              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian: a collectible card that can&apos;t be bought, only earned.</Lead>
               <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
               <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
                 {RANKS.map((r, i) => (
