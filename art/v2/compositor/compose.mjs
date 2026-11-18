@@ -151,11 +151,12 @@ export async function renderCard(card) {
   const title = card.title ?? (isRank ? rank.title : card.tier);
   const colour = isRank ? rank.colour : card.colour ?? T.achievement_colour;
 
-  const art = await renderArt(beeFile, traits, { mode: isRank ? "slot" : "bubble", colour });
+  // A Season card brings its own finished picture (art/season1): no layers are stacked for it.
+  const art = card.art_file ? await sharp(resolve(card.art_file)).resize(1024, 1024).png().toBuffer() : await renderArt(beeFile, traits, { mode: isRank ? "slot" : "bubble", colour });
   const { x, y, size } = T.canvas.art_window;
   const artScaled = await sharp(art).resize(size, size).png().toBuffer();
 
-  const subtitle = isRank
+  const subtitle = card.subtitle ? card.subtitle : isRank
     ? `RANK CARD · ${rank.points}${card.tier === "paragon" ? "+" : ""} POINT${rank.points === 1 ? "" : "S"}`
     : `ACHIEVEMENT${card.cap ? ` · CAP ${nf(card.cap, 0)}` : ""}`;
   const minted = `Minted ${card.minted_at}${card.season ? ` · ${card.season}` : ""}`;

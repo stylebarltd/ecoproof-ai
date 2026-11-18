@@ -18,7 +18,7 @@ PERSONAS = {  # Sentinel category: kraft felt and linen, simple and friendly
                "(a plain cream cotton tote bag with carrot tops and leafy greens sticking out of it hanging from one raised hand:1.4), the other hand waving",
  # challenge cards: the Sentinel itself, in a new pose
  "first_trail": SENTINEL + ", (one hand holding a wooden walking stick upright, the other hand raised flat above its eyes like a visor, looking into the distance:1.4), curious wide eyes",
- "first_proof": SENTINEL + ", (eyes closed in a big proud joyful smile:1.2), (holding up a small open kraft paper booklet in one raised hand, showing it off:1.4), the other hand making a fist of joy",
+ "first_proof": SENTINEL + ", (big proud happy open-mouth smile:1.2), (one arm raised high holding up a small closed brown kraft passport booklet, a little rectangular book with a plain cover, clearly visible above its shoulder:1.5), the other hand on its hip",
 }
 card, dn, seeds = sys.argv[1], float(sys.argv[2]), [int(s) for s in sys.argv[3:]]
 prompt = f"cute honeybee {PERSONAS[card]}, (hands with fingers clearly visible:1.2), " + g.BEE + ", " + g.STYLE
