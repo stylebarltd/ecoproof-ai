@@ -282,7 +282,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <PhoneMockup />
             <div className="min-w-0">
               <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
-              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian: a collectible card that can&apos;t be bought, only earned.</Lead>
+              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian NFT: a collectible card that can&apos;t be bought, only earned.</Lead>
               <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
               <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
                 {RANKS.map((r, i) => (
