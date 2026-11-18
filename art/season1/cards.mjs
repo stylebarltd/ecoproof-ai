@@ -15,6 +15,22 @@ const CARDS = [
   ["market_day", "sentinel", "Market Day", "LUCKY", 650, 112],
   ["first_trail", "sentinel", "First Trail", "EXPLORER", 650, 7],
   ["first_proof", "sentinel", "First Proof", "IMPACT", 650, 23],
+  ["refill_round", "warden", "Refill Round", "LUCKY", 325, 18],
+  ["rain_patrol", "warden", "Rain Patrol", "LUCKY", 325, 8],
+  ["four_corners", "warden", "Four Corners", "EXPLORER", 325, 5],
+  ["wrap_it", "warden", "Wrap It", "IMPACT", 325, 14],
+  ["hive_workshop", "guardian", "Hive Workshop", "LUCKY", 160, 22],
+  ["night_watch", "guardian", "Night Watch", "LUCKY", 160, 12],
+  ["river_crossing", "guardian", "River Crossing", "EXPLORER", 160, 9],
+  ["kilo_keeper", "guardian", "Kilo Keeper", "IMPACT", 160, 18],
+  ["mountain_pass", "vanguard", "Mountain Pass", "LUCKY", 75, 26],
+  ["storm_flight", "vanguard", "Storm Flight", "LUCKY", 75, 16],
+  ["twelve_flags", "vanguard", "Twelve Flags", "EXPLORER", 75, 13],
+  ["clean_shore", "vanguard", "Clean Shore", "IMPACT", 75, 22],
+  ["golden_hour", "paragon", "Golden Hour", "LUCKY", 40, 30],
+  ["great_hive", "paragon", "The Great Hive", "LUCKY", 40, 20],
+  ["world_walker", "paragon", "World Walker", "EXPLORER", 40, 17],
+  ["old_oak", "paragon", "Old Oak", "IMPACT", 40, 26],
 ];
 const done = [];
 for (const [key, rank, title, how, cap, serial] of CARDS) {
@@ -25,6 +41,10 @@ for (const [key, rank, title, how, cap, serial] of CARDS) {
   });
   writeFileSync(join(OUT, `${key}.png`), png); done.push(join(OUT, `${key}.png`)); console.log(key);
 }
-const tiles = await Promise.all(done.map((f) => sharp(f).resize({ width: 480 }).png().toBuffer()));
-const h = (await sharp(tiles[0]).metadata()).height;
-await sharp({ create: { width: 480 * tiles.length, height: h, channels: 4, background: "#ffffff" } }).composite(tiles.map((input, i) => ({ input, left: 480 * i, top: 0 }))).png().toFile(join(OUT, "_overview.png"));
+// one overview per rank: its four cards in a row
+for (const rank of Object.keys(T.ranks)) {
+  const files = CARDS.filter((c) => c[1] === rank).map((c) => join(OUT, `${c[0]}.png`)); if (!files.length) continue;
+  const tiles = await Promise.all(files.map((f) => sharp(f).resize({ width: 480 }).png().toBuffer()));
+  const h = (await sharp(tiles[0]).metadata()).height;
+  await sharp({ create: { width: 480 * tiles.length, height: h, channels: 4, background: "#ffffff" } }).composite(tiles.map((input, i) => ({ input, left: 480 * i, top: 0 }))).png().toFile(join(OUT, `_${rank}.png`));
+}
