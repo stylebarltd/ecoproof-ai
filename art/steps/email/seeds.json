@@ -254,5 +254,69 @@
   "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
   "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
   "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_901.png": {
+  "scene": "inbox",
+  "seed": 901,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_902.png": {
+  "scene": "inbox",
+  "seed": 902,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_903.png": {
+  "scene": "inbox",
+  "seed": 903,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_904.png": {
+  "scene": "inbox",
+  "seed": 904,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_905.png": {
+  "scene": "inbox",
+  "seed": 905,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_906.png": {
+  "scene": "inbox",
+  "seed": 906,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_907.png": {
+  "scene": "inbox",
+  "seed": 907,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
+ },
+ "inbox_908.png": {
+  "scene": "inbox",
+  "seed": 908,
+  "prompt": "photo from a high angle looking down onto a wooden kitchen table in a cosy sustainable home, in the foreground a large opened kraft cardboard shipping box with its flaps folded open, we look into the box, inside it flat crumpled brown packing paper fills the box, behind the box a tablet computer standing upright on a small wooden stand facing the camera straight on, its screen switched on and showing a completely plain blank white page, thin black bezel, the box and the tablet are large in the frame and sharply in focus, a glass jar and a cup of tea beside them, a bright kitchen with wooden shelves and green plants softly out of focus, natural light, shallow depth of field, 35mm lens, photorealistic, editorial photography, warm wood and cream tones, high detail",
+  "negative": "text, letters, writing, logo, icons, user interface, apps, screen content, picture on screen, keyboard, laptop, phone, hands, people, cartoon, illustration, painting, 3d render, cgi, blurry, low quality, deformed, watermark, plastic bottles, plastic packaging, neon",
+  "checkpoint": "sd/epicrealismXL_vxviiCrystalclear.safetensors [3267fd6443]",
+  "settings": "1024x1024 steps 30 cfg 6 DPM++ 2M karras"
  }
 }

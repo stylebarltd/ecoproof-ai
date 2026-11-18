@@ -9,7 +9,7 @@ import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses
 
 /** "How it works": the whole journey as a carousel of three slides, right under the hero (Pola, 2026-11-18; before it was the three
  *  columns of "Live in three steps"). Slide 1 is where the customer finds the QR code, as three pictures: the postcard on a counter
- *  (art/postcard), an arrived parcel at home, with the real parcel card (a business card) beside it and the plugin's own order email on a tablet (art/steps/email) and the receipt scan in an eco shop (the eco shop door photo).
+ *  (art/postcard), an arrived parcel at home, with the real parcel card (a business card) in the box and the plugin's own order email on a tablet (art/steps/email) and the receipt scan in an eco shop (the eco shop door photo).
  *  Slide 2 is the few seconds on the phone: the stamp picture, the replay of the real claim steps behind one tap (StampJourney),
  *  the four steps worded for a visit and an order at once, and sharing. The copy speaks to customers and businesses alike (Pola,
  *  2026-11-18): no "your customers", no "they". Slide 3 is what Solana is and why the stamp stays checkable; it carries #why-chain, which the hero's
@@ -31,7 +31,7 @@ const PLACES: { cap: string; title: string; points: string; src: string; alt: st
     alt: "The counter of an eco shop: a customer photographs the till receipt with a phone, and the screen shows what the purchase avoided" },
   { cap: "The QR code in the order email or the parcel", title: "An online order", points: `${pointsLabel(POINTS_VERIFIED)} for each verified order.`,
     src: `${PIC}/email-home.webp`,
-    alt: "A kitchen table with an opened parcel and a tablet showing the order email with a Collect my stamp button and a QR code. Beside it leans the small EcoProof card from the parcel, the size of a business card: Your order earns an eco stamp, with a QR code and the bee" },
+    alt: "A kitchen table with an opened parcel: in it lies the small EcoProof card, the size of a business card, Your order earns an eco stamp with a QR code and the bee. Beside the parcel a tablet shows the order email with a Collect my stamp button and a QR code" },
 ];
 
 const STEPS = [
