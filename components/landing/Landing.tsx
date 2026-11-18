@@ -337,7 +337,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <ul className="mt-8 grid gap-6 md:grid-cols-3">
           {doors.map((d, i) => (
             <li key={d.img} className="stitched grain flex flex-col rounded-[20px] bg-kraft/50 p-4 sm:p-5">
-              <Image src={`/landing/doors/v5/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover object-[50%_70%] md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
+              <Image src={`/landing/doors/v6/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover object-[50%_70%] md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
               <h3 className="mt-5 text-[22px] leading-tight">{d.title}</h3>
               <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-paper px-3 py-1 text-[13px] font-extrabold text-cocoa ring-1 ring-cocoa/10"><Stamp size={14} className="shrink-0 text-sky-ink" /> {d.door}</p>
               {/* Three facts per card (critique of 14 Nov 2026: 12+ chunks for "which one am I?"); what customers get is in "For customers". */}
