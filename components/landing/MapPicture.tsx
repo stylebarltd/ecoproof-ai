@@ -22,12 +22,11 @@ const SCANNED = "Hotel";
 
 // Positions in percent of the map; the tip of a pin points at the spot.
 const PINS: Pin[] = [
-  { kind: "cafe", label: "Café", x: 20, y: 32 },
-  { kind: "restaurant", label: "Restaurant", x: 46, y: 24 },
+  { kind: "cafe", label: "Café", x: 19, y: 22 },
+  { kind: "restaurant", label: "Restaurant", x: 48, y: 27 },
   { kind: "hotel", label: "Hotel", x: 78, y: 31 },
-  { kind: "hotel", label: "Resort", x: 54, y: 54 },
-  { kind: "online", label: "Online", x: 37, y: 72 },
-  { kind: "eco_shop", label: "Eco shop", x: 50, y: 95 },
+  { kind: "online", label: "Online", x: 55, y: 57 },
+  { kind: "eco_shop", label: "Eco shop", x: 58, y: 88 },
 ];
 
 const W = 600, H = 460;
