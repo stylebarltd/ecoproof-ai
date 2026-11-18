@@ -204,9 +204,12 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
   font-family: var(--font-stamp); text-transform: uppercase; letter-spacing: 0.1em; line-height: 1;
   border: 2.5px solid currentColor; border-radius: 14px; outline: 1.5px dashed currentColor; outline-offset: -7px; mix-blend-mode: multiply;
 }
-/* The hero photo fades into the paper: at its bottom on phones (it sits above the copy), at its left on wide screens (beside the copy). */
-.hero-photo { -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
-@media (min-width: 1024px) { .hero-photo { -webkit-mask-image: linear-gradient(to right, transparent, #000 14%); mask-image: linear-gradient(to right, transparent, #000 14%); } }
+/* The hero's phone (components/landing/MapPicture.tsx): smaller than life, so the pin it scanned stays in view above it. */
+.scan-phone { transform-origin: bottom right; transform: rotate(4deg) scale(0.66); }
+@media (min-width: 640px) { .scan-phone { transform: rotate(4deg) scale(0.8); } }
+/* The hero's postcard stand: its width (Pola asked for 20% more than the first 140/200px). */
+.hero-stand { width: 168px; }
+@media (min-width: 640px) { .hero-stand { width: 240px; } }
 /* Kraft hero: a faint vignette toward the edges. */
 .vignette::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(58, 42, 28, 0.12) 100%); }
 @media (prefers-reduced-motion: reduce) {
