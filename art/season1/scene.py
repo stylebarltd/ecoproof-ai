@@ -23,7 +23,7 @@ SCENES = {
  # Guardian
  "hive_workshop": "indoors, a warm cluttered workshop at eye level, a sturdy workbench across the bottom with a vise, wooden cogwheels and a half-repaired wooden chair, tools hanging in rows on the wooden wall, a hanging work lamp, golden light and long shadows",
  "night_watch": "outdoors, night, view from a rooftop over a sleeping small town, tiled roofs and chimneys, a few warmly lit windows, a church tower, starry deep blue sky with a thin crescent moon, soft mist",
- "river_crossing": "outdoors, a clear shallow river with a line of flat stepping stones crossing it from the bottom left, on the far bank at the right a wooden riverside resort house with a veranda and lanterns, reeds, big trees, dappled afternoon light, reflections in the water",
+ "river_crossing": "outdoors, a wide clear shallow river filling the lower half of the picture, (a line of big flat stepping stones crossing the water from the bottom edge to the far bank:1.3), on the far bank at the right a wooden riverside resort house with a veranda and lanterns, reeds, big trees, dappled afternoon light, reflections in the water",
  "kilo_keeper": "indoors, an old wooden storeroom at eye level, on a heavy table at the right a large antique brass balance scale, one pan piled high with crushed empty bottles hanging low, the other pan empty and high, sunbeams through a small window, dust in the light",
  # Vanguard
  "mountain_pass": "outdoors, dramatic view from a high rocky mountain ridge, steep green rice terraces far below, layers of blue mountains into the distance, big windswept clouds, golden evening light, a stone cairn at the right",
@@ -34,6 +34,8 @@ SCENES = {
  "golden_hour": "outdoors, epic wide view from a clifftop high above a green island and the sea at sunset, the sun low on the horizon with long golden rays, glowing clouds, a tiny village and harbour far below, sparkling water, majestic",
  "great_hive": "indoors, a vast grand hall built entirely of golden honeycomb, soaring arches and pillars, shafts of sunlight streaming down from high openings, glowing amber and gold, tiny lights, majestic, deep perspective",
  "world_walker": "a huge old illustrated parchment map of a land with mountains, rivers, forests and winding paths filling the whole picture, seen from above at an angle, many small glowing paper lanterns standing on it, warm candlelight, a brass compass rose drawn in the corner",
+ "world_walker_wall": "indoors, an old explorer's study at eye level, the whole back wall covered by one huge old hand-drawn parchment map of a land with mountains, rivers, forests and dotted winding routes, small paper lanterns hanging in front of it glowing warmly, a wooden desk across the bottom with rolled maps and a brass compass, warm candlelight",
+ "world_walker_land": "outdoors, bird's eye view from very high above a whole wide land at golden evening, mountains, forests, a long winding river, patchwork fields, tiny villages joined by one long winding dotted footpath that crosses the whole land, small glowing lanterns along the path, sea on the horizon, soft clouds below",
  "old_oak": "outdoors, a huge ancient oak tree with a wide spreading crown on a gentle hill at the right, many young saplings with stakes growing in the meadow around it, wildflowers, golden late afternoon light with sunbeams through the leaves, distant hills",
 }
 def post(path, payload):
@@ -41,6 +43,7 @@ def post(path, payload):
     with urllib.request.urlopen(req, timeout=1800) as r: return json.load(r)
 card, seeds = sys.argv[1], [int(s) for s in sys.argv[2:]]
 if card in ("rain_patrol", "night_watch", "storm_flight", "kilo_keeper"): NEG = NEG.replace("dark, gloomy, ", "").replace(", plastic bottle", "")
+if card.startswith("world_walker"): NEG = NEG.replace("frame, border, ornament, card, trading card, icon, circle, ", "")
 prompt = f"{SCENES[card]}, {STYLE}"
 lp = OUT/"seeds.json"; log = json.load(open(lp)) if lp.exists() else {}
 for seed in seeds:

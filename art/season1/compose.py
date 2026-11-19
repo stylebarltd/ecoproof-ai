@@ -8,25 +8,25 @@ from PIL import Image, ImageFilter
 D = pathlib.Path(__file__).parent
 PICKS = {  # card: bee render, scene, size of the bee (1 = full width), x of its left edge, and optional repairs
  "morning_cup": dict(bee="morning_cup_bee_d78_66002_fix_3.png", scene="morning_cup_scene_63004.png", scale=0.80, x=-40),
- "market_day": dict(bee="market_day_bee_d78_66002.png", scene="market_day_scene_63001.png", scale=0.76, x=150),
+ "market_day": dict(bee="market_day_bee_d70_84002.png", scene="market_day_scene_63001.png", scale=0.76, x=150),
  # the render drew the antenna tips cream: darkened to the Sentinel's own brown-black
  "first_trail": dict(bee="first_trail_bee_d68_66001.png", scene="first_trail_scene_63004.png", scale=0.78, x=235, dark=[(370, 120, 610, 260), (790, 120, 1010, 260)]),
  "first_proof": dict(bee="first_proof_bee_d70_67002.png", scene="first_proof_scene_68002.png", scale=0.82, x=-150),
  "refill_round": dict(bee="refill_round_bee_d78_71001.png", scene="refill_round_scene_72002.png", scale=0.78, x=-90),
- "rain_patrol": dict(bee="rain_patrol_bee_d78_71004.png", scene="rain_patrol_scene_72003.png", scale=0.78, x=-60),
- "four_corners": dict(bee="four_corners_bee_d64_71001.png", scene="four_corners_scene_72003.png", scale=0.78, x=-80),
+ "rain_patrol": dict(bee="rain_patrol_bee_d72_81003.png", scene="rain_patrol_scene_72003.png", scale=0.78, x=-60),
+ "four_corners": dict(bee="four_corners_bee_d74_81004_fix_86001_fix_87002.png", scene="four_corners_scene_72003.png", scale=0.78, x=-80),
  "wrap_it": dict(bee="wrap_it_bee_d64_71005.png", scene="wrap_it_scene_72003.png", scale=0.78, x=-80),
  "hive_workshop": dict(bee="hive_workshop_bee_d78_71003.png", scene="hive_workshop_scene_72003.png", scale=0.78, x=-60),
  "night_watch": dict(bee="night_watch_bee_d78_71004.png", scene="night_watch_scene_72002.png", scale=0.78, x=-40),
- "river_crossing": dict(bee="river_crossing_bee_d64_71001.png", scene="river_crossing_scene_72001.png", scale=0.76, x=250),
+ "river_crossing": dict(bee="river_crossing_bee_d70_84006.png", scene="river_crossing_scene_83001.png", scale=0.76, x=230),
  "kilo_keeper": dict(bee="kilo_keeper_bee_d64_71005.png", scene="kilo_keeper_scene_72003.png", scale=0.76, x=-110),
- "mountain_pass": dict(bee="mountain_pass_bee_d80_71002.png", scene="mountain_pass_scene_72002.png", scale=0.76, x=-60),
+ "mountain_pass": dict(bee="mountain_pass_bee_d70_84003.png", scene="mountain_pass_scene_72002.png", scale=0.76, x=-60),
  "storm_flight": dict(bee="storm_flight_bee_d80_71004.png", scene="storm_flight_scene_72001.png", scale=0.76, x=-60),
  "twelve_flags": dict(bee="twelve_flags_bee_d64_71004.png", scene="twelve_flags_scene_72004.png", scale=0.76, x=-90),
  "clean_shore": dict(bee="clean_shore_bee_d64_71002.png", scene="clean_shore_scene_72001.png", scale=0.76, x=230),
- "golden_hour": dict(bee="golden_hour_bee_d82_71004.png", scene="golden_hour_scene_72004.png", scale=0.78, x=-80),
- "great_hive": dict(bee="great_hive_bee_d82_71005.png", scene="great_hive_scene_72003.png", scale=0.8, x=110),
- "world_walker": dict(bee="world_walker_bee_d64_71003.png", scene="golden_hour_scene_72002.png", scale=0.78, x=-90),
+ "golden_hour": dict(bee="golden_hour_bee_d70_84003.png", scene="golden_hour_scene_72004.png", scale=0.78, x=-80),
+ "great_hive": dict(bee="great_hive_bee_d70_84004.png", scene="great_hive_scene_72003.png", scale=0.8, x=110),
+ "world_walker": dict(bee="world_walker_bee_d74_81003.png", scene="world_walker_land_scene_83003.png", scale=0.78, x=-90),
  "old_oak": dict(bee="old_oak_bee_d64_71002.png", scene="old_oak_scene_72003.png", scale=0.76, x=-110),
 }
 def key(im):
