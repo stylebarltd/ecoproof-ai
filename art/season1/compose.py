@@ -23,7 +23,7 @@ PICKS = {  # card: bee render, scene, size of the bee (1 = full width), x of its
  "mountain_pass": dict(bee="mountain_pass_bee_d70_84003.png", scene="mountain_pass_scene_72002.png", scale=0.76, x=-60),
  "storm_flight": dict(bee="storm_flight_bee_d80_71004.png", scene="storm_flight_scene_72001.png", scale=0.76, x=-60),
  "twelve_flags": dict(bee="twelve_flags_bee_d64_71004.png", scene="twelve_flags_scene_72004.png", scale=0.76, x=-90),
- "clean_shore": dict(bee="clean_shore_bee_d64_71002.png", scene="clean_shore_scene_72001.png", scale=0.76, x=230),
+ "clean_shore": dict(bee="clean_shore_bee_grip.png", scene="clean_shore_scene_72001.png", scale=0.76, x=230),
  "golden_hour": dict(bee="golden_hour_bee_d70_84003.png", scene="golden_hour_scene_72004.png", scale=0.78, x=-80),
  "great_hive": dict(bee="great_hive_bee_d70_84004.png", scene="great_hive_scene_72003.png", scale=0.8, x=110),
  "world_walker": dict(bee="world_walker_bee_d74_81003.png", scene="world_walker_land_scene_83003.png", scale=0.78, x=-90),

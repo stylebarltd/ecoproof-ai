@@ -86,4 +86,4 @@ def oak():         # a small hand out of the cloak, holding a seedling in a clay
     for fx in (x - 2, x + 28, x + 58): d.arc((fx - 16, y - 40, fx + 16, y + 14), 20, 160, fill=INK, width=5)   # finger tips over the pot's foot
     im.convert("RGB").save(D/"old_oak_bee_prop.png")
 
-for f in (refill, hive, rain, oak): f(); print(f.__name__)   # shore(): the net mask still comes out ragged, not used yet
+for f in (refill, hive, rain, oak): f(); print(f.__name__)   # shore(): the net mask came out ragged; Clean Shore now uses bottle.py (one bottle held up)
