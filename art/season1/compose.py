@@ -12,11 +12,11 @@ PICKS = {  # card: bee render, scene, size of the bee (1 = full width), x of its
  # the render drew the antenna tips cream: darkened to the Sentinel's own brown-black
  "first_trail": dict(bee="first_trail_bee_d68_66001.png", scene="first_trail_scene_63004.png", scale=0.78, x=235, dark=[(370, 120, 610, 260), (790, 120, 1010, 260)]),
  "first_proof": dict(bee="first_proof_bee_d70_67002.png", scene="first_proof_scene_68002.png", scale=0.82, x=-150),
- "refill_round": dict(bee="refill_round_bee_d78_71001.png", scene="refill_round_scene_72002.png", scale=0.78, x=-90),
- "rain_patrol": dict(bee="rain_patrol_bee_d72_81003.png", scene="rain_patrol_scene_72003.png", scale=0.78, x=-60),
+ "refill_round": dict(bee="refill_round_bee_prop.png", scene="refill_round_scene_72002.png", scale=0.78, x=-90),
+ "rain_patrol": dict(bee="rain_patrol_bee_prop.png", scene="rain_patrol_scene_72003.png", scale=0.78, x=-60),
  "four_corners": dict(bee="four_corners_bee_map.png", scene="four_corners_scene_72003.png", scale=0.78, x=-10),
  "wrap_it": dict(bee="wrap_it_bee_d64_71005.png", scene="wrap_it_scene_72003.png", scale=0.78, x=-80),
- "hive_workshop": dict(bee="hive_workshop_bee_d78_71003.png", scene="hive_workshop_scene_72003.png", scale=0.78, x=-60),
+ "hive_workshop": dict(bee="hive_workshop_bee_prop.png", scene="hive_workshop_scene_72003.png", scale=0.78, x=-60),
  "night_watch": dict(bee="night_watch_bee_d78_71004.png", scene="night_watch_scene_72002.png", scale=0.78, x=-40),
  "river_crossing": dict(bee="river_crossing_bee_grip.png", scene="river_crossing_scene_83001.png", scale=0.76, x=200),
  "kilo_keeper": dict(bee="kilo_keeper_bee_d64_71005.png", scene="kilo_keeper_scene_72003.png", scale=0.76, x=-110),
@@ -27,7 +27,7 @@ PICKS = {  # card: bee render, scene, size of the bee (1 = full width), x of its
  "golden_hour": dict(bee="golden_hour_bee_d70_84003.png", scene="golden_hour_scene_72004.png", scale=0.78, x=-80),
  "great_hive": dict(bee="great_hive_bee_d70_84004.png", scene="great_hive_scene_72003.png", scale=0.8, x=110),
  "world_walker": dict(bee="world_walker_bee_d74_81003.png", scene="world_walker_land_scene_83003.png", scale=0.78, x=-90),
- "old_oak": dict(bee="old_oak_bee_d64_71002.png", scene="old_oak_scene_72003.png", scale=0.76, x=-110),
+ "old_oak": dict(bee="old_oak_bee_prop.png", scene="old_oak_scene_72003.png", scale=0.76, x=-110),
 }
 def key(im):
     """Alpha from hue: the background is the only blue-violet thing; holes inside the bee are filled, loose specks dropped."""

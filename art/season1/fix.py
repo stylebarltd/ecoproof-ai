@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Season 1 cards, repairs on a picked bee render before it is cut out: paint over a wrong part (A1111 inpainting, same checkpoint).
 Usage: fix.py <render.png> "<x,y x,y ...>" "<what should be there>" seed... → <render>_fix_<seed>.png  (polygon in 1024 px).
-DENOISE=0.6 in the environment keeps more of what is there (default 0.82), e.g. to close a hand around something already drawn."""
+DENOISE=0.6 in the environment keeps more of what is there (default 0.82), e.g. to close a hand around something already drawn. BG=1 limits the polygon to the blue background."""
 import base64, io, json, os, sys, pathlib, urllib.request
 import numpy as np, cv2
 from PIL import Image
@@ -9,6 +9,9 @@ D = pathlib.Path(__file__).parent
 CKPT = "sd/waiNSFWIllustrious_v150.safetensors [befc694a29]"
 src, poly, what, seeds = sys.argv[1], [tuple(int(v) for v in p.split(",")) for p in sys.argv[2].split()], sys.argv[3], sys.argv[4:]
 mask = np.zeros((1024, 1024), np.uint8); cv2.fillPoly(mask, [np.int32(poly)], 255)
+if os.environ.get("BG"):   # only the flat blue background inside the polygon: what is painted ends up behind the bee
+    hsv = np.asarray(Image.open(D/src).convert("RGB").convert("HSV")).astype(np.int32)
+    mask[~((np.abs(hsv[..., 0] - 161) < 22) & (hsv[..., 1] > 20))] = 0; mask = cv2.dilate(mask, np.ones((5, 5), np.uint8))
 b64 = lambda im: base64.b64encode((lambda b: (im.save(b, "PNG"), b.getvalue())[1])(io.BytesIO())).decode()
 for seed in seeds:
     req = urllib.request.Request("http://127.0.0.1:7860/sdapi/v1/img2img", headers={"Content-Type": "application/json"}, data=json.dumps({
