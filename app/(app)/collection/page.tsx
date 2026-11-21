@@ -82,7 +82,7 @@ export default function CollectionPage() {
             {nfts.length === 0 ? (
               <>
                 <h2 className="text-[17px]">No Bee Guardians yet</h2>
-                <p className="mt-1 text-sm text-sage-900">Your first one, a Sentinel, unlocks with your first stamp. <Link href="/about#customers" className="font-bold underline">How do I collect one?</Link></p>
+                <p className="mt-1 text-sm text-sage-900">Your first one, a Sentinel, unlocks with your first stamp. <Link href="/#how" className="font-bold underline">How do I collect one?</Link></p>
               </>
             ) : waiting > 0 ? (
               <>

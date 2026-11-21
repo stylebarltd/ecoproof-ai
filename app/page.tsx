@@ -4,33 +4,38 @@ import { cache } from "react";
 import AppShell from "@/components/AppShell";
 import Landing from "@/components/landing/Landing";
 import MyShops from "@/components/MyShops";
-import PassportHome from "@/components/PassportHome";
 import RefreshOnAccountChange from "@/components/RefreshOnAccountChange";
 import { landingStats } from "@/lib/landingStats";
 import { myPlaces } from "@/lib/members";
 import { getSession } from "@/lib/session";
 
-// "/" depends on who is asking: signed out, the landing page for eco businesses; a customer, their eco passport; a shop owner or staff
-// member, their "My shop" overview. Decided on the server from the session cookie, so nothing flashes.
-const who = cache(async () => {
+// "/" is the homepage for visitors and signed-in customers alike (Pola, 2026-11-20; before that a signed-in customer got the passport here, which left the
+// homepage unreachable once signed in). Someone who runs a place (owner or staff) lands on "My shop" as before: that is where their work is. The passport
+// lives at /passport; the installed app opens there (start_url in public/manifest.webmanifest).
+const isOwner = cache(async () => {
   const s = await getSession(await headers());
-  if (!s) return "visitor" as const;
-  return (await myPlaces(s.keys)).length ? ("owner" as const) : ("customer" as const);
+  return !!s && (await myPlaces(s.keys)).length > 0;
 }); // once per request, shared by the metadata and the page
 
 export async function generateMetadata(): Promise<Metadata> {
-  const w = await who();
-  if (w === "visitor") return { title: "EcoProof · Verified eco impact for your customers", description: "Show your customers an estimate of the plastic and CO₂ they saved with you, recorded on Solana: verified, not claimed. For eco shops, cafés, restaurants and hotels." };
-  return { title: w === "owner" ? "My shop · EcoProof" : "My eco passport · EcoProof" };
+  if (await isOwner()) return { title: "My shop · EcoProof" };
+  return {
+    title: "EcoProof · Every eco choice earns a stamp",
+    description: "Collect a stamp for every eco choice, at cafés, restaurants, hotels and eco shops. Each one is recorded on Solana, so it can be checked and never changed quietly.",
+  };
 }
 
 export default async function Home() {
-  const w = await who();
-  if (w === "visitor") return <Landing stats={await landingStats()} />;
-  return (
-    <AppShell rootIs={w === "owner" ? "shop" : "passport"}>
+  if (await isOwner()) return (
+    <AppShell rootIs="shop">
       <RefreshOnAccountChange />
-      {w === "owner" ? <MyShops /> : <PassportHome />}
+      <MyShops />
     </AppShell>
+  );
+  return (
+    <>
+      <RefreshOnAccountChange />
+      <Landing stats={await landingStats()} />
+    </>
   );
 }

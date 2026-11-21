@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, Play } from "lucide-react";
 import StampJourney from "@/components/landing/StampJourney";
 import type { LandingRecord } from "@/lib/landingStats";
-import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
+import { POINTS_BY_KIND, POINTS_CARD, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses";
 
 /** "How it works": the whole journey as a carousel of three slides, right under the hero (Pola, 2026-11-18; before it was the three
  *  columns of "Live in three steps"). Slide 1 is where the customer finds the QR code, as three pictures: the postcard on a counter
@@ -15,21 +15,20 @@ import { POINTS_BY_KIND, POINTS_VERIFIED, pointsLabel } from "@/lib/stampClasses
  *  2026-11-18): no "your customers", no "they". Slide 3 is what Solana is and why the stamp stays checkable; it carries #why-chain, which the hero's
  *  SolanaTip and the footer link to, so that hash opens it. The slides sit in one scroll-snap row: swipe on a phone, tabs and arrows
  *  everywhere. Points come from lib/stampClasses.ts, never typed here. */
-const PIC = "/landing/steps/v2";
-const GUIDE = "/about#customers";
+const PIC = "/landing/steps/v3";
+const GUIDE = "/help#collect";
 const TABS = ["Find the QR code", "A few seconds on the phone", "And it stays that way"];
 
-const visits = [POINTS_BY_KIND.cafe, POINTS_BY_KIND.restaurant, POINTS_BY_KIND.hotel];
-const VISIT_POINTS = `${Math.min(...visits)}–${Math.max(...visits)} points`;
+const VISIT_POINTS = pointsLabel(POINTS_BY_KIND.cafe);
 
 const PLACES: { cap: string; title: string; points: string; src: string; alt: string }[] = [
-  { cap: "The QR code on the counter", title: "Café, restaurant, hotel or resort", points: `${VISIT_POINTS} for each visit, once a day.`,
+  { cap: "The QR code on the counter", title: "Café, restaurant, hotel or resort", points: `${VISIT_POINTS} for each visit, once a day. A hotel stay counts every day.`,
     src: `${PIC}/counter-card.webp`,
     alt: "A café counter with the EcoProof postcard on a wooden stand beside a cup of coffee: Collect an eco stamp for your visit, a QR code, three steps and the Bee Guardian" },
   { cap: "The receipt from the till", title: "A purchase in an eco shop", points: `${pointsLabel(POINTS_VERIFIED)} for a photo of the receipt, taken in the shop. ${pointsLabel(POINTS_BY_KIND.eco_shop)} for the QR code at the till.`,
-    src: "/landing/doors/v6/store.webp",
+    src: "/landing/doors/v7/store.webp",
     alt: "The counter of an eco shop: a customer photographs the till receipt with a phone, and the screen shows what the purchase avoided" },
-  { cap: "The QR code in the order email or the parcel", title: "An online order", points: `${pointsLabel(POINTS_VERIFIED)} for each verified order.`,
+  { cap: "The QR code in the order email or the parcel", title: "An online order", points: `${pointsLabel(POINTS_VERIFIED)} for each verified order, ${pointsLabel(POINTS_CARD)} for the card in a parcel.`,
     src: `${PIC}/parcel-home.webp`,
     alt: "A kitchen table with an opened parcel: in it lies the small EcoProof card, the size of a business card, Your order earns an eco stamp with a QR code and the bee. Beside the parcel a tablet shows the order email with a Collect my stamp button and a QR code" },
 ];
@@ -157,7 +156,7 @@ export default function HowItWorks({ r }: { r: LandingRecord | null }) {
                 {PROMISES.map((t) => <li key={t} className="flex gap-2"><Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-leaf-ink" aria-hidden /><span>{t}</span></li>)}
               </ul>
               {/* Honest limits: a QR proves a visit, not a purchase; the promises hold on mainnet, and the hackathon build writes to devnet, which can be reset. */}
-              <p className="mt-4 text-[14px] leading-snug text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase. Today&apos;s proofs are on Solana devnet, a test network. From launch they are written to mainnet, where these promises hold.</p>
+              <p className="mt-4 text-[14px] leading-snug text-cocoa/80">A QR stamp proves a visit; only a verified order proves a purchase. EcoProof is in its test phase: today&apos;s proofs are on Solana&apos;s test network, public and checkable, but a test network can be reset. From launch they are written to Solana&apos;s main network, where these promises hold.</p>
               <p className="pt-4 text-[15px]">
                 {r ? <a href={r.txUrl} target="_blank" rel="noopener" className={link}>See the newest stamp on Solana</a> : <a href="#proof" className={link}>Check a record yourself</a>}
               </p>

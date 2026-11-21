@@ -172,7 +172,7 @@ An earthy, sun-warmed palette: paper and kraft underfoot, cocoa ink, honey for a
 
 ### Primary
 - **Wildflower Honey** (honey): the call to action, as a fill. Primary buttons carry cocoa text on it (5.1:1); white on honey fails contrast. Hover lightens to **Light Honey** (honey-light). **Burnt Honey** (honey-deep) is a fill and border shade only.
-- **Honey Ink** (honey-ink): honey as text: the "AI" in the wordmark, the hero's "Verified, not claimed.", the one highlighted number in a row, and the hover of ink buttons.
+- **Honey Ink** (honey-ink): honey as text: the "AI" in the wordmark, the hero's "Real places, real proof.", the one highlighted number in a row, and the hover of ink buttons.
 
 ### Secondary
 - **Faded Sky** (sky): link underlines (3px, offset 4px), stamp rings and icons. It says "you can follow this". Hovering a link turns its underline honey. Never text.

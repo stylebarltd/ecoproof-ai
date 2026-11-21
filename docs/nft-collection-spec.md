@@ -7,12 +7,12 @@ EcoProof has two collections, with different rules for each. Both use one charac
 | Rank      | Points | Supply | Outfit (fixed per rank)                                   |
 |-----------|--------|--------|-----------------------------------------------------------|
 | Sentinel  | 1      | open   | kraft felt vest, green leaf patch, leather backpack        |
-| Warden    | 3      | open   | kraft vest + short woven leaf cloak, brass-buckle backpack |
-| Guardian  | 10     | open   | leather vest, riveted iron shoulders, iron-clasp backpack  |
-| Vanguard  | 25     | open   | honeycomb bronze-gold chest armour, backpack with map      |
+| Warden    | 10     | open   | kraft vest + short woven leaf cloak, brass-buckle backpack |
+| Guardian  | 20     | open   | leather vest, riveted iron shoulders, iron-clasp backpack  |
+| Vanguard  | 35     | open   | honeycomb bronze-gold chest armour, backpack with map      |
 | Paragon   | 50+    | open   | gold honeycomb armour, laurel crown, gold-trimmed backpack |
 
-Points: a verified purchase earns 5 and a presence scan earns 1 (constants `POINTS_VERIFIED` and `POINTS_PRESENCE`).
+Points: a verified purchase earns 5, the card in a parcel 3 and a visit 1 (constants `POINTS_VERIFIED`, `POINTS_CARD` and `POINTS_PRESENCE`).
 
 Rules
 - A rank card is a trophy. Everyone who reaches the threshold gets one. Rank cards are never capped and never "sold out".

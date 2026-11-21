@@ -17,7 +17,7 @@ import { PRODUCTION_URL } from "./hosts";
 //    tree account: right after our own mint, the new leaf is the rightmost one and its proof is stored on-chain.
 //    Mints are therefore serialised by the caller (see lib/milestones.ts).
 
-export { BASE_MILESTONES, reachedMilestones, nextMilestone, tierFor, milestoneLabel, type Tier } from "./milestoneRules";
+export { reachedMilestones, nextMilestone, tierFor, milestoneLabel, type Tier } from "./milestoneRules";
 
 /** Public base URL for links we hand out (QR codes, cards, order links, webhooks, NFT metadata). Production is always
  *  ecoproof.app: the domain is not a setting. A preview links to its own branch URL, even when APP_URL is set for every

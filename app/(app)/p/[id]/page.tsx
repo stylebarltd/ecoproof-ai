@@ -40,7 +40,7 @@ export default async function Passport({ params }: { params: Promise<{ id: strin
         <a href={proof} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-sage-300">
           <span className="text-2xl text-sage-700">⛓</span>
           <span className="min-w-0 text-sm">
-            <b>Anchored on Solana</b> <span className="text-neutral-600">· devnet</span>
+            <b>Recorded on Solana</b> <span className="text-neutral-600">· test network</span>
             <span className="block truncate font-mono text-[11px] text-neutral-500">tx {rec.signature!.slice(0, 8)}…{rec.signature!.slice(-8)}</span>
           </span>
           <span className="ml-auto text-xs text-sage-700">Explorer ↗</span>

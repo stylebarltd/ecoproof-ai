@@ -1,6 +1,6 @@
-import { CHECK_PATH, CREAM, LEAF_PATH, SAGE } from "@/lib/brand";
+import { CHECK_PATH, CREAM, LEAF_PATH } from "@/lib/brand";
 
-/** The EcoProof mark: a leaf carrying a checkmark (sustainable choice, verified). */
+/** A leaf carrying a checkmark: the logo until 2026-11-20, now the Passport tab's symbol and the tile on printed cards. */
 export function LeafMark({ size = 32, stroke = CREAM, strokeWidth = 2.75 }: { size?: number; stroke?: string; strokeWidth?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -10,13 +10,11 @@ export function LeafMark({ size = 32, stroke = CREAM, strokeWidth = 2.75 }: { si
   );
 }
 
-/** Mark on its sage tile (app icon style). The mark is ~58% of the tile, as in the design sheet. */
+/** The EcoProof logo: the passport stamp with the leaf checkmark (public/logo-mark.svg, written by art/logo/rings.py). No tile behind
+ *  it: the stamp sits straight on the page, like ink on paper. The leaf above stays the Passport tab's symbol. */
 export function LogoTile({ size = 36 }: { size?: number }) {
-  return (
-    <span className="inline-flex shrink-0 items-center justify-center" style={{ width: size, height: size, borderRadius: size * 0.28, background: SAGE }}>
-      <LeafMark size={size * 0.62} />
-    </span>
-  );
+  // eslint-disable-next-line @next/next/no-img-element -- a small static SVG; nothing to optimise
+  return <img src="/logo-mark.svg" alt="" width={size} height={size} className="shrink-0" style={{ width: size, height: size, transform: "scale(1.2)" }} />;
 }
 
 export function Wordmark({ size = 20 }: { size?: number }) {

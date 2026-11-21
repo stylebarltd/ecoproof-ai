@@ -1,5 +1,5 @@
 import type { Nft } from "./milestones";
-import { editionOf, reachedMilestones, tierFor } from "./milestoneRules";
+import { reachedMilestones, tierFor } from "./milestoneRules.ts";
 
 /** Highest tier first (then newest), so the hero can show the best NFT largest. */
 export const rankNfts = (nfts: Nft[]) => [...nfts].sort((a, b) => b.milestone - a.milestone);
@@ -11,7 +11,8 @@ export const explorerTx = (sig: string) => `https://explorer.solana.com/tx/${sig
 export function progress(points: number, next: number) {
   const prev = reachedMilestones(points).at(-1) ?? 0;
   const span = Math.max(1, next - prev);
-  const nextTier = next > 50 ? `Paragon edition ${editionOf(next)}` : tierFor(next).name; // past 50, every 50 points is another Paragon
+  if (points >= next) return { toGo: 0, nextTier: tierFor(next).name, fraction: 1, text: `${points} point${points === 1 ? "" : "s"} · ${tierFor(next).name} reached` }; // the summit: nothing further by points
+  const nextTier = tierFor(next).name;
   return {
     toGo: next - points,
     nextTier,
@@ -25,7 +26,7 @@ export function progress(points: number, next: number) {
  * "queued": a wallet is there and the mint starts shortly. "retrying": the last mint failed; it is tried again on the next stamp or "Try again".
  */
 export type NftState = "waiting" | "queued" | "minting" | "retrying" | "onchain";
-export function nftState(n: Nft, hasWallet: boolean): NftState {
+export function nftState(n: Pick<Nft, "status" | "assetId" | "error">, hasWallet: boolean): NftState {
   if (n.status === "minted" && n.assetId) return "onchain";
   if (n.status === "minting") return "minting";
   if (!hasWallet) return "waiting";

@@ -134,6 +134,27 @@
       "when": 1794847912744,
       "tag": "0018_reusable_cloth",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1795019936597,
+      "tag": "0019_new_rank_thresholds",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795064906373,
+      "tag": "0020_season_cards",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795190000000,
+      "tag": "0021_spread_rank_thresholds",
+      "breakpoints": true
     }
   ]
 }

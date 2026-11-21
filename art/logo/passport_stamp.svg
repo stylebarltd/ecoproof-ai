@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Pola's brief (2026-11-19), drawn by hand because Stable Diffusion could not follow it: a round passport stamp, two rings with an
+       imperfect inked edge, a bold checkmark whose long stroke turns into a leaf. Ink brown on cream, the leaf the one green accent. -->
+  <defs>
+    <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="#f4e9d8"/>
+  <g filter="url(#ink)" fill="none" stroke="#3a2a1c" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="256" cy="256" r="196" stroke-width="16"/>
+    <circle cx="256" cy="256" r="166" stroke-width="5"/>
+    <!-- the check: short stroke, then the long stroke up to where the leaf takes over -->
+    <path d="M166 262 L226 326 L272 262" stroke-width="34"/>
+  </g>
+  <!-- the leaf: the long stroke widens into it, along the same line (226,326) → (356,146) -->
+  <g filter="url(#ink)">
+    <path d="M258 282 C 250 214, 292 160, 362 138 C 372 208, 334 268, 258 282 Z" fill="#6f8f4e"/>
+    <path d="M266 270 L346 158" fill="none" stroke="#f4e9d8" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

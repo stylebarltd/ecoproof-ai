@@ -5,10 +5,10 @@ import CheckRecord from "@/components/landing/CheckRecord";
 import HowItWorks from "@/components/landing/HowItWorks";
 import MapPicture from "@/components/landing/MapPicture";
 import HospitalityCard from "@/components/landing/HospitalityCard";
-import MobileJoinBar from "@/components/landing/MobileJoinBar";
 import HeroArt from "@/components/landing/HeroArt";
 import IslandHero from "@/components/landing/IslandHero";
 import LandingNav from "@/components/landing/LandingNav";
+import RankCards from "@/components/landing/RankCards";
 import { JournalWordmark, SECTIONS } from "@/components/landing/shared";
 import { journalFonts } from "@/components/landing/fonts";
 import { COUNTERS_FROM, PRICING } from "@/lib/landingContent";
@@ -157,7 +157,7 @@ function ImpactWidget({ example }: { example: LandingStats["example"] }) {
           <ul className="mt-2 divide-y divide-cocoa/10 border-y border-cocoa/10 text-[14px] leading-snug text-cocoa/85">
             {orders.map((o) => <li key={o.id} className="flex items-baseline justify-between gap-4 py-2"><span className="min-w-0">{o.summary}</span><span className="shrink-0 font-bold">{grams(o.plasticG)}</span></li>)}
           </ul>
-          <p className="mt-2 text-[13px] font-bold text-cocoa/80"><Link href="/about#proof" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">How products are counted</Link></p>
+          <p className="mt-2 text-[13px] font-bold text-cocoa/80"><Link href="/help#ai" className="underline decoration-sky decoration-2 underline-offset-2 hover:decoration-honey">How products are counted</Link></p>
         </div>
       )}
       <dl className="mt-3 divide-y divide-cocoa/10">
@@ -203,8 +203,8 @@ function SolanaTip() {
 function HeroCopy({ center }: { center?: boolean }) {
   return (
     <>
-      <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Your eco choices, proven. <span className="text-honey-ink">Verified, not claimed.</span></h1>
-      <p className={`${center ? "mx-auto " : ""}relative mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit to an eco café, hotel or shop, and every plastic-free order, becomes a stamp in your eco passport, written to the <SolanaTip /> so nobody can fake it. Collect them, earn Bee Guardian NFTs, and share the proof.</p>
+      <h1 className="text-[36px] leading-[1.04] sm:text-[46px] lg:text-[56px]">Every eco choice earns a stamp. <span className="text-honey-ink">Real places, real proof.</span></h1>
+      <p className={`${center ? "mx-auto " : ""}relative mt-5 max-w-xl text-[18px] leading-[1.6] text-cocoa/85`}>Every visit to an eco café, restaurant, hotel or shop, and every plastic-free order, becomes a stamp in your eco passport. Collect them, earn Bee Guardian NFTs, and share the proof.</p>
       <div className={`mt-7 flex flex-col items-center gap-3 sm:flex-row sm:gap-5 ${center ? "justify-center" : ""}`}>
         <Primary href="/passport">Open my eco passport <ArrowRight size={18} /></Primary>
         <Link href="/map" className="inline-flex h-12 items-center text-[16px] font-extrabold text-cocoa underline decoration-sky decoration-[3px] underline-offset-4 hover:decoration-honey">Find eco places</Link>
@@ -214,21 +214,21 @@ function HeroCopy({ center }: { center?: boolean }) {
   );
 }
 
-export default async function Landing({ stats }: { stats: LandingStats | null }) {
+export default async function Landing({ stats, owner = false }: { stats: LandingStats | null; owner?: boolean }) {
   // The three owner doors (images in public/landing/doors; cafés and restaurants share one door, a small café/restaurant switch is planned):
   // how their customers collect a stamp, what each side gets, and setup. An eco shop sells in store, online or both, so online selling
   // lives in that tile. Points per kind come from lib/stampClasses.ts.
   const doors = [
     { img: "coffee", kind: "cafe", title: "Café / Restaurant", join: "a café or restaurant", door: "QR at the counter, on the table card or with the bill", stamp: `A stamp for each visit, ${pointsLabel(POINTS_BY_KIND.cafe)}, once a day`,
       you: "Eco stars, a map pin, and regulars with a reason to come back.", them: "A visible streak of real choices: their own cup, your reusable cups, the refill they bought. Shareable as a card in one tap.", setup: "Print one QR code, tick your practices" },
-    { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `A stamp for each stay, ${pointsLabel(POINTS_BY_KIND.hotel)}`,
+    { img: "hotel", kind: "hotel", title: "Hotel / Resort", join: "a hotel or resort", door: "QR at reception or in the room", stamp: `A stamp for each day of a stay, ${pointsLabel(POINTS_BY_KIND.hotel)} a day`,
       you: "Eco stars from the practices you publish, and a map pin guests find before they book.", them: "A stamp from their holiday, with your name on it, in the passport they show around.", setup: "Print one QR code, tick your practices" },
     { img: "store", kind: "eco_shop", title: "Eco shop", join: "an eco shop", door: "QR at the till, WooCommerce plugin or claim cards for online orders", stamp: `${pointsLabel(POINTS_VERIFIED)} for a verified order, ${pointsLabel(POINTS_BY_KIND.eco_shop)} for a visit to your till`,
       you: "A public impact page that adds up every order, and a place in the eco shops directory.", them: "What their order saved and what it replaced, in their passport and on the share image.", setup: "Print one QR code, or install the plugin in about 10 minutes" },
   ];
   return (
     <div className={`journal grain min-h-screen ${journalFonts}`}>
-      <LandingNav />
+      <LandingNav owner={owner} />
 
       {/* Hero: the copy is shared (HeroCopy); HERO picks what stands beside it. "island": copy left, and right the map of eco places with the phone that scanned one of its QR codes, on kraft paper (the island pictures were removed on 2026-11-18).
           "proof": copy left, the newest real record and its live check right, on kraft. "cards": copy left, the card fan and the bee right. */}
@@ -287,17 +287,9 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <PhoneMockup />
             <div className="min-w-0">
               <H2>&ldquo;I&apos;m eco, and I have proof.&rdquo;</H2>
-              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian NFT: a collectible card that can&apos;t be bought, only earned.</Lead>
-              <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks.</p>
-              <ul className="scroll-snap-x no-scrollbar -mx-5 mt-3 flex gap-4 overflow-x-auto px-5 pb-2 sm:-mx-10 sm:px-10 lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible lg:px-0" aria-label="The five Bee Guardian ranks">
-                {RANKS.map((r, i) => (
-                  <li key={r.key} className="w-[150px] shrink-0 text-center lg:w-auto" style={{ transform: `rotate(${(i - 2) * 2.5}deg)` }}>
-                    <Image src={`/landing/cards/v2/${r.key}.webp`} alt={`${r.name} Bee Guardian card`} width={600} height={840} sizes="150px" className="w-full rounded-[10px] shadow-[0_10px_24px_rgba(58,42,28,0.25)]" />
-                    <span className="mt-3 block text-[14px] font-extrabold">{r.name}</span>
-                    <span className="block text-[12px] font-bold text-cocoa/80">{r.at} point{r.at === 1 ? "" : "s"}</span>
-                  </li>
-                ))}
-              </ul>
+              <Lead>A passport that fills up with real choices. Enough stamps unlock a Bee Guardian NFT: a collectible card that can&apos;t be bought, only earned. One passport can earn up to 20 of them.</Lead>
+              <p className="mt-6 text-[13px] font-bold text-cocoa/80 lg:hidden">Swipe to see all five ranks. Tap a card to turn it over.</p>
+              <RankCards />
             </div>
           </div>
         </div>
@@ -307,7 +299,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           SolanaTip and the footer link to it). */}
       <Section id="how" className="py-12 lg:py-20">
         <H2>How it works</H2>
-        <Lead>Scan a code, collect a stamp, keep the proof. A good choice takes a few seconds to record, and nobody can fake it afterwards.</Lead>
+        <Lead>Scan a code, collect a stamp, keep the proof. A good choice takes a few seconds to record, and nobody can fake it afterwards. <Link href="/help" className="whitespace-nowrap font-bold text-cocoa underline decoration-sky decoration-2 underline-offset-4 hover:decoration-honey">Read more</Link></Lead>
         <HowItWorks r={stats?.record ?? null} />
       </Section>
 
@@ -337,7 +329,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
         <ul className="mt-8 grid gap-6 md:grid-cols-3">
           {doors.map((d, i) => (
             <li key={d.img} className="stitched grain flex flex-col rounded-[20px] bg-kraft/50 p-4 sm:p-5">
-              <Image src={`/landing/doors/v6/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover object-[50%_70%] md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
+              <Image src={`/landing/doors/v7/${d.img}.webp`} alt="" width={640} height={640} sizes="(min-width: 768px) 360px, 100vw" className="sticker aspect-[16/10] w-full object-cover object-[50%_70%] md:aspect-square" style={{ transform: `rotate(${[-1.5, 1, -1][i]}deg)` }} />
               <h3 className="mt-5 text-[22px] leading-tight">{d.title}</h3>
               <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-paper px-3 py-1 text-[13px] font-extrabold text-cocoa ring-1 ring-cocoa/10"><Stamp size={14} className="shrink-0 text-sky-ink" /> {d.door}</p>
               {/* Three facts per card (critique of 14 Nov 2026: 12+ chunks for "which one am I?"); what customers get is in "For customers". */}
@@ -367,7 +359,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <div className="mt-8">
               <p className="font-stamp text-[15px] uppercase tracking-[0.14em] text-cocoa/80">Where the numbers come from</p>
               <p className="mt-2 text-[15px] leading-[1.6] text-cocoa/85">Each product counts a fixed amount of plastic and CO₂ avoided, set by EcoProof for its kind, never by the shop.</p>
-              <Link href="/about#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
+              <Link href="/help#ai" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-cocoa underline underline-offset-4">How the AI works <ArrowRight size={14} aria-hidden /></Link>
             </div>
           </div>
           <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1"><ImpactWidget example={stats?.example ?? null} /></div>
@@ -410,7 +402,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
       </Section>
 
       {/* Footer */}
-      <footer className="border-t border-cocoa/10 px-4 pt-10 pb-24 sm:px-6 md:pb-10">
+      <footer className="border-t border-cocoa/10 px-4 pt-10 pb-10 sm:px-6">
         <div className="mx-auto grid max-w-[1200px] gap-8 md:grid-cols-[1fr_auto_auto]">
           <div>
             <JournalWordmark className="text-[22px]" />
@@ -420,7 +412,7 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
           <ul className="space-y-2 text-[14px] font-bold">
             {SECTIONS.map(([href, label]) => <li key={href}><a href={href} className="hover:underline">{label}</a></li>)}
             <li><a href="#why-chain" className="hover:underline">Why blockchain</a></li>
-            <li><Link href="/about" className="hover:underline">The full guide</Link></li>
+            <li><Link href="/help" className="hover:underline">Help</Link></li>
           </ul>
           <ul className="space-y-2 text-[14px] font-bold">
             <li><Link href="/map" className="hover:underline">Map of places</Link></li>
@@ -429,9 +421,9 @@ export default async function Landing({ stats }: { stats: LandingStats | null })
             <li><Link href="/rules" className="hover:underline">Rules</Link> · <Link href="/privacy" className="hover:underline">Privacy</Link></li>
           </ul>
         </div>
-        <p className="mx-auto mt-8 max-w-[1200px] text-[12px] text-cocoa/80">Proofs are written to Solana devnet during the hackathon phase. Impact figures are estimates, not audited data. <Link href="/about#ai" className="underline underline-offset-2">How the AI makes them</Link>.</p>
+        <p className="mx-auto mt-8 max-w-[1200px] text-[12px] text-cocoa/80">Proofs are written to Solana&apos;s test network during the test phase. Impact figures are estimates, not audited data. <Link href="/help#ai" className="underline underline-offset-2">How the AI makes them</Link>.</p>
       </footer>
-      <MobileJoinBar />
+      {/* The bar fixed to the bottom on phones ("Free for the first 50 businesses", components/landing/MobileJoinBar.tsx) is off for now (Pola, 2026-11-21); the component stays. */}
     </div>
   );
 }

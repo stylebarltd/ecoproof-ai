@@ -16,7 +16,7 @@ const link = "font-extrabold underline decoration-sky decoration-[3px] underline
 const BEFORE_BOOKING = [
   "Your stars on the eco map, where travellers can filter by stars.",
   "Your own page to link from your website or booking profile, with every practice behind the stars.",
-  `A stay is a stamp worth ${pointsLabel(POINTS_BY_KIND.hotel)}, double a café visit, with your name in the guest's passport.`,
+  `Every day of a stay is a stamp worth ${pointsLabel(POINTS_BY_KIND.hotel)}, with your name in the guest's passport.`,
 ];
 
 function Card({ h }: { h: Hospitality }) {

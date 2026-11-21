@@ -5,9 +5,10 @@ import { identityGroup } from "./users";
 import { publicIdFor } from "./publicId";
 import { stampDay } from "./stampPlaces";
 import { looksLikeWallet } from "./ids";
-import { listNfts, type Nft } from "./milestones";
+import { listNfts, listSeasonNfts, type Nft, type SeasonNft } from "./milestones";
 import { nextMilestone, nftConfig } from "./nft";
 import { pointsFor, stampClass, type StampClass } from "./stampClasses";
+import { TRAIL_END } from "./journeyMap";
 
 /** `plasticG`: grams of plastic avoided; `co2Kg` to the gram. */
 export type Totals = { receipts: number; co2Kg: number; plasticG: number; sustainableItems: number };
@@ -19,6 +20,8 @@ export type Passport = {
   totals: Totals;
   anchored: number;
   nfts: Nft[];
+  /** Season cards (lib/seasonRules.ts), in the order they were given; empty while the season is off. */
+  season: SeasonNft[];
   /** Every joined place; `earned` = this passport has at least one stamp from it. */
   places: { id: string; name: string; imageUrl: string; impactNote: string | null; earned: boolean; count: number; verifiedCount: number }[];
   /** Milestones count points: a verified purchase is worth more than a presence stamp (lib/stampClasses.ts). */
@@ -31,8 +34,13 @@ export type Passport = {
   registryUrl: string | null;
   /** The Bee Guardians collection on Solana Explorer, or null when NFTs are not set up. */
   collectionUrl: string | null;
+  /** The counted stamps that lie on the board, oldest first: stamp by stamp, which points of the trail it filled (`from` to `to`, a visit one tile, a verified
+   *  purchase five). The journey map shows each tile's stamp from this (Pola, 2026-11-20: the proof trail lives on the board). Stamps past the last tile are not in it. */
+  steps: PassportStep[];
   records: { id: string; placeId: string | null; source: string | null; class: StampClass; points: number; impactNote: string | null; merchant: string; co2Kg: number; plasticG: number; verified: boolean; signature: string | null; createdAt: string }[];
 };
+
+export type PassportStep = { id: string; merchant: string; placeId: string | null; source: string | null; class: StampClass; points: number; from: number; to: number; impactNote: string | null; signature: string | null; createdAt: string };
 
 export async function getPassport(userId: string): Promise<Passport> {
   const ids = await identityGroup(userId);
@@ -75,6 +83,7 @@ export async function getPassport(userId: string): Promise<Passport> {
     }),
     anchored: rows.filter((r) => r.signature).length,
     nfts: (await listNfts(userId)).map((n) => ({ ...n, imageUrl: `/api/nft/${n.id}/image`, metadataUrl: `/api/nft/${n.id}/metadata` })),
+    season: await listSeasonNfts(userId),
     points,
     stampsByClass: { verified: stamps.filter((r) => stampClass(r.source) === "verified").length, presence: stamps.filter((r) => stampClass(r.source) === "presence").length },
     verifiedStamps: stamps.filter((r) => stampClass(r.source) === "verified").slice(0, 12).map((r) => ({
@@ -84,6 +93,15 @@ export async function getPassport(userId: string): Promise<Passport> {
     nextMilestone: nextMilestone(points),
     registryUrl: (() => { const a = payerAddress(); return a ? addressUrl(a) : null; })(),
     collectionUrl: (() => { const c = nftConfig()?.collection; return c ? addressUrl(c) : null; })(),
+    steps: (() => {
+      let at = 0; const out: PassportStep[] = [];
+      for (const r of [...stamps].reverse()) { // oldest first
+        const pts = pointsFor(r.source, r.place_kind);
+        if (pts > 0 && at < TRAIL_END) out.push({ id: r.id, merchant: r.merchant, placeId: r.place_id ?? null, source: r.source ?? null, class: stampClass(r.source), points: pts, from: at + 1, to: at + pts, impactNote: r.impact_note ?? null, signature: r.signature, createdAt: new Date(r.created_at).toISOString() });
+        at += pts;
+      }
+      return out;
+    })(),
     records: rows.slice(0, 20).map((r) => ({
       id: r.id, placeId: r.place_id ?? null, source: r.source ?? null, class: stampClass(r.source), points: counted.has(r.id) ? pointsFor(r.source, r.place_kind) : 0, impactNote: r.impact_note ?? null, merchant: r.merchant, co2Kg: r.co2_kg, plasticG: r.packaging_g,
       verified: !!r.signature, signature: r.signature, createdAt: new Date(r.created_at).toISOString(),

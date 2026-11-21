@@ -43,7 +43,8 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
       <div className="pc-in">
         <div className="pc-top">
           <span className="pc-brand">
-            <span className="pc-tile" style={{ background: SAGE }}><LeafMark size={100} /></span>
+            {/* eslint-disable-next-line @next/next/no-img-element -- printed, so no lazy loading or resizing */}
+            <img src="/logo-mark.svg" alt="" className="pc-logo" />
             <span>EcoProof</span>
           </span>
           <span className="pc-mark">{mark}</span>
@@ -53,7 +54,8 @@ export default function Postcard({ mark, headline, place, qr, code, steps }: Pos
         {place.stars ? <>
           {/* The lead gives way to this box (the card's height is fixed); the steps still say what the passport is. Why to trust the place itself (Pola, 2026-11-18: the card must say the place is eco by EcoProof's measure): the card says "Rated by EcoProof" without the stars or a number (Pola), for a place that has a rating (lib/stars.ts) from the practices the place published and anchored (lib/declarations.ts). The practices are self-declared and nobody inspects them, so "rated", never "approved", "certified" or "verified". */}
           <p className="pc-proof">
-            <span className="pc-seal" style={{ background: SAGE }}><LeafMark size={100} /></span>
+            {/* eslint-disable-next-line @next/next/no-img-element -- printed, so no lazy loading or resizing */}
+            <img src="/logo-mark.svg" alt="" className="pc-seal" />
             <span>
               <span className="pc-rated">Rated by EcoProof</span>
               For the eco practices {place.name} has published and locked on Solana.
@@ -104,8 +106,7 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-in { height: 100%; padding: 5.4cqw 7.5cqw 5.5cqw; display: flex; flex-direction: column; border-top: 2.6cqw solid var(--color-honey); }
 .pc-top { display: flex; align-items: center; justify-content: space-between; }
 .pc-brand { display: inline-flex; align-items: center; gap: 2cqw; font-family: var(--font-caprasimo), serif; font-size: 4.6cqw; line-height: 1; }
-.pc-tile { display: inline-flex; align-items: center; justify-content: center; width: 7cqw; height: 7cqw; border-radius: 2cqw; }
-.pc-tile svg { width: 62%; height: 62%; }
+.pc-logo { flex: none; width: 10cqw; height: 10cqw; margin: -1.5cqw 0 -1.5cqw -1cqw; }
 .pc-mark { font-family: var(--font-bebas), Impact, sans-serif; font-size: 3.4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: var(--color-terracotta-ink);
   border: 0.5cqw solid currentColor; border-radius: 999px; padding: 1.2cqw 2.8cqw 0.9cqw; rotate: -4deg; }
 .pc-h { margin-top: 4cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 8.8cqw; line-height: 1.04; letter-spacing: -0.015em; text-wrap: balance; }
@@ -118,8 +119,7 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-stamp { width: 14cqw; height: 14cqw; }
 .pc-name { max-width: 26cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 4.4cqw; line-height: 1.1; overflow-wrap: anywhere; }
 .pc-proof { margin-top: 3cqw; padding: 2.2cqw 2.8cqw; display: flex; gap: 2.4cqw; align-items: center; border-radius: 2.6cqw; background: rgba(143, 163, 114, 0.2); font-size: 3.05cqw; line-height: 1.3; text-wrap: pretty; }
-.pc-seal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 8cqw; height: 8cqw; border-radius: 999px; }
-.pc-seal svg { width: 60%; height: 60%; }
+.pc-seal { flex: none; width: 10cqw; height: 10cqw; margin: -1cqw 0; }
 .pc-rated { display: block; margin-bottom: 0.5cqw; font-family: var(--font-fraunces), Georgia, serif; font-weight: 700; font-size: 4.4cqw; line-height: 1.15; }
 .pc-arrow { font-family: var(--font-bebas), Impact, sans-serif; font-size: 4cqw; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; color: #fff; background: var(--color-cocoa);
   border-radius: 999px; padding: 1.4cqw 3cqw 1cqw; }
@@ -128,6 +128,12 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
 .pc-n { flex: none; width: 5.8cqw; height: 5.8cqw; border-radius: 999px; background: var(--color-honey); color: var(--color-cocoa); font-weight: 900; font-size: 3.4cqw; display: inline-flex; align-items: center; justify-content: center; }
 .pc-foot { margin-top: 2.5cqw; padding-top: 2.5cqw; border-top: 0.35cqw dashed rgba(58, 42, 28, 0.4); display: flex; justify-content: space-between; align-items: baseline; gap: 4cqw; font-size: 2.8cqw; line-height: 1.3; white-space: nowrap; }
 .pc-foot b { flex: none; font-family: var(--font-caprasimo), serif; font-weight: 400; font-size: 3.8cqw; }
+.pc-mail { flex: none; width: 35cqw; aspect-ratio: 1; padding: 0 3cqw 3cqw; border: 0.7cqw solid var(--color-cocoa); border-radius: 3.6cqw; background: #fff; display: flex; flex-direction: column; gap: 2cqw; overflow: hidden; }
+.pc-mail-bar { margin: 0 -3cqw 0.6cqw; padding: 1.8cqw 2.4cqw; display: flex; gap: 1.2cqw; background: var(--color-kraft); }
+.pc-mail-bar i { width: 1.8cqw; height: 1.8cqw; border-radius: 999px; background: rgba(58, 42, 28, 0.45); }
+.pc-mail-line { height: 1.7cqw; border-radius: 999px; background: rgba(58, 42, 28, 0.16); }
+.pc-mail-short { width: 62%; }
+.pc-mail-btn { margin-top: auto; padding: 2.2cqw 1cqw 1.9cqw; border-radius: 999px; background: var(--color-honey); font-weight: 900; font-size: 3.1cqw; line-height: 1; text-align: center; white-space: nowrap; }
 .pc-code { font-family: ui-monospace, monospace; font-size: 2.9cqw; letter-spacing: 0.08em; font-weight: 700; }
 @page { size: A4 ${landscape ? "landscape" : "portrait"}; margin: 0; }
 @media print {
@@ -140,6 +146,58 @@ export function postcardCss({ cols, rows, landscape = false }: { cols: number; r
   .sheet > .pc, .sheet > .pc + .pc { display: block; aspect-ratio: auto; width: 100%; height: 100%; border-radius: 0; box-shadow: none; ${cols * rows > 1 ? "outline: 0.2mm dashed rgba(58, 42, 28, 0.35);" : ""} }
 }
 `;
+}
+
+/**
+ * The flyer an online shop with the plugin puts in its own parcels (app/(app)/place/[id]/flyer; Pola, 2026-11-20): A6 like the postcard and in its
+ * styles (postcardCss). It carries no QR code and no code: the stamp of such an order is the personal button and QR in the order email (a
+ * verified purchase), so the flyer only sends the customer there. A parcel gets this flyer or a parcel card, never both: the card is for
+ * orders from marketplaces, where the plugin cannot run.
+ */
+export function ParcelFlyer({ place }: { place: { name: string; imageUrl: string } }) {
+  const steps: [string, string][] = [
+    ["Open your order email", `from ${place.name}: the one that confirms your order.`],
+    ["Tap \u201cCollect my stamp\u201d", "or scan the QR code in the email with your phone. No app to install, no sign-up."],
+    ["Meet your Bee Guardian", "Your stamp shows what your order saved, and your first one unlocks a Bee Guardian."],
+  ];
+  return (
+    <div className="pc">
+      <div className="pc-in">
+        <div className="pc-top">
+          <span className="pc-brand">
+            {/* eslint-disable-next-line @next/next/no-img-element -- printed, so no lazy loading or resizing */}
+            <img src="/logo-mark.svg" alt="" className="pc-logo" />
+            <span>EcoProof</span>
+          </span>
+          <span className="pc-mark">Eco passport</span>
+        </div>
+        <p className="pc-h">Your order earns an eco stamp</p>
+        <p className="pc-lead">EcoProof is the passport for people who choose shops that cut plastic and waste. <b>{place.name}</b> is one of them.</p>
+        <div className="pc-scan">
+          {/* The order email, drawn: where the stamp is waiting */}
+          <div className="pc-mail" aria-hidden>
+            <span className="pc-mail-bar"><i /><i /><i /></span>
+            <span className="pc-mail-line" /><span className="pc-mail-line pc-mail-short" />
+            <span className="pc-mail-btn">Collect my stamp</span>
+          </div>
+          <div className="pc-place">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={place.imageUrl} alt="" className="pc-stamp" />
+            <span className="pc-name">{place.name}</span>
+            <span className="pc-arrow">In your email</span>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- printed, so no lazy loading or resizing */}
+          <img src="/landing/bee.webp" alt="" className="pc-bee" />
+        </div>
+        <ol className="pc-steps">
+          {steps.map(([title, text], i) => (
+            <li key={title}><span className="pc-n">{i + 1}</span><span><b>{title}</b>{/^[a-z]/.test(text) ? " " : ". "}{text}</span></li>
+          ))}
+        </ol>
+        <p className="pc-foot"><span>Every stamp is recorded on Solana.</span><b>ecoproof.app</b></p>
+      </div>
+    </div>
+  );
 }
 
 /** The card in a parcel: business-card size (85 x 55 mm), so only the facts that matter: what it is, whose it is, how to scan, the code and the bee. */

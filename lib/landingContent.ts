@@ -15,4 +15,4 @@ export const COUNTERS_FROM = 100;
  *  instead of promising a live passport (critique run 8). */
 export const demoPassport = () => process.env.LANDING_DEMO_PASSPORT
   ? { href: `/u/${process.env.LANDING_DEMO_PASSPORT}`, label: "See a live passport" }
-  : { href: "/about#customers", label: "How the passport works" };
+  : { href: "/help#customers", label: "How the passport works" };

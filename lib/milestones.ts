@@ -4,11 +4,13 @@ import { identityGroup } from "./users";
 import { looksLikeWallet } from "./ids";
 import { appUrl, mintSoulbound, nftConfig, reachedMilestones, tierFor } from "./nft";
 import { editionOf, onChainName, rankWebp, type RankKey } from "./milestoneRules";
+import { recordSeason } from "./season";
+import { seasonCard, seasonOnChainName, seasonWebp, type SeasonKind } from "./seasonRules";
 
 /** What a passport had when it reached a milestone. Stored with the mint and shown in the NFT metadata. */
 export type NftStats = { milestone: number; /** the owner's points total when the milestone was reached */ proofs: number; plasticG: number; co2Kg: number; brand: string };
 
-type MintRow = { serial: number | null; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null; created_at: string; minted_at: string | null };
+type MintRow = { serial: number | null; id: string; owner_key: string; milestone: number; status: string; stats: string; svg: string | null; wallet: string | null; asset_id: string | null; mint_signature: string | null; freeze_signature: string | null; error: string | null; created_at: string; minted_at: string | null; design: string | null; slot: string | null };
 
 /** `serial` numbers each rank (and each Paragon edition) in the order it was minted: "Warden #0007". 0 until it is minted. */
 /** `wallet`: where it was (or is being) minted to. `createdAt`: when it was unlocked. */
@@ -21,6 +23,16 @@ const toNft = (r: MintRow): Nft => ({
   wallet: r.wallet, createdAt: new Date(r.created_at).toISOString(), mintedAt: r.minted_at ? new Date(r.minted_at).toISOString() : null,
 });
 
+/** A Season card (lib/seasonRules.ts) a passport holds. `serial` of `cap`: "#12 of 650", 0 until it is minted. `slot`: why it was given ("draw:7", "explorer:warden", ...). */
+export type SeasonNft = { id: string; design: string; name: string; rank: RankKey; kind: SeasonKind; serial: number; cap: number; slot: string | null; webpUrl: string; status: string; assetId: string | null; error: string | null; wallet: string | null; imageUrl: string; metadataUrl: string; createdAt: string; mintedAt: string | null };
+const toSeasonNft = (r: MintRow): SeasonNft | null => {
+  const c = r.design ? seasonCard(r.design) : undefined;
+  return c ? {
+    id: r.id, design: c.key, name: c.name, rank: c.rank, kind: c.kind, serial: Number(r.serial ?? 0), cap: c.cap, slot: r.slot, webpUrl: seasonWebp(c.key), status: r.status, assetId: r.asset_id, error: r.error, wallet: r.wallet,
+    imageUrl: `/api/nft/${r.id}/image`, metadataUrl: `/api/nft/${r.id}/metadata`, createdAt: new Date(r.created_at).toISOString(), mintedAt: r.minted_at ? new Date(r.minted_at).toISOString() : null,
+  } : null;
+};
+
 // Mints touch one Merkle tree and read the rightmost proof, so they run one at a time (per server instance).
 let chain: Promise<unknown> = Promise.resolve();
 const serial = <T>(fn: () => Promise<T>): Promise<T> => { const p = chain.then(fn, fn); chain = p.catch(() => {}); return p; };
@@ -28,7 +40,7 @@ const serial = <T>(fn: () => Promise<T>): Promise<T> => { const p = chain.then(f
 /** Records a pending milestone NFT for every milestone the passport has reached. Idempotent (unique per owner + milestone). */
 export async function recordMilestones(passportId: string, stats: Omit<NftStats, "milestone">): Promise<void> {
   const group = await identityGroup(passportId);
-  const have = await query<{ milestone: number }>("SELECT milestone FROM nft_mints WHERE owner_key = ANY($1)", [group]);
+  const have = await query<{ milestone: number }>("SELECT milestone FROM nft_mints WHERE owner_key = ANY($1) AND design IS NULL", [group]);
   for (const m of reachedMilestones(stats.proofs)) {
     if (have.some((h) => h.milestone === m)) continue;
     await query(
@@ -61,10 +73,12 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
       [row.id, wallet, row.milestone],
     );
     if (!claimed.length) continue;
-    onMint?.(row.milestone);
+    const card = row.design ? seasonCard(row.design) : undefined;
+    if (row.design && !card) continue; // a design this code does not know: leave it
+    if (!card) onMint?.(row.milestone);
     try {
       // The artwork is a static file per rank, referenced from the metadata JSON: nothing is generated here, so artwork can never fail a mint.
-      const out = await serial(() => mintSoulbound({ owner: wallet, name: onChainName(tierFor(row.milestone)), uri: `${appUrl()}/api/nft/${row.id}/metadata` }));
+      const out = await serial(() => mintSoulbound({ owner: wallet, name: card ? seasonOnChainName(card) : onChainName(tierFor(row.milestone)), uri: `${appUrl()}/api/nft/${row.id}/metadata` }));
       await query("UPDATE nft_mints SET status='minted', asset_id=$2, mint_signature=$3, freeze_signature=$4, error=NULL, minted_at=now() WHERE id=$1", [row.id, out.assetId, out.mintSignature, out.freezeSignature]);
     } catch (e) {
       console.error("nft mint failed", e);
@@ -77,15 +91,26 @@ export async function mintPending(passportId: string, onMint?: (milestone: numbe
 export async function listNfts(passportId: string): Promise<Nft[]> {
   const group = await identityGroup(passportId);
   return (await query<MintRow>(
-    "SELECT * FROM nft_mints WHERE owner_key = ANY($1) AND status <> 'merged' ORDER BY milestone",
+    "SELECT * FROM nft_mints WHERE owner_key = ANY($1) AND status <> 'merged' AND design IS NULL ORDER BY milestone",
     [group],
   )).map(toNft);
+}
+
+/** The Season cards of a passport, in the order they were given. The five rank cards are listNfts. */
+export async function listSeasonNfts(passportId: string): Promise<SeasonNft[]> {
+  const group = await identityGroup(passportId);
+  return (await query<MintRow>(
+    "SELECT * FROM nft_mints WHERE owner_key = ANY($1) AND status <> 'merged' AND design IS NOT NULL ORDER BY created_at, id",
+    [group],
+  )).map(toSeasonNft).filter((n): n is SeasonNft => !!n);
 }
 
 /** After any valid proof: record the milestones the passport has now reached and mint those it can. A failed mint never fails the claim. */
 export async function afterProof(passportId: string, totals: { points: number; plasticG: number; co2Kg: number }, brand = "EcoProof", onMint?: (milestone: number) => void): Promise<Nft[]> {
   try {
     await recordMilestones(passportId, { proofs: totals.points, plasticG: totals.plasticG, co2Kg: totals.co2Kg, brand });
+    // Season cards the stamp has earned (nothing while the season is switched off). A failure here never costs the rank cards.
+    try { await recordSeason(passportId, totals.points, { proofs: totals.points, plasticG: totals.plasticG, co2Kg: totals.co2Kg, brand }); } catch (e) { console.error("season step failed", e); }
     return await mintPending(passportId, onMint);
   } catch (e) { console.error("milestone step failed", e); return []; }
 }

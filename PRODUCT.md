@@ -24,7 +24,7 @@ Proof that can't be edited after the fact: one scan, one stamp, enforced on-chai
 
 ## Capabilities and Constraints
 - Next.js 16 App Router, Tailwind, Postgres, Solana (devnet), Metaplex Bubblegum V2. Accounts via wallet, Google or Facebook (v2).
-- Points: presence 1 (2 at a hotel/resort), verified purchase 5. Values live in `lib/stampClasses.ts`; practices, points and the star scale only in `data/practices.json`, never hard-coded.
+- Points: a visit 1 everywhere (café, restaurant, hotel, an eco shop's till; a place's QR works once a day, so a hotel stay counts each day), the card in a parcel 3, a verified purchase 5. Ranks at 1 / 10 / 20 / 35 / 50 points. Values live in `lib/stampClasses.ts`; practices, points and the star scale only in `data/practices.json`, never hard-coded.
 - Only café, restaurant and hotel have stars; eco shops show impact instead.
 - Planned, not built: receipt scanning for eco shops; visitor-verified practice checks.
 

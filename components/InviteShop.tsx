@@ -5,7 +5,7 @@ import { Copy, Share2 } from "lucide-react";
 /** A ready-to-send message a customer can pass to a café, shop or online store they love. */
 export default function InviteShop() {
   const [msg, setMsg] = useState("");
-  const text = () => `Hi! I use EcoProof: customers collect stamps from eco places, every stamp is proven on Solana, and they share their passport. It would be great for your shop. You can set up your place in a few minutes, free: ${location.origin}/about#owners`;
+  const text = () => `Hi! I use EcoProof: customers collect stamps from eco places, every stamp is proven on Solana, and they share their passport. It would be great for your shop. You can set up your place in a few minutes, free: ${location.origin}/join`;
   async function share() {
     const t = text();
     try {

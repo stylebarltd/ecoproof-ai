@@ -91,7 +91,7 @@ function ScanPhone() {
         <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#8fa073] text-paper"><Check size={24} strokeWidth={3} aria-hidden /></span>
         <p className="font-journal-display mt-1.5 text-[18px] font-bold leading-tight">Stamp collected</p>
         <p className="mt-0.5 text-[12px] font-bold text-cocoa/80">Riverside Resort</p>
-        <p className="mt-1.5 inline-block rounded-full bg-honey px-2.5 py-0.5 text-[11.5px] font-extrabold">+{pointsLabel(POINTS_BY_KIND.hotel)} · hotel stay</p>
+        <p className="mt-1.5 inline-block rounded-full bg-honey px-2.5 py-0.5 text-[11.5px] font-extrabold">+{pointsLabel(POINTS_BY_KIND.hotel)} · hotel visit</p>
       </div>
       <p className="mt-2 flex items-center gap-1.5 rounded-xl bg-white/70 px-2.5 py-2 text-[11px] font-bold leading-snug"><Check size={14} strokeWidth={3} className="shrink-0 text-[#56633f]" aria-hidden /> Proof written to Solana. Nobody can fake it.</p>
       <div className="mt-2 flex items-center gap-2.5 rounded-xl bg-white/70 px-2.5 py-2">
@@ -134,7 +134,7 @@ export default function MapPicture({ scanned = false }: { scanned?: boolean }) {
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
           <path d="M66 81 C 68 79, 69 77, 71 75" fill="none" stroke="#e08a2e" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
         </svg>
-        <Image src="/landing/hero/stand-riverside.webp" alt="The hotel's EcoProof postcard on a small stand of rough natural wood: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 212px, 150px"
+        <Image src="/landing/hero/stand-stamp.webp" alt="The hotel's EcoProof postcard on a small stand of rough natural wood: Collect an eco stamp for your stay, Rated by EcoProof, with a QR code" width={300} height={510} sizes="(min-width: 640px) 212px, 150px"
           className="hero-stand absolute -bottom-[16%] -rotate-[3deg] drop-shadow-[0_18px_22px_rgba(58,42,28,0.4)]" />
         <ScanPhone />
       </>}

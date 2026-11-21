@@ -149,7 +149,7 @@ export default function Privacy() {
 
       <div className="flex flex-wrap gap-2 pt-1">
         <Link href="/passport" className="rounded-full bg-sage-500 px-4 py-2 font-bold text-cream">Back to my passport</Link>
-        <Link href="/about" className="rounded-full border-[1.5px] border-neutral-300 px-4 py-2 font-bold">How EcoProof works</Link>
+        <Link href="/#how" className="rounded-full border-[1.5px] border-neutral-300 px-4 py-2 font-bold">How EcoProof works</Link>
       </div>
     </div>
   );

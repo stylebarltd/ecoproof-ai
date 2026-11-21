@@ -131,6 +131,27 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 }
 @media (prefers-reduced-motion: reduce) { .lift:hover, .lift-soft:hover { transform: none; } }
 
+/* Landing rank cards that turn over (components/landing/RankCards.tsx). The button stays still and only .flip-inner turns, so the hover
+   area never moves away from the pointer. Transform only. With reduced motion the back fades in over the front and nothing turns. */
+.flip { perspective: 900px; }
+.flip-inner { transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
+.flip-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
+.flip[aria-pressed="true"] .flip-inner { transform: rotateY(180deg); }
+@media (hover: hover) and (pointer: fine) { .flip:hover .flip-inner { transform: rotateY(180deg); } }
+/* Touch screens have no hover: when the row first scrolls into view each card peeks at its back and settles (RankCards.tsx sets data-hint once and
+   staggers the delay per card). A partial turn, not a shake: it shows the very motion a tap does. A pressed card is left alone. */
+@keyframes flip-peek { 0%, 100% { transform: rotateY(0deg); } 45% { transform: rotateY(34deg); } }
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .flip-hint[data-hint="true"] .flip:not([aria-pressed="true"]) .flip-inner { animation: flip-peek 700ms cubic-bezier(0.77, 0, 0.175, 1) backwards; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner, .flip[aria-pressed="true"] .flip-inner, .flip:hover .flip-inner { transform: none; transition: none; }
+  .flip-back { transform: none; opacity: 0; transition: opacity 0.2s ease; }
+  .flip[aria-pressed="true"] .flip-back { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) { .flip:hover .flip-back { opacity: 1; } }
+
 /* Visible keyboard focus everywhere (mouse and touch focus stay unstyled). */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid #e8a317; outline-offset: 2px; }
 
@@ -222,3 +243,23 @@ h1, h2, h3, .font-heading { font-family: var(--font-caprasimo), system-ui, sans-
 @keyframes passport-pulse { 50% { background-color: rgba(111, 143, 78, 0.16); box-shadow: 0 0 0 4px rgba(111, 143, 78, 0.12); } }
 .passport-live { animation: passport-pulse 2.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .passport-live { animation: none; background-color: rgba(111, 143, 78, 0.14); } }
+
+/* Journey map (components/PassportMap.tsx): a tile lifts under a mouse, the bee bobs, the next goal breathes, and the note over a
+   tile grows out of the tile it belongs to. Transform and opacity only; all of it stops under prefers-reduced-motion (the note fades). */
+.jm-tile { transform-box: fill-box; transform-origin: center; transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1); cursor: pointer; }
+@media (hover: hover) and (pointer: fine) { .jm-tile:hover { transform: translateY(-3px) scale(1.07); } }
+.jm-tile:active { transform: scale(0.96); }
+.jm-bee { transform-box: fill-box; transform-origin: 50% 100%; animation: jm-bob 1.6s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate; }
+@keyframes jm-bob { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-5px) rotate(2deg); } }
+.jm-goal { transform-box: fill-box; transform-origin: center; animation: jm-breathe 1.4s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate; }
+@keyframes jm-breathe { from { opacity: 0.25; transform: scale(1); } to { opacity: 0.95; transform: scale(1.12); } }
+.jm-tip { position: absolute; z-index: 5; width: max-content; max-width: min(240px, 70%); padding: 8px 11px; border-radius: 12px; background: #3a2a1c; color: #f4e9d8;
+  box-shadow: 0 10px 24px rgba(58, 42, 28, 0.35); pointer-events: none; opacity: 0; transform-origin: 50% 100%;
+  transform: translate(var(--jm-tx, -50%), calc(-100% - 10px)) scale(0.96); transition: opacity 150ms cubic-bezier(0.23, 1, 0.32, 1), transform 150ms cubic-bezier(0.23, 1, 0.32, 1); }
+.jm-tip[data-open="true"][data-link="true"] { pointer-events: auto; }
+.jm-tip[data-open="true"] { opacity: 1; transform: translate(var(--jm-tx, -50%), calc(-100% - 10px)) scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  .jm-tile, .jm-tile:hover, .jm-tile:active { transition: none; transform: none; }
+  .jm-bee, .jm-goal { animation: none; }
+  .jm-tip { transition: opacity 150ms ease; transform: translate(var(--jm-tx, -50%), calc(-100% - 10px)); }
+}

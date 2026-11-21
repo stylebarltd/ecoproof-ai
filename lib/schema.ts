@@ -108,9 +108,14 @@ export const nftMints = pgTable("nft_mints", {
   createdAt: at("created_at").defaultNow().notNull(),
   mintedAt: at("minted_at"),
   serial: integer(), // "Warden #0007": set once, when the NFT is minted, so it never shifts
+  // Season cards (lib/seasonRules.ts) live in the same table: `design` is the card's key and `milestone` is minus its code, so the two
+  // unique rules above and below hold for them too (one of a design per owner, serials per design). Null on the five rank cards.
+  design: text(),
+  slot: text(), // why it was given: "draw:7", "scan:2", "explorer:warden", "impact:sentinel". One card per slot per owner.
 }, (t) => [
   unique("nft_mints_owner_key_milestone_key").on(t.ownerKey, t.milestone),
   uniqueIndex("nft_mints_serial").on(t.milestone, t.serial).where(sql`(serial IS NOT NULL)`),
+  uniqueIndex("nft_mints_owner_slot").on(t.ownerKey, t.slot).where(sql`(slot IS NOT NULL)`),
 ]);
 
 export const claimCards = pgTable("claim_cards", {

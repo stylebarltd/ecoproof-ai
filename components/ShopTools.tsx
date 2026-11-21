@@ -125,14 +125,19 @@ export function StampTools({ p, openWoo = false }: { p: MyPlace; openWoo?: boole
         <section className={`${panel} space-y-3`}>
           <div>
             <h2 className="text-[17px] leading-tight">Online orders</h2>
-            <p className={`mt-0.5 ${MUTED}`}>Two ways to give customers their stamp. Use one or both.</p>
+            <p className={`mt-0.5 ${MUTED}`}>Two ways to give customers their stamp, one per parcel: the order email for orders from your own shop, a printed card for orders from marketplaces. Never put a card in a parcel whose order already has the email.</p>
           </div>
           {p.role === "staff" ? (
             <p className={BLOCK}><b>QR in your order email:</b> <span className="text-sage-900">the WooCommerce setup holds the shop&apos;s secret, so only the owner sees it.</span></p>
           ) : <WooOption id={p.id} open={openWoo} />}
           <div className={BLOCK}>
-            <p className="font-bold">Printed cards in the parcel <span className="font-normal text-sage-900">(any channel: Amazon, Lazada, Shopee…)</span></p>
-            <p className={MUTED}>No shop code needed. Print the cards and drop one in each parcel. Every card gives one stamp, once. It can&apos;t show the order&apos;s impact, because a card doesn&apos;t prove what was bought.</p>
+            <p className="font-bold">Flyer for these parcels <span className="font-normal text-sage-900">(orders from your own shop)</span></p>
+            <p className={MUTED}>Reminds the customer to open the order email and tap &ldquo;Collect my stamp&rdquo;. No code on it, so it gives no stamp by itself.</p>
+            <Link href={`/place/${p.id}/flyer`} className="block rounded-full border-[1.5px] border-sage-900/20 bg-white/70 py-2.5 text-center text-sm font-semibold">Print the parcel flyer (A6)</Link>
+          </div>
+          <div className={BLOCK}>
+            <p className="font-bold">Printed cards in the parcel <span className="font-normal text-sage-900">(orders from Amazon, Lazada, Shopee…)</span></p>
+            <p className={MUTED}>For orders where the plugin can&apos;t run. No shop code needed: print the cards and drop one in each of those parcels. Every card gives one stamp, once. It can&apos;t show the order&apos;s impact, because a card doesn&apos;t prove what was bought.</p>
             <CardsButton id={p.id} />
           </div>
         </section>

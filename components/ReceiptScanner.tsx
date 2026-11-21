@@ -111,7 +111,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
               {err && (
                 <div className="space-y-2 rounded-2xl bg-terra-100 p-3 text-sm text-terra-800">
                   <p>{err.message}</p>
-                  {err.noShop && <p className="text-[13px]">Know the shop? <Link href="/about#help" className="font-bold underline" onClick={onClose}>Ask them to join EcoProof</Link>.</p>}
+                  {err.noShop && <p className="text-[13px]">Know the shop? <Link href="/help#help" className="font-bold underline" onClick={onClose}>Ask them to join EcoProof</Link>.</p>}
                 </div>
               )}
             </>
@@ -152,7 +152,7 @@ export default function ReceiptScanner({ onClose }: { onClose: () => void }) {
               <span className="inline-flex items-center gap-1 rounded-full bg-honey-300 px-3 py-1 text-xs font-extrabold"><Check size={14} strokeWidth={3.2} /> Verified purchase</span>
               <p className="font-heading text-xl">Stamp collected! ✨</p>
               {done.stamp.impactNote && <p className="rounded-xl bg-honey-300/40 p-2.5 text-sm font-semibold">{done.stamp.impactNote}</p>}
-              <p className="text-sm text-neutral-600"><b className="text-ink">+{done.stamp.points} points</b> · {done.passport.points} in total · next rank at {done.passport.nextMilestone}</p>
+              <p className="text-sm text-neutral-600"><b className="text-ink">+{done.stamp.points} points</b> · {done.passport.points} in total · {done.passport.points >= done.passport.nextMilestone ? "top rank reached" : `next rank at ${done.passport.nextMilestone}`}</p>
               {newNfts.length > 0 && <p className="rounded-xl bg-sage-100 p-3 text-sm font-semibold text-sage-800">New Bee Guardian NFT{newNfts.length > 1 ? "s" : ""}: {newNfts.map((n) => n.tier).join(" + ")}</p>}
               {done.stamp.claimUrl && <a className="block text-xs text-sage-700 underline" href={done.stamp.claimUrl} target="_blank" rel="noreferrer">See the proof on Solana ↗</a>}
               <button onClick={() => { onClose(); router.push("/passport"); router.refresh(); }} className="lift block w-full rounded-full bg-sage-500 py-3 font-bold text-cream">View my passport</button>
